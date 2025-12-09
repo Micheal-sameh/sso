@@ -40,10 +40,8 @@ class UserController extends BaseController
             ]);
         }
         $user->load('arToken');
-        return $this->apiresponse([
-            'user' => new UserResource($user),
-            'app_token' => $arTokens->{$app_name},
-        ]);
+
+        return $this->apiresponse(new UserResource($user));
 
     }
 
