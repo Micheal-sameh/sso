@@ -17,7 +17,6 @@ class LoginUserRequest extends FormRequest
             'membership_code' => 'required|string|max:255',
             'password' => 'required|string|min:6',
             'fcm_token' => 'sometimes|string',
-            'app_name' => 'required|string',
         ];
     }
 }

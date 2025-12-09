@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('ar_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('rashi', 64)->unique()->nullable();
-            $table->string('visits', 64)->unique()->nullable();
-            $table->string('eftkad', 64)->unique()->nullable();
+            $table->string('rashi')->unique()->nullable();
+            $table->string('visits')->unique()->nullable();
+            $table->string('eftkad')->unique()->nullable();
             $table->timestamps();
         });
     }

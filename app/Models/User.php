@@ -42,4 +42,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function arToken()
+    {
+        return $this->hasOne(ArToken::class);
+    }
 }
