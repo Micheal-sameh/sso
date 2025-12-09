@@ -14,11 +14,10 @@ return new class extends Migration
         Schema::create('ar_tokens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('rashi')->nullable();
-            $table->string('visits')->nullable();
-            $table->string('eftkad')->nullable();
+            $table->string('rashi', 64)->unique()->nullable();
+            $table->string('visits', 64)->unique()->nullable();
+            $table->string('eftkad', 64)->unique()->nullable();
             $table->timestamps();
-
         });
     }
 
