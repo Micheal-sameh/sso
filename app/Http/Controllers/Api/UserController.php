@@ -11,42 +11,38 @@ class UserController extends BaseController
 {
     public function login(LoginUserRequest $request)
     {
-        $project = $request->project;
+        $projectName = $request->project->name;
         $credentials = $request->only('membership_code', 'password');
-        if (! Auth::attempt($credentials)) {
 
-            return $this->apiErrorResponse('credentials do not match', 401);
+        // Attempt login
+        if (! Auth::attempt($credentials)) {
+            return $this->apiErrorResponse('Credentials do not match', 401);
         }
+
         $user = auth()->user();
 
-        // if (isset($input['fcm_token'])) {
-        //     $user->update(['fcm_token' => $input['fcm_token']]);
-        // }
+        // Get or create user's token for this project
+        $arToken = ArToken::firstOrNew(['user_id' => $user->id]);
 
-        $arTokens = ArToken::where('user_id', $user->id)->first();
-
-        $app_name = $project->name;
-        if ($arTokens) {
-            if ($arTokens->{$app_name} == null) {
-                // Create ArToken with encrypted fields
-                $arTokens->update([
-                    "$app_name" => $this->token(),
-                ]);
-            }
+        if (empty($arToken->{$projectName})) {
+            $arToken->{$projectName} = $this->generateToken();
+            $arToken->save();
         } else {
-            ArToken::create([
-                'user_id' => $user->id,
-                "$app_name" => $this->token(),
-            ]);
+            return $this->apiResponse(['token' => $arToken->{$projectName}]);
         }
+
+        // Load relation for resource
         $user->load('arToken');
 
+        // Return user resource with project token
         return $this->apiresponse(new UserResource($user));
-
     }
 
-    public function token()
+    /**
+     * Generate a secure random token
+     */
+    protected function generateToken(): string
     {
-        return bin2hex(random_bytes(8));
+        return bin2hex(random_bytes(16)); // 32-character token for more security
     }
 }
