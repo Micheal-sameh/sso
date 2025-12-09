@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Api\BaseController;
 use App\Http\Requests\LoginUserRequest;
 use App\Models\ArToken;
 use Illuminate\Support\Facades\Auth;
@@ -60,6 +59,6 @@ class UserController extends BaseController
 
     public function token()
     {
-        return bin2hex(random_bytes(8));
+        return bin2hex(random_bytes(64));
     }
 }

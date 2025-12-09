@@ -15,8 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum', 'check.secret.key'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', [UserController::class, 'login']);
+Route::middleware(['check.secret.key'])->group(function () {
+    Route::post('/login', [UserController::class, 'login']);
+});
