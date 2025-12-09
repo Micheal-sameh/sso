@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Project;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class CheckSecretKey
             return response()->json(['error' => 'Secret key is required'], 401);
         }
 
-        $project = \App\Models\Project::where('secret_key', $secretKey)->first();
+        $project = Project::where('secret_key', $secretKey)->first();
 
         if (! $project) {
             return response()->json(['error' => 'Invalid secret key'], 401);

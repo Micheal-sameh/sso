@@ -14,17 +14,17 @@ class ProjectSeeder extends Seeder
     {
         Project::create([
             'name' => 'rashi',
-            'secret_key' => bin2hex(random_bytes(64)),
+            'secret_key' => bin2hex(random_bytes(32)),
         ]);
 
         Project::create([
             'name' => 'visits',
-            'secret_key' => bin2hex(random_bytes(64)),
+            'secret_key' => bin2hex(random_bytes(32)),
         ]);
 
         Project::create([
             'name' => 'eftkad',
-            'secret_key' => bin2hex(random_bytes(64)),
+            'secret_key' => bin2hex(random_bytes(32)),
         ]);
     }
 }
