@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\SSOController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,5 +20,6 @@ Route::middleware(['auth:sanctum', 'check.secret.key'])->get('/user', function (
 });
 
 Route::middleware(['check.secret.key'])->group(function () {
-    Route::post('/login', [UserController::class, 'login']);
+    Route::post('/login', [SSOController::class, 'login']);
+    Route::post('/qr-login', [SSOController::class, 'Qrlogin']);
 });
