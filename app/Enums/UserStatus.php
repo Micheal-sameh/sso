@@ -7,8 +7,9 @@ use InvalidArgumentException;
 
 class UserStatus
 {
+    public const INACTIVE = 0;
+
     public const ACTIVE = 1;
-    public const INACTIVE = 2;
 
     private static array $translations = [
         self::ACTIVE => [
