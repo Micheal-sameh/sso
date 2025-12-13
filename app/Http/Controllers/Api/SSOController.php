@@ -30,9 +30,10 @@ class SSOController extends BaseController
         if (empty($arToken->{$projectName})) {
             $arToken->{$projectName} = $this->generateToken();
             $arToken->save();
-        } else {
-            return $this->apiResponse(['token' => $arToken->{$projectName}]);
         }
+        // else {
+        //     return $this->apiResponse(['token' => $arToken->{$projectName}]);
+        // }
 
         // Load relation for resource
         $user->load('arToken');
