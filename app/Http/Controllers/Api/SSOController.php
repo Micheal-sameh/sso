@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserStatus;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\QrLoginRequest;
 use App\Http\Resources\UserResource;
@@ -23,6 +24,10 @@ class SSOController extends BaseController
         }
 
         $user = auth()->user();
+        $activeUser = $this->checkUserStatus($user);
+        if (! $activeUser) {
+            return $this->apiErrorResponse('User is inactive', 403);
+        }
 
         // Get or create user's token for this project
         $arToken = ArToken::firstOrNew(['user_id' => $user->id]);
@@ -109,5 +114,10 @@ class SSOController extends BaseController
         };
 
         return $user;
+    }
+
+    private function checkUserStatus(User $user): bool
+    {
+        return $user->status == UserStatus::ACTIVE;
     }
 }
