@@ -1,7 +1,4 @@
 @extends('layouts.sideBar')
-
-@section('title', __('messages.user_details') . ': ' . $user->name)
-
 @section('content')
 <div class="container-fluid">
     <!-- Page Header -->
@@ -67,7 +64,7 @@
                             </span>
                             @endif
 
-                            @if($user->is_active)
+                            @if($user->status)
                             <span class="badge bg-success bg-opacity-10 text-success">
                                 <i class="fas fa-circle me-1 small"></i>{{ __('messages.active') }}
                             </span>

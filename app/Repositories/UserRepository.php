@@ -57,4 +57,28 @@ class UserRepository
 
         return $query->count();
     }
+
+    public function getFamilyMembers($membershipCode, $excludeUserId = null)
+    {
+        // Extract the family code pattern (E1C1Fxxxx) from membership code
+        // Format: E1C1FxxxxNRx where same family has same E1C1Fxxxx but different NR
+        $familyCode = '';
+
+        // Extract the family code (everything before NR)
+        if (preg_match('/^(E\d+C\d+F\d+)(NR\d+)$/', $membershipCode, $matches)) {
+            $familyCode = $matches[1];
+        }
+
+        if (! $familyCode) {
+            return collect();
+        }
+
+        $query = $this->model->where('membership_code', 'like', $familyCode.'%');
+
+        if ($excludeUserId) {
+            $query->where('id', '!=', $excludeUserId);
+        }
+
+        return $query->get();
+    }
 }

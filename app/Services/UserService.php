@@ -34,4 +34,9 @@ class UserService
     {
         return $this->userRepository->bulkUpdateStatus($userIds, $status);
     }
+
+    public function getFamilyMembers($membershipCode, $excludeUserId = null)
+    {
+        return $this->userRepository->getFamilyMembers($membershipCode, $excludeUserId);
+    }
 }
