@@ -27,4 +27,11 @@ class AuthController extends Controller
 
         return redirect()->intended('/'); // Adjust as needed
     }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return to_route('login');
+    }
 }
