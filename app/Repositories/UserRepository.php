@@ -65,7 +65,7 @@ class UserRepository
         $familyCode = '';
 
         // Extract the family code (everything before NR)
-        if (preg_match('/^(E\d+C\d+F\d+)(NR\d+)$/', $membershipCode, $matches)) {
+        if (preg_match('/^(E\d+C\d+F\d+)(NR\d+)$/', strtoupper($membershipCode), $matches)) {
             $familyCode = $matches[1];
         }
 

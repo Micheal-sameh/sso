@@ -216,7 +216,7 @@
                                 <div class="list-group-item d-flex justify-content-between align-items-center px-0">
                                     <div>
                                         <small class="text-muted">{{ __('messages.membership_code') }}</small>
-                                        <div class="fw-semibold">#{{ $user->membership_code }}</div>
+                                        <div class="fw-semibold">#{{ strtoupper($user->membership_code) }}</div>
                                     </div>
                                     <span class="badge bg-light text-dark">
                                         <i class="fas fa-hashtag"></i>
@@ -408,6 +408,62 @@
                                     {{ __('messages.view_all_actions') }}
                                 </a>
                             </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Family Members Section -->
+                    <div class="row g-4 mt-4">
+                        <div class="col-12">
+                            <h6 class="mb-3 text-primary border-bottom pb-2">
+                                <i class="fas fa-users me-2"></i>
+                                {{ __('messages.family_members') }}
+                            </h6>
+                            @if($familyMembers && $familyMembers->count() > 0)
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>{{ __('messages.name') }}</th>
+                                                <th>{{ __('messages.membership_code') }}</th>
+                                                <th>{{ __('messages.status') }}</th>
+                                                <th>{{ __('messages.actions') }}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach($familyMembers as $member)
+                                            <tr>
+                                                <td>{{ $member->name }}</td>
+                                                <td><code>{{ strtoupper($member->membership_code) }}</code></td>
+                                                <td>
+                                                    @if($member->status)
+                                                    <span class="badge bg-success bg-opacity-10 text-success">
+                                                        <i class="fas fa-circle me-1 small"></i>{{ __('messages.active') }}
+                                                    </span>
+                                                    @else
+                                                    <span class="badge bg-warning bg-opacity-10 text-warning">
+                                                        <i class="fas fa-circle me-1 small"></i>{{ __('messages.inactive') }}
+                                                    </span>
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('users.show', $member->id) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye me-1"></i>
+                                                        {{ __('messages.view') }}
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            @else
+                                <div class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-users fa-lg opacity-25 me-2"></i>
+                                        {{ __('messages.no_family_members') }}
+                                    </div>
+                                </div>
                             @endif
                         </div>
                     </div>

@@ -28,9 +28,9 @@ class UserController extends Controller
     public function show($id)
     {
         $user = $this->userService->getUserById($id);
-        // $familyMembers = $this->userService->getFamilyMembers($user->membership_code, $user->id);
+        $familyMembers = $this->userService->getFamilyMembers($user->membership_code, $user->id);
 
-        return view('users.show', compact('user'));
+        return view('users.show', compact('user', 'familyMembers'));
     }
 
     public function bulkUpdate(Request $request)
