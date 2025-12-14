@@ -26,11 +26,12 @@ Route::prefix('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Password Reset Routes
-    Route::get('/forgot-password', [ForgetPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
-    Route::post('/forgot-password', [ForgetPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-    Route::get('/reset-password/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
-    Route::post('/reset-password', [ForgetPasswordController::class, 'resetPassword'])->name('password.update');
-
+    Route::prefix('password')->group(function () {
+        Route::get('/forgot', [ForgetPasswordController::class, 'showForgotPasswordForm'])->name('password.request');
+        Route::post('/forgot', [ForgetPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/reset/{token}', [ForgetPasswordController::class, 'showResetPasswordForm'])->name('password.reset');
+        Route::post('/reset', [ForgetPasswordController::class, 'resetPassword'])->name('password.update');
+    });
     Route::middleware('auth')->group(function () {
         Route::prefix('users')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
