@@ -501,6 +501,14 @@
                                 </button>
                             </form>
                             @endif
+
+                            <!-- Add to Black List -->
+                            {{-- @if(auth()->user()->is_admin) --}}
+                            <a href="{{ route('project-black-lists.create', ['user_id' => $user->id]) }}" class="btn btn-sm btn-outline-danger">
+                                <i class="fas fa-ban me-1"></i>
+                                Add to Black List
+                            </a>
+                            {{-- @endif --}}
                         </div>
                     </div>
                 </div>

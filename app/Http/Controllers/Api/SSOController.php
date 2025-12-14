@@ -8,11 +8,14 @@ use App\Http\Requests\QrLoginRequest;
 use App\Http\Resources\UserResource;
 use App\Models\ArToken;
 use App\Models\User;
+use App\Repositories\ProjectBlackListRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class SSOController extends BaseController
 {
+    public function __construct(protected ProjectBlackListRepository $projectBlackRepo) {}
+
     public function login(LoginUserRequest $request)
     {
         $projectName = $request->project->name;
@@ -28,7 +31,12 @@ class SSOController extends BaseController
         if (! $activeUser) {
             return $this->apiErrorResponse('User is inactive', 403);
         }
-
+        $canAccess = $this->canLogin($user, $request->project);
+        info("can access $canAccess");
+        if ($canAccess == false) {
+            return $this->apiErrorResponse('User cannot access this App', 403);
+        }
+        info("can access $canAccess after");
         // Get or create user's token for this project
         $arToken = ArToken::firstOrNew(['user_id' => $user->id]);
 
@@ -119,5 +127,10 @@ class SSOController extends BaseController
     private function checkUserStatus(User $user): bool
     {
         return $user->status == UserStatus::ACTIVE;
+    }
+
+    private function canLogin($user, $project)
+    {
+        return $this->projectBlackRepo->findByUserProject($user->id, $project->id);
     }
 }

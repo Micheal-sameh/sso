@@ -15,7 +15,7 @@ class LoginUserRequest extends FormRequest
     {
         return [
             'membership_code' => 'required|string|max:255',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
             'fcm_token' => 'sometimes|string',
         ];
     }

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\ProjectBlackListController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,16 @@ Route::prefix('admin')->group(function () {
             Route::post('/', [UserController::class, 'bulkUpdate'])->name('users.bulk');
             Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
             Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
+        });
+
+        Route::prefix('project-black-lists')->group(function () {
+            Route::get('/', [ProjectBlackListController::class, 'index'])->name('project-black-lists.index');
+            Route::get('/create', [ProjectBlackListController::class, 'create'])->name('project-black-lists.create');
+            Route::post('/', [ProjectBlackListController::class, 'store'])->name('project-black-lists.store');
+            Route::get('/{id}', [ProjectBlackListController::class, 'show'])->name('project-black-lists.show');
+            Route::get('/{id}/edit', [ProjectBlackListController::class, 'edit'])->name('project-black-lists.edit');
+            Route::put('/{id}', [ProjectBlackListController::class, 'update'])->name('project-black-lists.update');
+            Route::delete('/{id}', [ProjectBlackListController::class, 'destroy'])->name('project-black-lists.destroy');
         });
 
     });
