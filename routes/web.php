@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ProjectBlackListController;
+use App\Http\Controllers\SSOUserController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +50,12 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}/edit', [ProjectBlackListController::class, 'edit'])->name('project-black-lists.edit');
             Route::put('/{id}', [ProjectBlackListController::class, 'update'])->name('project-black-lists.update');
             Route::delete('/{id}', [ProjectBlackListController::class, 'destroy'])->name('project-black-lists.destroy');
+        });
+
+        Route::prefix('sso-users')->group(function () {
+            Route::get('/', [SSOUserController::class, 'index'])->name('sso-users.index');
+            Route::post('/', [SSOUserController::class, 'store'])->name('sso-users.store');
+            Route::delete('/{id}', [SSOUserController::class, 'destroy'])->name('sso-users.destroy');
         });
 
     });

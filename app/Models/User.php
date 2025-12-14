@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasOne(ArToken::class);
     }
+
+    public function ssoUser()
+    {
+        return $this->belongsTo(SSOUser::class, 'id', 'user_id');
+    }
 }

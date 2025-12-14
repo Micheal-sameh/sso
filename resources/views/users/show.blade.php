@@ -509,6 +509,16 @@
                                 Add to Black List
                             </a>
                             {{-- @endif --}}
+
+                            <!-- Add to SSO Users -->
+                            <form action="{{ route('sso-users.store') }}" method="POST" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                <button type="submit" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-user-plus me-1"></i>
+                                    Add to SSO Users
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>

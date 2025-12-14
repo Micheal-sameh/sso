@@ -23,6 +23,11 @@ class AuthController extends Controller
         }
 
         $user = auth()->user();
+        if (! $user->ssoUser) {
+            Auth::logout();
+
+            return back()->withErrors(['membership_code' => 'have no access to login here']);
+        }
         $request->session()->regenerate();
 
         return redirect()->intended('/'); // Adjust as needed
