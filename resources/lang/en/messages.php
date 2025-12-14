@@ -98,4 +98,7 @@ return [
     'remove_admin' => 'Remove Admin',
     'make_admin' => 'Make Admin',
     'membership_code' => 'Membership Code',
+    'family_members' => 'Family Members',
+    'no_family_members' => 'No family members found.',
+    'logout' => 'Logout',
 ];

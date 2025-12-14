@@ -98,4 +98,6 @@ return [
     'remove_admin' => 'إزالة المدير',
     'make_admin' => 'جعل مديراً',
     'membership_code' => 'رمز العضوية',
+    'family_members' => 'أفراد العائلة',
+    'no_family_members' => 'لم يتم العثور على أفراد عائلة.',
 ];
