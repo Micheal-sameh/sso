@@ -21,8 +21,9 @@ class UserController extends Controller
         $totalUsers = $data['totalUsers'];
         $activeUsers = $data['activeUsers'];
         $inactiveUsers = $data['inactiveUsers'];
+        $adminUsers = $data['adminUsers'];
 
-        return view('users.index', compact('users', 'totalUsers', 'activeUsers', 'inactiveUsers'));
+        return view('users.index', compact('users', 'totalUsers', 'activeUsers', 'inactiveUsers', 'adminUsers'));
     }
 
     public function show($id)

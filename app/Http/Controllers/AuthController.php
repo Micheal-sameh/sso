@@ -19,7 +19,7 @@ class AuthController extends Controller
 
         // Attempt login
         if (! Auth::attempt($credentials, $remember)) {
-            return back()->withErrors(['membership_code' => 'Credentials do not match']);
+            return back()->withErrors(['membership_code' => 'Credentials do not match'])->withInput();
         }
 
         $user = auth()->user();
@@ -30,7 +30,7 @@ class AuthController extends Controller
         }
         $request->session()->regenerate();
 
-        return redirect()->intended('/'); // Adjust as needed
+        return redirect()->intended('/');
     }
 
     public function logout()

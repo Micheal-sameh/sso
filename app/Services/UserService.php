@@ -16,8 +16,9 @@ class UserService
         $totalUsers = $this->userRepository->countUsers();
         $activeUsers = $this->userRepository->countUsers(UserStatus::ACTIVE);
         $inactiveUsers = $this->userRepository->countUsers(UserStatus::INACTIVE);
+        $adminUsers = $this->userRepository->adminUsers()->count();
 
-        return compact('users', 'totalUsers', 'activeUsers', 'inactiveUsers');
+        return compact('users', 'totalUsers', 'activeUsers', 'inactiveUsers', 'adminUsers');
     }
 
     public function getUserById($id)

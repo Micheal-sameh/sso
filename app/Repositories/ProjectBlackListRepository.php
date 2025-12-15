@@ -24,7 +24,7 @@ class ProjectBlackListRepository
             });
         }
 
-        return $query->with(['project', 'user', 'creator'])->get();
+        return $query->with(['project', 'user', 'creator'])->paginate(10);
     }
 
     public function getProjectBlackListById($id)

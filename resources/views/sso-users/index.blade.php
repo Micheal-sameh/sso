@@ -41,10 +41,72 @@
                             @endforelse
                         </tbody>
                     </table>
-                    {{ $ssoUsers->links() }}
+                    <div class="d-flex justify-content-center pt-2">
+    @if ($ssoUsers->hasPages())
+        <nav>
+            <ul class="pagination">
+                {{-- Previous Page Link --}}
+                @if ($ssoUsers->onFirstPage())
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                @else
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $ssoUsers->previousPageUrl() }}" rel="prev">&laquo;</a>
+                    </li>
+                @endif
+
+                @php
+                    $current = $ssoUsers->currentPage();
+                    $last = $ssoUsers->lastPage();
+                    $start = max($current - 2, 2);
+                    $end = min($current + 2, $last - 1);
+                @endphp
+
+                {{-- First page --}}
+                <li class="page-item {{ $current === 1 ? 'active' : '' }}">
+                    <a class="page-link" href="{{ $ssoUsers->url(1) }}">1</a>
+                </li>
+
+                {{-- Dots before start --}}
+                @if ($start > 2)
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                @endif
+
+                {{-- Page range --}}
+                @for ($page = $start; $page <= $end; $page++)
+                    <li class="page-item {{ $current === $page ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $ssoUsers->url($page) }}">{{ $page }}</a>
+                    </li>
+                @endfor
+
+                {{-- Dots after end --}}
+                @if ($end < $last - 1)
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                @endif
+
+                {{-- Last page --}}
+                @if ($last > 1)
+                    <li class="page-item {{ $current === $last ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $ssoUsers->url($last) }}">{{ $last }}</a>
+                    </li>
+                @endif
+
+                {{-- Next Page Link --}}
+                @if ($ssoUsers->hasMorePages())
+                    <li class="page-item">
+                        <a class="page-link" href="{{ $ssoUsers->nextPageUrl() }}" rel="next">&raquo;</a>
+                    </li>
+                @else
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                @endif
+            </ul>
+        </nav>
+    @endif
+</div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @endsection

@@ -81,4 +81,9 @@ class UserRepository
 
         return $query->get();
     }
+
+    public function adminUsers()
+    {
+        return $this->model->whereHas('ssoUser')->get();
+    }
 }

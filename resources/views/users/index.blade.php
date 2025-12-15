@@ -1,6 +1,5 @@
 @extends('layouts.sideBar')
 
-@section('title', __('messages.users_management'))
 
 @section('content')
 <div class="container-fluid">
@@ -55,10 +54,7 @@
                         </div>
                     </div>
                     <div class="mt-3">
-                        <span class="badge bg-primary bg-opacity-10 text-primary">
-                            <i class="fas fa-arrow-up me-1"></i> +12%
-                        </span>
-                        <span class="text-muted small ms-2">{{ __('messages.from_last_month') }}</span>
+                        
                     </div>
                 </div>
             </div>
@@ -114,7 +110,7 @@
                             <i class="fas fa-user-shield fa-lg text-danger"></i>
                         </div>
                         <div>
-                            <h2 class="mb-1 fw-bold">{{ $adminUsers ?? 0 }}</h2>
+                            <h2 class="mb-1 fw-bold"><a href="{{route('sso-users.index')}}">{{ $adminUsers ?? 0 }}</a></h2>
                             <p class="text-muted mb-0">{{ __('messages.admin_users') }}</p>
                         </div>
                     </div>
