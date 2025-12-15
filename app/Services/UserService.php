@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\UserStatus;
 use App\Repositories\UserRepository;
 
 class UserService
@@ -12,10 +11,13 @@ class UserService
     public function getAllUsers($filters = [])
     {
         $users = $this->userRepository->getAllUsers($filters);
+        // Get aggregated counts with a single query where possible
+        $counts = $this->userRepository->getUserCounts();
+        $totalUsers = $counts['total'];
+        $activeUsers = $counts['active'];
+        $inactiveUsers = $counts['inactive'];
 
-        $totalUsers = $this->userRepository->countUsers();
-        $activeUsers = $this->userRepository->countUsers(UserStatus::ACTIVE);
-        $inactiveUsers = $this->userRepository->countUsers(UserStatus::INACTIVE);
+        // adminUsers() now returns a query builder so count() runs in DB
         $adminUsers = $this->userRepository->adminUsers()->count();
 
         return compact('users', 'totalUsers', 'activeUsers', 'inactiveUsers', 'adminUsers');

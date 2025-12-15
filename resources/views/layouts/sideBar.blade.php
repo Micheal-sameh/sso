@@ -272,36 +272,58 @@
     <!-- Main Content -->
     <main class="content-wrapper">
         <div class="container-fluid py-4">
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show">
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+            <!-- Toast container for global alerts -->
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 1200; max-width: 360px;">
+                @if (session('success') || session('status'))
+                    <div class="toast align-items-center text-bg-success border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                        <div class="d-flex">
+                            <div class="toast-body">{!! nl2br(e(session('success') ?? session('status'))) !!}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
 
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show">
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+                @if (session('error'))
+                    <div class="toast align-items-center text-bg-danger border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="8000">
+                        <div class="d-flex">
+                            <div class="toast-body">{!! nl2br(e(session('error'))) !!}</div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
 
-            @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show">
-                    <ul class="mb-0 small">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+                @if ($errors->any())
+                    <div class="toast align-items-center text-bg-danger border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="10000">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <strong>There were some errors:</strong>
+                                <ul class="mb-0 mt-2 small">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                @endif
+            </div>
 
             @yield('content')
         </div>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-show any toasts in the layout
+            document.querySelectorAll('.toast').forEach(function(el) {
+                var t = new bootstrap.Toast(el);
+                t.show();
+            });
+        });
+    </script>
 
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" style="z-index: 1070;">

@@ -50,6 +50,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}/edit', [ProjectBlackListController::class, 'edit'])->name('project-black-lists.edit');
             Route::put('/{id}', [ProjectBlackListController::class, 'update'])->name('project-black-lists.update');
             Route::delete('/{id}', [ProjectBlackListController::class, 'destroy'])->name('project-black-lists.destroy');
+            Route::post('/bulk-delete', [ProjectBlackListController::class, 'bulkDelete'])->name('project-black-lists.bulk-delete');
         });
 
         Route::prefix('sso-users')->group(function () {

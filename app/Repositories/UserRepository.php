@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Enums\UserStatus;
 use App\Models\User;
 
 class UserRepository
@@ -84,6 +85,25 @@ class UserRepository
 
     public function adminUsers()
     {
-        return $this->model->whereHas('ssoUser')->get();
+        return $this->model->whereHas('ssoUser');
+    }
+
+    /**
+     * Return aggregated user counts to avoid multiple queries.
+     *
+     * @return array{total:int,active:int,inactive:int}
+     */
+    public function getUserCounts()
+    {
+        $row = $this->model->selectRaw(
+            "COUNT(*) as total, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as active, SUM(CASE WHEN status = ? THEN 1 ELSE 0 END) as inactive",
+            [UserStatus::ACTIVE, UserStatus::INACTIVE]
+        )->first();
+
+        return [
+            'total' => (int) ($row->total ?? 0),
+            'active' => (int) ($row->active ?? 0),
+            'inactive' => (int) ($row->inactive ?? 0),
+        ];
     }
 }
