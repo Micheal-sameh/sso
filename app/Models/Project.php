@@ -11,6 +11,22 @@ class Project extends Model
 
     protected $fillable = [
         'name',
-        'secret_key',
+        'created_by',
     ];
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($project) {
+            do {
+                $secretKey = bin2hex(random_bytes(32));
+            } while (static::where('secret_key', $secretKey)->exists());
+
+            $project->secret_key = $secretKey;
+        });
+    }
 }

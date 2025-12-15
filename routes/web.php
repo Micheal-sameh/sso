@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgetPasswordController;
 use App\Http\Controllers\ProjectBlackListController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SSOUserController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -56,6 +57,13 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [SSOUserController::class, 'index'])->name('sso-users.index');
             Route::post('/', [SSOUserController::class, 'store'])->name('sso-users.store');
             Route::delete('/{id}', [SSOUserController::class, 'destroy'])->name('sso-users.destroy');
+        });
+
+        Route::prefix('apps')->group(function () {
+            Route::get('/', [ProjectController::class, 'index'])->name('projects.index');
+            Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
+            Route::post('/', [ProjectController::class, 'store'])->name('projects.store');
+            Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
         });
 
     });

@@ -251,6 +251,9 @@
                     <li><a href="{{ route('project-black-lists.index') }}">
                             <i class="fas fa-ban"></i>Project Black Lists</a></li>
 
+                        <li><a href="{{ route('projects.index') }}">
+                            <i class="fas fa-folder-open"></i>Projects</a></li>
+
                     <li><a href="{{ route('sso-users.index') }}">
                             <i class="fas fa-shield-alt"></i>SSO Users</a></li>
 
