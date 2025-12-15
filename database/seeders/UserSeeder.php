@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
         $user = User::create([
             'membership_code' => 'E1C1F1NR1',
             'password' => Hash::make('password'),
-            'name' => 'John Doe',
+            'name' => 'Super Admin',
         ]);
 
         SSOUser::create([
