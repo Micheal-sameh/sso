@@ -49,6 +49,11 @@ class ProjectBlackListRepository
         return $projectBlackList->delete();
     }
 
+    public function bulkDeleteByIds(array $ids)
+    {
+        return $this->model->whereIn('id', $ids)->delete();
+    }
+
     public function findByUserProject($userId, $projectId)
     {
         $record = $this->model->where('user_id', $userId)->where('project_id', $projectId)->first();

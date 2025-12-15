@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkDeleteProjectBlackListRequest;
 use App\Http\Requests\StoreProjectBlackListRequest;
+use App\Http\Requests\UpdateProjectBlackListRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Services\ProjectBlackListService;
@@ -56,16 +58,10 @@ class ProjectBlackListController extends Controller
         return view('project-black-lists.edit', compact('projectBlackList', 'projects', 'users'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProjectBlackListRequest $request, $id)
     {
-        $request->validate([
-            'project_id' => 'required|exists:projects,id',
-            'user_id' => 'required|exists:users,id',
-            'reason' => 'nullable|string',
-        ]);
-
         $projectBlackList = $this->projectBlackListService->getProjectBlackListById($id);
-        $this->projectBlackListService->updateProjectBlackList($projectBlackList, $request->all());
+        $this->projectBlackListService->updateProjectBlackList($projectBlackList, $request->validated());
 
         return redirect()->route('project-black-lists.index')->with('success', 'Project Black List updated successfully.');
     }
@@ -76,5 +72,12 @@ class ProjectBlackListController extends Controller
         $this->projectBlackListService->deleteProjectBlackList($projectBlackList);
 
         return redirect()->route('project-black-lists.index')->with('success', 'Project Black List deleted successfully.');
+    }
+
+    public function bulkDelete(BulkDeleteProjectBlackListRequest $request)
+    {
+        $deleted = $this->projectBlackListService->bulkDelete($request->validated()['ids']);
+
+        return response()->json(['success' => (bool) $deleted, 'deleted' => $deleted]);
     }
 }

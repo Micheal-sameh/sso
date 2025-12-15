@@ -32,4 +32,9 @@ class ProjectBlackListService
     {
         return $this->projectBlackListRepository->deleteProjectBlackList($projectBlackList);
     }
+
+    public function bulkDelete(array $ids)
+    {
+        return $this->projectBlackListRepository->bulkDeleteByIds($ids);
+    }
 }
