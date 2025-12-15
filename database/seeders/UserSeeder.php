@@ -14,9 +14,9 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::create([
-            'membership_code' => 'e1c1f1nr1',
+            'membership_code' => 'E1C1F1NR1',
             'password' => Hash::make('password'),
-            'name' => 'John Doe',
+            'name' => 'Super Admin',
         ]);
     }
 }
