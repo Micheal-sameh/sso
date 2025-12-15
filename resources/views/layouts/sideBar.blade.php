@@ -24,12 +24,14 @@
             --sidebar-text: #E3F2FD;
             --sidebar-width: 220px;
             --mobile-header-height: 60px;
+            --footer-height: 64px; /* fixed footer height */
         }
 
         body {
             margin: 0;
             font-family: system-ui, sans-serif;
             overflow-x: hidden;
+            padding-bottom: calc(var(--footer-height) + 2rem) !important; /* ensure page content never underlaps fixed footer */
         }
 
         /* Sidebar */
@@ -122,6 +124,14 @@
             transition: margin .3s ease;
             background: #fff;
             will-change: margin;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper > .container-fluid {
+            flex: 1 1 auto;
+            padding-bottom: calc(var(--footer-height) + 1rem); /* ensure content clears fixed footer */
         }
 
         [dir="rtl"] .content-wrapper {
@@ -311,6 +321,34 @@
 
             @yield('content')
         </div>
+
+        @include('layouts.footer')
+
+    <style>
+        /* Fixed full-width footer */
+        .site-footer {
+            position: fixed;
+            left: var(--sidebar-width);
+            right: 0;
+            bottom: 0;
+            height: var(--footer-height);
+            display: flex;
+            align-items: center;
+            z-index: 1030;
+        }
+
+        /* Ensure any Bootstrap fixed-bottom elements sit above footer */
+        .fixed-bottom {
+            bottom: calc(var(--footer-height) + 0.5rem) !important;
+        }
+
+        /* When viewport is narrow, keep footer compact */
+        @media (max-width: 575px) {
+            :root { --footer-height: 56px; }
+            .site-footer { height: var(--footer-height);  left: 0; }
+            .fixed-bottom { bottom: calc(var(--footer-height) + 0.8rem) !important; }
+        }
+    </style>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
