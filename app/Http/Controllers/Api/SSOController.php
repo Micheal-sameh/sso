@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\UserStatus;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\QrLoginRequest;
+use App\Http\Requests\UserDataRequest;
 use App\Http\Resources\UserResource;
 use App\Models\ArToken;
 use App\Models\User;
@@ -69,6 +70,17 @@ class SSOController extends BaseController
 
         // Return user resource with project token
         return $this->apiresponse(new UserResource($user));
+    }
+
+    public function me(UserDataRequest $request)
+    {
+        $token = $request->token;
+        $project = $request->project;
+        $user = User::whereHas('arToken', function ($query) use ($token, $project) {
+            $query->where("$project->name", $token);
+        });
+
+        return $this->apiResponse(new UserResource($user));
     }
 
     protected function generateToken(): string
