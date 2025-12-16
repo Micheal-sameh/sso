@@ -18,6 +18,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'membership_code' => $this->membership_code,
             'email' => $this->email,
+            'birth_date' => $this->birth_date,
             'ar_token' => $this->whenLoaded('arToken', fn () => $this->arToken->{request()->project->name}),
         ];
     }
