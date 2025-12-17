@@ -217,6 +217,9 @@
                                     <div>
                                         <small class="text-muted">{{ __('messages.membership_code') }}</small>
                                         <div class="fw-semibold">#{{ strtoupper($user->membership_code) }}</div>
+                                        <div class="mt-2">
+                                            {{$user->qrCode()}}
+                                        </div>
                                     </div>
                                     <span class="badge bg-light text-dark">
                                         <i class="fas fa-hashtag"></i>
