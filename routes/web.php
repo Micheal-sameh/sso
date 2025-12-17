@@ -29,6 +29,7 @@ Route::prefix('admin')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::post('/', [UserController::class, 'bulkUpdate'])->name('users.bulk');
             Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
+            Route::get('/{id}/generate-qr', [UserController::class, 'generateQr'])->name('users.generate-qr');
             Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
         });
 

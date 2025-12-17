@@ -56,9 +56,9 @@ class User extends Authenticatable
     {
         // Generate QR code string from membership code
         $code = $this->generateQrCodeString();
-        $qr_code = QrCode::size(150)->generate($code);
+        // $qr_code = QrCode::size(150)->generate($code);
 
-        return $qr_code;
+        return $code;
     }
 
     private function generateQrCodeString()
@@ -76,14 +76,14 @@ class User extends Authenticatable
         $membershipPart = '';
         $NR = '';
 
-        if (preg_match('/E1C1F(\d+)NR(\d+)/', strtoUpper($membership_code), $matches)) {
+        if (preg_match('/E1C1F(\d+)NR(\d+)/', strtoupper($membership_code), $matches)) {
             $membershipPart = $matches[1];
             $NR = $matches[2];
         }
         $familyNumberLength = strlen($NR);
 
         // Build the QR code string
-        $code = $minutes . $hours . $day . $month . $year . $familyNumberLength . '11' . $membershipPart . $NR;
+        $code = $minutes.$hours.$day.$month.$year.$familyNumberLength.'11'.$membershipPart.$NR;
 
         return $code;
     }
