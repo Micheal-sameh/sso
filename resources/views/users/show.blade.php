@@ -217,6 +217,17 @@
                                     <div>
                                         <small class="text-muted">{{ __('messages.membership_code') }}</small>
                                         <div class="fw-semibold">#{{ strtoupper($user->membership_code) }}</div>
+                                        <div class="mt-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" id="show-qr-btn" data-user-id="{{ $user->id }}">
+                                                <i class="fas fa-qrcode me-1"></i>{{ __('messages.show_qr_code') }}
+                                            </button>
+                                            <div class="mt-2 d-none" id="qr-code-container">
+                                                <div id="qr-loading" class="text-center">
+                                                    <i class="fas fa-spinner fa-spin"></i> {{ __('messages.generating_qr') }}
+                                                </div>
+                                                <div id="qr-code-display"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                     <span class="badge bg-light text-dark">
                                         <i class="fas fa-hashtag"></i>
@@ -678,6 +689,103 @@
                 }
             });
         });
+
+        // Handle QR code toggle
+        const showQrBtn = document.getElementById('show-qr-btn');
+        const qrContainer = document.getElementById('qr-code-container');
+        const qrLoading = document.getElementById('qr-loading');
+        const qrDisplay = document.getElementById('qr-code-display');
+
+        if (showQrBtn && qrContainer) {
+            showQrBtn.addEventListener('click', function() {
+                if (qrContainer.classList.contains('d-none')) {
+                    // Show container and start loading
+                    qrContainer.classList.remove('d-none');
+                    qrLoading.style.display = 'block';
+                    qrDisplay.innerHTML = '';
+                    this.disabled = true;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>{{ __("messages.generating_qr") }}';
+
+                    // Make AJAX call to generate QR code
+                    const userId = this.getAttribute('data-user-id');
+                    fetch(`/admin/users/${userId}/generate-qr`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            qrLoading.style.display = 'none';
+                            qrDisplay.innerHTML = data.qr_code;
+                            this.innerHTML = '<i class="fas fa-qrcode me-1"></i>{{ __("messages.hide_qr_code") }}';
+                        } else {
+                            qrLoading.style.display = 'none';
+                            qrDisplay.innerHTML = '<div class="text-danger">{{ __("messages.error_generating_qr") }}</div>';
+                            this.innerHTML = '<i class="fas fa-qrcode me-1"></i>{{ __("messages.show_qr_code") }}';
+                        }
+                        this.disabled = false;
+                    })
+                    .catch(error => {
+                        console.error('Error generating QR code:', error);
+                        qrLoading.style.display = 'none';
+                        qrDisplay.innerHTML = '<div class="text-danger">{{ __("messages.error_generating_qr") }}</div>';
+                        this.innerHTML = '<i class="fas fa-qrcode me-1"></i>{{ __("messages.show_qr_code") }}';
+                        this.disabled = false;
+                    });
+                } else {
+                    qrContainer.classList.add('d-none');
+                    this.innerHTML = '<i class="fas fa-qrcode me-1"></i>{{ __("messages.show_qr_code") }}';
+                }
+            });
+        }
+
+        // Auto-refresh QR code when minute changes if displayed
+        let qrRefreshInterval;
+
+        function scheduleQrRefresh() {
+            const now = new Date();
+            const secondsUntilNextMinute = 60 - now.getSeconds();
+            const millisecondsUntilNextMinute = secondsUntilNextMinute * 1000;
+
+            qrRefreshInterval = setTimeout(() => {
+                const qrContainer = document.getElementById('qr-code-container');
+                const qrDisplay = document.getElementById('qr-code-display');
+                const showQrBtn = document.getElementById('show-qr-btn');
+
+                if (qrContainer && !qrContainer.classList.contains('d-none') && showQrBtn) {
+                    const userId = showQrBtn.getAttribute('data-user-id');
+                    fetch(`/admin/users/${userId}/generate-qr`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            qrDisplay.innerHTML = data.qr_code;
+                            // Schedule next refresh
+                            scheduleQrRefresh();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing QR code:', error);
+                        // Still schedule next refresh even on error
+                        scheduleQrRefresh();
+                    });
+                } else {
+                    // If QR code is not displayed, still schedule next check
+                    scheduleQrRefresh();
+                }
+            }, millisecondsUntilNextMinute);
+        }
+
+        // Start the refresh scheduling
+        scheduleQrRefresh();
 
         // Auto-dismiss alerts after 5 seconds
         setTimeout(() => {

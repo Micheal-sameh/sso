@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\UserService;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UserController extends Controller
 {
@@ -65,6 +66,26 @@ class UserController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => __('messages.bulk_action_error'),
+            ], 500);
+        }
+    }
+
+    public function generateQr($id)
+    {
+        try {
+            $user = $this->userService->getUserById($id);
+            $qrCodeString = $user->qrCode();
+
+            $qrCode = QrCode::size(150)->format('svg')->generate($qrCodeString);
+
+            return response()->json([
+                'success' => true,
+                'qr_code' => (string) $qrCode,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => __('messages.error_generating_qr'),
             ], 500);
         }
     }
