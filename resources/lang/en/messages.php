@@ -100,5 +100,8 @@ return [
     'membership_code' => 'Membership Code',
     'family_members' => 'Family Members',
     'no_family_members' => 'No family members found.',
+    'show_qr_code' => 'Show QR Code',
+    'hide_qr_code' => 'Hide QR Code',
+    'generating_qr' => 'Generating QR Code...',
     'logout' => 'Logout',
 ];
