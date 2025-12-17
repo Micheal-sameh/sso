@@ -724,6 +724,51 @@
             });
         }
 
+        // Auto-refresh QR code when minute changes if displayed
+        let qrRefreshInterval;
+
+        function scheduleQrRefresh() {
+            const now = new Date();
+            const secondsUntilNextMinute = 60 - now.getSeconds();
+            const millisecondsUntilNextMinute = secondsUntilNextMinute * 1000;
+
+            qrRefreshInterval = setTimeout(() => {
+                const qrContainer = document.getElementById('qr-code-container');
+                const qrDisplay = document.getElementById('qr-code-display');
+                const showQrBtn = document.getElementById('show-qr-btn');
+
+                if (qrContainer && !qrContainer.classList.contains('d-none') && showQrBtn) {
+                    const userId = showQrBtn.getAttribute('data-user-id');
+                    fetch(`/admin/users/${userId}/generate-qr`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            qrDisplay.innerHTML = data.qr_code;
+                            // Schedule next refresh
+                            scheduleQrRefresh();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing QR code:', error);
+                        // Still schedule next refresh even on error
+                        scheduleQrRefresh();
+                    });
+                } else {
+                    // If QR code is not displayed, still schedule next check
+                    scheduleQrRefresh();
+                }
+            }, millisecondsUntilNextMinute);
+        }
+
+        // Start the refresh scheduling
+        scheduleQrRefresh();
+
         // Auto-dismiss alerts after 5 seconds
         setTimeout(() => {
             const alerts = document.querySelectorAll('.alert');
