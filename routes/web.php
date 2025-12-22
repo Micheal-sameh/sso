@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgetPasswordController;
+use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ProjectBlackListController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\SSOUserController;
@@ -66,6 +67,16 @@ Route::prefix('admin')->group(function () {
             Route::get('/create', [ProjectController::class, 'create'])->name('projects.create');
             Route::post('/', [ProjectController::class, 'store'])->name('projects.store');
             Route::delete('/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+        });
+
+        Route::prefix('groups')->group(function () {
+            Route::get('/', [GroupController::class, 'index'])->name('groups.index');
+            Route::get('/create', [GroupController::class, 'create'])->name('groups.create');
+            Route::post('/', [GroupController::class, 'store'])->name('groups.store');
+            Route::get('/{id}', [GroupController::class, 'show'])->name('groups.show');
+            Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
+            Route::put('/{id}', [GroupController::class, 'update'])->name('groups.update');
+            Route::delete('/{id}', [GroupController::class, 'destroy'])->name('groups.destroy');
         });
 
     });

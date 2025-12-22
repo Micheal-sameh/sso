@@ -258,11 +258,14 @@
                     <li><a href="{{ route('users.index') }}">
                             <i class="fas fa-users"></i>{{ __('messages.users') }}</a></li>
 
+                    <li><a href="{{ route('groups.index') }}">
+                            <i class="fas fa-layer-group"></i>{{ __('messages.groups') }}</a></li>
+
                     <li><a href="{{ route('project-black-lists.index') }}">
                             <i class="fas fa-ban"></i>Project Black Lists</a></li>
 
                         <li><a href="{{ route('projects.index') }}">
-                            <i class="fas fa-folder-open"></i>Projects</a></li>
+                            <i class="fas fa-folder-open"></i>Apps</a></li>
 
                     <li><a href="{{ route('sso-users.index') }}">
                             <i class="fas fa-shield-alt"></i>SSO Users</a></li>
