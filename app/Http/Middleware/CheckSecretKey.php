@@ -22,6 +22,12 @@ class CheckSecretKey
             return response()->json(['error' => 'Secret key is required'], 401);
         }
 
+        // If the secret key comes base64-encoded, decode it (strict mode)
+        $decoded = base64_decode($secretKey, true);
+        if ($decoded !== false) {
+            $secretKey = $decoded;
+        }
+
         $project = Project::where('secret_key', $secretKey)->first();
 
         if (! $project) {

@@ -10,7 +10,7 @@ class ProjectRepository
 
     public function getAllProjects($filters = [])
     {
-        $query = $this->model->query()->with('createdBy')->select('id', 'name', 'created_at', 'created_by');
+        $query = $this->model->query()->with('createdBy')->select('id', 'name', 'url', 'created_at', 'created_by');
 
         if (isset($filters['search'])) {
             $search = $filters['search'];

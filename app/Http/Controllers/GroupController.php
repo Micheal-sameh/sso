@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\GroupCreated;
 use App\Services\GroupService;
 use Illuminate\Http\Request;
 
@@ -29,7 +30,9 @@ class GroupController extends Controller
             'abbreviation' => 'required|string|max:10',
         ]);
 
-        $this->groupService->createGroup($request->only('name', 'abbreviation'));
+        $group = $this->groupService->createGroup($request->only('name', 'abbreviation'));
+
+        event(new GroupCreated($group));
 
         return redirect()->route('groups.index')->with('success', 'Group created successfully.');
     }

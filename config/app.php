@@ -128,6 +128,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Secret Key for API Security
+    |--------------------------------------------------------------------------
+    |
+    | This key is used for generating HMAC-SHA256 signatures for secure API
+    | requests. Set this in your ".env" file.
+    |
+    */
+
+    'secret_key' => env('APP_SECRET_KEY'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Maintenance Mode Driver
     |--------------------------------------------------------------------------
     |

@@ -26,9 +26,10 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'url' => 'nullable|string|max:255',
         ]);
 
-        $project = $this->projectService->createProject($request->only('name'));
+        $project = $this->projectService->createProject($request->only('name', 'url'));
 
         return redirect()->route('projects.index')
             ->with('success', 'Project created successfully.')
@@ -53,10 +54,11 @@ class ProjectController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'url' => 'nullable|string|max:255',
         ]);
 
         $project = $this->projectService->getProjectById($id);
-        $this->projectService->updateProject($project, $request->only('name'));
+        $this->projectService->updateProject($project, $request->only('name', 'url'));
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }
