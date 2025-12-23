@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\GroupCreated;
+use App\Http\Requests\AddGroupMemberRequest;
+use App\Http\Requests\ManageGroupMembersRequest;
+use App\Http\Requests\RemoveGroupMemberRequest;
+use App\Http\Requests\StoreGroupRequest;
+use App\Http\Requests\UpdateGroupRequest;
 use App\Models\User;
 use App\Services\GroupService;
 use Illuminate\Http\Request;
@@ -24,14 +29,11 @@ class GroupController extends Controller
         return view('groups.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreGroupRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'abbreviation' => 'required|string|max:10',
-        ]);
+        $data = $request->validated();
 
-        $group = $this->groupService->createGroup($request->only('name', 'abbreviation'));
+        $group = $this->groupService->createGroup($data);
 
         event(new GroupCreated($group));
 
@@ -52,15 +54,12 @@ class GroupController extends Controller
         return view('groups.edit', compact('group'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateGroupRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'abbreviation' => 'required|string|max:10',
-        ]);
+        $data = $request->validated();
 
         $group = $this->groupService->getGroupById($id);
-        $this->groupService->updateGroup($group, $request->only('name', 'abbreviation'));
+        $this->groupService->updateGroup($group, $data);
 
         return redirect()->route('groups.index')->with('success', 'Group updated successfully.');
     }
@@ -73,12 +72,8 @@ class GroupController extends Controller
         return redirect()->route('groups.index')->with('success', 'Group deleted successfully.');
     }
 
-    public function addMember(Request $request, $id)
+    public function addMember(AddGroupMemberRequest $request, $id)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
         $group = $this->groupService->getGroupById($id);
 
         $added = $this->groupService->addMember($group, $request->input('user_id'));
@@ -90,12 +85,8 @@ class GroupController extends Controller
         return redirect()->route('groups.show', $group->id)->with('success', 'Member added successfully.');
     }
 
-    public function removeMember(Request $request, $id)
+    public function removeMember(RemoveGroupMemberRequest $request, $id)
     {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-        ]);
-
         $group = $this->groupService->getGroupById($id);
 
         $removed = $this->groupService->removeMember($group, $request->input('user_id'));
@@ -107,13 +98,8 @@ class GroupController extends Controller
         return redirect()->route('groups.show', $group->id)->with('success', 'Member removed successfully.');
     }
 
-    public function manageMembers(Request $request, $id)
+    public function manageMembers(ManageGroupMembersRequest $request, $id)
     {
-        $request->validate([
-            'user_ids' => 'nullable|array',
-            'user_ids.*' => 'exists:users,id',
-        ]);
-
         $group = $this->groupService->getGroupById($id);
 
         $this->groupService->syncMembers($group, $request->input('user_ids', []));

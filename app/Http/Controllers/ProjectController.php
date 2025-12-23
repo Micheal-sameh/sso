@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProjectRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Services\ProjectService;
 use Illuminate\Http\Request;
 
@@ -22,14 +24,11 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreProjectRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'url' => 'nullable|string|max:255',
-        ]);
+        $data = $request->validated();
 
-        $project = $this->projectService->createProject($request->only('name', 'url'));
+        $project = $this->projectService->createProject($data);
 
         return redirect()->route('projects.index')
             ->with('success', 'Project created successfully.')
@@ -50,15 +49,12 @@ class ProjectController extends Controller
         return view('projects.edit', compact('project'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProjectRequest $request, $id)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'url' => 'nullable|string|max:255',
-        ]);
+        $data = $request->validated();
 
         $project = $this->projectService->getProjectById($id);
-        $this->projectService->updateProject($project, $request->only('name', 'url'));
+        $this->projectService->updateProject($project, $data);
 
         return redirect()->route('projects.index')->with('success', 'Project updated successfully.');
     }

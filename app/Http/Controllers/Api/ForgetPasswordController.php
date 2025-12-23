@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\ApiForgotPasswordRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -11,12 +13,8 @@ use Illuminate\Support\Str;
 
 class ForgetPasswordController extends BaseController
 {
-    public function sendResetLinkEmail(Request $request)
+    public function sendResetLinkEmail(ApiForgotPasswordRequest $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
         if (! User::where('email', $request->email)->exists()) {
             return $this->apiErrorResponse('This email cannot reset password, please refer to the admins');
         }
@@ -44,14 +42,8 @@ class ForgetPasswordController extends BaseController
     /**
      * Reset the user's password
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
-        $request->validate([
-            'token' => 'required',
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|min:8|confirmed',
-        ]);
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {

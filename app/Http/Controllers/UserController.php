@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BulkUserUpdateRequest;
+use App\Http\Requests\ManageGroupsRequest;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
@@ -64,13 +66,8 @@ class UserController extends Controller
         return response()->json($groups);
     }
 
-    public function manageGroups(Request $request, $id)
+    public function manageGroups(ManageGroupsRequest $request, $id)
     {
-        $request->validate([
-            'group_ids' => 'nullable|array',
-            'group_ids.*' => 'exists:groups,id',
-        ]);
-
         $user = $this->userService->getUserById($id);
 
         $this->userService->syncGroups($user, $request->input('group_ids', []));
@@ -82,16 +79,10 @@ class UserController extends Controller
         return redirect()->route('users.show', $user->id)->with('success', 'User groups updated successfully.');
     }
 
-    public function bulkUpdate(Request $request)
+    public function bulkUpdate(BulkUserUpdateRequest $request)
     {
-        $request->validate([
-            'action' => 'required|string|in:activate,deactivate,delete',
-            'ids' => 'required|array|min:1',
-            'ids.*' => 'integer|exists:users,id',
-        ]);
-
-        $action = $request->action;
-        $userIds = $request->ids;
+        $action = $request->validated()['action'];
+        $userIds = $request->validated()['ids'];
 
         try {
             switch ($action) {
