@@ -57,6 +57,26 @@ class User extends Authenticatable
         return $this->belongsTo(SSOUser::class, 'id', 'user_id');
     }
 
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'user_groups');
+    }
+
+    protected static function booted()
+    {
+        static::created(function ($user) {
+            // Attach default group with id 1 if it exists
+            try {
+                if (\App\Models\Group::where('id', 1)->exists()) {
+                    $user->groups()->syncWithoutDetaching([1]);
+                }
+            } catch (\Exception $e) {
+                // swallow exceptions to avoid breaking user creation flow
+                logger()->error('Failed to attach default group to user: '.$e->getMessage());
+            }
+        });
+    }
+
     public function qrCode()
     {
         // Generate QR code string from membership code

@@ -32,4 +32,27 @@ class GroupService
     {
         return $this->groupRepository->deleteGroup($group);
     }
+
+    public function addMember($group, $userId)
+    {
+        if ($group->users()->where('user_id', $userId)->exists()) {
+            return false;
+        }
+
+        $group->users()->attach($userId);
+
+        return true;
+    }
+
+    public function removeMember($group, $userId)
+    {
+        return (bool) $group->users()->detach($userId);
+    }
+
+    public function syncMembers($group, array $userIds = [])
+    {
+        $group->users()->sync($userIds);
+
+        return $group;
+    }
 }

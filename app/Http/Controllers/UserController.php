@@ -35,6 +35,53 @@ class UserController extends Controller
         return view('users.show', compact('user', 'familyMembers'));
     }
 
+    public function groups(Request $request, $id)
+    {
+        $q = $request->input('q');
+        $perPage = (int) $request->input('per_page', 20);
+
+        $user = $this->userService->getUserById($id);
+        $memberIds = $user->groups->pluck('id')->toArray();
+
+        $query = \App\Models\Group::query();
+
+        if ($q) {
+            $query->where('name', 'like', "%{$q}%")
+                ->orWhere('abbreviation', 'like', "%{$q}%");
+        }
+
+        $groups = $query->select('id', 'name', 'abbreviation')
+            ->orderBy('name')
+            ->paginate($perPage)
+            ->appends($request->only('q', 'per_page'));
+
+        $groups->getCollection()->transform(function ($group) use ($memberIds) {
+            $group->is_member = in_array($group->id, $memberIds);
+
+            return $group;
+        });
+
+        return response()->json($groups);
+    }
+
+    public function manageGroups(Request $request, $id)
+    {
+        $request->validate([
+            'group_ids' => 'nullable|array',
+            'group_ids.*' => 'exists:groups,id',
+        ]);
+
+        $user = $this->userService->getUserById($id);
+
+        $this->userService->syncGroups($user, $request->input('group_ids', []));
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('users.show', $user->id)->with('success', 'User groups updated successfully.');
+    }
+
     public function bulkUpdate(Request $request)
     {
         $request->validate([

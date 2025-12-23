@@ -43,6 +43,8 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
             Route::get('/{id}/generate-qr', [UserController::class, 'generateQr'])->name('users.generate-qr');
             Route::put('/{id}', [UserController::class, 'update'])->name('users.update');
+            Route::get('/{id}/groups', [UserController::class, 'groups'])->name('users.groups');
+            Route::post('/{id}/manage-groups', [UserController::class, 'manageGroups'])->name('users.manageGroups');
         });
 
         Route::prefix('project-black-lists')->group(function () {
@@ -77,6 +79,10 @@ Route::prefix('admin')->group(function () {
             Route::get('/{id}/edit', [GroupController::class, 'edit'])->name('groups.edit');
             Route::put('/{id}', [GroupController::class, 'update'])->name('groups.update');
             Route::delete('/{id}', [GroupController::class, 'destroy'])->name('groups.destroy');
+            Route::post('/{id}/add-member', [GroupController::class, 'addMember'])->name('groups.addMember');
+            Route::delete('/{id}/remove-member', [GroupController::class, 'removeMember'])->name('groups.removeMember');
+            Route::get('/{id}/users', [GroupController::class, 'users'])->name('groups.users');
+            Route::post('/{id}/manage-members', [GroupController::class, 'manageMembers'])->name('groups.manageMembers');
         });
 
     });

@@ -430,7 +430,260 @@
                                 <i class="fas fa-users me-2"></i>
                                 {{ __('messages.family_members') }}
                             </h6>
-                            @if($familyMembers && $familyMembers->count() > 0)
+
+                            <!-- User Groups Section -->
+                            <div class="mt-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="mb-0 text-primary">
+                                        <i class="fas fa-layer-group me-2"></i>
+                                        {{ __('messages.user_groups') }}
+                                    </h6>
+                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#manageGroupsModal">
+                                        <i class="fas fa-edit me-1"></i> {{ __('messages.manage_groups') }}
+                                    </button>
+                                </div>
+
+                                <div>
+                                    @if($user->groups && $user->groups->count() > 0)
+                                        @foreach($user->groups as $g)
+                                            <span class="badge bg-light text-dark me-1 mb-1">{{ $g->name }}</span>
+                                        @endforeach
+                                    @else
+                                        <div class="text-muted">{{ __('messages.no_groups_assigned') }}</div>
+                                    @endif
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+<!-- Manage Groups Modal -->
+<div class="modal fade" id="manageGroupsModal" tabindex="-1" aria-labelledby="manageGroupsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="manageGroupsModalLabel">{{ __('messages.manage_user_groups') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <input type="text" id="groupSearch" class="form-control" placeholder="{{ __('messages.search_groups') }}">
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <div class="form-check me-3">
+                        <input class="form-check-input" type="checkbox" id="selectVisible">
+                        <label class="form-check-label small" for="selectVisible">{{ __('messages.select_visible') }}</label>
+                    </div>
+                    <div class="small text-muted">{{ __('messages.selected') }}: <span id="selectedCount">0</span></div>
+                </div>
+                <div id="groupsList" class="list-group list-group-flush" style="max-height:400px; overflow:auto;"></div>
+                <nav id="groupsPagination" class="mt-3"></nav>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('messages.close') }}</button>
+                <button type="button" id="saveGroupsBtn" class="btn btn-primary">{{ __('messages.save_changes') }}</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    const groupsUrl = "{{ route('users.groups', $user->id) }}";
+    const manageUrl = "{{ route('users.manageGroups', $user->id) }}";
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // Persisted selection across pages
+    const selectedIds = new Set(@json($user->groups->pluck('id')));
+
+    let currentQuery = '';
+    let currentPage = 1;
+
+    function updateSelectedCount() {
+        document.getElementById('selectedCount').textContent = selectedIds.size;
+    }
+
+    function renderGroups(data) {
+        const container = document.getElementById('groupsList');
+        container.innerHTML = '';
+
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="text-muted p-3">{{ __('messages.no_groups_found') }}</div>';
+            document.getElementById('groupsPagination').innerHTML = '';
+            return;
+        }
+
+        data.forEach(group => {
+            // ensure persisted selections include server member flag
+            if (group.is_member) selectedIds.add(group.id);
+
+            const item = document.createElement('div');
+            item.className = 'list-group-item d-flex justify-content-between align-items-center px-0';
+
+            const checked = selectedIds.has(group.id) ? 'checked' : '';
+
+            const html = `
+                <div class="form-check">
+                    <input class="form-check-input group-checkbox" type="checkbox" id="group_${group.id}" value="${group.id}" ${checked}>
+                    <label class="form-check-label" for="group_${group.id}">
+                        <div class="fw-semibold">${escapeHtml(group.name)}</div>
+                        <small class="text-muted">${escapeHtml(group.abbreviation)}</small>
+                    </label>
+                </div>
+            `;
+
+            item.innerHTML = html;
+            container.appendChild(item);
+        });
+
+        // update select visible checkbox state
+        const visibleIds = Array.from(container.querySelectorAll('.group-checkbox')).map(cb => parseInt(cb.value));
+        const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedIds.has(id));
+        document.getElementById('selectVisible').checked = allVisibleSelected;
+
+        updateSelectedCount();
+    }
+
+    function renderPagination(meta) {
+        const nav = document.getElementById('groupsPagination');
+        nav.innerHTML = '';
+
+        if (!meta || meta.last_page <= 1) return;
+
+        const ul = document.createElement('ul');
+        ul.className = 'pagination';
+
+        const prevLi = document.createElement('li');
+        prevLi.className = 'page-item ' + (meta.current_page === 1 ? 'disabled' : '');
+        prevLi.innerHTML = `<a class="page-link" href="#" data-page="${meta.current_page - 1}">&laquo;</a>`;
+        ul.appendChild(prevLi);
+
+        for (let i = 1; i <= meta.last_page; i++) {
+            const li = document.createElement('li');
+            li.className = 'page-item ' + (i === meta.current_page ? 'active' : '');
+            li.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+            ul.appendChild(li);
+        }
+
+        const nextLi = document.createElement('li');
+        nextLi.className = 'page-item ' + (meta.current_page === meta.last_page ? 'disabled' : '');
+        nextLi.innerHTML = `<a class="page-link" href="#" data-page="${meta.current_page + 1}">&raquo;</a>`;
+        ul.appendChild(nextLi);
+
+        nav.appendChild(ul);
+
+        nav.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', function(e){
+                e.preventDefault();
+                const page = parseInt(this.getAttribute('data-page'));
+                if (!isNaN(page)) loadGroups(page);
+            });
+        });
+    }
+
+    function loadGroups(page = 1) {
+        currentPage = page;
+        const q = currentQuery;
+        const url = groupsUrl + '?page=' + page + '&q=' + encodeURIComponent(q);
+
+        fetch(url, { headers: {'X-Requested-With': 'XMLHttpRequest'} })
+            .then(res => res.json())
+            .then(json => {
+                renderGroups(json.data);
+                renderPagination({ current_page: json.current_page, last_page: json.last_page });
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return text.replace(/[&<>'"\u0000-\u001F]/g, function(c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]; });
+    }
+
+    function debounce(fn, delay){
+        let t;
+        return function(...args){
+            clearTimeout(t);
+            t = setTimeout(() => fn.apply(this, args), delay);
+        }
+    }
+
+    const searchInput = document.getElementById('groupSearch');
+    const debouncedSearch = debounce(function(e){
+        currentQuery = this.value.trim();
+        loadGroups(1);
+    }, 300);
+
+    if (searchInput) searchInput.addEventListener('input', debouncedSearch);
+
+    const manageModal = document.getElementById('manageGroupsModal');
+    manageModal.addEventListener('show.bs.modal', function(){
+        currentQuery = '';
+        searchInput.value = '';
+        loadGroups(1);
+    });
+
+    // delegate checkbox change to persist selection across pages
+    document.getElementById('groupsList').addEventListener('change', function(e){
+        if (e.target && e.target.classList.contains('group-checkbox')) {
+            const id = parseInt(e.target.value);
+            if (e.target.checked) selectedIds.add(id); else selectedIds.delete(id);
+            updateSelectedCount();
+
+            // update selectVisible
+            const container = document.getElementById('groupsList');
+            const visibleIds = Array.from(container.querySelectorAll('.group-checkbox')).map(cb => parseInt(cb.value));
+            const allVisibleSelected = visibleIds.length > 0 && visibleIds.every(id => selectedIds.has(id));
+            document.getElementById('selectVisible').checked = allVisibleSelected;
+        }
+    });
+
+    // select visible on page
+    document.getElementById('selectVisible').addEventListener('change', function(){
+        const container = document.getElementById('groupsList');
+        const checkboxes = Array.from(container.querySelectorAll('.group-checkbox'));
+        const check = this.checked;
+        checkboxes.forEach(cb => {
+            const id = parseInt(cb.value);
+            cb.checked = check;
+            if (check) selectedIds.add(id); else selectedIds.delete(id);
+        });
+        updateSelectedCount();
+    });
+
+    document.getElementById('saveGroupsBtn').addEventListener('click', function(){
+        const checkedArray = Array.from(selectedIds);
+
+        fetch(manageUrl, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': csrfToken,
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({ group_ids: checkedArray })
+        })
+        .then(res => {
+            if (!res.ok) throw res;
+            return res.json();
+        })
+        .then(() => {
+            const modal = bootstrap.Modal.getInstance(manageModal);
+            modal.hide();
+            location.reload();
+        })
+        .catch(err => {
+            console.error(err);
+            alert('{{ __('messages.error_occurred') }}');
+        });
+    });
+
+    // initialize selected count
+    updateSelectedCount();
+})();
+</script>                            @if($familyMembers && $familyMembers->count() > 0)
                                 <div class="table-responsive">
                                     <table class="table table-sm table-hover">
                                         <thead>

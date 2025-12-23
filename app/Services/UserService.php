@@ -42,4 +42,27 @@ class UserService
     {
         return $this->userRepository->getFamilyMembers($membershipCode, $excludeUserId);
     }
+
+    public function addGroup($user, $groupId)
+    {
+        if ($user->groups()->where('group_id', $groupId)->exists()) {
+            return false;
+        }
+
+        $user->groups()->attach($groupId);
+
+        return true;
+    }
+
+    public function removeGroup($user, $groupId)
+    {
+        return (bool) $user->groups()->detach($groupId);
+    }
+
+    public function syncGroups($user, array $groupIds = [])
+    {
+        $user->groups()->sync($groupIds);
+
+        return $user;
+    }
 }
