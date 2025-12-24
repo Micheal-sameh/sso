@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Events\UserGroupsChanged;
+use App\Events\GroupUsersChanged;
 use App\Models\User;
 use App\Repositories\GroupRepository;
 
@@ -54,8 +54,8 @@ class GroupService
     public function syncMembers($group, array $userIds = [])
     {
         $group->users()->sync($userIds);
-        $users = User::whereIn('id', $userIds)->with('arTokens')->get(['id', 'membership_code']);
-        event(new UserGroupsChanged($group, $users));
+        $users = User::whereIn('id', $userIds)->with('arToken')->get(['id']);
+        event(new GroupUsersChanged($group, $users));
 
         return $group;
     }

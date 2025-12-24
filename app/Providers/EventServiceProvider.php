@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Events\GroupCreated;
 use App\Events\GroupUpdated;
+use App\Events\GroupUsersChanged;
 use App\Events\UserGroupsChanged;
+use App\Listeners\GroupUsersUpdated;
 use App\Listeners\UpdateProjectsGroupsTable;
 use App\Listeners\UserGroupsUpdated;
 use Illuminate\Auth\Events\Registered;
@@ -31,6 +33,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserGroupsChanged::class => [
             UserGroupsUpdated::class,
+        ],
+        GroupUsersChanged::class => [
+            GroupUsersUpdated::class,
         ],
     ];
 
