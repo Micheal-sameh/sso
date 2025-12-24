@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Events\GroupCreated;
 use App\Events\GroupUpdated;
+use App\Events\UserGroupsChanged;
 use App\Listeners\UpdateProjectsGroupsTable;
+use App\Listeners\UserGroupsUpdated;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -26,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         GroupUpdated::class => [
             UpdateProjectsGroupsTable::class,
+        ],
+        UserGroupsChanged::class => [
+            UserGroupsUpdated::class,
         ],
     ];
 

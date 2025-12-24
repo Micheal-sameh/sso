@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\UserGroupsChanged;
 use App\Repositories\UserRepository;
 
 class UserService
@@ -62,6 +63,7 @@ class UserService
     public function syncGroups($user, array $groupIds = [])
     {
         $user->groups()->sync($groupIds);
+        event(new UserGroupsChanged($groupIds, $user));
 
         return $user;
     }
