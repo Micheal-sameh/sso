@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\UserStatus;
+use App\Events\UserGroupsChanged;
 use App\Http\Requests\LoginUserRequest;
 use App\Http\Requests\QrLoginRequest;
 use App\Http\Requests\UserDataRequest;
@@ -44,6 +45,7 @@ class SSOController extends BaseController
         if (empty($arToken->{$projectName})) {
             $arToken->{$projectName} = $this->generateToken();
             $arToken->save();
+            $this->syncGroups($user);
         }
         // else {
         //     return $this->apiResponse(['token' => $arToken->{$projectName}]);
@@ -53,7 +55,7 @@ class SSOController extends BaseController
         $user->load('arToken');
 
         // Return user resource with project token
-        return $this->apiresponse(new UserResource($user));
+        return $this->apiResponse(new UserResource($user));
     }
 
     public function Qrlogin(QrLoginRequest $request)
@@ -68,6 +70,7 @@ class SSOController extends BaseController
         if (empty($arToken->{$projectName})) {
             $arToken->{$projectName} = $this->generateToken();
             $arToken->save();
+            $this->syncGroups($user);
         }
         //  else {
         //     return $this->apiResponse(['token' => $arToken->{$projectName}]);
@@ -87,6 +90,7 @@ class SSOController extends BaseController
         $user = User::whereHas('arToken', function ($query) use ($token, $project) {
             $query->where("$project->name", $token);
         });
+        $this->syncGroups($user);
 
         return $this->apiResponse(new UserResource($user));
     }
@@ -144,5 +148,10 @@ class SSOController extends BaseController
     private function canLogin($user, $project)
     {
         return $this->projectBlackRepo->findByUserProject($user->id, $project->id);
+    }
+
+    private function syncGroups($user)
+    {
+        event(new UserGroupsChanged($user->groups()->pluck('groups.id'), $user));
     }
 }

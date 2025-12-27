@@ -3,9 +3,10 @@
 namespace App\Listeners;
 
 use App\Models\Project;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Http;
 
-class UserGroupsUpdated
+class UserGroupsUpdated implements ShouldQueue
 {
     /**
      * Create the event listener.
