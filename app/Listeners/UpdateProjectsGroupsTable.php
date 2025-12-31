@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Events\GroupUpdated;
 use App\Models\Project;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class UpdateProjectsGroupsTable implements ShouldQueue
@@ -30,13 +31,13 @@ class UpdateProjectsGroupsTable implements ShouldQueue
             if ($isUpdate) {
                 // Use PUT to update existing group resource
                 Http::put($project->url.'/api/groups/'.$group->id, [
-                    'secret_key' => base64_encode($project->secret_key),
+                    'secret_key' => Hash::make($project->secret_key),
                     'group' => $group,
                 ]);
             } else {
                 // Use POST to create new group resource
                 Http::post($project->url.'/api/groups', [
-                    'secret_key' => base64_encode($project->secret_key),
+                    'secret_key' => Hash::make($project->secret_key),
                     'group' => $group,
                 ]);
             }

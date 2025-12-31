@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Models\Project;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class GroupUsersUpdated implements ShouldQueue
@@ -27,7 +28,7 @@ class GroupUsersUpdated implements ShouldQueue
         $projects->each(function ($project) use ($group, $users) {
 
             Http::put($project->url.'/api/groups/users', [
-                'secret_key' => base64_encode($project->secret_key),
+                'secret_key' => Hash::make($project->secret_key),
                 'group' => $group,
                 'users' => [
                     $users->map(function ($user) use ($project) {
