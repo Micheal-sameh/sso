@@ -1,0 +1,122 @@
+import type { FormEvent } from 'react'
+import { router, useForm } from '@inertiajs/react'
+import AdminLayout from '@/components/layouts/AdminLayout'
+
+interface CreateForm {
+    name: string
+    email: string
+    membership_code: string
+    password: string
+    password_confirmation: string
+    role: string
+}
+
+export default function Create() {
+    const form = useForm<CreateForm>({
+        name: '',
+        email: '',
+        membership_code: '',
+        password: '',
+        password_confirmation: '',
+        role: 'user',
+    })
+
+    const submit = (e: FormEvent) => {
+        e.preventDefault()
+        form.post('/admin/users')
+    }
+
+    return (
+        <AdminLayout title="Create User">
+            <div className="ava-card p-4 max-w-560">
+                <form onSubmit={submit}>
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="name">Name</label>
+                        <input
+                            id="name"
+                            className="form-control"
+                            value={form.data.name}
+                            onChange={(e) => form.setData('name', e.target.value)}
+                        />
+                        {form.errors.name && <div className="text-danger small mt-1">{form.errors.name}</div>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            className="form-control"
+                            value={form.data.email}
+                            onChange={(e) => form.setData('email', e.target.value)}
+                        />
+                        {form.errors.email && <div className="text-danger small mt-1">{form.errors.email}</div>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="membership_code">Membership Code</label>
+                        <input
+                            id="membership_code"
+                            className="form-control"
+                            value={form.data.membership_code}
+                            onChange={(e) => form.setData('membership_code', e.target.value)}
+                        />
+                        {form.errors.membership_code && (
+                            <div className="text-danger small mt-1">{form.errors.membership_code}</div>
+                        )}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            className="form-control"
+                            value={form.data.password}
+                            onChange={(e) => form.setData('password', e.target.value)}
+                        />
+                        {form.errors.password && <div className="text-danger small mt-1">{form.errors.password}</div>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="password_confirmation">Confirm Password</label>
+                        <input
+                            id="password_confirmation"
+                            type="password"
+                            className="form-control"
+                            value={form.data.password_confirmation}
+                            onChange={(e) => form.setData('password_confirmation', e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="form-label" htmlFor="role">Role</label>
+                        <select
+                            id="role"
+                            className="form-select"
+                            value={form.data.role}
+                            onChange={(e) => form.setData('role', e.target.value)}
+                        >
+                            <option value="user">User</option>
+                            <option value="superadmin">Super Admin</option>
+                        </select>
+                        {form.errors.role && <div className="text-danger small mt-1">{form.errors.role}</div>}
+                    </div>
+
+                    <div className="d-flex gap-2">
+                        <button type="submit" className="btn btn-primary" disabled={form.processing}>
+                            Create User
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-outline-primary"
+                            onClick={() => router.visit('/admin/users')}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </AdminLayout>
+    )
+}

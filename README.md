@@ -1,58 +1,203 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Avarewase Auth
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+"Login with Avarewase" — the branded OAuth2/OIDC authorization server for Avarewase church management systems, hosted at `auth.avarewase.com`.
 
-## About Laravel
+## 1. Requirements
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- PHP 8.4 (tested against 8.3+)
+- Node 20+
+- MySQL 8+
+- Composer 2+
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## 2. Installation
 
 ```bash
-composer require laravel/boost --dev
+composer install
 
-php artisan boost:install
+cp .env.example .env
+php artisan key:generate
+
+# configure DB_* in .env, then:
+php artisan migrate --seed
+
+php artisan passport:keys
+
+npm install
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The seeder creates a super admin using `ADMIN_EMAIL` / `ADMIN_PASSWORD` from `.env` (defaults to `admin@avarewase.com` / `changeme`). Change these before seeding a production database.
 
-## Contributing
+For local development, run `npm run dev` alongside `php artisan serve`.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 3. Register an OAuth Client (admin panel walkthrough)
 
-## Code of Conduct
+1. Sign in as the super admin at `/login`.
+2. Navigate to **OAuth Clients** in the admin sidebar (`/admin/clients`).
+3. Click **Register New Client** and fill in:
+   - **App Name** — shown on the consent screen.
+   - **Redirect URI** — where users are sent back after authorizing (must match exactly what your app requests).
+   - **Homepage URL** / **Logo URL** — optional, shown on the consent screen.
+   - **Internal application** — toggle on for first-party apps to skip the consent screen entirely.
+4. Submit. The generated **Client ID** and **Client Secret** are shown once — store the secret securely, it cannot be retrieved again.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 4. Authorization Code + PKCE Flow
 
-## Security Vulnerabilities
+1. **Generate a PKCE pair** in your client app:
+   - `code_verifier` — a random string.
+   - `code_challenge` — `BASE64URL(SHA256(code_verifier))`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+2. **Redirect the user to authorize:**
 
-## License
+   ```
+   GET https://auth.avarewase.com/oauth/authorize
+       ?client_id={CLIENT_ID}
+       &redirect_uri={REDIRECT_URI}
+       &response_type=code
+       &scope=openid profile email
+       &code_challenge={CODE_CHALLENGE}
+       &code_challenge_method=S256
+       &state={RANDOM_STATE}
+   ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+   Internal clients are auto-approved; external clients see the Avarewase consent screen.
+
+3. **Avarewase redirects back** to your `redirect_uri` with `?code=...&state=...`.
+
+4. **Exchange the code for tokens:**
+
+   ```
+   POST https://auth.avarewase.com/oauth/token
+   Content-Type: application/x-www-form-urlencoded
+
+   grant_type=authorization_code
+   client_id={CLIENT_ID}
+   client_secret={CLIENT_SECRET}
+   redirect_uri={REDIRECT_URI}
+   code={CODE}
+   code_verifier={CODE_VERIFIER}
+   ```
+
+   Response:
+
+   ```json
+   {
+     "token_type": "Bearer",
+     "expires_in": 86400,
+     "access_token": "...",
+     "refresh_token": "..."
+   }
+   ```
+
+## 5. Userinfo Endpoint
+
+```
+GET https://auth.avarewase.com/api/userinfo
+Authorization: Bearer {ACCESS_TOKEN}
+```
+
+Response shape (OIDC-flavored):
+
+```json
+{
+  "data": {
+    "sub": "b3f1e2a0-....",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "email_verified": true,
+    "picture": "https://auth.avarewase.com/storage/avatars/....jpg",
+    "updated_at": "2026-08-13T12:00:00+00:00"
+  },
+  "message": null
+}
+```
+
+## 6. Adding "Login with Avarewase" to a Consuming Laravel App
+
+### Manual OAuth2 flow
+
+```php
+// routes/web.php
+Route::get('/login/avarewase', function () {
+    $state = Str::random(40);
+    session(['avarewase_state' => $state]);
+
+    return redirect('https://auth.avarewase.com/oauth/authorize?'.http_build_query([
+        'client_id' => config('services.avarewase.client_id'),
+        'redirect_uri' => config('services.avarewase.redirect'),
+        'response_type' => 'code',
+        'scope' => 'openid profile email',
+        'state' => $state,
+    ]));
+});
+
+Route::get('/login/avarewase/callback', function (Request $request) {
+    abort_unless($request->state === session('avarewase_state'), 403);
+
+    $response = Http::asForm()->post('https://auth.avarewase.com/oauth/token', [
+        'grant_type' => 'authorization_code',
+        'client_id' => config('services.avarewase.client_id'),
+        'client_secret' => config('services.avarewase.client_secret'),
+        'redirect_uri' => config('services.avarewase.redirect'),
+        'code' => $request->code,
+    ]);
+
+    $token = $response->json('access_token');
+
+    $user = Http::withToken($token)->get('https://auth.avarewase.com/api/userinfo')->json('data');
+
+    // find or create local user from $user['sub'] / $user['email'], then log them in
+});
+```
+
+### Custom Socialite provider
+
+```php
+// composer require socialiteproviders/manager
+
+// config/services.php
+'avarewase' => [
+    'client_id' => env('AVAREWASE_CLIENT_ID'),
+    'client_secret' => env('AVAREWASE_CLIENT_SECRET'),
+    'redirect' => env('AVAREWASE_REDIRECT_URI'),
+],
+
+// app/Providers/SocialiteProvider.php (custom provider)
+class AvarewaseProvider extends \SocialiteProviders\Manager\OAuth2\AbstractProvider
+{
+    protected function getAuthUrl($state)
+    {
+        return $this->buildAuthUrlFromBase('https://auth.avarewase.com/oauth/authorize', $state);
+    }
+
+    protected function getTokenUrl()
+    {
+        return 'https://auth.avarewase.com/oauth/token';
+    }
+
+    protected function getUserByToken($token)
+    {
+        return Http::withToken($token)->get('https://auth.avarewase.com/api/userinfo')->json('data');
+    }
+
+    protected function mapUserToObject(array $user)
+    {
+        return (new \Laravel\Socialite\Two\User)->setRaw($user)->map([
+            'id' => $user['sub'],
+            'name' => $user['name'],
+            'email' => $user['email'],
+            'avatar' => $user['picture'],
+        ]);
+    }
+}
+```
+
+Then: `Socialite::driver('avarewase')->redirect()` / `Socialite::driver('avarewase')->user()`.
+
+## 7. Scope Definitions
+
+| Scope     | Description                                     |
+|-----------|--------------------------------------------------|
+| `openid`  | Know that you have an Avarewase account          |
+| `profile` | View your name and profile picture               |
+| `email`   | View your email address                          |
