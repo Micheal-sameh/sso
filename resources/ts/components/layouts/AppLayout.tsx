@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { usePage } from '@inertiajs/react'
 import type { SharedProps } from '@/types'
@@ -20,14 +21,20 @@ const ADMIN_LINK: SidebarLink = { href: '/admin/users', label: 'Manage SSO', ico
 
 export default function AppLayout({ children, title }: AppLayoutProps) {
     const { auth } = usePage<SharedProps>().props
+    const [sidebarOpen, setSidebarOpen] = useState(false)
 
     return (
         <div className="d-flex">
-            <Sidebar links={NAV_LINKS} footerLinks={auth.user?.is_admin ? [ADMIN_LINK] : undefined} />
+            <Sidebar
+                links={NAV_LINKS}
+                footerLinks={auth.user?.is_admin ? [ADMIN_LINK] : undefined}
+                open={sidebarOpen}
+                onClose={() => setSidebarOpen(false)}
+            />
 
-            <main className="flex-grow-1">
-                <TopBar title={title} />
-                <div className="p-4">
+            <main className="flex-grow-1 min-w-0">
+                <TopBar title={title} onToggleSidebar={() => setSidebarOpen((o) => !o)} />
+                <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
                     {children}
                 </div>

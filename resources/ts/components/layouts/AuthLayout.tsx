@@ -9,7 +9,7 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children, wide = false }: AuthLayoutProps) {
     return (
         <div className="auth-wrapper">
-            <div className={wide ? 'auth-card-wide' : 'auth-card'}>
+            <div className={`${wide ? 'auth-card-wide' : 'auth-card'} page-content`}>
                 <FlashMessage />
                 <div className="ava-card">
                     <div className="card-accent card-accent-gold" />

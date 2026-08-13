@@ -32,8 +32,8 @@ class ClientMeta extends Model
         return $this->belongsTo(Client::class, 'oauth_client_id');
     }
 
-    public function getLogoUrlAttribute(): string
+    public function getLogoUrlAttribute(): ?string
     {
-        return $this->app_logo_url ?? 'https://ui-avatars.com/api/?name='.urlencode($this->app_name).'&background=B8860B&color=fff';
+        return $this->app_logo_url;
     }
 }

@@ -34,7 +34,7 @@ export default function Apps({ tokens }: AppsProps) {
                                 <div className="fw-semibold">{token.client.name}</div>
                                 <div className="mb-1">
                                     {token.scopes.map((scope) => (
-                                        <span key={scope} className="badge bg-secondary-subtle text-ava-muted me-1">
+                                        <span key={scope} className="scope-chip me-1">
                                             {scope}
                                         </span>
                                     ))}

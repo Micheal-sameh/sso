@@ -50,9 +50,9 @@ export default function Index({ clients }: IndexProps) {
         <AdminLayout
             title="OAuth Clients"
             action={
-                <button type="button" className="btn btn-primary" onClick={() => setShowModal(true)}>
-                    <i className="bi bi-plus-lg me-1" />
-                    Register New Client
+                <button type="button" className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
+                    <i className="bi bi-plus-lg" />
+                    <span className="d-none d-sm-inline ms-1">Register New Client</span>
                 </button>
             }
         >
@@ -77,70 +77,130 @@ export default function Index({ clients }: IndexProps) {
                 </div>
             </div>
 
-            <div className="ava-card">
-                <table className="table mb-0">
-                    <thead>
-                        <tr>
-                            <th>App Name</th>
-                            <th>Client ID</th>
-                            <th>Type</th>
-                            <th>Status</th>
-                            <th>Redirect URI</th>
-                            <th />
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {clients.data.map((client) => (
-                            <tr key={client.id}>
-                                <td>
-                                    <div className="d-flex align-items-center gap-2">
-                                        {client.app_logo_url ? (
-                                            <img
-                                                src={client.app_logo_url}
-                                                alt={client.app_name}
-                                                width={32}
-                                                height={32}
-                                                className="rounded"
-                                            />
-                                        ) : (
-                                            <div className={`icon-tile ${client.is_internal ? 'text-ava-gold' : 'text-ava-muted'}`}>
-                                                <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
-                                            </div>
-                                        )}
-                                        <div>
-                                            <div>{client.app_name}</div>
-                                            {client.homepage_url && (
-                                                <div className="text-ava-muted text-tiny">{client.homepage_url}</div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <code>{String(client.oauth_client.id).slice(0, 8)}...</code>
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-link"
-                                        onClick={() => copyId(client.oauth_client.id)}
-                                    >
-                                        <i className="bi bi-clipboard" />
-                                    </button>
-                                </td>
-                                <td>
-                                    <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
-                                </td>
-                                <td>
-                                    <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
-                                </td>
-                                <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect}</td>
-                                <td>
-                                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
-                                        Revoke
-                                    </button>
-                                </td>
+            {/* Table view (md and up) */}
+            <div className="ava-card d-none d-md-block">
+                <div className="table-responsive">
+                    <table className="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>App Name</th>
+                                <th>Client ID</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Redirect URI</th>
+                                <th />
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {clients.data.map((client) => (
+                                <tr key={client.id}>
+                                    <td>
+                                        <div className="d-flex align-items-center gap-2">
+                                            {client.app_logo_url ? (
+                                                <img
+                                                    src={client.app_logo_url}
+                                                    alt={client.app_name}
+                                                    width={32}
+                                                    height={32}
+                                                    className="rounded"
+                                                />
+                                            ) : (
+                                                <div className={`icon-tile ${client.is_internal ? 'text-ava-gold' : 'text-ava-muted'}`}>
+                                                    <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
+                                                </div>
+                                            )}
+                                            <div>
+                                                <div>{client.app_name}</div>
+                                                {client.homepage_url && (
+                                                    <div className="text-ava-muted text-tiny">{client.homepage_url}</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <code>{String(client.oauth_client.id).slice(0, 8)}...</code>
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-link"
+                                            onClick={() => copyId(client.oauth_client.id)}
+                                        >
+                                            <i className="bi bi-clipboard" />
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
+                                    </td>
+                                    <td>
+                                        <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
+                                    </td>
+                                    <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect}</td>
+                                    <td>
+                                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
+                                            Revoke
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Card view (below md) */}
+            <div className="d-md-none">
+                {clients.data.map((client) => (
+                    <div key={client.id} className="record-card">
+                        <div className="d-flex align-items-center gap-3 mb-2">
+                            {client.app_logo_url ? (
+                                <img src={client.app_logo_url} alt={client.app_name} width={40} height={40} className="rounded" />
+                            ) : (
+                                <div className={`icon-tile ${client.is_internal ? 'text-ava-gold' : 'text-ava-muted'}`}>
+                                    <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
+                                </div>
+                            )}
+                            <div className="min-w-0">
+                                <div className="fw-semibold text-truncate">{client.app_name}</div>
+                                {client.homepage_url && (
+                                    <div className="text-ava-muted text-tiny text-truncate">{client.homepage_url}</div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="record-card-row">
+                            <span className="record-card-label">Client ID</span>
+                            <span className="d-flex align-items-center gap-1">
+                                <code>{String(client.oauth_client.id).slice(0, 8)}...</code>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-link p-0"
+                                    onClick={() => copyId(client.oauth_client.id)}
+                                >
+                                    <i className="bi bi-clipboard" />
+                                </button>
+                            </span>
+                        </div>
+                        <div className="record-card-row">
+                            <span className="record-card-label">Type</span>
+                            <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
+                        </div>
+                        <div className="record-card-row">
+                            <span className="record-card-label">Status</span>
+                            <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
+                        </div>
+                        <div className="record-card-row">
+                            <span className="record-card-label">Redirect</span>
+                            <span className="text-ava-muted text-tiny text-truncate cell-truncate-220">
+                                {client.oauth_client.redirect}
+                            </span>
+                        </div>
+
+                        <div className="record-card-actions">
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
+                                Revoke
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <div className="mt-3">

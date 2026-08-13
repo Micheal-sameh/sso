@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ReactNode } from 'react'
 import FlashMessage from '@/components/shared/FlashMessage'
 import Sidebar, { type SidebarLink } from '@/components/layouts/Sidebar'
@@ -18,13 +19,15 @@ const NAV_LINKS: SidebarLink[] = [
 const ACCOUNT_LINK: SidebarLink = { href: '/account', label: 'Back to Account', icon: 'bi-arrow-left' }
 
 export default function AdminLayout({ children, title, action }: AdminLayoutProps) {
+    const [sidebarOpen, setSidebarOpen] = useState(false)
+
     return (
         <div className="d-flex">
-            <Sidebar links={NAV_LINKS} footerLinks={[ACCOUNT_LINK]} />
+            <Sidebar links={NAV_LINKS} footerLinks={[ACCOUNT_LINK]} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-            <main className="flex-grow-1">
-                <TopBar title={title} action={action} />
-                <div className="p-4">
+            <main className="flex-grow-1 min-w-0">
+                <TopBar title={title} action={action} onToggleSidebar={() => setSidebarOpen((o) => !o)} />
+                <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
                     {children}
                 </div>

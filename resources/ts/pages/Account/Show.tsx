@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useForm } from '@inertiajs/react'
 import AppLayout from '@/components/layouts/AppLayout'
+import AvatarInitials from '@/components/shared/AvatarInitials'
 import type { User } from '@/types'
 
 interface ShowProps {
@@ -51,9 +52,7 @@ export default function Show({ user }: ShowProps) {
                             className="rounded-circle object-fit-cover"
                         />
                     ) : (
-                        <div className="rounded-circle bg-secondary-subtle d-flex align-items-center justify-content-center avatar-80">
-                            <i className="bi bi-person fs-2" />
-                        </div>
+                        <AvatarInitials name={user.name} size={80} />
                     )}
                     <div>
                         <input type="file" accept="image/*" className="form-control" onChange={onAvatarChange} />

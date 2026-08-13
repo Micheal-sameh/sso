@@ -70,12 +70,8 @@ class User extends Authenticatable
         return $query->where('role', $role);
     }
 
-    public function getAvatarUrlAttribute(): string
+    public function getAvatarUrlAttribute(): ?string
     {
-        if ($this->avatar) {
-            return Storage::url($this->avatar);
-        }
-
-        return 'https://ui-avatars.com/api/?name='.urlencode($this->name).'&background=7B1C2E&color=fff';
+        return $this->avatar ? Storage::url($this->avatar) : null;
     }
 }
