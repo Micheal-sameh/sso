@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { router, usePage } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import Pagination from '@/components/shared/Pagination'
@@ -118,7 +118,11 @@ export default function Index({ users, filters }: IndexProps) {
                                             <AvatarInitials name={user.name} />
                                         )}
                                     </td>
-                                    <td className="fw-semibold">{user.name}</td>
+                                    <td className="fw-semibold">
+                                        <Link href={`/admin/users/${user.id}`} className="text-reset text-decoration-none">
+                                            {user.name}
+                                        </Link>
+                                    </td>
                                     <td className="text-ava-muted">{user.email}</td>
                                     <td>
                                         <span className="code-chip">{user.membership_code}</span>
@@ -136,6 +140,13 @@ export default function Index({ users, filters }: IndexProps) {
                                     </td>
                                     <td className="text-ava-muted text-tiny">{user.email_verified_at}</td>
                                     <td className="text-nowrap">
+                                        <button
+                                            type="button"
+                                            className="btn btn-sm btn-outline-primary me-2"
+                                            onClick={() => router.visit(`/admin/users/${user.id}`)}
+                                        >
+                                            View
+                                        </button>
                                         <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
                                             Toggle Active
                                         </button>
@@ -196,6 +207,13 @@ export default function Index({ users, filters }: IndexProps) {
                         </div>
 
                         <div className="record-card-actions">
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-primary"
+                                onClick={() => router.visit(`/admin/users/${user.id}`)}
+                            >
+                                View
+                            </button>
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => toggle(user)}>
                                 Toggle Active
                             </button>

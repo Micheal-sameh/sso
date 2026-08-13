@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTOs\CreateUserDTO;
+use App\DTOs\UserDTO;
 use App\Enums\UserRole;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
+use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ class UserController extends BaseController
 
     public function __construct(
         protected UserService $userService,
+        protected TokenRepositoryContract $tokenRepository,
     ) {}
 
     public function index(Request $request): Response
@@ -34,6 +37,14 @@ class UserController extends BaseController
     public function create(): Response
     {
         return $this->inertia('Admin/Users/Create');
+    }
+
+    public function show(User $user): Response
+    {
+        return $this->inertia('Admin/Users/Show', [
+            'viewedUser' => UserDTO::fromModel($user)->toArray(),
+            'tokens' => $this->tokenRepository->listForUser($user->id),
+        ]);
     }
 
     public function store(CreateUserRequest $request): RedirectResponse
