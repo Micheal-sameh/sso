@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avarewase Auth - Account Security / MFA Setup</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Source Serif 4 & Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from system prompt -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f5f3f0",
+                        "inverse-on-surface": "#f2f0ed",
+                        "surface-container-high": "#eae8e5",
+                        "inverse-surface": "#30312f",
+                        "secondary-fixed": "#ffdea6",
+                        "tertiary-container": "#543d00",
+                        "on-tertiary-container": "#d2a642",
+                        "on-secondary": "#ffffff",
+                        "text-main": "#2C1A1A",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb2b8",
+                        "on-secondary-container": "#715000",
+                        "surface-tint": "#a23a4a",
+                        "on-primary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#261a00",
+                        "surface-variant": "#e4e2df",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#392800",
+                        "on-secondary-fixed": "#271900",
+                        "background": "#fbf9f6",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#7b5800",
+                        "border-warm": "#D4B896",
+                        "text-muted": "#8B6B6B",
+                        "success": "#2D6A4F",
+                        "secondary-container": "#fdc34d",
+                        "secondary-fixed-dim": "#f7bd48",
+                        "surface-container": "#efeeeb",
+                        "surface-bright": "#fbf9f6",
+                        "surface-container-highest": "#e4e2df",
+                        "error": "#8B1A1A",
+                        "primary-fixed-dim": "#ffb2b8",
+                        "on-background": "#1b1c1a",
+                        "outline": "#897172",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#FFFFFF",
+                        "tertiary-fixed-dim": "#eec058",
+                        "tertiary-fixed": "#ffdf9f",
+                        "on-surface": "#1b1c1a",
+                        "on-error-container": "#93000a",
+                        "primary": "#5c021a",
+                        "on-tertiary-fixed-variant": "#5b4300",
+                        "on-secondary-fixed-variant": "#5d4200",
+                        "on-primary-fixed-variant": "#832234",
+                        "surface-dim": "#dbdad7",
+                        "on-error": "#ffffff",
+                        "primary-container": "#7b1c2e",
+                        "on-primary-container": "#ff8a96",
+                        "on-surface-variant": "#564243",
+                        "outline-variant": "#dcc0c1",
+                        "primary-fixed": "#ffdadb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "base": "8px",
+                        "container-max": "1200px",
+                        "auth-card-width": "440px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["\"Source Serif 4\""],
+                        "body-md": ["Inter"],
+                        "headline-xl-mobile": ["\"Source Serif 4\""],
+                        "headline-md": ["\"Source Serif 4\""],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["\"Source Serif 4\""],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl-mobile": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        };
+    </script>
+<style>
+        /* Custom styles for glowing focus rings and warm shadows as per style guidance */
+        .input-focus-ring:focus-within {
+            border-color: #7B1C2E;
+            box-shadow: 0 0 0 2px rgba(123, 28, 46, 0.12);
+        }
+        .warm-shadow {
+            box-shadow: 0 4px 6px -1px rgba(123, 28, 46, 0.12), 0 2px 4px -1px rgba(123, 28, 46, 0.08);
+        }
+        .warm-shadow-hover:hover {
+            box-shadow: 0 10px 15px -3px rgba(123, 28, 46, 0.16), 0 4px 6px -2px rgba(123, 28, 46, 0.10);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low font-body-md text-on-surface text-body-md antialiased min-h-screen flex selection:bg-primary-container selection:text-on-primary">
+<!-- Mobile Nav Header (Visible on md-) -->
+<header class="md:hidden sticky top-0 z-50 flex justify-between items-center w-full px-margin-mobile py-base bg-surface border-b border-outline-variant shadow-sm h-16">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+<span class="font-headline-md text-headline-md-mobile text-primary font-bold">Avarewase Auth</span>
+</div>
+<button aria-label="Menu" class="p-2 text-on-surface-variant hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</header>
+<!-- SideNavBar from JSON (Semantic match: Security/MFA Setup -> Keys & MFA is active) -->
+<!-- Applying style_ instructions directly to class attributes -->
+<aside class="hidden md:flex flex-col h-full py-stack-lg bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container h-screen w-64 fixed left-0 top-0 shadow-lg shadow-primary/12 z-40 transition-all duration-200 ease-in-out border-r border-transparent">
+<!-- Header -->
+<div class="px-6 mb-8 flex flex-col gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-on-primary/10 flex items-center justify-center border border-on-primary/20 shrink-0">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-primary leading-tight">Avarewase Security</h1>
+<p class="font-label-md text-label-md opacity-80 mt-1">User Portal</p>
+</div>
+</div>
+<button class="mt-4 w-full bg-on-primary text-primary hover:bg-surface-variant transition-colors rounded py-2 px-4 font-label-md text-label-md flex items-center justify-center gap-2 shadow-sm border border-transparent">
+<span class="material-symbols-outlined" style="font-size: 18px;">key</span>
+                Update MFA
+            </button>
+</div>
+<!-- Navigation Tabs -->
+<nav class="flex-1 overflow-y-auto px-2 space-y-2">
+<!-- Inactive -->
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">shield</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Security Overview</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">devices</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Active Sessions</span>
+</a>
+<!-- ACTIVE (Keys & MFA) - Matches context -->
+<a aria-current="page" class="flex items-center gap-3 bg-on-primary-fixed-variant text-on-primary rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">vpn_key</span>
+<span class="font-label-md text-label-md font-semibold">Keys &amp; MFA</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">visibility</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Privacy</span>
+</a>
+<!-- Inactive -->
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">history</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Account Logs</span>
+</a>
+</nav>
+<!-- Footer Navigation -->
+<div class="px-2 mt-auto pt-4 border-t border-on-primary/10 space-y-2">
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">help</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Support</span>
+</a>
+<a class="flex items-center gap-3 text-primary-fixed-dim hover:bg-on-primary-fixed-variant/50 rounded-lg px-4 py-3 mx-2 hover:bg-primary-container/20 transition-all duration-200 ease-in-out group" href="#">
+<span class="material-symbols-outlined group-hover:text-on-primary transition-colors">logout</span>
+<span class="font-label-md text-label-md group-hover:text-on-primary transition-colors">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full pb-24">
+<!-- Page Header -->
+<div class="mb-stack-lg border-b border-outline-variant pb-4 flex flex-col md:flex-row md:items-end justify-between gap-4 pt-4 md:pt-0">
+<div>
+<h2 class="font-headline-md text-headline-md-mobile md:text-headline-md text-text-main mb-1">Security Settings</h2>
+<p class="font-body-sm text-body-sm text-text-muted">Manage your two-factor authentication and account recovery options.</p>
+</div>
+<!-- Contextual action (Tertiary) -->
+<button class="text-text-muted hover:text-primary transition-colors font-label-md text-label-md flex items-center gap-2 w-fit">
+<span class="material-symbols-outlined" style="font-size: 20px;">info</span>
+                How MFA works
+            </button>
+</div>
+<!-- Content Grid (Bento-style layout) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Status & Recovery -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<!-- MFA Status Card -->
+<section class="bg-surface rounded-lg border border-border-warm warm-shadow p-6 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div> <!-- Premium Gold Accent -->
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary text-2xl">verified_user</span>
+<h3 class="font-headline-sm text-[18px] font-semibold text-text-main">MFA Status</h3>
+</div>
+<!-- Status Pill (Not Enabled for this setup flow) -->
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-error/10 border border-error/20 text-error font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+                            Not Enabled
+                        </span>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mb-6 leading-relaxed">
+                        Two-factor authentication adds an extra layer of security to your account. You will need a code from your mobile device to sign in.
+                    </p>
+<div class="bg-surface-container p-4 rounded-md border border-outline-variant flex items-start gap-3">
+<span class="material-symbols-outlined text-text-muted shrink-0 mt-0.5">smartphone</span>
+<div class="text-sm">
+<p class="font-semibold text-text-main mb-1">Authenticator App</p>
+<p class="text-text-muted text-xs">Use Google Authenticator, Authy, or 1Password.</p>
+</div>
+</div>
+</section>
+<!-- Recovery Codes Preview (Blurred until generated/revealed) -->
+<section class="bg-surface rounded-lg border border-border-warm warm-shadow p-6 flex flex-col h-full">
+<div class="flex items-center gap-3 mb-4">
+<span class="material-symbols-outlined text-text-muted text-2xl">receipt_long</span>
+<h3 class="font-headline-sm text-[18px] font-semibold text-text-main">Recovery Codes</h3>
+</div>
+<p class="font-body-sm text-body-sm text-text-muted mb-6">
+                        Use these if you lose access to your authenticator app. Keep them in a safe place.
+                    </p>
+<!-- Blurred codes container -->
+<div class="relative bg-surface-container rounded-md border border-outline-variant p-4 mb-6 flex-1 flex flex-col justify-center items-center overflow-hidden group">
+<!-- Simulated blurred content -->
+<div class="grid grid-cols-2 gap-x-6 gap-y-3 w-full opacity-40 blur-[4px] select-none pointer-events-none filter transition-all duration-300">
+<div class="font-mono text-sm tracking-widest text-center">8A4F-29DB</div>
+<div class="font-mono text-sm tracking-widest text-center">7C1E-92MA</div>
+<div class="font-mono text-sm tracking-widest text-center">3K9L-X7P2</div>
+<div class="font-mono text-sm tracking-widest text-center">9V2R-Q5N8</div>
+<div class="font-mono text-sm tracking-widest text-center">1B6Y-F4C9</div>
+<div class="font-mono text-sm tracking-widest text-center">5H8T-L3W1</div>
+</div>
+<!-- Overlay action -->
+<div class="absolute inset-0 flex items-center justify-center bg-surface/40 backdrop-blur-[1px]">
+<button class="bg-surface border border-secondary text-secondary hover:bg-secondary/5 font-label-md text-label-md py-2 px-4 rounded shadow-sm flex items-center gap-2 transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                                Reveal Codes
+                            </button>
+</div>
+</div>
+<button class="w-full border border-secondary text-secondary hover:bg-secondary/5 font-label-md text-label-md py-2 px-4 rounded transition-colors text-center flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                        Regenerate Codes
+                    </button>
+</section>
+</div>
+<!-- Right Column: Setup Wizard -->
+<div class="lg:col-span-8">
+<section class="bg-surface rounded-lg border border-border-warm warm-shadow overflow-hidden relative">
+<div class="absolute top-0 left-0 w-full h-1 bg-primary-container"></div>
+<div class="p-6 md:p-8 border-b border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-text-main mb-2">Configure Authenticator App</h3>
+<p class="font-body-md text-body-md text-text-muted">Follow these steps to link your mobile device to your Avarewase account.</p>
+</div>
+<div class="p-6 md:p-8 space-y-stack-lg">
+<!-- Step 1 -->
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-sm z-10 mt-1 shadow-sm">
+                                1
+                            </div>
+<div class="flex-1 w-full">
+<h4 class="font-semibold text-text-main text-lg mb-4">Scan QR Code</h4>
+<p class="text-text-muted text-sm mb-6">Open your authenticator app and scan the barcode below to add this account.</p>
+<div class="flex flex-col sm:flex-row gap-8 items-center sm:items-start bg-surface-container-low p-6 rounded-lg border border-outline-variant/50">
+<!-- QR Code Placeholder -->
+<div class="bg-surface p-3 rounded-md shadow-sm border border-outline-variant shrink-0 relative overflow-hidden group">
+<div class="w-[160px] h-[160px] bg-white flex items-center justify-center relative">
+<!-- Simple CSS pattern to simulate a QR code for mockup purposes without external images -->
+<div class="w-[140px] h-[140px] grid grid-cols-6 grid-rows-6 gap-0.5 opacity-80">
+<!-- Top Left Corner -->
+<div class="col-span-2 row-span-2 border-[4px] border-text-main p-1"><div class="w-full h-full bg-text-main"></div></div>
+<!-- Top Right Corner -->
+<div class="col-start-5 col-span-2 row-span-2 border-[4px] border-text-main p-1"><div class="w-full h-full bg-text-main"></div></div>
+<!-- Bottom Left Corner -->
+<div class="row-start-5 col-span-2 row-span-2 border-[4px] border-text-main p-1"><div class="w-full h-full bg-text-main"></div></div>
+<!-- Random blocks -->
+<div class="bg-text-main col-start-3 row-start-1"></div>
+<div class="bg-text-main col-start-4 row-start-2"></div>
+<div class="bg-text-main col-start-3 row-start-3"></div>
+<div class="bg-text-main col-start-5 row-start-3"></div>
+<div class="bg-text-main col-start-6 row-start-3"></div>
+<div class="bg-text-main col-start-1 row-start-4"></div>
+<div class="bg-text-main col-start-2 row-start-4"></div>
+<div class="bg-text-main col-start-4 row-start-4"></div>
+<div class="bg-text-main col-start-5 row-start-4"></div>
+<div class="bg-text-main col-start-3 row-start-5"></div>
+<div class="bg-text-main col-start-4 row-start-5"></div>
+<div class="bg-text-main col-start-4 row-start-6"></div>
+<div class="bg-text-main col-start-5 row-start-6"></div>
+<div class="bg-text-main col-start-6 row-start-6"></div>
+</div>
+<!-- Overlay watermark -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="bg-surface p-1 rounded-sm shadow-sm border border-outline-variant">
+<span class="material-symbols-outlined text-primary text-xl" style="font-variation-settings: 'FILL' 1;">security</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-1 w-full text-center sm:text-left">
+<p class="text-sm text-text-main font-medium mb-2">Can't scan the code?</p>
+<p class="text-xs text-text-muted mb-4">Enter this setup key manually into your app instead.</p>
+<div class="flex flex-col gap-2">
+<label class="sr-only">Manual Setup Key</label>
+<div class="relative group input-focus-ring rounded">
+<input class="w-full bg-surface border border-border-warm rounded py-2.5 px-3 pr-10 text-sm font-mono text-text-main focus:outline-none transition-shadow" readonly="" type="text" value="ABCD EFGH IJKL MNOP QRST UVWX YZ12 3456"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-text-muted hover:text-primary transition-colors p-1" title="Copy to clipboard">
+<span class="material-symbols-outlined text-[18px]">content_copy</span>
+</button>
+</div>
+<p class="text-xs text-text-muted italic text-center sm:text-left mt-1">Spaces are for readability only.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Divider -->
+<div class="pl-4 ml-[15px] border-l-2 border-outline-variant/30 py-4 h-12 -my-2 hidden md:block"></div>
+<!-- Step 2 -->
+<div class="flex flex-col md:flex-row gap-6 items-start">
+<div class="flex-shrink-0 w-8 h-8 rounded-full bg-surface border-2 border-primary-container text-primary-container flex items-center justify-center font-bold text-sm z-10 mt-1 shadow-sm">
+                                2
+                            </div>
+<div class="flex-1 w-full">
+<h4 class="font-semibold text-text-main text-lg mb-2">Verify Connection</h4>
+<p class="text-text-muted text-sm mb-6">Enter the 6-digit code generated by your app to confirm setup.</p>
+<form class="max-w-md bg-surface p-6 rounded-lg border border-border-warm shadow-sm">
+<label class="block font-label-md text-label-md text-text-main mb-2" for="otp-code">Authentication Code</label>
+<div class="flex gap-4 items-end mb-6">
+<div class="input-focus-ring rounded-md flex-1 relative">
+<input autocomplete="one-time-code" class="w-full bg-surface border border-border-warm rounded-md py-3 px-4 text-center text-lg font-mono tracking-widest text-text-main focus:outline-none transition-shadow placeholder:text-outline-variant placeholder:font-sans placeholder:tracking-normal" id="otp-code" maxlength="7" placeholder="000 000" type="text"/>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none opacity-0 transition-opacity" id="otp-success">
+<span class="material-symbols-outlined text-success">check_circle</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row gap-3 pt-2 border-t border-outline-variant/50">
+<button class="w-full sm:w-auto px-6 py-2.5 rounded text-[#8B6B6B] font-label-md text-label-md hover:bg-surface-variant/50 transition-colors order-2 sm:order-1 text-center" type="button">
+                                            Cancel
+                                        </button>
+<button class="w-full sm:flex-1 bg-[#7B1C2E] hover:bg-[#5c021a] text-white font-label-md text-label-md py-2.5 px-6 rounded shadow-sm transition-colors flex justify-center items-center gap-2 order-1 sm:order-2 disabled:opacity-50 disabled:cursor-not-allowed" type="submit">
+<span class="material-symbols-outlined text-[18px]">lock_open</span>
+                                            Enable Two-Factor
+                                        </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- BottomNavBar from JSON (Rendered on mobile, hidden on md) -->
+<!-- Applying style_ instructions (though JSON didn't provide BottomNavBar explicitly, we infer from guidelines to pivot navigation on mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 bg-surface border-t border-outline-variant shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 flex justify-around items-center h-16 pb-safe">
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-xl">shield</span>
+<span class="text-[10px] font-medium">Overview</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-xl">devices</span>
+<span class="text-[10px] font-medium">Sessions</span>
+</a>
+<!-- Active Mobile Tab -->
+<a class="flex flex-col items-center justify-center w-full h-full text-primary relative" href="#">
+<div class="absolute top-0 w-12 h-1 bg-primary rounded-b-full"></div>
+<span class="material-symbols-outlined mb-1 text-xl" style="font-variation-settings: 'FILL' 1;">vpn_key</span>
+<span class="text-[10px] font-bold">MFA</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined mb-1 text-xl">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for OTP input formatting (simulated)
+        const otpInput = document.getElementById('otp-code');
+        const successIcon = document.getElementById('otp-success');
+        
+        if(otpInput) {
+            otpInput.addEventListener('input', function(e) {
+                // Remove non-digits
+                let val = this.value.replace(/\D/g, '');
+                
+                // Add space after 3 digits for visual grouping if typing
+                if(val.length > 3) {
+                    val = val.substring(0,3) + ' ' + val.substring(3,6);
+                }
+                
+                this.value = val;
+                
+                // Simulate validation UI feedback
+                if(val.replace(/\s/g, '').length === 6) {
+                    this.classList.add('border-success', 'focus-within:border-success');
+                    this.classList.remove('border-border-warm');
+                    if(successIcon) successIcon.classList.remove('opacity-0');
+                } else {
+                    this.classList.remove('border-success', 'focus-within:border-success');
+                    this.classList.add('border-border-warm');
+                    if(successIcon) successIcon.classList.add('opacity-0');
+                }
+            });
+        }
+    </script>
+</body></html>

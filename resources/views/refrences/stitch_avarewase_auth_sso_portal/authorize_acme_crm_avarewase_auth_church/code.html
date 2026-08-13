@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avarewase Auth - OAuth Consent</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f5f3f0",
+                        "inverse-on-surface": "#f2f0ed",
+                        "surface-container-high": "#eae8e5",
+                        "inverse-surface": "#30312f",
+                        "secondary-fixed": "#ffdea6",
+                        "tertiary-container": "#543d00",
+                        "on-tertiary-container": "#d2a642",
+                        "on-secondary": "#ffffff",
+                        "text-main": "#2C1A1A",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb2b8",
+                        "on-secondary-container": "#715000",
+                        "surface-tint": "#a23a4a",
+                        "on-primary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#261a00",
+                        "surface-variant": "#e4e2df",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#392800",
+                        "on-secondary-fixed": "#271900",
+                        "background": "#fbf9f6",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#7b5800",
+                        "border-warm": "#D4B896",
+                        "text-muted": "#8B6B6B",
+                        "success": "#2D6A4F",
+                        "secondary-container": "#fdc34d",
+                        "secondary-fixed-dim": "#f7bd48",
+                        "surface-container": "#efeeeb",
+                        "surface-bright": "#fbf9f6",
+                        "surface-container-highest": "#e4e2df",
+                        "error": "#8B1A1A",
+                        "primary-fixed-dim": "#ffb2b8",
+                        "on-background": "#1b1c1a",
+                        "outline": "#897172",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#FFFFFF",
+                        "tertiary-fixed-dim": "#eec058",
+                        "tertiary-fixed": "#ffdf9f",
+                        "on-surface": "#1b1c1a",
+                        "on-error-container": "#93000a",
+                        "primary": "#5c021a",
+                        "on-tertiary-fixed-variant": "#5b4300",
+                        "on-secondary-fixed-variant": "#5d4200",
+                        "on-primary-fixed-variant": "#832234",
+                        "surface-dim": "#dbdad7",
+                        "on-error": "#ffffff",
+                        "primary-container": "#7b1c2e",
+                        "on-primary-container": "#ff8a96",
+                        "on-surface-variant": "#564243",
+                        "outline-variant": "#dcc0c1",
+                        "primary-fixed": "#ffdadb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "base": "8px",
+                        "container-max": "1200px",
+                        "auth-card-width": "440px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["\"Source Serif 4\""],
+                        "body-md": ["Inter"],
+                        "headline-xl-mobile": ["\"Source Serif 4\""],
+                        "headline-md": ["\"Source Serif 4\""],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["\"Source Serif 4\""],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl-mobile": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    },
+                    "boxShadow": {
+                        "warm-md": "0 4px 16px -1px rgba(123, 28, 46, 0.12), 0 2px 4px -2px rgba(123, 28, 46, 0.12)"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .warm-tint-shadow {
+            box-shadow: 0 4px 16px -1px rgba(123, 28, 46, 0.12), 0 2px 4px -2px rgba(123, 28, 46, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low min-h-screen flex items-center justify-center p-4">
+<!-- Auth Card Container -->
+<main class="w-full max-w-[500px] bg-surface rounded-xl border border-border-warm warm-tint-shadow overflow-hidden relative">
+<!-- Top Border Accent -->
+<div class="h-1 w-full bg-[#B8860B] absolute top-0 left-0"></div>
+<div class="p-8 md:p-10 flex flex-col gap-stack-lg">
+<!-- Connection Header -->
+<div class="flex items-center justify-center gap-6 mt-4">
+<div class="w-16 h-16 rounded-lg bg-surface-container-highest flex items-center justify-center border border-surface-variant overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist logo for a generic CRM application, featuring simple geometric shapes in a cool blue and gray color palette against a solid white background, embodying modern software design principles without any complex details or text." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDehCCGrxgo7euhfJJaX2eJnGA8f6Ds_UM8_5bP5o9JtfmGysYBmkvJm-dHtaJIcFQ9BU7cZpt8hstMckhGcDIdsXLXC7ZyoljWlHwevQbxmlYe-VoferSE1NkJteCJ4_1fPoOIrRS_-5jksnE1BHkmaR1WBPdV8C-Ds51PZAbNWnWuhRPZIJ8GNbCItMY6VL7KMPS0qSgC36TubuEApIyl5jkXREkNd4td0IIqQpo9eRZ9g3sQPX4l-w"/>
+</div>
+<span class="material-symbols-outlined text-[#B8860B]" style="font-variation-settings: 'FILL' 1;">
+                    arrow_forward
+                </span>
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="font-headline-md text-headline-md">A</span>
+</div>
+</div>
+<!-- Title & Context -->
+<div class="text-center flex flex-col gap-stack-sm">
+<h1 class="font-headline-md text-headline-md text-primary-container">
+                    Acme CRM wants to access your Avarewase account
+                </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    john.doe@diocese.org
+                </p>
+</div>
+<!-- Permissions List -->
+<div class="bg-surface-bright rounded-lg border border-border-warm p-6">
+<p class="font-label-md text-label-md text-text-main mb-4">This app will be able to:</p>
+<ul class="flex flex-col gap-4">
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[#B8860B] mt-0.5" style="font-variation-settings: 'FILL' 1;">
+                            check_circle
+                        </span>
+<div>
+<p class="font-body-sm text-body-sm text-text-main font-medium">View your basic profile info</p>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Name, email address, and institutional role.</p>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<span class="material-symbols-outlined text-[#B8860B] mt-0.5" style="font-variation-settings: 'FILL' 1;">
+                            check_circle
+                        </span>
+<div>
+<p class="font-body-sm text-body-sm text-text-main font-medium">Access your directory structure</p>
+<p class="font-label-sm text-label-sm text-text-muted mt-1">Read-only access to organizational hierarchy.</p>
+</div>
+</li>
+</ul>
+</div>
+<!-- Actions -->
+<div class="flex flex-col sm:flex-row gap-4 mt-2">
+<button class="flex-1 px-6 py-3 rounded-lg border-[1.5px] border-[#B8860B] text-[#B8860B] font-label-md text-label-md hover:bg-surface-container-low transition-colors text-center">
+                    Deny
+                </button>
+<button class="flex-1 px-6 py-3 rounded-lg bg-primary-container text-on-primary font-label-md text-label-md hover:bg-primary transition-colors text-center shadow-md">
+                    Allow Access
+                </button>
+</div>
+<!-- Footer -->
+<div class="text-center pt-4 border-t border-surface-variant">
+<p class="font-label-sm text-label-sm text-text-muted">
+                    You can revoke access at any time in your <a class="text-primary-container hover:underline" href="#">Avarewase Security Settings</a>.
+                </p>
+</div>
+</div>
+</main>
+</body></html>

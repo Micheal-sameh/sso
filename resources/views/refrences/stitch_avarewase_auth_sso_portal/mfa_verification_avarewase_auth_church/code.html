@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Two-Factor Authentication - Avarewase</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f5f3f0",
+                        "inverse-on-surface": "#f2f0ed",
+                        "surface-container-high": "#eae8e5",
+                        "inverse-surface": "#30312f",
+                        "secondary-fixed": "#ffdea6",
+                        "tertiary-container": "#543d00",
+                        "on-tertiary-container": "#d2a642",
+                        "on-secondary": "#ffffff",
+                        "text-main": "#2C1A1A",
+                        "on-primary": "#ffffff",
+                        "inverse-primary": "#ffb2b8",
+                        "on-secondary-container": "#715000",
+                        "surface-tint": "#a23a4a",
+                        "on-primary-fixed": "#40000f",
+                        "on-tertiary-fixed": "#261a00",
+                        "surface-variant": "#e4e2df",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#392800",
+                        "on-secondary-fixed": "#271900",
+                        "background": "#fbf9f6",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#7b5800",
+                        "border-warm": "#D4B896",
+                        "text-muted": "#8B6B6B",
+                        "success": "#2D6A4F",
+                        "secondary-container": "#fdc34d",
+                        "secondary-fixed-dim": "#f7bd48",
+                        "surface-container": "#efeeeb",
+                        "surface-bright": "#fbf9f6",
+                        "surface-container-highest": "#e4e2df",
+                        "error": "#8B1A1A",
+                        "primary-fixed-dim": "#ffb2b8",
+                        "on-background": "#1b1c1a",
+                        "outline": "#897172",
+                        "on-tertiary": "#ffffff",
+                        "surface": "#FFFFFF",
+                        "tertiary-fixed-dim": "#eec058",
+                        "tertiary-fixed": "#ffdf9f",
+                        "on-surface": "#1b1c1a",
+                        "on-error-container": "#93000a",
+                        "primary": "#5c021a",
+                        "on-tertiary-fixed-variant": "#5b4300",
+                        "on-secondary-fixed-variant": "#5d4200",
+                        "on-primary-fixed-variant": "#832234",
+                        "surface-dim": "#dbdad7",
+                        "on-error": "#ffffff",
+                        "primary-container": "#7b1c2e",
+                        "on-primary-container": "#ff8a96",
+                        "on-surface-variant": "#564243",
+                        "outline-variant": "#dcc0c1",
+                        "primary-fixed": "#ffdadb"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "margin-mobile": "16px",
+                        "stack-sm": "8px",
+                        "base": "8px",
+                        "container-max": "1200px",
+                        "auth-card-width": "440px",
+                        "stack-lg": "32px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-xl": ["\"Source Serif 4\""],
+                        "body-md": ["Inter"],
+                        "headline-xl-mobile": ["\"Source Serif 4\""],
+                        "headline-md": ["\"Source Serif 4\""],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-lg": ["\"Source Serif 4\""],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-xl-mobile": ["30px", { "lineHeight": "36px", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.04em", "fontWeight": "500" }],
+                        "label-md": ["14px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .warm-shadow {
+            box-shadow: 0 4px 24px rgba(123, 28, 46, 0.12);
+        }
+    </style>
+</head>
+<body class="bg-surface-container-low min-h-screen flex items-center justify-center p-margin-mobile md:p-gutter">
+<div class="relative w-full max-w-[440px]">
+<!-- Decorative Seal Watermark -->
+<div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none z-0">
+<span class="material-symbols-outlined text-[200px]" data-icon="church">church</span>
+</div>
+<main class="relative z-10 bg-surface rounded-xl border border-border-warm warm-shadow overflow-hidden flex flex-col">
+<!-- Premium Gold Accent -->
+<div class="h-1 bg-[#B8860B] w-full"></div>
+<div class="p-8 md:p-10 flex flex-col items-center text-center">
+<!-- Icon -->
+<div class="mb-6 flex items-center justify-center w-16 h-16 rounded-full bg-[#B8860B]/10">
+<span class="material-symbols-outlined text-[#B8860B] text-3xl" data-icon="shield_lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+</div>
+<!-- Header -->
+<h1 class="font-headline-md text-headline-md text-primary-container mb-2">Two-Factor Authentication</h1>
+<p class="font-body-md text-body-md text-text-muted mb-8 max-w-sm mx-auto">
+                    Enter the 6-digit code sent to your device to verify your identity.
+                </p>
+<!-- Form -->
+<form class="w-full flex flex-col gap-stack-lg" onsubmit="event.preventDefault(); window.location.href='#';">
+<div class="flex flex-col items-start w-full">
+<label class="font-label-md text-label-md text-text-main mb-stack-sm sr-only" for="otp">6-Digit Code</label>
+<input autocomplete="one-time-code" class="w-full bg-surface border border-border-warm rounded-lg px-4 py-4 font-mono text-[28px] tracking-[0.5em] text-center text-text-main focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20 transition-all placeholder:text-surface-variant/50 placeholder:tracking-normal" id="otp" inputmode="numeric" maxlength="6" name="otp" pattern="[0-9]*" placeholder="------" required="" type="text"/>
+</div>
+<div class="flex flex-col gap-stack-md w-full">
+<button class="w-full bg-primary-container hover:bg-primary-container/90 text-on-primary font-label-md text-label-md py-3 px-6 rounded-lg transition-colors focus:ring-2 focus:ring-primary-container focus:ring-offset-2 flex justify-center items-center gap-2" type="submit">
+                            Verify Code
+                        </button>
+</div>
+</form>
+<!-- Links -->
+<div class="mt-8 flex flex-col items-center gap-4 w-full">
+<a class="font-body-sm text-body-sm text-[#B8860B] hover:text-[#B8860B]/80 hover:underline transition-all" href="#">
+                        Use a recovery code instead
+                    </a>
+<div class="w-full border-t border-surface-variant/50 mt-2 pt-6">
+<a class="font-label-md text-label-md text-text-muted hover:text-text-main transition-colors flex items-center justify-center gap-2" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="arrow_back">arrow_back</span>
+                            Return to Sign In
+                        </a>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Avarewase Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f5f3f0",
+                      "inverse-on-surface": "#f2f0ed",
+                      "surface-container-high": "#eae8e5",
+                      "inverse-surface": "#30312f",
+                      "secondary-fixed": "#ffdea6",
+                      "tertiary-container": "#543d00",
+                      "on-tertiary-container": "#d2a642",
+                      "on-secondary": "#ffffff",
+                      "text-main": "#2C1A1A",
+                      "on-primary": "#ffffff",
+                      "inverse-primary": "#ffb2b8",
+                      "on-secondary-container": "#715000",
+                      "surface-tint": "#a23a4a",
+                      "on-primary-fixed": "#40000f",
+                      "on-tertiary-fixed": "#261a00",
+                      "surface-variant": "#e4e2df",
+                      "error-container": "#ffdad6",
+                      "tertiary": "#392800",
+                      "on-secondary-fixed": "#271900",
+                      "background": "#fbf9f6",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary": "#7b5800",
+                      "border-warm": "#D4B896",
+                      "text-muted": "#8B6B6B",
+                      "success": "#2D6A4F",
+                      "secondary-container": "#fdc34d",
+                      "secondary-fixed-dim": "#f7bd48",
+                      "surface-container": "#efeeeb",
+                      "surface-bright": "#fbf9f6",
+                      "surface-container-highest": "#e4e2df",
+                      "error": "#8B1A1A",
+                      "primary-fixed-dim": "#ffb2b8",
+                      "on-background": "#1b1c1a",
+                      "outline": "#897172",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#FFFFFF",
+                      "tertiary-fixed-dim": "#eec058",
+                      "tertiary-fixed": "#ffdf9f",
+                      "on-surface": "#1b1c1a",
+                      "on-error-container": "#93000a",
+                      "primary": "#5c021a",
+                      "on-tertiary-fixed-variant": "#5b4300",
+                      "on-secondary-fixed-variant": "#5d4200",
+                      "on-primary-fixed-variant": "#832234",
+                      "surface-dim": "#dbdad7",
+                      "on-error": "#ffffff",
+                      "primary-container": "#7b1c2e",
+                      "on-primary-container": "#ff8a96",
+                      "on-surface-variant": "#564243",
+                      "outline-variant": "#dcc0c1",
+                      "primary-fixed": "#ffdadb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-md": "16px",
+                      "margin-mobile": "16px",
+                      "stack-sm": "8px",
+                      "base": "8px",
+                      "container-max": "1200px",
+                      "auth-card-width": "440px",
+                      "stack-lg": "32px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "headline-xl": [
+                              "\"Source Serif 4\""
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-xl-mobile": [
+                              "\"Source Serif 4\""
+                      ],
+                      "headline-md": [
+                              "\"Source Serif 4\""
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "\"Source Serif 4\""
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-xl": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl-mobile": [
+                              "30px",
+                              {
+                                      "lineHeight": "36px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.04em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+      </script>
+<style>
+          .warm-shadow {
+              box-shadow: 0 4px 16px rgba(123, 28, 46, 0.12);
+          }
+      </style>
+</head>
+<body class="bg-surface-container-low min-h-screen flex items-center justify-center p-margin-mobile">
+<div class="w-full max-w-[440px]">
+<!-- Authentication Card -->
+<main class="bg-surface rounded-lg border border-border-warm warm-shadow overflow-hidden relative">
+<!-- Premium Accent Top Border -->
+<div class="h-1 w-full bg-[#B8860B] absolute top-0 left-0"></div>
+<div class="p-stack-lg flex flex-col items-center">
+<!-- Branding -->
+<div class="mb-stack-md flex flex-col items-center">
+<div class="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center mb-stack-sm text-on-primary">
+<span aria-hidden="true" class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">add</span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary-container text-center">Avarewase</h1>
+<p class="font-body-sm text-body-sm text-text-muted mt-1 text-center">Sign in to your account</p>
+</div>
+<!-- Requesting Access Banner -->
+<div class="w-full bg-[#D4A843]/15 rounded py-2 px-3 mb-stack-md flex items-center justify-center gap-2 border border-[#D4A843]/30">
+<span aria-hidden="true" class="material-symbols-outlined text-[#B8860B] text-[18px]">vpn_key</span>
+<span class="font-label-sm text-label-sm text-[#715000]">Acme CRM is requesting access</span>
+</div>
+<!-- Form -->
+<form action="#" class="w-full space-y-stack-md" method="POST">
+<div>
+<label class="block font-label-md text-label-md text-text-main mb-1" for="email">Email</label>
+<input class="block w-full rounded border-border-warm bg-surface px-3 py-2 text-text-main focus:border-primary-container focus:ring focus:ring-primary-container/20 focus:outline-none transition-colors font-body-sm text-body-sm" id="email" name="email" placeholder="user@institution.edu" required="" type="email"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md text-text-main mb-1" for="password">Password</label>
+<div class="relative">
+<input class="block w-full rounded border-border-warm bg-surface px-3 py-2 pr-10 text-text-main focus:border-primary-container focus:ring focus:ring-primary-container/20 focus:outline-none transition-colors font-body-sm text-body-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<button aria-label="Toggle password visibility" class="absolute inset-y-0 right-0 px-3 flex items-center text-text-muted hover:text-primary-container focus:outline-none" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center">
+<input class="h-4 w-4 rounded border-border-warm text-[#B8860B] focus:ring-[#B8860B] focus:ring-offset-surface bg-surface" id="remember-me" name="remember-me" type="checkbox"/>
+<label class="ml-2 block font-body-sm text-body-sm text-text-main" for="remember-me">
+                                Remember me
+                            </label>
+</div>
+<div class="text-sm">
+<a class="font-label-sm text-label-sm text-text-muted hover:text-primary-container transition-colors" href="#">Forgot password?</a>
+</div>
+</div>
+<button class="w-full flex justify-center py-2 px-4 border border-transparent rounded bg-primary-container font-label-md text-label-md text-on-primary hover:bg-primary-container/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container transition-colors shadow-sm" type="submit">
+                        Sign In
+                    </button>
+</form>
+<!-- Divider -->
+<div class="w-full mt-stack-md flex items-center text-center">
+<hr class="w-full border-t border-border-warm"/>
+<span class="px-2 font-label-sm text-label-sm text-text-muted bg-surface">Or</span>
+<hr class="w-full border-t border-border-warm"/>
+</div>
+<!-- SSO Options -->
+<div class="w-full mt-stack-md space-y-3">
+<button class="w-full flex items-center justify-center gap-2 py-2 px-4 border border-border-warm rounded bg-surface-container-low font-label-md text-label-md text-text-main hover:bg-surface-variant/50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-container transition-colors" type="button">
+<span aria-hidden="true" class="material-symbols-outlined text-[20px]">business</span>
+                        Continue with Institution
+                    </button>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<p class="text-center font-label-sm text-label-sm text-text-muted mt-stack-md">
+            Powered by Avarewase Auth
+        </p>
+</div>
+</body></html>
