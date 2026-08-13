@@ -14,5 +14,10 @@ const LABELS: Record<Status, string> = {
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
-    return <span className={`badge rounded-pill badge-${status}`}>{LABELS[status]}</span>
+    return (
+        <span className={`status-pill status-pill-${status}`}>
+            <span className="status-pill-dot" />
+            {LABELS[status]}
+        </span>
+    )
 }

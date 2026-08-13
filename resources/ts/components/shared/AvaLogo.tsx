@@ -13,7 +13,10 @@ export default function AvaLogo({ size = 40, showText = false, textColor = '#7B1
                 <rect x="20" y="44" width="60" height="12" fill="#B8860B" />
             </svg>
             {showText && (
-                <span style={{ fontFamily: 'Georgia, serif', fontSize: size * 0.5, color: textColor }}>
+                <span
+                    className="fw-semibold"
+                    style={{ fontFamily: 'var(--font-serif)', fontSize: size * 0.5, color: textColor }}
+                >
                     Avarewase
                 </span>
             )}
