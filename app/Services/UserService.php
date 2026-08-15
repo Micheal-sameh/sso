@@ -20,11 +20,18 @@ class UserService
     ) {}
 
     /**
-     * Create a new user from the given DTO.
+     * Create a new user from the given DTO, granting the matching admin
+     * role automatically when created as Admin or Super Admin.
      */
     public function create(CreateUserDTO $dto): User
     {
-        return $this->userRepository->create($dto);
+        $user = $this->userRepository->create($dto);
+
+        if ($dto->role === UserRole::Admin || $dto->role === UserRole::SuperAdmin) {
+            $user->assignRole($dto->role->value);
+        }
+
+        return $user;
     }
 
     /**
@@ -52,6 +59,14 @@ class UserService
     }
 
     /**
+     * Paginate users who currently hold an admin panel role, optionally filtered by search term.
+     */
+    public function paginateAdmins(int $perPage, ?string $search): LengthAwarePaginator
+    {
+        return $this->userRepository->paginateAdmins($perPage, $search);
+    }
+
+    /**
      * Toggle a user's active status.
      */
     public function toggleActive(User $user): User
@@ -68,7 +83,8 @@ class UserService
     }
 
     /**
-     * Grant or revoke a user's SSO admin access via the super admin role.
+     * Grant or revoke a user's SSO admin panel access via the admin role.
+     * This never grants full Super Admin privileges.
      *
      * @throws SelfModificationException
      */
@@ -78,6 +94,6 @@ class UserService
             throw new SelfModificationException;
         }
 
-        return $this->userRepository->toggleAdminAccess($user, AdminRole::SuperAdmin->value);
+        return $this->userRepository->toggleAdminAccess($user, AdminRole::Admin->value);
     }
 }

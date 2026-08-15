@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
+import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
 import type { Token, User } from '@/types'
 
@@ -49,9 +50,7 @@ export default function Show({ viewedUser, tokens }: ShowProps) {
                         <div className="text-ava-muted text-tiny mb-2">{viewedUser.email}</div>
                         <div className="d-flex flex-wrap gap-2">
                             <span className="code-chip">{viewedUser.membership_code}</span>
-                            <span className={`role-chip ${viewedUser.role === 'superadmin' ? 'role-chip-super' : ''}`}>
-                                {viewedUser.role === 'superadmin' ? 'Super Admin' : 'User'}
-                            </span>
+                            <RoleChip role={viewedUser.role} />
                             <StatusBadge status={viewedUser.is_active ? 'active' : 'revoked'} />
                             <StatusBadge status={viewedUser.is_admin ? 'enabled' : 'disabled'} />
                         </div>

@@ -12,9 +12,13 @@ class RolesAndPermissionsSeeder extends Seeder
 {
     public function run(): void
     {
-        $manageSso = Permission::firstOrCreate(['name' => AdminPermission::ManageSso->value, 'guard_name' => 'web']);
+        $accessAdminPanel = Permission::firstOrCreate(['name' => AdminPermission::AccessAdminPanel->value, 'guard_name' => 'web']);
+        $manageAdminAccess = Permission::firstOrCreate(['name' => AdminPermission::ManageAdminAccess->value, 'guard_name' => 'web']);
 
         Role::firstOrCreate(['name' => AdminRole::SuperAdmin->value, 'guard_name' => 'web'])
-            ->givePermissionTo($manageSso);
+            ->syncPermissions([$accessAdminPanel, $manageAdminAccess]);
+
+        Role::firstOrCreate(['name' => AdminRole::Admin->value, 'guard_name' => 'web'])
+            ->syncPermissions([$accessAdminPanel]);
     }
 }

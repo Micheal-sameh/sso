@@ -4,5 +4,6 @@ namespace App\Enums;
 
 enum AdminPermission: string
 {
-    case ManageSso = 'manage sso';
+    case AccessAdminPanel = 'access admin panel';
+    case ManageAdminAccess = 'manage admin access';
 }

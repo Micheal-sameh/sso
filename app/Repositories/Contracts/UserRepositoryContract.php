@@ -19,6 +19,8 @@ interface UserRepositoryContract
 
     public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null): LengthAwarePaginator;
 
+    public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator;
+
     public function create(CreateUserDTO $dto): User;
 
     public function update(User $user, array $data): User;

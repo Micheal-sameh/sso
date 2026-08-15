@@ -26,7 +26,8 @@ class UserController extends BaseController
 
     public function index(Request $request): Response
     {
-        $users = $this->userService->paginate(20, $request->string('search')->toString() ?: null, $request->enum('role', UserRole::class));
+        $users = $this->userService->paginate(20, $request->string('search')->toString() ?: null, $request->enum('role', UserRole::class))
+            ->through(fn (User $user) => UserDTO::fromModel($user)->toArray());
 
         return $this->inertia('Admin/Users/Index', [
             'users' => $users,
@@ -37,6 +38,17 @@ class UserController extends BaseController
     public function create(): Response
     {
         return $this->inertia('Admin/Users/Create');
+    }
+
+    public function admins(Request $request): Response
+    {
+        $admins = $this->userService->paginateAdmins(20, $request->string('search')->toString() ?: null)
+            ->through(fn (User $user) => UserDTO::fromModel($user)->toArray());
+
+        return $this->inertia('Admin/Admins/Index', [
+            'admins' => $admins,
+            'filters' => $request->only('search'),
+        ]);
     }
 
     public function show(User $user): Response

@@ -16,7 +16,7 @@ class SuperAdmin
             return redirect()->route('login');
         }
 
-        if (! Auth::user()->can(AdminPermission::ManageSso->value)) {
+        if (! Auth::user()->can(AdminPermission::AccessAdminPanel->value)) {
             abort(403);
         }
 

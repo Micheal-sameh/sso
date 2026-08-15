@@ -3,6 +3,7 @@
 namespace App\Repositories\Eloquent;
 
 use App\DTOs\CreateUserDTO;
+use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
@@ -56,6 +57,28 @@ class UserRepository implements UserRepositoryContract
                     ->orWhere('membership_code', 'like', "%{$search}%")
             ))
             ->when($role, fn ($query) => $query->where('role', $role))
+            ->orderByDesc('created_at')
+            ->paginate($perPage)
+            ->withQueryString();
+    }
+
+    /**
+     * Paginate users who currently hold an admin panel role (Admin or Super Admin),
+     * optionally filtered by search term.
+     */
+    public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator
+    {
+        return User::query()
+            ->with(['roles'])
+            ->whereHas('roles', fn ($query) => $query->whereIn('name', [
+                AdminRole::SuperAdmin->value,
+                AdminRole::Admin->value,
+            ]))
+            ->when($search, fn ($query) => $query->where(
+                fn ($q) => $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('membership_code', 'like', "%{$search}%")
+            ))
             ->orderByDesc('created_at')
             ->paginate($perPage)
             ->withQueryString();

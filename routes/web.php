@@ -44,10 +44,13 @@ Route::middleware('auth')->group(function () {
     Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
         Route::patch('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
-        Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])->name('users.toggle-admin-access');
+        Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])
+            ->middleware('can:manage admin access')
+            ->name('users.toggle-admin-access');
 
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');

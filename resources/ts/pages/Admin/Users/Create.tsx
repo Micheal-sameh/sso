@@ -98,8 +98,12 @@ export default function Create() {
                             onChange={(e) => form.setData('role', e.target.value)}
                         >
                             <option value="user">User</option>
+                            <option value="admin">Admin</option>
                             <option value="superadmin">Super Admin</option>
                         </select>
+                        <p className="text-ava-muted text-tiny mt-1 mb-0">
+                            Admin and Super Admin roles are granted SSO admin panel access immediately.
+                        </p>
                         {form.errors.role && <div className="text-danger small mt-1">{form.errors.role}</div>}
                     </div>
 

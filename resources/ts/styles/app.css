@@ -599,6 +599,10 @@ code {
     background: rgba(184, 134, 11, 0.12);
     color: #8a6408;
 }
+.role-chip-admin {
+    background: rgba(123, 28, 46, 0.1);
+    color: var(--ava-primary);
+}
 
 .scope-chip {
     display: inline-block;

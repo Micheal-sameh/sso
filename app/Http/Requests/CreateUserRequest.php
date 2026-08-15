@@ -18,7 +18,7 @@ class CreateUserRequest extends FormRequest
             'email' => ['required', 'email', 'unique:users,email'],
             'membership_code' => ['required', 'string', 'max:255', 'unique:users,membership_code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'in:superadmin,user'],
+            'role' => ['required', 'in:superadmin,admin,user'],
         ];
     }
 }

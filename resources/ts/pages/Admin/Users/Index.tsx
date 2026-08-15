@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import Pagination from '@/components/shared/Pagination'
+import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
 import type { PaginatedData, SharedProps, User } from '@/types'
 
@@ -38,7 +39,8 @@ export default function Index({ users, filters }: IndexProps) {
     }
 
     const activeCount = users.data.filter((u) => u.is_active).length
-    const adminCount = users.data.filter((u) => u.is_admin).length
+    const superAdminCount = users.data.filter((u) => u.role === 'superadmin').length
+    const adminCount = users.data.filter((u) => u.role === 'admin').length
 
     return (
         <AdminLayout
@@ -51,21 +53,27 @@ export default function Index({ users, filters }: IndexProps) {
             }
         >
             <div className="row g-3 mb-4">
-                <div className="col-md-4">
+                <div className="col-6 col-md-3">
                     <div className="stat-tile">
                         <p className="stat-tile-label mb-2">Total Users</p>
                         <p className="stat-tile-value mb-0">{users.total}</p>
                     </div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-6 col-md-3">
                     <div className="stat-tile">
                         <p className="stat-tile-label mb-2">Active (this page)</p>
                         <p className="stat-tile-value mb-0">{activeCount}</p>
                     </div>
                 </div>
-                <div className="col-md-4">
+                <div className="col-6 col-md-3">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">SSO Admins (this page)</p>
+                        <p className="stat-tile-label mb-2">Super Admins (this page)</p>
+                        <p className="stat-tile-value mb-0">{superAdminCount}</p>
+                    </div>
+                </div>
+                <div className="col-6 col-md-3">
+                    <div className="stat-tile">
+                        <p className="stat-tile-label mb-2">Admins (this page)</p>
                         <p className="stat-tile-value mb-0">{adminCount}</p>
                     </div>
                 </div>
@@ -81,6 +89,7 @@ export default function Index({ users, filters }: IndexProps) {
                 <select className="form-select max-w-200-sm" value={role} onChange={(e) => setRole(e.target.value)}>
                     <option value="">All roles</option>
                     <option value="superadmin">Super Admin</option>
+                    <option value="admin">Admin</option>
                     <option value="user">User</option>
                 </select>
             </div>
@@ -128,9 +137,7 @@ export default function Index({ users, filters }: IndexProps) {
                                         <span className="code-chip">{user.membership_code}</span>
                                     </td>
                                     <td>
-                                        <span className={`role-chip ${user.role === 'superadmin' ? 'role-chip-super' : ''}`}>
-                                            {user.role === 'superadmin' ? 'Super Admin' : 'User'}
-                                        </span>
+                                        <RoleChip role={user.role} />
                                     </td>
                                     <td>
                                         <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
@@ -150,15 +157,17 @@ export default function Index({ users, filters }: IndexProps) {
                                         <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
                                             Toggle Active
                                         </button>
-                                        <button
-                                            type="button"
-                                            className="btn btn-sm btn-outline-primary"
-                                            disabled={user.id === auth.user?.id}
-                                            title={user.id === auth.user?.id ? "You can't change your own admin access" : undefined}
-                                            onClick={() => toggleAdminAccess(user)}
-                                        >
-                                            {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
-                                        </button>
+                                        {auth.user?.can_manage_admin_access && (
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-primary"
+                                                disabled={user.id === auth.user?.id}
+                                                title={user.id === auth.user?.id ? "You can't change your own admin access" : undefined}
+                                                onClick={() => toggleAdminAccess(user)}
+                                            >
+                                                {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
+                                            </button>
+                                        )}
                                     </td>
                                 </tr>
                             ))}
@@ -189,9 +198,7 @@ export default function Index({ users, filters }: IndexProps) {
                         </div>
                         <div className="record-card-row">
                             <span className="record-card-label">Role</span>
-                            <span className={`role-chip ${user.role === 'superadmin' ? 'role-chip-super' : ''}`}>
-                                {user.role === 'superadmin' ? 'Super Admin' : 'User'}
-                            </span>
+                            <RoleChip role={user.role} />
                         </div>
                         <div className="record-card-row">
                             <span className="record-card-label">Status</span>
@@ -217,14 +224,16 @@ export default function Index({ users, filters }: IndexProps) {
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => toggle(user)}>
                                 Toggle Active
                             </button>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-outline-primary"
-                                disabled={user.id === auth.user?.id}
-                                onClick={() => toggleAdminAccess(user)}
-                            >
-                                {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
-                            </button>
+                            {auth.user?.can_manage_admin_access && (
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-outline-primary"
+                                    disabled={user.id === auth.user?.id}
+                                    onClick={() => toggleAdminAccess(user)}
+                                >
+                                    {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
+                                </button>
+                            )}
                         </div>
                     </div>
                 ))}

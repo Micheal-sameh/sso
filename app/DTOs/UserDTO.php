@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Enums\AdminPermission;
 use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Models\User;
@@ -18,6 +19,7 @@ readonly class UserDTO
         public UserRole $role,
         public bool $is_active,
         public bool $isAdmin,
+        public bool $canManageAdminAccess,
         public ?string $email_verified_at,
     ) {}
 
@@ -34,7 +36,8 @@ readonly class UserDTO
             avatar: $user->avatar_url,
             role: $user->role,
             is_active: $user->is_active,
-            isAdmin: $user->hasRole(AdminRole::SuperAdmin->value),
+            isAdmin: $user->hasAnyRole([AdminRole::SuperAdmin->value, AdminRole::Admin->value]),
+            canManageAdminAccess: $user->can(AdminPermission::ManageAdminAccess->value),
             email_verified_at: $user->email_verified_at?->toIso8601String(),
         );
     }
@@ -54,6 +57,7 @@ readonly class UserDTO
             'role' => $this->role->value,
             'is_active' => $this->is_active,
             'is_admin' => $this->isAdmin,
+            'can_manage_admin_access' => $this->canManageAdminAccess,
             'email_verified_at' => $this->email_verified_at,
         ];
     }

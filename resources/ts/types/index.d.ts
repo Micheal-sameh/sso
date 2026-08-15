@@ -5,9 +5,10 @@ export interface User {
     name: string
     email: string
     avatar: string | null
-    role: 'superadmin' | 'user'
+    role: 'superadmin' | 'admin' | 'user'
     is_active: boolean
     is_admin: boolean
+    can_manage_admin_access: boolean
     email_verified_at: string | null
 }
 
