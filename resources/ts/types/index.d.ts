@@ -1,3 +1,17 @@
+export interface Stage {
+    id: number
+    name: string
+    code: string
+    sort_order: number
+    users_count?: number
+}
+
+export interface UserStageSummary {
+    id: number
+    name: string
+    code: string
+}
+
 export interface User {
     id: number
     uuid: string
@@ -9,6 +23,7 @@ export interface User {
     is_active: boolean
     is_admin: boolean
     can_manage_admin_access: boolean
+    stage: UserStageSummary
     email_verified_at: string | null
 }
 

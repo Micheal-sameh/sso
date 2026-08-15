@@ -1,6 +1,11 @@
 import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import type { Stage } from '@/types'
+
+interface CreateProps {
+    stages: Stage[]
+}
 
 interface CreateForm {
     name: string
@@ -9,9 +14,10 @@ interface CreateForm {
     password: string
     password_confirmation: string
     role: string
+    stage_id: string
 }
 
-export default function Create() {
+export default function Create({ stages }: CreateProps) {
     const form = useForm<CreateForm>({
         name: '',
         email: '',
@@ -19,6 +25,7 @@ export default function Create() {
         password: '',
         password_confirmation: '',
         role: 'user',
+        stage_id: stages[0] ? String(stages[0].id) : '',
     })
 
     const submit = (e: FormEvent) => {
@@ -87,6 +94,23 @@ export default function Create() {
                             value={form.data.password_confirmation}
                             onChange={(e) => form.setData('password_confirmation', e.target.value)}
                         />
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="stage_id">Stage</label>
+                        <select
+                            id="stage_id"
+                            className="form-select"
+                            value={form.data.stage_id}
+                            onChange={(e) => form.setData('stage_id', e.target.value)}
+                        >
+                            {stages.map((stage) => (
+                                <option key={stage.id} value={stage.id}>
+                                    {stage.name}
+                                </option>
+                            ))}
+                        </select>
+                        {form.errors.stage_id && <div className="text-danger small mt-1">{form.errors.stage_id}</div>}
                     </div>
 
                     <div className="mb-4">

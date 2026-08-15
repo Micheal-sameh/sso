@@ -13,6 +13,7 @@ readonly class CreateUserDTO
         public string $membershipCode,
         public string $password,
         public UserRole $role,
+        public int $stageId,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -23,6 +24,7 @@ readonly class CreateUserDTO
             membershipCode: $request->string('membership_code')->toString(),
             password: $request->string('password')->toString(),
             role: UserRole::from($request->string('role')->toString()),
+            stageId: $request->integer('stage_id'),
         );
     }
 }

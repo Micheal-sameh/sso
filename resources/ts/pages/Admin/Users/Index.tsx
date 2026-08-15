@@ -5,26 +5,28 @@ import AvatarInitials from '@/components/shared/AvatarInitials'
 import Pagination from '@/components/shared/Pagination'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
-import type { PaginatedData, SharedProps, User } from '@/types'
+import type { PaginatedData, SharedProps, Stage, User } from '@/types'
 
 interface IndexProps {
     users: PaginatedData<User>
-    filters: { search?: string; role?: string }
+    stages: Stage[]
+    filters: { search?: string; role?: string; stage_id?: string }
 }
 
-export default function Index({ users, filters }: IndexProps) {
+export default function Index({ users, stages, filters }: IndexProps) {
     const [search, setSearch] = useState(filters.search ?? '')
     const [role, setRole] = useState(filters.role ?? '')
+    const [stageId, setStageId] = useState(filters.stage_id ?? '')
     const { auth } = usePage<SharedProps>().props
 
     useEffect(() => {
         const timer = setTimeout(() => {
-            router.get('/admin/users', { search, role }, { preserveState: true, replace: true })
+            router.get('/admin/users', { search, role, stage_id: stageId }, { preserveState: true, replace: true })
         }, 300)
 
         return () => clearTimeout(timer)
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search, role])
+    }, [search, role, stageId])
 
     const toggle = (user: User) => {
         router.patch(`/admin/users/${user.id}/toggle`, {}, { preserveScroll: true })
@@ -92,6 +94,14 @@ export default function Index({ users, filters }: IndexProps) {
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
                 </select>
+                <select className="form-select max-w-200-sm" value={stageId} onChange={(e) => setStageId(e.target.value)}>
+                    <option value="">All stages</option>
+                    {stages.map((stage) => (
+                        <option key={stage.id} value={stage.id}>
+                            {stage.name}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Table view (md and up) */}
@@ -104,6 +114,7 @@ export default function Index({ users, filters }: IndexProps) {
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Membership</th>
+                                <th>Stage</th>
                                 <th>Role</th>
                                 <th>Status</th>
                                 <th>Admin Access</th>
@@ -136,6 +147,7 @@ export default function Index({ users, filters }: IndexProps) {
                                     <td>
                                         <span className="code-chip">{user.membership_code}</span>
                                     </td>
+                                    <td>{user.stage.name}</td>
                                     <td>
                                         <RoleChip role={user.role} />
                                     </td>
@@ -195,6 +207,10 @@ export default function Index({ users, filters }: IndexProps) {
                         <div className="record-card-row">
                             <span className="record-card-label">Membership</span>
                             <span className="code-chip">{user.membership_code}</span>
+                        </div>
+                        <div className="record-card-row">
+                            <span className="record-card-label">Stage</span>
+                            <span>{user.stage.name}</span>
                         </div>
                         <div className="record-card-row">
                             <span className="record-card-label">Role</span>

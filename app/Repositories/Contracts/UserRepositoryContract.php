@@ -17,7 +17,7 @@ interface UserRepositoryContract
 
     public function findById(int $id): User;
 
-    public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null): LengthAwarePaginator;
+    public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null, ?int $stageId = null): LengthAwarePaginator;
 
     public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator;
 

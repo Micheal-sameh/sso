@@ -20,12 +20,15 @@ readonly class UserDTO
         public bool $is_active,
         public bool $isAdmin,
         public bool $canManageAdminAccess,
+        public int $stageId,
+        public string $stageName,
+        public string $stageCode,
         public ?string $email_verified_at,
     ) {}
 
     public static function fromModel(User $user): self
     {
-        $user->loadMissing('roles');
+        $user->loadMissing('roles', 'stage');
 
         return new self(
             id: $user->id,
@@ -38,6 +41,9 @@ readonly class UserDTO
             is_active: $user->is_active,
             isAdmin: $user->hasAnyRole([AdminRole::SuperAdmin->value, AdminRole::Admin->value]),
             canManageAdminAccess: $user->can(AdminPermission::ManageAdminAccess->value),
+            stageId: $user->stage_id,
+            stageName: $user->stage->name,
+            stageCode: $user->stage->code,
             email_verified_at: $user->email_verified_at?->toIso8601String(),
         );
     }
@@ -58,6 +64,11 @@ readonly class UserDTO
             'is_active' => $this->is_active,
             'is_admin' => $this->isAdmin,
             'can_manage_admin_access' => $this->canManageAdminAccess,
+            'stage' => [
+                'id' => $this->stageId,
+                'name' => $this->stageName,
+                'code' => $this->stageCode,
+            ],
             'email_verified_at' => $this->email_verified_at,
         ];
     }

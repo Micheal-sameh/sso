@@ -13,6 +13,7 @@ interface AdminLayoutProps {
 const NAV_LINKS: SidebarLink[] = [
     { href: '/admin/users', label: 'Users', icon: 'bi-people' },
     { href: '/admin/admins', label: 'SSO Admins', icon: 'bi-shield-check' },
+    { href: '/admin/stages', label: 'Stages', icon: 'bi-signpost-split' },
     { href: '/admin/clients', label: 'OAuth Clients', icon: 'bi-key' },
     { href: '/admin/tokens', label: 'Tokens', icon: 'bi-ticket-perforated' },
 ]

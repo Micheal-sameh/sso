@@ -4,6 +4,7 @@ use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Auth\LoginController;
@@ -58,6 +59,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/tokens', [TokenController::class, 'index'])->name('tokens.index');
         Route::delete('/tokens/{token}', [TokenController::class, 'revoke'])->name('tokens.revoke');
+
+        Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
+        Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
+        Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
     });
 });
 

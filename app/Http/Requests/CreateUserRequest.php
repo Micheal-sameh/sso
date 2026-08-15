@@ -19,6 +19,7 @@ class CreateUserRequest extends FormRequest
             'membership_code' => ['required', 'string', 'max:255', 'unique:users,membership_code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'in:superadmin,admin,user'],
+            'stage_id' => ['required', 'integer', 'exists:stages,id'],
         ];
     }
 }

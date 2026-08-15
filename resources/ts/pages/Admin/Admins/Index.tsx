@@ -91,6 +91,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Membership</th>
+                                        <th>Stage</th>
                                         <th>Role</th>
                                         <th>Status</th>
                                         <th>Granted</th>
@@ -122,6 +123,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                             <td>
                                                 <span className="code-chip">{user.membership_code}</span>
                                             </td>
+                                            <td>{user.stage.name}</td>
                                             <td>
                                                 <RoleChip role={user.role} />
                                             </td>
@@ -177,6 +179,10 @@ export default function Index({ admins, filters }: IndexProps) {
                                 <div className="record-card-row">
                                     <span className="record-card-label">Membership</span>
                                     <span className="code-chip">{user.membership_code}</span>
+                                </div>
+                                <div className="record-card-row">
+                                    <span className="record-card-label">Stage</span>
+                                    <span>{user.stage.name}</span>
                                 </div>
                                 <div className="record-card-row">
                                     <span className="record-card-label">Role</span>

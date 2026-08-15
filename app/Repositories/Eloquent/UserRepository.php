@@ -17,7 +17,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByEmail(string $email): ?User
     {
-        return User::where('email', $email)->with(['mfa', 'roles'])->first();
+        return User::where('email', $email)->with(['mfa', 'roles', 'stage'])->first();
     }
 
     /**
@@ -25,7 +25,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByMembershipCode(string $membershipCode): ?User
     {
-        return User::where('membership_code', $membershipCode)->with(['mfa', 'roles'])->first();
+        return User::where('membership_code', $membershipCode)->with(['mfa', 'roles', 'stage'])->first();
     }
 
     /**
@@ -33,7 +33,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByUuid(string $uuid): User
     {
-        return User::where('uuid', $uuid)->with(['mfa', 'roles'])->firstOrFail();
+        return User::where('uuid', $uuid)->with(['mfa', 'roles', 'stage'])->firstOrFail();
     }
 
     /**
@@ -41,22 +41,23 @@ class UserRepository implements UserRepositoryContract
      */
     public function findById(int $id): User
     {
-        return User::with(['mfa', 'roles'])->findOrFail($id);
+        return User::with(['mfa', 'roles', 'stage'])->findOrFail($id);
     }
 
     /**
-     * Paginate users, optionally filtered by search term and role.
+     * Paginate users, optionally filtered by search term, role, and stage.
      */
-    public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null): LengthAwarePaginator
+    public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null, ?int $stageId = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles'])
+            ->with(['roles', 'stage'])
             ->when($search, fn ($query) => $query->where(
                 fn ($q) => $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
                     ->orWhere('membership_code', 'like', "%{$search}%")
             ))
             ->when($role, fn ($query) => $query->where('role', $role))
+            ->when($stageId, fn ($query) => $query->where('stage_id', $stageId))
             ->orderByDesc('created_at')
             ->paginate($perPage)
             ->withQueryString();
@@ -69,7 +70,7 @@ class UserRepository implements UserRepositoryContract
     public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles'])
+            ->with(['roles', 'stage'])
             ->whereHas('roles', fn ($query) => $query->whereIn('name', [
                 AdminRole::SuperAdmin->value,
                 AdminRole::Admin->value,
@@ -96,6 +97,7 @@ class UserRepository implements UserRepositoryContract
             'email' => $dto->email,
             'password' => $dto->password,
             'role' => $dto->role,
+            'stage_id' => $dto->stageId,
         ]);
     }
 
@@ -106,7 +108,7 @@ class UserRepository implements UserRepositoryContract
     {
         $user->update($data);
 
-        return $user->fresh(['mfa']);
+        return $user->fresh(['mfa', 'stage']);
     }
 
     /**
@@ -130,6 +132,6 @@ class UserRepository implements UserRepositoryContract
             $user->assignRole($roleName);
         }
 
-        return $user->fresh(['mfa', 'roles']);
+        return $user->fresh(['mfa', 'roles', 'stage']);
     }
 }

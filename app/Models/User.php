@@ -8,6 +8,7 @@ use App\Traits\HasCreatedUpdatedBy;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -31,6 +32,7 @@ class User extends Authenticatable
         'password',
         'avatar',
         'role',
+        'stage_id',
         'is_active',
         'email_verified_at',
     ];
@@ -53,6 +55,11 @@ class User extends Authenticatable
     public function mfa(): HasOne
     {
         return $this->hasOne(UserMfa::class);
+    }
+
+    public function stage(): BelongsTo
+    {
+        return $this->belongsTo(Stage::class);
     }
 
     public function tokens(): HasMany

@@ -51,11 +51,11 @@ class UserService
     }
 
     /**
-     * Paginate users, optionally filtered by search term and role.
+     * Paginate users, optionally filtered by search term, role, and stage.
      */
-    public function paginate(int $perPage, ?string $search, ?UserRole $role): LengthAwarePaginator
+    public function paginate(int $perPage, ?string $search, ?UserRole $role, ?int $stageId = null): LengthAwarePaginator
     {
-        return $this->userRepository->paginate($perPage, $search, $role);
+        return $this->userRepository->paginate($perPage, $search, $role, $stageId);
     }
 
     /**

@@ -10,6 +10,7 @@ use App\Http\Requests\CreateUserRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
 use App\Repositories\Contracts\TokenRepositoryContract;
+use App\Services\StageService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -22,22 +23,30 @@ class UserController extends BaseController
     public function __construct(
         protected UserService $userService,
         protected TokenRepositoryContract $tokenRepository,
+        protected StageService $stageService,
     ) {}
 
     public function index(Request $request): Response
     {
-        $users = $this->userService->paginate(20, $request->string('search')->toString() ?: null, $request->enum('role', UserRole::class))
-            ->through(fn (User $user) => UserDTO::fromModel($user)->toArray());
+        $users = $this->userService->paginate(
+            20,
+            $request->string('search')->toString() ?: null,
+            $request->enum('role', UserRole::class),
+            $request->integer('stage_id') ?: null,
+        )->through(fn (User $user) => UserDTO::fromModel($user)->toArray());
 
         return $this->inertia('Admin/Users/Index', [
             'users' => $users,
-            'filters' => $request->only('search', 'role'),
+            'stages' => $this->stageService->listAll(),
+            'filters' => $request->only('search', 'role', 'stage_id'),
         ]);
     }
 
     public function create(): Response
     {
-        return $this->inertia('Admin/Users/Create');
+        return $this->inertia('Admin/Users/Create', [
+            'stages' => $this->stageService->listAll(),
+        ]);
     }
 
     public function admins(Request $request): Response

@@ -50,6 +50,7 @@ export default function Show({ viewedUser, tokens }: ShowProps) {
                         <div className="text-ava-muted text-tiny mb-2">{viewedUser.email}</div>
                         <div className="d-flex flex-wrap gap-2">
                             <span className="code-chip">{viewedUser.membership_code}</span>
+                            <span className="role-chip">{viewedUser.stage.name}</span>
                             <RoleChip role={viewedUser.role} />
                             <StatusBadge status={viewedUser.is_active ? 'active' : 'revoked'} />
                             <StatusBadge status={viewedUser.is_admin ? 'enabled' : 'disabled'} />
