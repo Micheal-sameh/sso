@@ -18,6 +18,7 @@ export interface User {
     membership_code: string
     name: string
     email: string
+    phone: string | null
     avatar: string | null
     role: 'superadmin' | 'admin' | 'user'
     is_active: boolean

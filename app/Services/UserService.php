@@ -67,6 +67,7 @@ class UserService
         $user = $this->userRepository->update($user, [
             'name' => $validated['name'],
             'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
             'membership_code' => $validated['membership_code'],
             'stage_id' => $validated['stage_id'],
             'role' => $newRole,

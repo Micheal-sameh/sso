@@ -66,7 +66,32 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                     )}
                     <div className="flex-grow-1 min-w-0">
                         <h5 className="mb-1">{viewedUser.name}</h5>
-                        <div className="text-ava-muted text-tiny mb-2">{viewedUser.email}</div>
+                        <div className="text-ava-muted text-tiny mb-2 d-flex flex-wrap align-items-center gap-3">
+                            <span className="d-inline-flex align-items-center gap-1">
+                                {viewedUser.email}
+                                <a
+                                    href={`mailto:${viewedUser.email}`}
+                                    className="text-ava-muted"
+                                    title={`Email ${viewedUser.name}`}
+                                >
+                                    <i className="bi bi-envelope" />
+                                </a>
+                            </span>
+                            {viewedUser.phone && (
+                                <span className="d-inline-flex align-items-center gap-1">
+                                    {viewedUser.phone}
+                                    <a
+                                        href={`https://wa.me/${viewedUser.phone.replace(/\D/g, '')}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-success"
+                                        title={`WhatsApp ${viewedUser.name}`}
+                                    >
+                                        <i className="bi bi-whatsapp" />
+                                    </a>
+                                </span>
+                            )}
+                        </div>
                         <div className="d-flex flex-wrap gap-2">
                             <span className="code-chip">{viewedUser.membership_code}</span>
                             <span className="role-chip">{viewedUser.stage.name}</span>

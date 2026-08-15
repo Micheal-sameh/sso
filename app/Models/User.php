@@ -29,6 +29,7 @@ class User extends Authenticatable
         'membership_code',
         'name',
         'email',
+        'phone',
         'password',
         'avatar',
         'role',

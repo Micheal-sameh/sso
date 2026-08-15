@@ -96,6 +96,7 @@ class UserRepository implements UserRepositoryContract
             'membership_code' => $dto->membershipCode,
             'name' => $dto->name,
             'email' => $dto->email,
+            'phone' => $dto->phone,
             'password' => $dto->password,
             'role' => $dto->role,
             'stage_id' => $dto->stageId,
