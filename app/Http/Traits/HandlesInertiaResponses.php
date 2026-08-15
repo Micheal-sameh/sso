@@ -18,6 +18,16 @@ trait HandlesInertiaResponses
         return redirect()->route($route)->with('flash', ['type' => $type, 'message' => $message]);
     }
 
+    /**
+     * Redirect to the URL the user was originally trying to reach before
+     * being bounced to login (e.g. /oauth/authorize), falling back to the
+     * given route if no intended URL was stored.
+     */
+    protected function redirectIntended(string $fallbackRoute, ?string $message = null, string $type = 'success'): RedirectResponse
+    {
+        return redirect()->intended(route($fallbackRoute))->with('flash', ['type' => $type, 'message' => $message]);
+    }
+
     protected function redirectBack(?string $message = null, string $type = 'error'): RedirectResponse
     {
         return back()->with('flash', ['type' => $type, 'message' => $message]);

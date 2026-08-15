@@ -1,4 +1,4 @@
-import { useForm, usePage } from '@inertiajs/react'
+import { usePage } from '@inertiajs/react'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 import type { SharedProps } from '@/types'
@@ -11,12 +11,7 @@ interface AuthorizeProps {
 }
 
 export default function Authorize({ client, scopes, authRequest, state }: AuthorizeProps) {
-    const { auth } = usePage<SharedProps>().props
-    const approveForm = useForm({ auth_token: authRequest, state })
-    const denyForm = useForm({ auth_token: authRequest, state })
-
-    const approve = () => approveForm.post('/oauth/authorize')
-    const deny = () => denyForm.delete('/oauth/authorize')
+    const { auth, csrf_token } = usePage<SharedProps>().props
 
     return (
         <AuthLayout wide>
@@ -49,23 +44,30 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 </ul>
             </div>
 
+            {/*
+                These submit as real top-level browser navigations (not Inertia/XHR).
+                The server redirects across origins back to the requesting app, and a
+                cross-origin redirect can only be followed safely by a full navigation
+                — following it via fetch/XHR would be blocked by CORS.
+            */}
             <div className="d-flex gap-2">
-                <button
-                    type="button"
-                    className="btn btn-outline-primary flex-grow-1"
-                    disabled={denyForm.processing}
-                    onClick={deny}
-                >
-                    Deny
-                </button>
-                <button
-                    type="button"
-                    className="btn btn-primary flex-grow-1"
-                    disabled={approveForm.processing}
-                    onClick={approve}
-                >
-                    Allow Access
-                </button>
+                <form method="POST" action="/oauth/authorize" className="flex-grow-1">
+                    <input type="hidden" name="_token" value={csrf_token} />
+                    <input type="hidden" name="_method" value="DELETE" />
+                    <input type="hidden" name="auth_token" value={authRequest} />
+                    <input type="hidden" name="state" value={state} />
+                    <button type="submit" className="btn btn-outline-primary w-100">
+                        Deny
+                    </button>
+                </form>
+                <form method="POST" action="/oauth/authorize" className="flex-grow-1">
+                    <input type="hidden" name="_token" value={csrf_token} />
+                    <input type="hidden" name="auth_token" value={authRequest} />
+                    <input type="hidden" name="state" value={state} />
+                    <button type="submit" className="btn btn-primary w-100">
+                        Allow Access
+                    </button>
+                </form>
             </div>
 
             <p className="text-ava-muted small text-center mt-4 mb-0 pt-3 border-top">

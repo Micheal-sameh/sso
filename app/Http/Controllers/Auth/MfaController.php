@@ -34,6 +34,6 @@ class MfaController extends BaseController
 
         session()->forget(['mfa_pending', 'mfa_user_id']);
 
-        return $this->redirectRoute('account.show', 'Verified successfully.');
+        return $this->redirectIntended('account.show', 'Verified successfully.');
     }
 }
