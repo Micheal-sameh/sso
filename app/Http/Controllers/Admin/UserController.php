@@ -7,9 +7,12 @@ use App\DTOs\UserDTO;
 use App\Enums\UserRole;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
+use App\Models\ClientMeta;
 use App\Repositories\Contracts\TokenRepositoryContract;
+use App\Services\OAuthClientService;
 use App\Services\StageService;
 use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
@@ -24,6 +27,7 @@ class UserController extends BaseController
         protected UserService $userService,
         protected TokenRepositoryContract $tokenRepository,
         protected StageService $stageService,
+        protected OAuthClientService $oauthClientService,
     ) {}
 
     public function index(Request $request): Response
@@ -62,9 +66,18 @@ class UserController extends BaseController
 
     public function show(User $user): Response
     {
+        $specificClients = $this->oauthClientService->listSpecificAccessClients()
+            ->map(fn (ClientMeta $meta) => [
+                'id' => $meta->oauth_client_id,
+                'app_name' => $meta->app_name,
+                'has_access' => $meta->allowedUsers->contains('id', $user->id),
+            ])
+            ->values();
+
         return $this->inertia('Admin/Users/Show', [
             'viewedUser' => UserDTO::fromModel($user)->toArray(),
             'tokens' => $this->tokenRepository->listForUser($user->id),
+            'specificClients' => $specificClients,
         ]);
     }
 
@@ -73,6 +86,21 @@ class UserController extends BaseController
         $this->userService->create(CreateUserDTO::fromRequest($request));
 
         return $this->redirectRoute('admin.users.index', 'User created successfully.');
+    }
+
+    public function edit(User $user): Response
+    {
+        return $this->inertia('Admin/Users/Edit', [
+            'viewedUser' => UserDTO::fromModel($user)->toArray(),
+            'stages' => $this->stageService->listAll(),
+        ]);
+    }
+
+    public function update(User $user, UpdateUserRequest $request): RedirectResponse
+    {
+        $this->userService->updateDetails($user, $request->validated());
+
+        return $this->redirectRoute('admin.users.show', 'User updated successfully.', params: ['user' => $user->id]);
     }
 
     public function toggleActive(User $user): RedirectResponse
@@ -87,5 +115,19 @@ class UserController extends BaseController
         $this->userService->toggleAdminAccess($user);
 
         return $this->redirectBack('Admin access updated.', 'success');
+    }
+
+    public function grantClientAccess(User $user, string $client): RedirectResponse
+    {
+        $this->oauthClientService->grantUserAccess($client, $user->id);
+
+        return $this->redirectBack('Access granted.', 'success');
+    }
+
+    public function revokeClientAccess(User $user, string $client): RedirectResponse
+    {
+        $this->oauthClientService->revokeUserAccess($client, $user->id);
+
+        return $this->redirectBack('Access revoked.', 'success');
     }
 }

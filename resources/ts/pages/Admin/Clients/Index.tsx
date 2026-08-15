@@ -4,10 +4,12 @@ import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
-import type { ClientMeta, PaginatedData } from '@/types'
+import type { ClientMeta, LiteUser, PaginatedData, Stage } from '@/types'
 
 interface IndexProps {
     clients: PaginatedData<ClientMeta>
+    stages: Stage[]
+    users: LiteUser[]
 }
 
 interface ClientForm {
@@ -16,21 +18,71 @@ interface ClientForm {
     homepage_url: string
     app_logo_url: string
     is_internal: boolean
+    access_mode: 'all' | 'stage' | 'specific'
+    stage_ids: number[]
+    user_ids: number[]
 }
 
-export default function Index({ clients }: IndexProps) {
+const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
+    all: 'All Users',
+    stage: 'Specific Stage(s)',
+    specific: 'Specific Users',
+}
+
+const emptyForm: ClientForm = {
+    name: '',
+    redirect: '',
+    homepage_url: '',
+    app_logo_url: '',
+    is_internal: false,
+    access_mode: 'all',
+    stage_ids: [],
+    user_ids: [],
+}
+
+export default function Index({ clients, stages, users }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
-    const form = useForm<ClientForm>({
-        name: '',
-        redirect: '',
-        homepage_url: '',
-        app_logo_url: '',
-        is_internal: false,
-    })
+    const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
+    const [userSearch, setUserSearch] = useState('')
+    const form = useForm<ClientForm>(emptyForm)
+
+    const openCreateModal = () => {
+        setEditingClient(null)
+        form.reset()
+        form.clearErrors()
+        setUserSearch('')
+        setShowModal(true)
+    }
+
+    const openEditModal = (client: ClientMeta) => {
+        setEditingClient(client)
+        form.setData({
+            name: client.app_name,
+            redirect: client.oauth_client.redirect,
+            homepage_url: client.homepage_url ?? '',
+            app_logo_url: client.app_logo_url ?? '',
+            is_internal: client.is_internal,
+            access_mode: client.access_mode,
+            stage_ids: (client.stages ?? []).map((s) => s.id),
+            user_ids: (client.allowed_users ?? []).map((u) => u.id),
+        })
+        form.clearErrors()
+        setUserSearch('')
+        setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+        setEditingClient(null)
+    }
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
-        form.post('/admin/clients', { onSuccess: () => setShowModal(false) })
+        if (editingClient) {
+            form.put(`/admin/clients/${editingClient.oauth_client_id}`, { onSuccess: closeModal })
+        } else {
+            form.post('/admin/clients', { onSuccess: closeModal })
+        }
     }
 
     const copyId = (id: string) => {
@@ -39,9 +91,33 @@ export default function Index({ clients }: IndexProps) {
 
     const revoke = (client: ClientMeta) => {
         if (confirm(`Revoke client ${client.app_name}?`)) {
-            router.delete(`/admin/clients/${client.id}`)
+            router.delete(`/admin/clients/${client.oauth_client_id}`)
         }
     }
+
+    const toggleStage = (stageId: number) => {
+        form.setData(
+            'stage_ids',
+            form.data.stage_ids.includes(stageId)
+                ? form.data.stage_ids.filter((id) => id !== stageId)
+                : [...form.data.stage_ids, stageId],
+        )
+    }
+
+    const toggleUser = (userId: number) => {
+        form.setData(
+            'user_ids',
+            form.data.user_ids.includes(userId)
+                ? form.data.user_ids.filter((id) => id !== userId)
+                : [...form.data.user_ids, userId],
+        )
+    }
+
+    const filteredUsers = users.filter(
+        (u) =>
+            u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
+            u.email.toLowerCase().includes(userSearch.toLowerCase()),
+    )
 
     const internalCount = clients.data.filter((c) => c.is_internal).length
     const externalCount = clients.data.length - internalCount
@@ -50,7 +126,7 @@ export default function Index({ clients }: IndexProps) {
         <AdminLayout
             title="OAuth Clients"
             action={
-                <button type="button" className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
+                <button type="button" className="btn btn-primary btn-sm" onClick={openCreateModal}>
                     <i className="bi bi-plus-lg" />
                     <span className="d-none d-sm-inline ms-1">Register New Client</span>
                 </button>
@@ -86,6 +162,7 @@ export default function Index({ clients }: IndexProps) {
                                 <th>App Name</th>
                                 <th>Client ID</th>
                                 <th>Type</th>
+                                <th>Access</th>
                                 <th>Status</th>
                                 <th>Redirect URI</th>
                                 <th />
@@ -131,13 +208,25 @@ export default function Index({ clients }: IndexProps) {
                                         <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
                                     </td>
                                     <td>
+                                        <span className="role-chip">{ACCESS_MODE_LABELS[client.access_mode]}</span>
+                                    </td>
+                                    <td>
                                         <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
                                     </td>
                                     <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect}</td>
                                     <td>
-                                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
-                                            Revoke
-                                        </button>
+                                        <div className="d-flex gap-2">
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-primary"
+                                                onClick={() => openEditModal(client)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
+                                                Revoke
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -184,6 +273,10 @@ export default function Index({ clients }: IndexProps) {
                             <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
                         </div>
                         <div className="record-card-row">
+                            <span className="record-card-label">Access</span>
+                            <span className="role-chip">{ACCESS_MODE_LABELS[client.access_mode]}</span>
+                        </div>
+                        <div className="record-card-row">
                             <span className="record-card-label">Status</span>
                             <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
                         </div>
@@ -195,6 +288,9 @@ export default function Index({ clients }: IndexProps) {
                         </div>
 
                         <div className="record-card-actions">
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(client)}>
+                                Edit
+                            </button>
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
                                 Revoke
                             </button>
@@ -212,8 +308,8 @@ export default function Index({ clients }: IndexProps) {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Register New Client</h5>
-                                <button type="button" className="btn-close" onClick={() => setShowModal(false)} />
+                                <h5 className="modal-title">{editingClient ? `Edit ${editingClient.app_name}` : 'Register New Client'}</h5>
+                                <button type="button" className="btn-close" onClick={closeModal} />
                             </div>
                             <form onSubmit={submit}>
                                 <div className="modal-body">
@@ -261,7 +357,7 @@ export default function Index({ clients }: IndexProps) {
                                             <div className="text-danger small mt-1">{form.errors.app_logo_url}</div>
                                         )}
                                     </div>
-                                    <div className="form-check form-switch">
+                                    <div className="form-check form-switch mb-3">
                                         <input
                                             id="is_internal"
                                             type="checkbox"
@@ -271,13 +367,91 @@ export default function Index({ clients }: IndexProps) {
                                         />
                                         <label className="form-check-label" htmlFor="is_internal">Internal application</label>
                                     </div>
+
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="access_mode">Who can authenticate</label>
+                                        <select
+                                            id="access_mode"
+                                            className="form-select"
+                                            value={form.data.access_mode}
+                                            onChange={(e) => form.setData('access_mode', e.target.value as ClientForm['access_mode'])}
+                                        >
+                                            <option value="all">All Users</option>
+                                            <option value="stage">Specific Stage(s)</option>
+                                            <option value="specific">Specific Users</option>
+                                        </select>
+                                        {form.errors.access_mode && (
+                                            <div className="text-danger small mt-1">{form.errors.access_mode}</div>
+                                        )}
+                                    </div>
+
+                                    {form.data.access_mode === 'stage' && (
+                                        <div className="mb-3">
+                                            <label className="form-label">Allowed Stages</label>
+                                            <div className="permission-list">
+                                                {stages.map((stage) => (
+                                                    <div key={stage.id} className="form-check">
+                                                        <input
+                                                            id={`stage-${stage.id}`}
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            checked={form.data.stage_ids.includes(stage.id)}
+                                                            onChange={() => toggleStage(stage.id)}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`stage-${stage.id}`}>
+                                                            {stage.name}
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                            {form.errors.stage_ids && (
+                                                <div className="text-danger small mt-1">{form.errors.stage_ids}</div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {form.data.access_mode === 'specific' && (
+                                        <div className="mb-3">
+                                            <label className="form-label">Allowed Users</label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-2"
+                                                placeholder="Search users..."
+                                                value={userSearch}
+                                                onChange={(e) => setUserSearch(e.target.value)}
+                                            />
+                                            <div className="permission-list scroll-picker">
+                                                {filteredUsers.map((u) => (
+                                                    <div key={u.id} className="form-check">
+                                                        <input
+                                                            id={`user-${u.id}`}
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            checked={form.data.user_ids.includes(u.id)}
+                                                            onChange={() => toggleUser(u.id)}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`user-${u.id}`}>
+                                                            {u.name}
+                                                            <span className="text-ava-muted text-tiny ms-1">{u.email}</span>
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                                {filteredUsers.length === 0 && (
+                                                    <p className="text-ava-muted text-tiny mb-0">No users match your search.</p>
+                                                )}
+                                            </div>
+                                            {form.errors.user_ids && (
+                                                <div className="text-danger small mt-1">{form.errors.user_ids}</div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-outline-primary" onClick={() => setShowModal(false)}>
+                                    <button type="button" className="btn btn-outline-primary" onClick={closeModal}>
                                         Cancel
                                     </button>
                                     <button type="submit" className="btn btn-primary" disabled={form.processing}>
-                                        Register
+                                        {editingClient ? 'Save Changes' : 'Register'}
                                     </button>
                                 </div>
                             </form>

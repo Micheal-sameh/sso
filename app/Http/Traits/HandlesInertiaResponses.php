@@ -13,9 +13,9 @@ trait HandlesInertiaResponses
         return Inertia::render($component, $props);
     }
 
-    protected function redirectRoute(string $route, ?string $message = null, string $type = 'success'): RedirectResponse
+    protected function redirectRoute(string $route, ?string $message = null, string $type = 'success', array $params = []): RedirectResponse
     {
-        return redirect()->route($route)->with('flash', ['type' => $type, 'message' => $message]);
+        return redirect()->route($route, $params)->with('flash', ['type' => $type, 'message' => $message]);
     }
 
     /**

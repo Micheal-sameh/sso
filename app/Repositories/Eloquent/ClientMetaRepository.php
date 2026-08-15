@@ -3,18 +3,23 @@
 namespace App\Repositories\Eloquent;
 
 use App\DTOs\OAuthClientDTO;
+use App\Enums\ClientAccessMode;
 use App\Models\ClientMeta;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ClientMetaRepository implements ClientMetaRepositoryContract
 {
     /**
-     * Find client metadata by the associated OAuth client id.
+     * Find client metadata by the associated OAuth client id, eager loading
+     * the relations needed to evaluate access control.
      */
     public function findByClientId(string $clientId): ?ClientMeta
     {
-        return ClientMeta::with(['oauthClient'])->where('oauth_client_id', $clientId)->first();
+        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers'])
+            ->where('oauth_client_id', $clientId)
+            ->first();
     }
 
     /**
@@ -28,6 +33,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
             'app_logo_url' => $dto->appLogoUrl,
             'homepage_url' => $dto->homepageUrl,
             'is_internal' => $dto->isInternal,
+            'access_mode' => $dto->accessMode,
         ]);
     }
 
@@ -38,7 +44,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
     {
         $meta->update($data);
 
-        return $meta->fresh(['oauthClient']);
+        return $meta->fresh(['oauthClient', 'stages', 'allowedUsers']);
     }
 
     /**
@@ -46,6 +52,51 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
      */
     public function listAll(int $perPage = 20): LengthAwarePaginator
     {
-        return ClientMeta::with(['oauthClient'])->latest()->paginate($perPage)->withQueryString();
+        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers'])->latest()->paginate($perPage)->withQueryString();
+    }
+
+    /**
+     * Replace the set of stages allowed to authenticate with this client.
+     */
+    public function syncStageAccess(string $oauthClientId, array $stageIds): void
+    {
+        ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->stages()->sync($stageIds);
+    }
+
+    /**
+     * Replace the set of individual users allowed to authenticate with this client.
+     */
+    public function syncUserAccess(string $oauthClientId, array $userIds): void
+    {
+        ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->allowedUsers()->sync($userIds);
+    }
+
+    /**
+     * All clients using the given access mode.
+     *
+     * @return Collection<int, ClientMeta>
+     */
+    public function listByAccessMode(ClientAccessMode $mode): Collection
+    {
+        return ClientMeta::with(['oauthClient', 'allowedUsers'])
+            ->where('access_mode', $mode)
+            ->orderBy('app_name')
+            ->get();
+    }
+
+    /**
+     * Grant a single user access to a "specific users" client without disturbing existing access.
+     */
+    public function attachUser(string $oauthClientId, int $userId): void
+    {
+        ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->allowedUsers()->syncWithoutDetaching([$userId]);
+    }
+
+    /**
+     * Revoke a single user's access to a "specific users" client.
+     */
+    public function detachUser(string $oauthClientId, int $userId): void
+    {
+        ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->allowedUsers()->detach($userId);
     }
 }

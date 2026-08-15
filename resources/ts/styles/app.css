@@ -435,6 +435,14 @@ small, .small {
     border-radius: var(--bs-border-radius-lg);
     padding: 20px;
 }
+.scroll-picker {
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
 
 .step-badge {
     flex-shrink: 0;

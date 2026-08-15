@@ -48,13 +48,20 @@ Route::middleware('auth')->group(function () {
         Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');
         Route::post('/users', [UserController::class, 'store'])->name('users.store');
         Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::patch('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
         Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])
             ->middleware('can:manage admin access')
             ->name('users.toggle-admin-access');
+        Route::post('/users/{user}/client-access/{client}', [UserController::class, 'grantClientAccess'])
+            ->name('users.client-access.grant');
+        Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
+            ->name('users.client-access.revoke');
 
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+        Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
         Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 
         Route::get('/tokens', [TokenController::class, 'index'])->name('tokens.index');

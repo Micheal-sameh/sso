@@ -49,7 +49,24 @@ export interface ClientMeta {
     homepage_url: string | null
     is_internal: boolean
     is_verified: boolean
+    access_mode: 'all' | 'stage' | 'specific'
     oauth_client: OAuthClient
+    stages?: Stage[]
+    allowed_users?: { id: number }[]
+}
+
+export interface SpecificClientAccess {
+    id: string
+    app_name: string
+    has_access: boolean
+}
+
+export interface LiteUser {
+    id: number
+    name: string
+    email: string
+    membership_code: string
+    stage_id: number
 }
 
 export interface Token {

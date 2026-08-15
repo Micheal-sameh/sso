@@ -8,6 +8,7 @@ use App\Enums\UserRole;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class UserRepository implements UserRepositoryContract
@@ -133,5 +134,16 @@ class UserRepository implements UserRepositoryContract
         }
 
         return $user->fresh(['mfa', 'roles', 'stage']);
+    }
+
+    /**
+     * List every user's identifying fields only, for lightweight admin pickers.
+     */
+    public function allLite(): Collection
+    {
+        return User::query()
+            ->with('stage')
+            ->orderBy('name')
+            ->get(['id', 'name', 'email', 'membership_code', 'stage_id']);
     }
 }

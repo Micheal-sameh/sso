@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, router, usePage } from '@inertiajs/react'
+import { router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import Pagination from '@/components/shared/Pagination'
@@ -124,7 +124,12 @@ export default function Index({ users, stages, filters }: IndexProps) {
                         </thead>
                         <tbody>
                             {users.data.map((user) => (
-                                <tr key={user.id}>
+                                <tr
+                                    key={user.id}
+                                    role="button"
+                                    className="cursor-pointer"
+                                    onClick={() => router.visit(`/admin/users/${user.id}`)}
+                                >
                                     <td>
                                         {user.avatar ? (
                                             <img
@@ -138,11 +143,7 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                             <AvatarInitials name={user.name} />
                                         )}
                                     </td>
-                                    <td className="fw-semibold">
-                                        <Link href={`/admin/users/${user.id}`} className="text-reset text-decoration-none">
-                                            {user.name}
-                                        </Link>
-                                    </td>
+                                    <td className="fw-semibold">{user.name}</td>
                                     <td className="text-ava-muted">{user.email}</td>
                                     <td>
                                         <span className="code-chip">{user.membership_code}</span>
@@ -158,13 +159,14 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                         <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
                                     </td>
                                     <td className="text-ava-muted text-tiny">{user.email_verified_at}</td>
-                                    <td className="text-nowrap">
+                                    <td className="text-nowrap" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             type="button"
                                             className="btn btn-sm btn-outline-primary me-2"
-                                            onClick={() => router.visit(`/admin/users/${user.id}`)}
+                                            title="Edit user"
+                                            onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
                                         >
-                                            View
+                                            <i className="bi bi-pencil" />
                                         </button>
                                         <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
                                             Toggle Active
@@ -191,7 +193,12 @@ export default function Index({ users, stages, filters }: IndexProps) {
             {/* Card view (below md) */}
             <div className="d-md-none">
                 {users.data.map((user) => (
-                    <div key={user.id} className="record-card">
+                    <div
+                        key={user.id}
+                        className="record-card cursor-pointer"
+                        role="button"
+                        onClick={() => router.visit(`/admin/users/${user.id}`)}
+                    >
                         <div className="d-flex align-items-center gap-3 mb-2">
                             {user.avatar ? (
                                 <img src={user.avatar} alt={user.name} width={40} height={40} className="rounded-circle" />
@@ -229,13 +236,14 @@ export default function Index({ users, stages, filters }: IndexProps) {
                             <span className="text-ava-muted text-tiny">{user.email_verified_at}</span>
                         </div>
 
-                        <div className="record-card-actions">
+                        <div className="record-card-actions" onClick={(e) => e.stopPropagation()}>
                             <button
                                 type="button"
                                 className="btn btn-sm btn-outline-primary"
-                                onClick={() => router.visit(`/admin/users/${user.id}`)}
+                                title="Edit user"
+                                onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
                             >
-                                View
+                                <i className="bi bi-pencil" />
                             </button>
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => toggle(user)}>
                                 Toggle Active

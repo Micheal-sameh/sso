@@ -51,6 +51,33 @@ class UserService
     }
 
     /**
+     * Update a user's admin-editable details (name, email, membership code, stage, role),
+     * keeping the Spatie role assignment in sync with the chosen role.
+     *
+     * @throws SelfModificationException
+     */
+    public function updateDetails(User $user, array $validated): User
+    {
+        $newRole = UserRole::from($validated['role']);
+
+        if (Auth::id() === $user->id && $newRole !== $user->role) {
+            throw new SelfModificationException('You cannot change your own role.');
+        }
+
+        $user = $this->userRepository->update($user, [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'membership_code' => $validated['membership_code'],
+            'stage_id' => $validated['stage_id'],
+            'role' => $newRole,
+        ]);
+
+        $user->syncRoles($newRole === UserRole::User ? [] : [$newRole->value]);
+
+        return $user->fresh(['mfa', 'stage', 'roles']);
+    }
+
+    /**
      * Paginate users, optionally filtered by search term, role, and stage.
      */
     public function paginate(int $perPage, ?string $search, ?UserRole $role, ?int $stageId = null): LengthAwarePaginator

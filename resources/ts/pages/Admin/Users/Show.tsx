@@ -3,14 +3,23 @@ import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
-import type { Token, User } from '@/types'
+import type { SpecificClientAccess, Token, User } from '@/types'
 
 interface ShowProps {
     viewedUser: User
     tokens: Token[]
+    specificClients: SpecificClientAccess[]
 }
 
-export default function Show({ viewedUser, tokens }: ShowProps) {
+export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
+    const toggleClientAccess = (client: SpecificClientAccess) => {
+        if (client.has_access) {
+            router.delete(`/admin/users/${viewedUser.id}/client-access/${client.id}`, { preserveScroll: true })
+        } else {
+            router.post(`/admin/users/${viewedUser.id}/client-access/${client.id}`, {}, { preserveScroll: true })
+        }
+    }
+
     const forceLogout = (token: Token) => {
         if (confirm(`Force ${viewedUser.name} to log out of ${token.client.name}?`)) {
             router.delete(`/admin/tokens/${token.id}`, { preserveScroll: true })
@@ -31,10 +40,20 @@ export default function Show({ viewedUser, tokens }: ShowProps) {
         <AdminLayout
             title="User Detail"
             action={
-                <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => router.visit('/admin/users')}>
-                    <i className="bi bi-arrow-left me-1" />
-                    Back to Users
-                </button>
+                <div className="d-flex gap-2">
+                    <button
+                        type="button"
+                        className="btn btn-primary btn-sm"
+                        onClick={() => router.visit(`/admin/users/${viewedUser.id}/edit`)}
+                    >
+                        <i className="bi bi-pencil me-1" />
+                        Edit
+                    </button>
+                    <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => router.visit('/admin/users')}>
+                        <i className="bi bi-arrow-left me-1" />
+                        Back to Users
+                    </button>
+                </div>
             }
         >
             <div className="ava-card mb-4">
@@ -101,6 +120,42 @@ export default function Show({ viewedUser, tokens }: ShowProps) {
                                 >
                                     <i className="bi bi-box-arrow-right me-1" />
                                     Force Logout
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            <h5 className="mb-3 mt-4">Specific-User App Access</h5>
+            {specificClients.length === 0 ? (
+                <div className="ava-card">
+                    <div className="text-center py-5">
+                        <i className="bi bi-shield-lock text-ava-muted icon-fs-48" />
+                        <p className="text-ava-muted mt-3 mb-0">
+                            No clients are restricted to specific users yet. Set a client's access to "Specific Users" on the
+                            Clients page to manage access here.
+                        </p>
+                    </div>
+                </div>
+            ) : (
+                <div className="ava-card">
+                    <ul className="list-group list-group-flush">
+                        {specificClients.map((client) => (
+                            <li
+                                key={client.id}
+                                className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3"
+                            >
+                                <div className="min-w-0">
+                                    <div className="fw-semibold">{client.app_name}</div>
+                                    <StatusBadge status={client.has_access ? 'active' : 'disabled'} />
+                                </div>
+                                <button
+                                    type="button"
+                                    className={`btn btn-sm text-nowrap ${client.has_access ? 'btn-outline-primary' : 'btn-primary'}`}
+                                    onClick={() => toggleClientAccess(client)}
+                                >
+                                    {client.has_access ? 'Revoke Access' : 'Grant Access'}
                                 </button>
                             </li>
                         ))}

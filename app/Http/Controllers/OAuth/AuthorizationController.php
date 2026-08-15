@@ -4,7 +4,7 @@ namespace App\Http\Controllers\OAuth;
 
 use App\Enums\OAuthScope;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
-use App\Services\OAuthClientService;
+use App\Services\ClientAccessService;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -28,8 +28,8 @@ class AuthorizationController extends PassportAuthorizationController
         AuthorizationServer $server,
         StatefulGuard $guard,
         ClientRepository $clients,
-        protected OAuthClientService $oauthClientService,
         protected ClientMetaRepositoryContract $clientMetaRepository,
+        protected ClientAccessService $clientAccessService,
     ) {
         parent::__construct($server, $guard, $clients);
     }
@@ -59,15 +59,20 @@ class AuthorizationController extends PassportAuthorizationController
 
         $scopes = $this->parseScopes($authRequest);
         $client = $this->clients->find($authRequest->getClient()->getIdentifier());
+        $meta = $this->clientMetaRepository->findByClientId($client->id);
 
-        if ($this->oauthClientService->isInternalClient($client->id)) {
+        if ($meta !== null && ! $this->clientAccessService->userCanAccess($user, $meta)) {
+            return Inertia::render('OAuth/AccessDenied', [
+                'client' => ['name' => $meta->app_name],
+            ])->toResponse($request);
+        }
+
+        if ($meta?->is_internal) {
             return $this->approveRequest($authRequest, $psrResponse);
         }
 
         $request->session()->put('authToken', $authToken = Str::random());
         $request->session()->put('authRequest', serialize($authRequest));
-
-        $meta = $this->clientMetaRepository->findByClientId($client->id);
 
         return Inertia::render('OAuth/Authorize', [
             'client' => [

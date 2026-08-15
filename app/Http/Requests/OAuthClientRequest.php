@@ -19,6 +19,11 @@ class OAuthClientRequest extends FormRequest
             'homepage_url' => ['nullable', 'url'],
             'app_logo_url' => ['nullable', 'url'],
             'is_internal' => ['boolean'],
+            'access_mode' => ['required', 'in:all,stage,specific'],
+            'stage_ids' => ['required_if:access_mode,stage', 'array'],
+            'stage_ids.*' => ['integer', 'exists:stages,id'],
+            'user_ids' => ['required_if:access_mode,specific', 'array'],
+            'user_ids.*' => ['integer', 'exists:users,id'],
         ];
     }
 }
