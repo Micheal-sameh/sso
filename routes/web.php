@@ -32,10 +32,8 @@ Route::middleware('guest')->group(function () {
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
-Route::middleware('signed')->group(function () {
-    Route::get('/avatar-upload/{user}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
-    Route::post('/avatar-upload/{user}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
-});
+Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
+Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
 
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');

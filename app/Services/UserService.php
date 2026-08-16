@@ -7,17 +7,18 @@ use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Exceptions\Auth\SelfModificationException;
 use App\Models\User;
+use App\Repositories\Contracts\AvatarUploadTokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 
 class UserService
 {
     public function __construct(
         protected UserRepositoryContract $userRepository,
+        protected AvatarUploadTokenRepositoryContract $avatarUploadTokenRepository,
     ) {}
 
     /**
@@ -69,7 +70,7 @@ class UserService
 
     /**
      * Replace a user's profile picture, used both by the admin edit form and
-     * the signed, tokenized self-service avatar upload link.
+     * the tokenized self-service avatar upload link.
      */
     public function updateAvatar(User $user, UploadedFile $avatar): void
     {
@@ -77,13 +78,16 @@ class UserService
     }
 
     /**
-     * Build a temporary signed link a user can visit, without logging in, to
-     * upload their own profile picture. Intended for an admin to copy and
-     * relay via another channel (e.g. WhatsApp).
+     * Issue a one-time, 3-minute upload link a user can visit, without logging
+     * in, to upload their own profile picture. Intended for an admin to copy
+     * and relay via another channel (e.g. WhatsApp). Generating a new link
+     * invalidates any link issued to the same user previously.
      */
     public function generateAvatarUploadLink(User $user): string
     {
-        return URL::temporarySignedRoute('avatar-upload.show', now()->addDays(7), ['user' => $user->id]);
+        $token = $this->avatarUploadTokenRepository->create($user);
+
+        return route('avatar-upload.show', ['token' => $token->token]);
     }
 
     /**
