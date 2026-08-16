@@ -35,24 +35,9 @@ class UserService
     }
 
     /**
-     * Update a user's profile with validated attributes, handling avatar upload.
-     */
-    public function update(User $user, array $validated): User
-    {
-        $data = collect($validated)->except('avatar')->all();
-
-        if (isset($validated['avatar']) && $validated['avatar'] instanceof UploadedFile) {
-            $extension = $validated['avatar']->getClientOriginalExtension();
-            $path = $validated['avatar']->storeAs('avatars', "{$user->uuid}.{$extension}", 'public');
-            $data['avatar'] = $path;
-        }
-
-        return $this->userRepository->update($user, $data);
-    }
-
-    /**
-     * Update a user's admin-editable details (name, email, membership code, stage, role),
-     * keeping the Spatie role assignment in sync with the chosen role.
+     * Update a user's admin-editable details (name, email, phone, stage, role, avatar),
+     * keeping the Spatie role assignment in sync with the chosen role. The membership
+     * code is permanently immutable once a user is created, even for a super admin.
      *
      * @throws SelfModificationException
      */
@@ -64,18 +49,32 @@ class UserService
             throw new SelfModificationException('You cannot change your own role.');
         }
 
-        $user = $this->userRepository->update($user, [
+        $data = [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
-            'membership_code' => $validated['membership_code'],
             'stage_id' => $validated['stage_id'],
             'role' => $newRole,
-        ]);
+        ];
 
+        if (isset($validated['avatar']) && $validated['avatar'] instanceof UploadedFile) {
+            $data['avatar'] = $this->storeAvatar($user, $validated['avatar']);
+        }
+
+        $user = $this->userRepository->update($user, $data);
         $user->syncRoles($newRole === UserRole::User ? [] : [$newRole->value]);
 
         return $user->fresh(['mfa', 'stage', 'roles']);
+    }
+
+    /**
+     * Store an uploaded avatar under a stable, user-specific filename.
+     */
+    private function storeAvatar(User $user, UploadedFile $avatar): string
+    {
+        $extension = $avatar->getClientOriginalExtension();
+
+        return $avatar->storeAs('avatars', "{$user->uuid}.{$extension}", 'public');
     }
 
     /**

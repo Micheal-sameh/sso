@@ -1,6 +1,8 @@
-import type { FormEvent } from 'react'
+import { useState } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import AvatarInitials from '@/components/shared/AvatarInitials'
 import type { Stage, User } from '@/types'
 
 interface EditProps {
@@ -12,29 +14,59 @@ interface EditForm {
     name: string
     email: string
     phone: string
-    membership_code: string
     role: string
     stage_id: string
+    avatar: File | null
 }
 
 export default function Edit({ viewedUser, stages }: EditProps) {
+    const [preview, setPreview] = useState<string | null>(viewedUser.avatar)
     const form = useForm<EditForm>({
         name: viewedUser.name,
         email: viewedUser.email,
         phone: viewedUser.phone ?? '',
-        membership_code: viewedUser.membership_code,
         role: viewedUser.role,
         stage_id: String(viewedUser.stage.id),
+        avatar: null,
     })
+
+    const onAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null
+        form.setData('avatar', file)
+
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = () => setPreview(reader.result as string)
+            reader.readAsDataURL(file)
+        }
+    }
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
-        form.put(`/admin/users/${viewedUser.id}`)
+        form.put(`/admin/users/${viewedUser.id}`, { forceFormData: true })
     }
 
     return (
         <AdminLayout title="Edit User">
             <div className="ava-card p-4 max-w-560">
+                <div className="d-flex align-items-center gap-3 mb-4">
+                    {preview ? (
+                        <img
+                            src={preview}
+                            alt={viewedUser.name}
+                            width={80}
+                            height={80}
+                            className="rounded-circle object-fit-cover"
+                        />
+                    ) : (
+                        <AvatarInitials name={viewedUser.name} size={80} />
+                    )}
+                    <div>
+                        <input type="file" accept="image/*" className="form-control" onChange={onAvatarChange} />
+                        {form.errors.avatar && <div className="text-danger small mt-1">{form.errors.avatar}</div>}
+                    </div>
+                </div>
+
                 <form onSubmit={submit}>
                     <div className="mb-3">
                         <label className="form-label" htmlFor="name">Name</label>
@@ -75,13 +107,13 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                         <label className="form-label" htmlFor="membership_code">Membership Code</label>
                         <input
                             id="membership_code"
-                            className="form-control"
-                            value={form.data.membership_code}
-                            onChange={(e) => form.setData('membership_code', e.target.value)}
+                            className="form-control text-ava-muted"
+                            value={viewedUser.membership_code}
+                            readOnly
                         />
-                        {form.errors.membership_code && (
-                            <div className="text-danger small mt-1">{form.errors.membership_code}</div>
-                        )}
+                        <p className="text-ava-muted text-tiny mt-1 mb-0">
+                            The membership code is permanent and cannot be changed once a user is created.
+                        </p>
                     </div>
 
                     <div className="mb-3">

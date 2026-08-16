@@ -1,16 +1,13 @@
-import { useState } from 'react'
-import type { ChangeEvent, FormEvent } from 'react'
+import type { FormEvent } from 'react'
 import { useForm } from '@inertiajs/react'
 import AppLayout from '@/components/layouts/AppLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
+import RoleChip from '@/components/shared/RoleChip'
+import StatusBadge from '@/components/shared/StatusBadge'
 import type { User } from '@/types'
 
 interface ShowProps {
     user: User
-}
-
-interface ProfileForm {
-    avatar: File | null
 }
 
 interface PasswordForm {
@@ -19,30 +16,19 @@ interface PasswordForm {
     password_confirmation: string
 }
 
+interface DetailRow {
+    icon: string
+    label: string
+    value: string
+    mono?: boolean
+}
+
 export default function Show({ user }: ShowProps) {
-    const [preview, setPreview] = useState<string | null>(user.avatar)
-    const form = useForm<ProfileForm>({ avatar: null })
     const passwordForm = useForm<PasswordForm>({
         current_password: '',
         password: '',
         password_confirmation: '',
     })
-
-    const onAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] ?? null
-        form.setData('avatar', file)
-
-        if (file) {
-            const reader = new FileReader()
-            reader.onload = () => setPreview(reader.result as string)
-            reader.readAsDataURL(file)
-        }
-    }
-
-    const submit = (e: FormEvent) => {
-        e.preventDefault()
-        form.post('/account', { forceFormData: true })
-    }
 
     const submitPassword = (e: FormEvent) => {
         e.preventDefault()
@@ -52,95 +38,116 @@ export default function Show({ user }: ShowProps) {
         })
     }
 
+    const detailRows: DetailRow[] = [
+        { icon: 'bi-envelope', label: 'Email', value: user.email },
+        { icon: 'bi-telephone', label: 'Phone', value: user.phone ?? 'Not set' },
+        { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
+        { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
+    ]
+
     return (
         <AppLayout title="Profile">
-            <div className="ava-card p-4 max-w-560 mb-4">
-                <div className="d-flex align-items-center gap-3 mb-4">
-                    {preview ? (
+            <div className="ava-card mb-4">
+                <div className="card-accent card-accent-primary" />
+                <div className="p-4 d-flex flex-column flex-sm-row align-items-sm-center gap-3">
+                    {user.avatar ? (
                         <img
-                            src={preview}
+                            src={user.avatar}
                             alt={user.name}
-                            width={80}
-                            height={80}
+                            width={72}
+                            height={72}
                             className="rounded-circle object-fit-cover"
                         />
                     ) : (
-                        <AvatarInitials name={user.name} size={80} />
+                        <AvatarInitials name={user.name} size={72} />
                     )}
-                    <div>
-                        <input type="file" accept="image/*" className="form-control" onChange={onAvatarChange} />
-                        {form.errors.avatar && <div className="text-danger small mt-1">{form.errors.avatar}</div>}
+                    <div className="min-w-0">
+                        <h4 className="mb-1">{user.name}</h4>
+                        <div className="d-flex flex-wrap gap-2">
+                            <RoleChip role={user.role} />
+                            <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="row g-4">
+                <div className="col-lg-6">
+                    <h5 className="mb-3">Account Details</h5>
+                    <div className="ava-card">
+                        <ul className="list-group list-group-flush">
+                            {detailRows.map((row) => (
+                                <li key={row.label} className="list-group-item d-flex align-items-center gap-3 p-3">
+                                    <div className="icon-tile text-ava-primary flex-shrink-0">
+                                        <i className={`bi ${row.icon}`} />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="record-card-label mb-1">{row.label}</div>
+                                        <div className={row.mono ? 'code-chip' : 'fw-semibold text-truncate'}>{row.value}</div>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="app-requesting-banner mt-3 d-flex align-items-start gap-2">
+                        <i className="bi bi-info-circle mt-1" />
+                        <span>Your profile details and photo are managed by an administrator. Contact one to make changes.</span>
                     </div>
                 </div>
 
-                <form onSubmit={submit} className="mb-4">
-                    <div className="mb-3">
-                        <label className="form-label" htmlFor="name">Name</label>
-                        <input id="name" className="form-control text-ava-muted" value={user.name} readOnly />
+                <div className="col-lg-6">
+                    <h5 className="mb-1">Change Password</h5>
+                    <p className="text-ava-muted text-tiny mb-3">Use a strong password that you don&apos;t reuse elsewhere.</p>
+
+                    <div className="ava-card p-4">
+                        <form onSubmit={submitPassword}>
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="current_password">Current Password</label>
+                                <input
+                                    id="current_password"
+                                    type="password"
+                                    className="form-control"
+                                    value={passwordForm.data.current_password}
+                                    onChange={(e) => passwordForm.setData('current_password', e.target.value)}
+                                />
+                                {passwordForm.errors.current_password && (
+                                    <div className="text-danger small mt-1">{passwordForm.errors.current_password}</div>
+                                )}
+                            </div>
+
+                            <div className="mb-3">
+                                <label className="form-label" htmlFor="password">New Password</label>
+                                <input
+                                    id="password"
+                                    type="password"
+                                    className="form-control"
+                                    value={passwordForm.data.password}
+                                    onChange={(e) => passwordForm.setData('password', e.target.value)}
+                                />
+                                {passwordForm.errors.password && (
+                                    <div className="text-danger small mt-1">{passwordForm.errors.password}</div>
+                                )}
+                            </div>
+
+                            <div className="mb-4">
+                                <label className="form-label" htmlFor="password_confirmation">Confirm New Password</label>
+                                <input
+                                    id="password_confirmation"
+                                    type="password"
+                                    className="form-control"
+                                    value={passwordForm.data.password_confirmation}
+                                    onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
+                                />
+                            </div>
+
+                            <button type="submit" className="btn btn-primary" disabled={passwordForm.processing}>
+                                <i className="bi bi-shield-lock me-1" />
+                                Update Password
+                            </button>
+                        </form>
                     </div>
-
-                    <div className="mb-3">
-                        <label className="form-label" htmlFor="email">Email</label>
-                        <input id="email" className="form-control text-ava-muted" value={user.email} readOnly />
-                    </div>
-
-                    <p className="text-ava-muted text-tiny mb-3">
-                        Your profile details are managed by an administrator. Contact one to update your name, email, or other
-                        account details.
-                    </p>
-
-                    <button type="submit" className="btn btn-primary" disabled={form.processing}>
-                        Save Photo
-                    </button>
-                </form>
-            </div>
-
-            <div className="ava-card p-4 max-w-560">
-                <h5 className="mb-3">Change Password</h5>
-                <form onSubmit={submitPassword}>
-                    <div className="mb-3">
-                        <label className="form-label" htmlFor="current_password">Current Password</label>
-                        <input
-                            id="current_password"
-                            type="password"
-                            className="form-control"
-                            value={passwordForm.data.current_password}
-                            onChange={(e) => passwordForm.setData('current_password', e.target.value)}
-                        />
-                        {passwordForm.errors.current_password && (
-                            <div className="text-danger small mt-1">{passwordForm.errors.current_password}</div>
-                        )}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label" htmlFor="password">New Password</label>
-                        <input
-                            id="password"
-                            type="password"
-                            className="form-control"
-                            value={passwordForm.data.password}
-                            onChange={(e) => passwordForm.setData('password', e.target.value)}
-                        />
-                        {passwordForm.errors.password && (
-                            <div className="text-danger small mt-1">{passwordForm.errors.password}</div>
-                        )}
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="form-label" htmlFor="password_confirmation">Confirm New Password</label>
-                        <input
-                            id="password_confirmation"
-                            type="password"
-                            className="form-control"
-                            value={passwordForm.data.password_confirmation}
-                            onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary" disabled={passwordForm.processing}>
-                        Update Password
-                    </button>
-                </form>
+                </div>
             </div>
         </AppLayout>
     )

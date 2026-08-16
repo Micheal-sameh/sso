@@ -41,7 +41,6 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('show');
-        Route::post('/', [ProfileController::class, 'update'])->name('update');
         Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
         Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
         Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
