@@ -27,7 +27,7 @@ export default function Sidebar({ links, footerLinks, open, onClose }: SidebarPr
         <>
             {open && <div className="sidebar-overlay d-lg-none" onClick={onClose} />}
             <aside className={`sidebar-main d-flex flex-column py-4 ${open ? 'sidebar-open' : ''}`}>
-                <div className="px-3 mb-4 d-flex align-items-center justify-content-between">
+                <div className="sidebar-logo-row px-3 mb-4 d-flex align-items-center justify-content-between">
                     <AvaLogo size={36} showText textColor="#fff" />
                     <button
                         type="button"
@@ -44,7 +44,7 @@ export default function Sidebar({ links, footerLinks, open, onClose }: SidebarPr
                             className={`sidebar-link ${url.startsWith(link.href) ? 'active' : ''}`}
                         >
                             <i className={`bi ${link.icon}`} />
-                            {link.label}
+                            <span className="sidebar-link-label">{link.label}</span>
                         </Link>
                     ))}
                 </nav>
@@ -53,7 +53,7 @@ export default function Sidebar({ links, footerLinks, open, onClose }: SidebarPr
                         {footerLinks.map((link) => (
                             <Link key={link.href} href={link.href} className="sidebar-link">
                                 <i className={`bi ${link.icon}`} />
-                                {link.label}
+                                <span className="sidebar-link-label">{link.label}</span>
                             </Link>
                         ))}
                     </div>
