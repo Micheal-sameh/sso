@@ -14,39 +14,38 @@ interface ShowProps {
 
 export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
     const { csrf_token } = usePage<SharedProps>().props
-    const [linkBusy, setLinkBusy] = useState(false)
-    const [linkCopied, setLinkCopied] = useState(false)
+    const [resetLinkBusy, setResetLinkBusy] = useState(false)
+    const [resetLinkCopied, setResetLinkCopied] = useState(false)
+    const [avatarLinkBusy, setAvatarLinkBusy] = useState(false)
+    const [avatarLinkCopied, setAvatarLinkCopied] = useState(false)
 
-    const fetchResetLink = async (): Promise<string | null> => {
-        setLinkBusy(true)
-        try {
-            const response = await fetch(`/admin/users/${viewedUser.id}/reset-link`, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': csrf_token, Accept: 'application/json' },
-            })
+    const fetchLink = async (endpoint: string): Promise<string | null> => {
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrf_token, Accept: 'application/json' },
+        })
 
-            if (!response.ok) {
-                return null
-            }
-
-            const data = (await response.json()) as { link: string }
-
-            return data.link
-        } finally {
-            setLinkBusy(false)
+        if (!response.ok) {
+            return null
         }
+
+        const data = (await response.json()) as { link: string }
+
+        return data.link
     }
 
     const copyResetLink = async () => {
-        const link = await fetchResetLink()
+        setResetLinkBusy(true)
+        const link = await fetchLink(`/admin/users/${viewedUser.id}/reset-link`)
+        setResetLinkBusy(false)
 
         if (!link) {
             return
         }
 
         await navigator.clipboard.writeText(link)
-        setLinkCopied(true)
-        setTimeout(() => setLinkCopied(false), 2000)
+        setResetLinkCopied(true)
+        setTimeout(() => setResetLinkCopied(false), 2000)
     }
 
     const sendResetLinkViaWhatsApp = async () => {
@@ -54,13 +53,47 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
             return
         }
 
-        const link = await fetchResetLink()
+        setResetLinkBusy(true)
+        const link = await fetchLink(`/admin/users/${viewedUser.id}/reset-link`)
+        setResetLinkBusy(false)
 
         if (!link) {
             return
         }
 
         const message = `Hi ${viewedUser.name}, use this link to reset your Avarewase password: ${link}`
+        const phoneDigits = viewedUser.phone.replace(/\D/g, '')
+        window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    }
+
+    const copyAvatarUploadLink = async () => {
+        setAvatarLinkBusy(true)
+        const link = await fetchLink(`/admin/users/${viewedUser.id}/avatar-upload-link`)
+        setAvatarLinkBusy(false)
+
+        if (!link) {
+            return
+        }
+
+        await navigator.clipboard.writeText(link)
+        setAvatarLinkCopied(true)
+        setTimeout(() => setAvatarLinkCopied(false), 2000)
+    }
+
+    const sendAvatarUploadLinkViaWhatsApp = async () => {
+        if (!viewedUser.phone) {
+            return
+        }
+
+        setAvatarLinkBusy(true)
+        const link = await fetchLink(`/admin/users/${viewedUser.id}/avatar-upload-link`)
+        setAvatarLinkBusy(false)
+
+        if (!link) {
+            return
+        }
+
+        const message = `Hi ${viewedUser.name}, use this link to update your Avarewase profile picture: ${link}`
         const phoneDigits = viewedUser.phone.replace(/\D/g, '')
         window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
     }
@@ -165,18 +198,47 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                     <button
                         type="button"
                         className="btn btn-outline-primary btn-sm"
-                        disabled={linkBusy}
+                        disabled={resetLinkBusy}
                         onClick={copyResetLink}
                     >
                         <i className="bi bi-link-45deg me-1" />
-                        {linkCopied ? 'Copied!' : 'Copy Reset Link'}
+                        {resetLinkCopied ? 'Copied!' : 'Copy Reset Link'}
                     </button>
                     {viewedUser.phone && (
                         <button
                             type="button"
                             className="btn btn-success btn-sm"
-                            disabled={linkBusy}
+                            disabled={resetLinkBusy}
                             onClick={sendResetLinkViaWhatsApp}
+                        >
+                            <i className="bi bi-whatsapp me-1" />
+                            Send via WhatsApp
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            <h5 className="mb-3">Profile Picture</h5>
+            <div className="ava-card mb-4">
+                <div className="p-4 d-flex flex-wrap align-items-center gap-2">
+                    <p className="text-ava-muted text-tiny mb-0 flex-grow-1">
+                        Generate a link {viewedUser.name} can open, without logging in, to upload their own profile picture.
+                    </p>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm"
+                        disabled={avatarLinkBusy}
+                        onClick={copyAvatarUploadLink}
+                    >
+                        <i className="bi bi-link-45deg me-1" />
+                        {avatarLinkCopied ? 'Copied!' : 'Copy Upload Link'}
+                    </button>
+                    {viewedUser.phone && (
+                        <button
+                            type="button"
+                            className="btn btn-success btn-sm"
+                            disabled={avatarLinkBusy}
+                            onClick={sendAvatarUploadLinkViaWhatsApp}
                         >
                             <i className="bi bi-whatsapp me-1" />
                             Send via WhatsApp

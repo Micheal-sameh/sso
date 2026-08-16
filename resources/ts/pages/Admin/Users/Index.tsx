@@ -118,7 +118,6 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                 <th>Role</th>
                                 <th>Status</th>
                                 <th>Admin Access</th>
-                                <th>Created</th>
                                 <th />
                             </tr>
                         </thead>
@@ -158,7 +157,6 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                     <td>
                                         <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
                                     </td>
-                                    <td className="text-ava-muted text-tiny">{user.email_verified_at}</td>
                                     <td className="text-nowrap" onClick={(e) => e.stopPropagation()}>
                                         <button
                                             type="button"
@@ -230,10 +228,6 @@ export default function Index({ users, stages, filters }: IndexProps) {
                         <div className="record-card-row">
                             <span className="record-card-label">Admin Access</span>
                             <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
-                        </div>
-                        <div className="record-card-row">
-                            <span className="record-card-label">Created</span>
-                            <span className="text-ava-muted text-tiny">{user.email_verified_at}</span>
                         </div>
 
                         <div className="record-card-actions" onClick={(e) => e.stopPropagation()}>

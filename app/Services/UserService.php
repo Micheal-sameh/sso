@@ -12,6 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 
 class UserService
 {
@@ -58,12 +59,31 @@ class UserService
         ]);
 
         if (isset($validated['avatar']) && $validated['avatar'] instanceof UploadedFile) {
-            $user->addMedia($validated['avatar'])->toMediaCollection('avatar');
+            $this->updateAvatar($user, $validated['avatar']);
         }
 
         $user->syncRoles($newRole === UserRole::User ? [] : [$newRole->value]);
 
         return $user->fresh(['mfa', 'stage', 'roles']);
+    }
+
+    /**
+     * Replace a user's profile picture, used both by the admin edit form and
+     * the signed, tokenized self-service avatar upload link.
+     */
+    public function updateAvatar(User $user, UploadedFile $avatar): void
+    {
+        $user->addMedia($avatar)->toMediaCollection('avatar');
+    }
+
+    /**
+     * Build a temporary signed link a user can visit, without logging in, to
+     * upload their own profile picture. Intended for an admin to copy and
+     * relay via another channel (e.g. WhatsApp).
+     */
+    public function generateAvatarUploadLink(User $user): string
+    {
+        return URL::temporarySignedRoute('avatar-upload.show', now()->addDays(7), ['user' => $user->id]);
     }
 
     /**

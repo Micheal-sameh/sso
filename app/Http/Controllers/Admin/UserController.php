@@ -138,4 +138,9 @@ class UserController extends BaseController
     {
         return response()->json(['link' => $this->passwordResetService->generateResetLink($user)]);
     }
+
+    public function generateAvatarUploadLink(User $user): JsonResponse
+    {
+        return response()->json(['link' => $this->userService->generateAvatarUploadLink($user)]);
+    }
 }

@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])->name('password.email');
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'show'])->name('password.reset');
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+});
+
+Route::middleware('signed')->group(function () {
+    Route::get('/avatar-upload/{user}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
+    Route::post('/avatar-upload/{user}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -67,6 +73,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
             ->name('users.client-access.revoke');
         Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
+        Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
+            ->name('users.avatar-upload-link');
 
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
