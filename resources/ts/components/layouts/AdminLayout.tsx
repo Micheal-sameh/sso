@@ -27,7 +27,7 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
         <div className="d-flex">
             <Sidebar links={NAV_LINKS} footerLinks={[ACCOUNT_LINK]} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-            <main className="flex-grow-1 min-w-0">
+            <main className="flex-grow-1 main-content-area">
                 <TopBar title={title} action={action} onToggleSidebar={() => setSidebarOpen((o) => !o)} />
                 <div className="p-3 p-md-4 page-content">
                     <FlashMessage />

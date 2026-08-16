@@ -290,10 +290,12 @@ small, .small {
 
 .sidebar-main {
     width: 240px;
-    min-height: 100vh;
+    height: 100vh;
     background: linear-gradient(180deg, var(--ava-primary) 0%, var(--ava-primary-dark) 100%);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    overflow-y: auto;
     flex-shrink: 0;
     z-index: 1040;
     transition: transform 0.25s var(--ease-out);
@@ -307,12 +309,18 @@ small, .small {
     animation: fadeInUp 0.2s var(--ease-out);
 }
 
+.main-content-area {
+    min-width: 0;
+}
+
+@media (min-width: 992px) {
+    .main-content-area {
+        margin-left: 240px;
+    }
+}
+
 @media (max-width: 991.98px) {
     .sidebar-main {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100vh;
         transform: translateX(-100%);
     }
     .sidebar-main.sidebar-open {
