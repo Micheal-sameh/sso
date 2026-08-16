@@ -1,0 +1,82 @@
+# syntax=docker/dockerfile:1
+
+########################################
+# 1) Build frontend assets (Vite/React)
+########################################
+FROM node:22-alpine AS frontend
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY vite.config.ts tsconfig.json ./
+COPY resources ./resources
+RUN npm run build
+
+########################################
+# 2) Install PHP dependencies
+########################################
+FROM composer:2 AS vendor
+WORKDIR /app
+COPY composer.json composer.lock ./
+RUN composer install \
+        --no-dev \
+        --no-scripts \
+        --no-autoloader \
+        --no-interaction \
+        --prefer-dist
+COPY . .
+RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
+
+########################################
+# 3) Runtime image: php-fpm only
+#    (nginx/webserver and MySQL are expected to already run on the host)
+########################################
+FROM php:8.3-fpm-alpine AS runtime
+
+RUN apk add --no-cache \
+        bash \
+        curl \
+        git \
+        unzip \
+        icu-libs \
+        libzip \
+        oniguruma \
+        libpng \
+        libjpeg-turbo \
+        freetype \
+    && apk add --no-cache --virtual .build-deps \
+        $PHPIZE_DEPS \
+        icu-dev \
+        libzip-dev \
+        oniguruma-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        pdo_mysql \
+        mbstring \
+        bcmath \
+        zip \
+        intl \
+        gd \
+        exif \
+    && apk del .build-deps
+
+COPY --from=vendor /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/html
+
+COPY --from=vendor /app ./
+COPY --from=frontend /app/public/build ./public/build
+
+RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache
+
+COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 9000
+
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["php-fpm"]

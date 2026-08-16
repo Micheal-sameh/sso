@@ -1,0 +1,23 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: avarewase-auth:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:6500:9000"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - avarewase
+
+networks:
+  avarewase:
+    driver: bridge
