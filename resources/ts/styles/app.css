@@ -650,3 +650,13 @@ code {
     color: var(--ava-muted);
     border: 1px solid var(--ava-border);
 }
+
+.chips-lg .code-chip {
+    font-size: 0.9375rem;
+    padding: 4px 12px;
+}
+.chips-lg .role-chip,
+.chips-lg .status-pill {
+    font-size: 0.875rem;
+    padding: 6px 14px;
+}

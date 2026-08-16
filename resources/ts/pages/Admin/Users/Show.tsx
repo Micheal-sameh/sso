@@ -122,6 +122,14 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
         }
     }
 
+    const toggleActive = () => {
+        const action = viewedUser.is_active ? 'deactivate' : 'activate'
+
+        if (confirm(`Are you sure you want to ${action} ${viewedUser.name}?`)) {
+            router.patch(`/admin/users/${viewedUser.id}/toggle`, {}, { preserveScroll: true })
+        }
+    }
+
     return (
         <AdminLayout
             title="User Detail"
@@ -135,6 +143,14 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                         <i className="bi bi-pencil me-1" />
                         Edit
                     </button>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm"
+                        onClick={toggleActive}
+                    >
+                        <i className={`bi ${viewedUser.is_active ? 'bi-slash-circle' : 'bi-check-circle'} me-1`} />
+                        {viewedUser.is_active ? 'Deactivate' : 'Activate'}
+                    </button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => router.visit('/admin/users')}>
                         <i className="bi bi-arrow-left me-1" />
                         Back to Users
@@ -146,13 +162,13 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                 <div className="card-accent card-accent-primary" />
                 <div className="p-4 d-flex flex-column flex-sm-row align-items-sm-center gap-3">
                     {viewedUser.avatar ? (
-                        <img src={viewedUser.avatar} alt={viewedUser.name} width={56} height={56} className="rounded-circle" />
+                        <img src={viewedUser.avatar} alt={viewedUser.name} width={80} height={80} className="rounded-circle object-fit-cover" />
                     ) : (
-                        <AvatarInitials name={viewedUser.name} size={56} />
+                        <AvatarInitials name={viewedUser.name} size={80} />
                     )}
                     <div className="flex-grow-1 min-w-0">
-                        <h5 className="mb-1">{viewedUser.name}</h5>
-                        <div className="text-ava-muted text-tiny mb-2 d-flex flex-wrap align-items-center gap-3">
+                        <h3 className="mb-2">{viewedUser.name}</h3>
+                        <div className="text-ava-muted fs-6 mb-3 d-flex flex-wrap align-items-center gap-3">
                             <span className="d-inline-flex align-items-center gap-1">
                                 {viewedUser.email}
                                 <a
@@ -178,7 +194,7 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                                 </span>
                             )}
                         </div>
-                        <div className="d-flex flex-wrap gap-2">
+                        <div className="d-flex flex-wrap gap-2 chips-lg">
                             <span className="code-chip">{viewedUser.membership_code}</span>
                             <span className="role-chip">{viewedUser.stage.name}</span>
                             <RoleChip role={viewedUser.role} />
@@ -189,148 +205,168 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                 </div>
             </div>
 
-            <h5 className="mb-3">Password Reset</h5>
+            <h5 className="mb-3">Admin Actions</h5>
             <div className="ava-card mb-4">
-                <div className="p-4 d-flex flex-wrap align-items-center gap-2">
-                    <p className="text-ava-muted text-tiny mb-0 flex-grow-1">
-                        Generate a password reset link for {viewedUser.name}. Works once and expires in 5 minutes.
-                    </p>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm"
-                        disabled={resetLinkBusy}
-                        onClick={copyResetLink}
-                    >
-                        <i className="bi bi-link-45deg me-1" />
-                        {resetLinkCopied ? 'Copied!' : 'Copy Reset Link'}
-                    </button>
-                    {viewedUser.phone && (
-                        <button
-                            type="button"
-                            className="btn btn-success btn-sm"
-                            disabled={resetLinkBusy}
-                            onClick={sendResetLinkViaWhatsApp}
-                        >
-                            <i className="bi bi-whatsapp me-1" />
-                            Send via WhatsApp
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            <h5 className="mb-3">Profile Picture</h5>
-            <div className="ava-card mb-4">
-                <div className="p-4 d-flex flex-wrap align-items-center gap-2">
-                    <p className="text-ava-muted text-tiny mb-0 flex-grow-1">
-                        Generate a link {viewedUser.name} can open, without logging in, to upload their own profile picture.
-                    </p>
-                    <button
-                        type="button"
-                        className="btn btn-outline-primary btn-sm"
-                        disabled={avatarLinkBusy}
-                        onClick={copyAvatarUploadLink}
-                    >
-                        <i className="bi bi-link-45deg me-1" />
-                        {avatarLinkCopied ? 'Copied!' : 'Copy Upload Link'}
-                    </button>
-                    {viewedUser.phone && (
-                        <button
-                            type="button"
-                            className="btn btn-success btn-sm"
-                            disabled={avatarLinkBusy}
-                            onClick={sendAvatarUploadLinkViaWhatsApp}
-                        >
-                            <i className="bi bi-whatsapp me-1" />
-                            Send via WhatsApp
-                        </button>
-                    )}
-                </div>
-            </div>
-
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Logged-In Apps</h5>
-                {tokens.length > 0 && (
-                    <button type="button" className="btn btn-sm btn-outline-primary" onClick={forceLogoutAll}>
-                        <i className="bi bi-box-arrow-right me-1" />
-                        Force Logout All
-                    </button>
-                )}
-            </div>
-
-            {tokens.length === 0 ? (
-                <div className="ava-card">
-                    <div className="text-center py-5">
-                        <i className="bi bi-plug text-ava-muted icon-fs-48" />
-                        <p className="text-ava-muted mt-3 mb-0">Not logged into any apps right now.</p>
-                    </div>
-                </div>
-            ) : (
-                <div className="ava-card">
-                    <ul className="list-group list-group-flush">
-                        {tokens.map((token) => (
-                            <li key={token.id} className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3">
-                                <div className="min-w-0">
-                                    <div className="fw-semibold">{token.client.name}</div>
-                                    <div className="mb-1">
-                                        {token.scopes.map((scope) => (
-                                            <span key={scope} className="scope-chip me-1">
-                                                {scope}
-                                            </span>
-                                        ))}
-                                    </div>
-                                    <div className="text-ava-muted text-tiny">
-                                        Signed in {token.created_at} &middot; Expires {token.expires_at}
-                                    </div>
-                                </div>
-                                <button
-                                    type="button"
-                                    className="btn btn-outline-primary btn-sm text-nowrap"
-                                    onClick={() => forceLogout(token)}
-                                >
-                                    <i className="bi bi-box-arrow-right me-1" />
-                                    Force Logout
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-
-            <h5 className="mb-3 mt-4">Specific-User App Access</h5>
-            {specificClients.length === 0 ? (
-                <div className="ava-card">
-                    <div className="text-center py-5">
-                        <i className="bi bi-shield-lock text-ava-muted icon-fs-48" />
-                        <p className="text-ava-muted mt-3 mb-0">
-                            No clients are restricted to specific users yet. Set a client's access to "Specific Users" on the
-                            Clients page to manage access here.
-                        </p>
-                    </div>
-                </div>
-            ) : (
-                <div className="ava-card">
-                    <ul className="list-group list-group-flush">
-                        {specificClients.map((client) => (
-                            <li
-                                key={client.id}
-                                className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3"
+                <ul className="list-group list-group-flush">
+                    <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
+                        <div className="icon-tile text-ava-primary flex-shrink-0">
+                            <i className="bi bi-key" />
+                        </div>
+                        <div className="min-w-0 flex-grow-1">
+                            <div className="fw-semibold">Password Reset</div>
+                            <div className="text-ava-muted text-tiny">Link works once and expires in 5 minutes.</div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                className="btn btn-outline-primary btn-sm text-nowrap"
+                                disabled={resetLinkBusy}
+                                onClick={copyResetLink}
                             >
-                                <div className="min-w-0">
-                                    <div className="fw-semibold">{client.app_name}</div>
-                                    <StatusBadge status={client.has_access ? 'active' : 'disabled'} />
-                                </div>
+                                <i className="bi bi-link-45deg me-1" />
+                                {resetLinkCopied ? 'Copied!' : 'Copy Link'}
+                            </button>
+                            {viewedUser.phone && (
                                 <button
                                     type="button"
-                                    className={`btn btn-sm text-nowrap ${client.has_access ? 'btn-outline-primary' : 'btn-primary'}`}
-                                    onClick={() => toggleClientAccess(client)}
+                                    className="btn btn-success btn-sm text-nowrap"
+                                    disabled={resetLinkBusy}
+                                    onClick={sendResetLinkViaWhatsApp}
                                 >
-                                    {client.has_access ? 'Revoke Access' : 'Grant Access'}
+                                    <i className="bi bi-whatsapp me-1" />
+                                    WhatsApp
                                 </button>
-                            </li>
-                        ))}
-                    </ul>
+                            )}
+                        </div>
+                    </li>
+                    <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
+                        <div className="icon-tile text-ava-primary flex-shrink-0">
+                            <i className="bi bi-image" />
+                        </div>
+                        <div className="min-w-0 flex-grow-1">
+                            <div className="fw-semibold">Profile Picture</div>
+                            <div className="text-ava-muted text-tiny">One-time upload link, no login required.</div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                className="btn btn-outline-primary btn-sm text-nowrap"
+                                disabled={avatarLinkBusy}
+                                onClick={copyAvatarUploadLink}
+                            >
+                                <i className="bi bi-link-45deg me-1" />
+                                {avatarLinkCopied ? 'Copied!' : 'Copy Link'}
+                            </button>
+                            {viewedUser.phone && (
+                                <button
+                                    type="button"
+                                    className="btn btn-success btn-sm text-nowrap"
+                                    disabled={avatarLinkBusy}
+                                    onClick={sendAvatarUploadLinkViaWhatsApp}
+                                >
+                                    <i className="bi bi-whatsapp me-1" />
+                                    WhatsApp
+                                </button>
+                            )}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div className="row g-4">
+                <div className="col-lg-6">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5 className="mb-0">Logged-In Apps</h5>
+                        {tokens.length > 0 && (
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={forceLogoutAll}>
+                                <i className="bi bi-box-arrow-right me-1" />
+                                Force Logout All
+                            </button>
+                        )}
+                    </div>
+
+                    {tokens.length === 0 ? (
+                        <div className="ava-card">
+                            <div className="text-center py-5">
+                                <i className="bi bi-plug text-ava-muted icon-fs-48" />
+                                <p className="text-ava-muted mt-3 mb-0">Not logged into any apps right now.</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="ava-card">
+                            <ul className="list-group list-group-flush">
+                                {tokens.map((token) => (
+                                    <li
+                                        key={token.id}
+                                        className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3"
+                                    >
+                                        <div className="min-w-0">
+                                            <div className="fw-semibold">{token.client.name}</div>
+                                            <div className="mb-1">
+                                                {token.scopes.map((scope) => (
+                                                    <span key={scope} className="scope-chip me-1">
+                                                        {scope}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                            <div className="text-ava-muted text-tiny">
+                                                Signed in {token.created_at} &middot; Expires {token.expires_at}
+                                            </div>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-primary btn-sm text-nowrap"
+                                            onClick={() => forceLogout(token)}
+                                        >
+                                            <i className="bi bi-box-arrow-right me-1" />
+                                            Force Logout
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
-            )}
+
+                <div className="col-lg-6">
+                    <h5 className="mb-3">Specific-User App Access</h5>
+
+                    {specificClients.length === 0 ? (
+                        <div className="ava-card">
+                            <div className="text-center py-5">
+                                <i className="bi bi-shield-lock text-ava-muted icon-fs-48" />
+                                <p className="text-ava-muted mt-3 mb-0 px-3">
+                                    No clients are restricted to specific users yet. Set a client's access to "Specific Users"
+                                    on the Clients page to manage access here.
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="ava-card">
+                            <ul className="list-group list-group-flush">
+                                {specificClients.map((client) => (
+                                    <li
+                                        key={client.id}
+                                        className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3"
+                                    >
+                                        <div className="min-w-0">
+                                            <div className="fw-semibold">{client.app_name}</div>
+                                            <StatusBadge status={client.has_access ? 'active' : 'disabled'} />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm text-nowrap ${client.has_access ? 'btn-outline-primary' : 'btn-primary'}`}
+                                            onClick={() => toggleClientAccess(client)}
+                                        >
+                                            {client.has_access ? 'Revoke Access' : 'Grant Access'}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+            </div>
         </AdminLayout>
     )
 }
