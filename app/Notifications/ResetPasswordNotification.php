@@ -29,7 +29,7 @@ class ResetPasswordNotification extends Notification
             ->greeting("Hi {$notifiable->name},")
             ->line('We received a request to reset the password for your Avarewase account.')
             ->action('Reset Password', $url)
-            ->line('This link will expire in 60 minutes.')
+            ->line('This link can only be used once and will expire in 5 minutes.')
             ->line("If you didn't request a password reset, no further action is required.");
     }
 }

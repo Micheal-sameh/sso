@@ -193,7 +193,7 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
             <div className="ava-card mb-4">
                 <div className="p-4 d-flex flex-wrap align-items-center gap-2">
                     <p className="text-ava-muted text-tiny mb-0 flex-grow-1">
-                        Generate a one-time password reset link for {viewedUser.name}.
+                        Generate a password reset link for {viewedUser.name}. Works once and expires in 5 minutes.
                     </p>
                     <button
                         type="button"
