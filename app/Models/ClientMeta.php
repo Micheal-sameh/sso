@@ -7,19 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Laravel\Passport\Client;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class ClientMeta extends Model
+class ClientMeta extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $table = 'client_meta';
 
     protected $fillable = [
         'oauth_client_id',
         'app_name',
-        'app_logo_url',
         'homepage_url',
         'is_internal',
         'is_verified',
         'access_mode',
+    ];
+
+    protected $appends = [
+        'app_logo_url',
     ];
 
     protected function casts(): array
@@ -29,6 +36,13 @@ class ClientMeta extends Model
             'is_verified' => 'boolean',
             'access_mode' => ClientAccessMode::class,
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('logo')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']);
     }
 
     public function oauthClient(): BelongsTo
@@ -64,8 +78,8 @@ class ClientMeta extends Model
         );
     }
 
-    public function getLogoUrlAttribute(): ?string
+    public function getAppLogoUrlAttribute(): ?string
     {
-        return $this->app_logo_url;
+        return $this->getFirstMedia('logo')?->getUrl();
     }
 }

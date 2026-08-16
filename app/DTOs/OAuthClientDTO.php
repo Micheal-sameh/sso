@@ -4,6 +4,7 @@ namespace App\DTOs;
 
 use App\Enums\ClientAccessMode;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 
 readonly class OAuthClientDTO
 {
@@ -15,7 +16,7 @@ readonly class OAuthClientDTO
         public string $name,
         public string $redirect,
         public ?string $homepageUrl,
-        public ?string $appLogoUrl,
+        public ?UploadedFile $appLogo,
         public bool $isInternal,
         public ClientAccessMode $accessMode,
         public array $stageIds,
@@ -24,11 +25,13 @@ readonly class OAuthClientDTO
 
     public static function fromRequest(Request $request): self
     {
+        $appLogo = $request->file('app_logo');
+
         return new self(
             name: $request->string('name')->toString(),
             redirect: $request->string('redirect')->toString(),
             homepageUrl: $request->string('homepage_url')->toString() ?: null,
-            appLogoUrl: $request->string('app_logo_url')->toString() ?: null,
+            appLogo: $appLogo instanceof UploadedFile ? $appLogo : null,
             isInternal: $request->boolean('is_internal'),
             accessMode: ClientAccessMode::from($request->string('access_mode')->toString()),
             stageIds: array_map('intval', $request->array('stage_ids')),

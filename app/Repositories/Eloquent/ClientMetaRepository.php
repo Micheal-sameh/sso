@@ -30,7 +30,6 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
         return ClientMeta::create([
             'oauth_client_id' => $clientId,
             'app_name' => $dto->name,
-            'app_logo_url' => $dto->appLogoUrl,
             'homepage_url' => $dto->homepageUrl,
             'is_internal' => $dto->isInternal,
             'access_mode' => $dto->accessMode,

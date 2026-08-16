@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { FormEvent } from 'react'
+import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import Pagination from '@/components/shared/Pagination'
@@ -16,7 +16,7 @@ interface ClientForm {
     name: string
     redirect: string
     homepage_url: string
-    app_logo_url: string
+    app_logo: File | null
     is_internal: boolean
     access_mode: 'all' | 'stage' | 'specific'
     stage_ids: number[]
@@ -33,7 +33,7 @@ const emptyForm: ClientForm = {
     name: '',
     redirect: '',
     homepage_url: '',
-    app_logo_url: '',
+    app_logo: null,
     is_internal: false,
     access_mode: 'all',
     stage_ids: [],
@@ -44,6 +44,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
     const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
     const [userSearch, setUserSearch] = useState('')
+    const [logoPreview, setLogoPreview] = useState<string | null>(null)
     const form = useForm<ClientForm>(emptyForm)
 
     const openCreateModal = () => {
@@ -51,6 +52,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
         form.reset()
         form.clearErrors()
         setUserSearch('')
+        setLogoPreview(null)
         setShowModal(true)
     }
 
@@ -60,7 +62,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
             name: client.app_name,
             redirect: client.oauth_client.redirect,
             homepage_url: client.homepage_url ?? '',
-            app_logo_url: client.app_logo_url ?? '',
+            app_logo: null,
             is_internal: client.is_internal,
             access_mode: client.access_mode,
             stage_ids: (client.stages ?? []).map((s) => s.id),
@@ -68,6 +70,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
         })
         form.clearErrors()
         setUserSearch('')
+        setLogoPreview(client.app_logo_url)
         setShowModal(true)
     }
 
@@ -76,12 +79,29 @@ export default function Index({ clients, stages, users }: IndexProps) {
         setEditingClient(null)
     }
 
+    const onLogoChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] ?? null
+        form.setData('app_logo', file)
+
+        if (file) {
+            const reader = new FileReader()
+            reader.onload = () => setLogoPreview(reader.result as string)
+            reader.readAsDataURL(file)
+        }
+    }
+
     const submit = (e: FormEvent) => {
         e.preventDefault()
         if (editingClient) {
-            form.put(`/admin/clients/${editingClient.oauth_client_id}`, { onSuccess: closeModal })
+            // PHP never parses multipart bodies on a genuine PUT request (only POST), and
+            // Inertia's usual auto-fix for this only triggers when a File is actually present
+            // in the payload. Since the logo is optional here, force POST + _method spoofing
+            // ourselves so the request parses correctly whether or not a new logo was chosen.
+            form.transform((data) => ({ ...data, _method: 'put' }))
+            form.post(`/admin/clients/${editingClient.oauth_client_id}`, { forceFormData: true, onSuccess: closeModal })
         } else {
-            form.post('/admin/clients', { onSuccess: closeModal })
+            form.transform((data) => data)
+            form.post('/admin/clients', { forceFormData: true, onSuccess: closeModal })
         }
     }
 
@@ -346,15 +366,31 @@ export default function Index({ clients, stages, users }: IndexProps) {
                                         )}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="app_logo_url">Logo URL</label>
-                                        <input
-                                            id="app_logo_url"
-                                            className="form-control"
-                                            value={form.data.app_logo_url}
-                                            onChange={(e) => form.setData('app_logo_url', e.target.value)}
-                                        />
-                                        {form.errors.app_logo_url && (
-                                            <div className="text-danger small mt-1">{form.errors.app_logo_url}</div>
+                                        <label className="form-label" htmlFor="app_logo">Logo</label>
+                                        <div className="d-flex align-items-center gap-3">
+                                            {logoPreview ? (
+                                                <img
+                                                    src={logoPreview}
+                                                    alt="Logo preview"
+                                                    width={48}
+                                                    height={48}
+                                                    className="rounded object-fit-cover"
+                                                />
+                                            ) : (
+                                                <div className="icon-tile text-ava-muted">
+                                                    <i className="bi bi-image" />
+                                                </div>
+                                            )}
+                                            <input
+                                                id="app_logo"
+                                                type="file"
+                                                accept="image/*"
+                                                className="form-control"
+                                                onChange={onLogoChange}
+                                            />
+                                        </div>
+                                        {form.errors.app_logo && (
+                                            <div className="text-danger small mt-1">{form.errors.app_logo}</div>
                                         )}
                                     </div>
                                     <div className="form-check form-switch mb-3">

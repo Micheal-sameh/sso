@@ -17,7 +17,7 @@ class OAuthClientRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'redirect' => ['required', 'url'],
             'homepage_url' => ['nullable', 'url'],
-            'app_logo_url' => ['nullable', 'url'],
+            'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
             'is_internal' => ['boolean'],
             'access_mode' => ['required', 'in:all,stage,specific'],
             'stage_ids' => ['required_if:access_mode,stage', 'array'],

@@ -31,6 +31,10 @@ class OAuthClientService
 
         $meta = $this->clientMetaRepository->create($client->id, $dto);
 
+        if ($dto->appLogo !== null) {
+            $meta->addMedia($dto->appLogo)->toMediaCollection('logo');
+        }
+
         if ($dto->accessMode === ClientAccessMode::Stage) {
             $this->clientMetaRepository->syncStageAccess($client->id, $dto->stageIds);
         } elseif ($dto->accessMode === ClientAccessMode::Specific) {
@@ -61,11 +65,14 @@ class OAuthClientService
 
         $meta = $this->clientMetaRepository->update($meta, [
             'app_name' => $dto->name,
-            'app_logo_url' => $dto->appLogoUrl,
             'homepage_url' => $dto->homepageUrl,
             'is_internal' => $dto->isInternal,
             'access_mode' => $dto->accessMode,
         ]);
+
+        if ($dto->appLogo !== null) {
+            $meta->addMedia($dto->appLogo)->toMediaCollection('logo');
+        }
 
         $this->clientMetaRepository->syncStageAccess(
             $clientId,
