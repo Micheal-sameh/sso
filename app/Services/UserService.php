@@ -49,32 +49,21 @@ class UserService
             throw new SelfModificationException('You cannot change your own role.');
         }
 
-        $data = [
+        $user = $this->userRepository->update($user, [
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'stage_id' => $validated['stage_id'],
             'role' => $newRole,
-        ];
+        ]);
 
         if (isset($validated['avatar']) && $validated['avatar'] instanceof UploadedFile) {
-            $data['avatar'] = $this->storeAvatar($user, $validated['avatar']);
+            $user->addMedia($validated['avatar'])->toMediaCollection('avatar');
         }
 
-        $user = $this->userRepository->update($user, $data);
         $user->syncRoles($newRole === UserRole::User ? [] : [$newRole->value]);
 
         return $user->fresh(['mfa', 'stage', 'roles']);
-    }
-
-    /**
-     * Store an uploaded avatar under a stable, user-specific filename.
-     */
-    private function storeAvatar(User $user, UploadedFile $avatar): string
-    {
-        $extension = $avatar->getClientOriginalExtension();
-
-        return $avatar->storeAs('avatars', "{$user->uuid}.{$extension}", 'public');
     }
 
     /**

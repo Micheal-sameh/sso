@@ -15,15 +15,16 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\HasApiTokens;
 use Laravel\Passport\Token;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<UserFactory> */
-    use HasApiTokens, HasAuditLog, HasCreatedUpdatedBy, HasFactory, HasRoles, Notifiable, SoftDeletes;
+    use HasApiTokens, HasAuditLog, HasCreatedUpdatedBy, HasFactory, HasRoles, InteractsWithMedia, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'uuid',
@@ -32,7 +33,6 @@ class User extends Authenticatable
         'email',
         'phone',
         'password',
-        'avatar',
         'role',
         'stage_id',
         'is_active',
@@ -52,6 +52,13 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('avatar')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
     public function mfa(): HasOne
@@ -81,7 +88,9 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(): ?string
     {
-        return $this->avatar ? Storage::url($this->avatar) : null;
+        $media = $this->getFirstMedia('avatar');
+
+        return $media?->getUrl();
     }
 
     public function sendPasswordResetNotification($token): void
