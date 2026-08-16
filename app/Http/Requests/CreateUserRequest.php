@@ -17,6 +17,7 @@ class CreateUserRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'phone' => ['nullable', 'string', 'max:30'],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
             'membership_code' => ['required', 'string', 'max:255', 'unique:users,membership_code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', 'in:superadmin,admin,user'],

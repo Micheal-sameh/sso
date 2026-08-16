@@ -11,6 +11,7 @@ interface CreateForm {
     name: string
     email: string
     phone: string
+    date_of_birth: string
     membership_code: string
     password: string
     password_confirmation: string
@@ -23,6 +24,7 @@ export default function Create({ stages }: CreateProps) {
         name: '',
         email: '',
         phone: '',
+        date_of_birth: '',
         membership_code: '',
         password: '',
         password_confirmation: '',
@@ -72,6 +74,20 @@ export default function Create({ stages }: CreateProps) {
                             onChange={(e) => form.setData('phone', e.target.value)}
                         />
                         {form.errors.phone && <div className="text-danger small mt-1">{form.errors.phone}</div>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label" htmlFor="date_of_birth">Date of Birth</label>
+                        <input
+                            id="date_of_birth"
+                            type="date"
+                            className="form-control"
+                            value={form.data.date_of_birth}
+                            onChange={(e) => form.setData('date_of_birth', e.target.value)}
+                        />
+                        {form.errors.date_of_birth && (
+                            <div className="text-danger small mt-1">{form.errors.date_of_birth}</div>
+                        )}
                     </div>
 
                     <div className="mb-3">

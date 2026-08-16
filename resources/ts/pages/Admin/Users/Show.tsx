@@ -4,6 +4,7 @@ import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
+import { calculateAge, formatDateDMY } from '@/lib/date'
 import type { SharedProps, SpecificClientAccess, Token, User } from '@/types'
 
 interface ShowProps {
@@ -14,6 +15,7 @@ interface ShowProps {
 
 export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
     const { csrf_token } = usePage<SharedProps>().props
+    const dobAge = calculateAge(viewedUser.date_of_birth)
     const [resetLinkBusy, setResetLinkBusy] = useState(false)
     const [resetLinkCopied, setResetLinkCopied] = useState(false)
     const [avatarLinkBusy, setAvatarLinkBusy] = useState(false)
@@ -193,6 +195,11 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                                     </a>
                                 </span>
                             )}
+                            <span className="d-inline-flex align-items-center gap-1">
+                                <i className="bi bi-cake2" />
+                                {formatDateDMY(viewedUser.date_of_birth) ?? 'Date of birth not set'}
+                                {dobAge !== null && <span>&nbsp;({dobAge} yrs)</span>}
+                            </span>
                         </div>
                         <div className="d-flex flex-wrap gap-2 chips-lg">
                             <span className="code-chip">{viewedUser.membership_code}</span>

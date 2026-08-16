@@ -4,6 +4,7 @@ import AppLayout from '@/components/layouts/AppLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
+import { calculateAge, formatDateDMY } from '@/lib/date'
 import type { User } from '@/types'
 
 interface ShowProps {
@@ -38,9 +39,13 @@ export default function Show({ user }: ShowProps) {
         })
     }
 
+    const age = calculateAge(user.date_of_birth)
+
     const detailRows: DetailRow[] = [
         { icon: 'bi-envelope', label: 'Email', value: user.email },
         { icon: 'bi-telephone', label: 'Phone', value: user.phone ?? 'Not set' },
+        { icon: 'bi-cake2', label: 'Date of Birth', value: formatDateDMY(user.date_of_birth) ?? 'Not set' },
+        ...(age !== null ? [{ icon: 'bi-hourglass-split', label: 'Age', value: `${age} years` }] : []),
         { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
         { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
     ]

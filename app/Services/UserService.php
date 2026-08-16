@@ -37,7 +37,7 @@ class UserService
     }
 
     /**
-     * Update a user's admin-editable details (name, email, phone, stage, role, avatar),
+     * Update a user's admin-editable details (name, email, phone, date of birth, stage, role, avatar),
      * keeping the Spatie role assignment in sync with the chosen role. The membership
      * code is permanently immutable once a user is created, even for a super admin.
      *
@@ -55,6 +55,7 @@ class UserService
             'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
+            'date_of_birth' => $validated['date_of_birth'] ?? null,
             'stage_id' => $validated['stage_id'],
             'role' => $newRole,
         ]);

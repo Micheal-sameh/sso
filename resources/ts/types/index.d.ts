@@ -19,6 +19,7 @@ export interface User {
     name: string
     email: string
     phone: string | null
+    date_of_birth: string | null
     avatar: string | null
     role: 'superadmin' | 'admin' | 'user'
     is_active: boolean
