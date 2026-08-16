@@ -155,7 +155,7 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                         <label className="form-label" htmlFor="membership_code">Membership Code</label>
                         <input
                             id="membership_code"
-                            className="form-control text-ava-muted"
+                            className="form-control text-ava-muted text-uppercase"
                             value={viewedUser.membership_code}
                             readOnly
                         />

@@ -88,7 +88,7 @@ export default function Show({ user }: ShowProps) {
                                     </div>
                                     <div className="min-w-0">
                                         <div className="record-card-label mb-1">{row.label}</div>
-                                        <div className={row.mono ? 'code-chip' : 'fw-semibold text-truncate'}>{row.value}</div>
+                                        <div className={row.mono ? 'code-chip text-uppercase' : 'fw-semibold text-truncate'}>{row.value}</div>
                                     </div>
                                 </li>
                             ))}

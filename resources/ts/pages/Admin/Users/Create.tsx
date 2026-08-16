@@ -94,7 +94,7 @@ export default function Create({ stages }: CreateProps) {
                         <label className="form-label" htmlFor="membership_code">Membership Code</label>
                         <input
                             id="membership_code"
-                            className="form-control"
+                            className="form-control text-uppercase"
                             value={form.data.membership_code}
                             onChange={(e) => form.setData('membership_code', e.target.value)}
                         />

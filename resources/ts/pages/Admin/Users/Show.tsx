@@ -202,7 +202,7 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                             </span>
                         </div>
                         <div className="d-flex flex-wrap gap-2 chips-lg">
-                            <span className="code-chip">{viewedUser.membership_code}</span>
+                            <span className="code-chip text-uppercase">{viewedUser.membership_code}</span>
                             <span className="role-chip">{viewedUser.stage.name}</span>
                             <RoleChip role={viewedUser.role} />
                             <StatusBadge status={viewedUser.is_active ? 'active' : 'revoked'} />

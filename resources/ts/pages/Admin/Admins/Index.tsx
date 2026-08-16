@@ -121,7 +121,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                             </td>
                                             <td className="text-ava-muted">{user.email}</td>
                                             <td>
-                                                <span className="code-chip">{user.membership_code}</span>
+                                                <span className="code-chip text-uppercase">{user.membership_code}</span>
                                             </td>
                                             <td>{user.stage.name}</td>
                                             <td>
@@ -178,7 +178,7 @@ export default function Index({ admins, filters }: IndexProps) {
 
                                 <div className="record-card-row">
                                     <span className="record-card-label">Membership</span>
-                                    <span className="code-chip">{user.membership_code}</span>
+                                    <span className="code-chip text-uppercase">{user.membership_code}</span>
                                 </div>
                                 <div className="record-card-row">
                                     <span className="record-card-label">Stage</span>
