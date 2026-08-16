@@ -2,14 +2,17 @@
 
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
+use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +24,11 @@ Route::get('/', fn () => redirect()->route(Auth::check() ? 'account.show' : 'log
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
+
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])->name('password.request');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])->name('password.email');
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'show'])->name('password.reset');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -34,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/', [ProfileController::class, 'show'])->name('show');
         Route::post('/', [ProfileController::class, 'update'])->name('update');
+        Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
         Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
         Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
         Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
@@ -58,6 +67,7 @@ Route::middleware('auth')->group(function () {
             ->name('users.client-access.grant');
         Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
             ->name('users.client-access.revoke');
+        Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
 
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');

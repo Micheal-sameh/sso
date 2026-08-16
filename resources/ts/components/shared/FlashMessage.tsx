@@ -27,9 +27,11 @@ export default function FlashMessage() {
     const variant = VARIANT_MAP[flash.type ?? 'info'] ?? 'info'
 
     return (
-        <div className={`alert alert-${variant} alert-dismissible fade show`} role="alert">
-            {flash.message}
-            <button type="button" className="btn-close" aria-label="Close" onClick={() => setVisible(false)} />
+        <div className="toast-popup-wrapper">
+            <div className={`alert alert-${variant} alert-dismissible fade show toast-popup shadow`} role="alert">
+                {flash.message}
+                <button type="button" className="btn-close" aria-label="Close" onClick={() => setVisible(false)} />
+            </div>
         </div>
     )
 }

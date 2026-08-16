@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UserRole;
+use App\Notifications\ResetPasswordNotification;
 use App\Traits\HasAuditLog;
 use App\Traits\HasCreatedUpdatedBy;
 use Database\Factories\UserFactory;
@@ -81,5 +82,10 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute(): ?string
     {
         return $this->avatar ? Storage::url($this->avatar) : null;
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 }

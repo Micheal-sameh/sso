@@ -79,6 +79,15 @@ class UserService
     }
 
     /**
+     * Change the authenticated user's own password after current-password verification
+     * (enforced by UpdateOwnPasswordRequest's `current_password` rule).
+     */
+    public function updateOwnPassword(User $user, string $password): void
+    {
+        $user->forceFill(['password' => $password])->save();
+    }
+
+    /**
      * Paginate users, optionally filtered by search term, role, and stage.
      */
     public function paginate(int $perPage, ?string $search, ?UserRole $role, ?int $stageId = null): LengthAwarePaginator

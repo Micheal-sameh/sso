@@ -94,7 +94,7 @@ export default function Login({ client }: LoginProps) {
                 </button>
 
                 <div className="text-center mt-3">
-                    <a href="#" className="text-ava-gold text-decoration-none small">Forgot password?</a>
+                    <a href="/forgot-password" className="text-ava-gold text-decoration-none small">Forgot password?</a>
                 </div>
             </form>
 

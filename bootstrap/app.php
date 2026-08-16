@@ -4,8 +4,10 @@ use App\Exceptions\Auth\AuthenticationException;
 use App\Exceptions\Auth\InvalidMfaCodeException;
 use App\Exceptions\Auth\MfaNotEnabledException;
 use App\Exceptions\Auth\OAuthClientException;
+use App\Exceptions\Auth\PasswordResetException;
 use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
+use App\Exceptions\Auth\UserNotFoundException;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\MfaPending;
 use App\Http\Middleware\SuperAdmin;
@@ -82,6 +84,22 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (StageInUseException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
+
+            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
+        });
+
+        $exceptions->render(function (PasswordResetException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
+
+            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
+        });
+
+        $exceptions->render(function (UserNotFoundException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
             }

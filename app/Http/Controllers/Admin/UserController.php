@@ -13,8 +13,10 @@ use App\Models\User;
 use App\Models\ClientMeta;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Services\OAuthClientService;
+use App\Services\PasswordResetService;
 use App\Services\StageService;
 use App\Services\UserService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -28,6 +30,7 @@ class UserController extends BaseController
         protected TokenRepositoryContract $tokenRepository,
         protected StageService $stageService,
         protected OAuthClientService $oauthClientService,
+        protected PasswordResetService $passwordResetService,
     ) {}
 
     public function index(Request $request): Response
@@ -129,5 +132,10 @@ class UserController extends BaseController
         $this->oauthClientService->revokeUserAccess($client, $user->id);
 
         return $this->redirectBack('Access revoked.', 'success');
+    }
+
+    public function generateResetLink(User $user): JsonResponse
+    {
+        return response()->json(['link' => $this->passwordResetService->generateResetLink($user)]);
     }
 }

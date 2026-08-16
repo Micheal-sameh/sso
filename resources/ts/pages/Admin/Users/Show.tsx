@@ -1,9 +1,10 @@
-import { router } from '@inertiajs/react'
+import { useState } from 'react'
+import { router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
-import type { SpecificClientAccess, Token, User } from '@/types'
+import type { SharedProps, SpecificClientAccess, Token, User } from '@/types'
 
 interface ShowProps {
     viewedUser: User
@@ -12,6 +13,58 @@ interface ShowProps {
 }
 
 export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
+    const { csrf_token } = usePage<SharedProps>().props
+    const [linkBusy, setLinkBusy] = useState(false)
+    const [linkCopied, setLinkCopied] = useState(false)
+
+    const fetchResetLink = async (): Promise<string | null> => {
+        setLinkBusy(true)
+        try {
+            const response = await fetch(`/admin/users/${viewedUser.id}/reset-link`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': csrf_token, Accept: 'application/json' },
+            })
+
+            if (!response.ok) {
+                return null
+            }
+
+            const data = (await response.json()) as { link: string }
+
+            return data.link
+        } finally {
+            setLinkBusy(false)
+        }
+    }
+
+    const copyResetLink = async () => {
+        const link = await fetchResetLink()
+
+        if (!link) {
+            return
+        }
+
+        await navigator.clipboard.writeText(link)
+        setLinkCopied(true)
+        setTimeout(() => setLinkCopied(false), 2000)
+    }
+
+    const sendResetLinkViaWhatsApp = async () => {
+        if (!viewedUser.phone) {
+            return
+        }
+
+        const link = await fetchResetLink()
+
+        if (!link) {
+            return
+        }
+
+        const message = `Hi ${viewedUser.name}, use this link to reset your Avarewase password: ${link}`
+        const phoneDigits = viewedUser.phone.replace(/\D/g, '')
+        window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
+    }
+
     const toggleClientAccess = (client: SpecificClientAccess) => {
         if (client.has_access) {
             router.delete(`/admin/users/${viewedUser.id}/client-access/${client.id}`, { preserveScroll: true })
@@ -100,6 +153,35 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                             <StatusBadge status={viewedUser.is_admin ? 'enabled' : 'disabled'} />
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <h5 className="mb-3">Password Reset</h5>
+            <div className="ava-card mb-4">
+                <div className="p-4 d-flex flex-wrap align-items-center gap-2">
+                    <p className="text-ava-muted text-tiny mb-0 flex-grow-1">
+                        Generate a one-time password reset link for {viewedUser.name}.
+                    </p>
+                    <button
+                        type="button"
+                        className="btn btn-outline-primary btn-sm"
+                        disabled={linkBusy}
+                        onClick={copyResetLink}
+                    >
+                        <i className="bi bi-link-45deg me-1" />
+                        {linkCopied ? 'Copied!' : 'Copy Reset Link'}
+                    </button>
+                    {viewedUser.phone && (
+                        <button
+                            type="button"
+                            className="btn btn-success btn-sm"
+                            disabled={linkBusy}
+                            onClick={sendResetLinkViaWhatsApp}
+                        >
+                            <i className="bi bi-whatsapp me-1" />
+                            Send via WhatsApp
+                        </button>
+                    )}
                 </div>
             </div>
 
