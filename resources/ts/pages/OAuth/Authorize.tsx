@@ -32,16 +32,16 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 {auth.user && <p className="text-ava-muted small mb-0">{auth.user.email}</p>}
             </div>
 
-            <div className="permission-list mb-4">
-                <p className="fw-semibold small mb-3">This app will be able to:</p>
-                <ul className="list-unstyled mb-0">
+            <div className="mb-4">
+                <p className="fw-semibold small mb-3">This will allow {client.name} to:</p>
+                <div className="d-flex flex-column gap-2">
                     {scopes.map((scope) => (
-                        <li key={scope.id} className="d-flex align-items-start gap-2 mb-2">
+                        <div key={scope.id} className="d-flex align-items-start gap-2 p-3 rounded border bg-light">
                             <i className="bi bi-check-circle-fill text-ava-secondary mt-1" />
                             <span className="small">{scope.description}</span>
-                        </li>
+                        </div>
                     ))}
-                </ul>
+                </div>
             </div>
 
             {/*

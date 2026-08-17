@@ -3,11 +3,10 @@
     --ava-primary-dark: #101A30;
     --ava-primary-light: #2E4570;
     --ava-secondary: #3B82F6;
-    --ava-secondary-light: #93C5FD;
-    --ava-tertiary: #64748B;
+    --ava-tertiary: #DBEAFE;
     --ava-dark: #0B1220;
     --ava-white: #FFFFFF;
-    --ava-bg: #F9FAFB;
+    --ava-bg: #F8F9FA;
     --ava-text: #0F172A;
     --ava-muted: #64748B;
     --ava-border: #E2E8F0;
@@ -40,7 +39,7 @@
     border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--ava-tertiary);
+    background: var(--ava-secondary);
 }
 
 body {
@@ -227,7 +226,7 @@ small, .small {
 }
 .stat-tile:hover {
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
-    border-color: var(--ava-secondary-light);
+    border-color: var(--ava-secondary);
     transform: translateY(-3px);
 }
 .stat-tile-label {
@@ -250,7 +249,7 @@ small, .small {
     min-height: 100vh;
     background:
         radial-gradient(circle at 15% 15%, rgba(27, 42, 74, 0.06), transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.08), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.1), transparent 40%),
         var(--ava-bg);
     display: flex;
     align-items: center;
@@ -299,7 +298,8 @@ small, .small {
 .sidebar-main {
     width: 64px;
     height: 100vh;
-    background: linear-gradient(180deg, var(--ava-primary) 0%, var(--ava-primary-dark) 100%);
+    background: #fff;
+    border-right: 1px solid var(--ava-border);
     position: fixed;
     top: 0;
     left: 0;
@@ -362,7 +362,7 @@ small, .small {
     }
 }
 .sidebar-link {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--ava-muted);
     padding: 10px 14px;
     margin: 2px 12px;
     display: flex;
@@ -375,14 +375,13 @@ small, .small {
     transition: all 0.15s var(--ease-out);
 }
 .sidebar-link:hover {
-    color: #fff;
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateX(2px);
+    color: var(--ava-primary);
+    background: var(--ava-bg);
 }
 .sidebar-link.active {
-    color: #fff;
+    color: var(--ava-primary);
     font-weight: 600;
-    background: rgba(59, 130, 246, 0.22);
+    background: var(--ava-tertiary);
     box-shadow: inset 3px 0 0 var(--ava-secondary);
 }
 
@@ -402,10 +401,11 @@ small, .small {
     align-items: center;
     gap: 6px;
     padding: 4px 12px;
-    border-radius: 999px;
+    border-radius: var(--bs-border-radius-sm);
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
 }
 .status-pill-dot {
     width: 6px;
@@ -427,7 +427,7 @@ small, .small {
     background: var(--ava-danger);
 }
 .status-pill-internal {
-    background: rgba(59, 130, 246, 0.12);
+    background: var(--ava-tertiary);
     color: #1D4ED8;
 }
 .status-pill-internal .status-pill-dot {
@@ -441,17 +441,23 @@ small, .small {
     background: var(--ava-primary);
 }
 
-.otp-input {
-    font-family: 'SF Mono', ui-monospace, monospace;
-    font-size: 28px;
-    letter-spacing: 0.5em;
+.otp-box {
+    width: 48px;
+    height: 56px;
+    padding: 0;
+    font-size: 1.375rem;
+    font-weight: 700;
     text-align: center;
-    height: 60px;
     border-color: var(--ava-border);
 }
-.otp-input:focus {
+.otp-box:focus {
     border-color: var(--ava-secondary);
     box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
+}
+.otp-divider {
+    color: var(--ava-muted);
+    font-size: 1.25rem;
+    padding: 0 2px;
 }
 
 .text-ava-secondary { color: var(--ava-secondary); }
@@ -478,7 +484,7 @@ small, .small {
 }
 
 .app-requesting-banner {
-    background: rgba(59, 130, 246, 0.1);
+    background: var(--ava-tertiary);
     border-left: 3px solid var(--ava-secondary);
     padding: 10px 14px;
     border-radius: var(--bs-border-radius);
@@ -542,7 +548,7 @@ small, .small {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(59, 130, 246, 0.05));
+    background: linear-gradient(135deg, var(--ava-tertiary), rgba(219, 234, 254, 0.3));
     font-size: 28px;
 }
 
@@ -673,7 +679,7 @@ code {
     color: var(--ava-text);
 }
 .role-chip-super {
-    background: rgba(59, 130, 246, 0.12);
+    background: var(--ava-tertiary);
     color: #1D4ED8;
 }
 .role-chip-admin {

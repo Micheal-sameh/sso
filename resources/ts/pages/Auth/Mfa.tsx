@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AuthLayout from '@/components/layouts/AuthLayout'
+import OtpInput from '@/components/shared/OtpInput'
 
 interface MfaForm {
     code: string
@@ -32,14 +33,9 @@ export default function Mfa() {
 
             <form onSubmit={submit}>
                 {mode === 'totp' ? (
-                    <input
-                        className="form-control otp-input mb-3"
-                        maxLength={6}
-                        inputMode="numeric"
-                        autoFocus
-                        value={form.data.code}
-                        onChange={(e) => form.setData('code', e.target.value)}
-                    />
+                    <div className="mb-3">
+                        <OtpInput value={form.data.code} onChange={(code) => form.setData('code', code)} autoFocus />
+                    </div>
                 ) : (
                     <input
                         className="form-control mb-3"
@@ -52,8 +48,9 @@ export default function Mfa() {
                 )}
                 {form.errors.code && <div className="text-danger small mb-3">{form.errors.code}</div>}
 
-                <button type="submit" className="btn btn-primary w-100 mb-3" disabled={form.processing}>
+                <button type="submit" className="btn btn-primary w-100 mb-3 d-flex align-items-center justify-content-center gap-2" disabled={form.processing}>
                     Verify Code
+                    <i className="bi bi-arrow-right" />
                 </button>
             </form>
 
@@ -63,17 +60,21 @@ export default function Mfa() {
                     className="btn btn-link text-ava-secondary text-decoration-none small"
                     onClick={() => setMode(mode === 'totp' ? 'recovery' : 'totp')}
                 >
+                    <i className={`bi ${mode === 'totp' ? 'bi-key' : 'bi-shield-lock'} me-1`} />
                     {mode === 'totp' ? 'Use a recovery code instead' : 'Use authenticator app instead'}
                 </button>
             </div>
 
             <div className="text-center mt-3 pt-3 border-top">
+                <span className="text-ava-muted small">
+                    <i className="bi bi-info-circle me-1" />
+                    Need help?
+                </span>{' '}
                 <button
                     type="button"
-                    className="btn btn-link text-ava-muted text-decoration-none small"
+                    className="btn btn-link text-ava-secondary text-decoration-none small p-0"
                     onClick={() => router.visit('/login')}
                 >
-                    <i className="bi bi-arrow-left me-1" />
                     Return to Sign In
                 </button>
             </div>
