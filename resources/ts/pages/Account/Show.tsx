@@ -51,7 +51,7 @@ export default function Show({ user }: ShowProps) {
     ]
 
     return (
-        <AppLayout title="Profile">
+        <AppLayout title="Identity">
             <div className="ava-card mb-4">
                 <div className="card-accent card-accent-primary" />
                 <div className="p-4 d-flex flex-column flex-sm-row align-items-sm-center gap-3">

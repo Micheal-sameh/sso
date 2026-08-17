@@ -28,9 +28,15 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
             <Sidebar links={NAV_LINKS} footerLinks={[ACCOUNT_LINK]} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             <main className="flex-grow-1 main-content-area">
-                <TopBar title={title} action={action} onToggleSidebar={() => setSidebarOpen((o) => !o)} />
+                <TopBar onToggleSidebar={() => setSidebarOpen((o) => !o)} />
                 <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
+                    {(title || action) && (
+                        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                            {title && <h3 className="mb-0">{title}</h3>}
+                            {action && <div className="d-flex flex-wrap gap-2">{action}</div>}
+                        </div>
+                    )}
                     {children}
                 </div>
             </main>

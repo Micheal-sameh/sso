@@ -12,7 +12,7 @@ interface AppLayoutProps {
 }
 
 const NAV_LINKS: SidebarLink[] = [
-    { href: '/account', label: 'Profile', icon: 'bi-person' },
+    { href: '/account', label: 'Identity', icon: 'bi-person' },
     { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
 ]
@@ -33,9 +33,10 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
             />
 
             <main className="flex-grow-1 main-content-area">
-                <TopBar title={title} onToggleSidebar={() => setSidebarOpen((o) => !o)} />
+                <TopBar onToggleSidebar={() => setSidebarOpen((o) => !o)} />
                 <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
+                    {title && <h3 className="mb-4">{title}</h3>}
                     {children}
                 </div>
             </main>
