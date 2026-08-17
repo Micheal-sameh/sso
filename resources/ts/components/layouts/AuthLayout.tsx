@@ -12,7 +12,7 @@ export default function AuthLayout({ children, wide = false }: AuthLayoutProps) 
             <div className={`${wide ? 'auth-card-wide' : 'auth-card'} page-content`}>
                 <FlashMessage />
                 <div className="ava-card">
-                    <div className="card-accent card-accent-gold" />
+                    <div className="card-accent card-accent-secondary" />
                     <div className="p-4 p-md-5">{children}</div>
                 </div>
             </div>

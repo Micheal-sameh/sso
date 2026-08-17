@@ -50,11 +50,11 @@ export default function Mfa({ mfa, qrCodeSvg, secret, recoveryCodes }: MfaProps)
             <div className="row g-4">
                 <div className="col-lg-4 d-flex flex-column gap-4">
                     <div className="ava-card">
-                        <div className="card-accent card-accent-gold" />
+                        <div className="card-accent card-accent-secondary" />
                         <div className="p-4">
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <span className="fw-semibold">
-                                    <i className="bi bi-patch-check-fill text-ava-gold me-2" />
+                                    <i className="bi bi-patch-check-fill text-ava-secondary me-2" />
                                     MFA Status
                                 </span>
                                 <StatusBadge status={mfa?.is_enabled ? 'enabled' : 'disabled'} />

@@ -41,7 +41,7 @@ export default function ForgotPassword() {
                 </button>
 
                 <div className="text-center mt-3">
-                    <a href="/login" className="text-ava-gold text-decoration-none small">Back to sign in</a>
+                    <a href="/login" className="text-ava-secondary text-decoration-none small">Back to sign in</a>
                 </div>
             </form>
 

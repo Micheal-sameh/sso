@@ -19,7 +19,7 @@ export default function Mfa() {
     return (
         <AuthLayout>
             <div className="text-center mb-4">
-                <div className="icon-circle text-ava-gold mx-auto mb-3">
+                <div className="icon-circle text-ava-secondary mx-auto mb-3">
                     <i className="bi bi-shield-lock-fill" />
                 </div>
                 <h4>Two-Factor Authentication</h4>
@@ -60,7 +60,7 @@ export default function Mfa() {
             <div className="text-center">
                 <button
                     type="button"
-                    className="btn btn-link text-ava-gold text-decoration-none small"
+                    className="btn btn-link text-ava-secondary text-decoration-none small"
                     onClick={() => setMode(mode === 'totp' ? 'recovery' : 'totp')}
                 >
                     {mode === 'totp' ? 'Use a recovery code instead' : 'Use authenticator app instead'}

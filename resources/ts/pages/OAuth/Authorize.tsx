@@ -23,7 +23,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                         <i className="bi bi-app" />
                     </div>
                 )}
-                <i className="bi bi-arrow-right text-ava-gold" />
+                <i className="bi bi-arrow-right text-ava-secondary" />
                 <AvaLogo size={48} />
             </div>
 
@@ -37,7 +37,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 <ul className="list-unstyled mb-0">
                     {scopes.map((scope) => (
                         <li key={scope.id} className="d-flex align-items-start gap-2 mb-2">
-                            <i className="bi bi-check-circle-fill text-ava-gold mt-1" />
+                            <i className="bi bi-check-circle-fill text-ava-secondary mt-1" />
                             <span className="small">{scope.description}</span>
                         </li>
                     ))}

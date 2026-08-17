@@ -1,19 +1,19 @@
 :root {
-    --ava-primary: #7B1C2E;
-    --ava-primary-dark: #5C021A;
-    --ava-primary-light: #9B2238;
-    --ava-gold: #B8860B;
-    --ava-gold-light: #D4A843;
-    --ava-dark: #1A0A0E;
+    --ava-primary: #1B2A4A;
+    --ava-primary-dark: #101A30;
+    --ava-primary-light: #2E4570;
+    --ava-secondary: #3B82F6;
+    --ava-secondary-light: #93C5FD;
+    --ava-tertiary: #64748B;
+    --ava-dark: #0B1220;
     --ava-white: #FFFFFF;
-    --ava-bg: #F5F3F0;
-    --ava-text: #2C1A1A;
-    --ava-muted: #8B6B6B;
-    --ava-border: #D4B896;
-    --ava-success: #2D6A4F;
-    --ava-danger: #8B1A1A;
+    --ava-bg: #F9FAFB;
+    --ava-text: #0F172A;
+    --ava-muted: #64748B;
+    --ava-border: #E2E8F0;
+    --ava-success: #16A34A;
+    --ava-danger: #DC2626;
 
-    --font-serif: 'Source Serif 4', Georgia, serif;
     --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
     --bs-border-radius: 0.625rem;
@@ -40,7 +40,7 @@
     border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--ava-gold);
+    background: var(--ava-tertiary);
 }
 
 body {
@@ -53,7 +53,11 @@ body {
 }
 
 a {
+    color: var(--ava-secondary);
     transition: color 0.15s ease;
+}
+a:hover {
+    color: var(--ava-primary);
 }
 
 @keyframes fadeInUp {
@@ -74,36 +78,36 @@ a {
 /* ---------- Typography ---------- */
 
 h1, h2, h3 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 700;
-    color: var(--ava-primary);
-    letter-spacing: -0.01em;
+    color: var(--ava-text);
+    letter-spacing: -0.02em;
 }
-h1 { font-size: 2.5rem; line-height: 1.15; }
-h2 { font-size: 2rem; line-height: 1.2; }
-h3 { font-size: 1.625rem; line-height: 1.25; }
+h1 { font-size: 2.25rem; line-height: 1.2; font-weight: 800; }
+h2 { font-size: 1.875rem; line-height: 1.25; font-weight: 700; }
+h3 { font-size: 1.5rem; line-height: 1.3; font-weight: 700; }
 
 h4 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 600;
-    font-size: 1.5rem;
-    line-height: 1.3;
-    color: var(--ava-primary);
+    font-size: 1.25rem;
+    line-height: 1.35;
+    color: var(--ava-text);
     letter-spacing: -0.01em;
 }
 
 h5 {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-weight: 600;
-    font-size: 1.25rem;
-    line-height: 1.35;
+    font-size: 1.0625rem;
+    line-height: 1.4;
     color: var(--ava-text);
 }
 
 h6 {
     font-family: var(--font-sans);
     font-weight: 600;
-    font-size: 1.0625rem;
+    font-size: 0.9375rem;
     line-height: 1.4;
     color: var(--ava-text);
 }
@@ -134,6 +138,9 @@ small, .small {
 .btn:active {
     transform: scale(0.97);
 }
+.btn:focus-visible {
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.28);
+}
 .btn-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.8125rem;
@@ -141,13 +148,13 @@ small, .small {
 .btn-primary {
     background: var(--ava-primary);
     border-color: var(--ava-primary);
-    box-shadow: 0 1px 2px rgba(92, 2, 26, 0.15);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
 }
 .btn-primary:hover,
 .btn-primary:focus {
     background: var(--ava-primary-dark);
     border-color: var(--ava-primary-dark);
-    box-shadow: 0 4px 12px rgba(92, 2, 26, 0.25);
+    box-shadow: 0 4px 14px rgba(27, 42, 74, 0.28);
     transform: translateY(-1px);
 }
 .btn-outline-primary {
@@ -159,12 +166,13 @@ small, .small {
     background: var(--ava-primary);
     border-color: var(--ava-primary);
     color: #fff;
-    box-shadow: 0 4px 12px rgba(123, 28, 46, 0.18);
+    box-shadow: 0 4px 14px rgba(27, 42, 74, 0.2);
     transform: translateY(-1px);
 }
 .btn-link {
     font-weight: 600;
     text-decoration: none;
+    color: var(--ava-secondary);
 }
 
 /* ---------- Forms ---------- */
@@ -177,19 +185,19 @@ small, .small {
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .form-control:focus, .form-select:focus {
-    border-color: var(--ava-gold);
-    box-shadow: 0 0 0 0.2rem rgba(184, 134, 11, 0.18);
+    border-color: var(--ava-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
 }
 .form-control::placeholder {
-    color: #b3a3a3;
+    color: #94A3B8;
 }
 .form-check-input:checked {
     background-color: var(--ava-primary);
     border-color: var(--ava-primary);
 }
 .form-check-input:focus {
-    border-color: var(--ava-gold);
-    box-shadow: 0 0 0 0.2rem rgba(184, 134, 11, 0.18);
+    border-color: var(--ava-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
 }
 
 /* ---------- Cards ---------- */
@@ -197,7 +205,7 @@ small, .small {
 .ava-card {
     background: #fff;
     border-radius: var(--bs-border-radius-lg);
-    box-shadow: 0 1px 3px rgba(44, 26, 26, 0.06), 0 8px 24px rgba(123, 28, 46, 0.08);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 20px rgba(15, 23, 42, 0.06);
     border: 1px solid var(--ava-border);
     overflow: hidden;
     transition: box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
@@ -206,20 +214,20 @@ small, .small {
     height: 4px;
     width: 100%;
 }
-.card-accent-gold { background: var(--ava-gold); }
+.card-accent-secondary { background: var(--ava-secondary); }
 .card-accent-primary { background: var(--ava-primary); }
 
 .stat-tile {
     background: #fff;
     border-radius: var(--bs-border-radius-lg);
     border: 1px solid var(--ava-border);
-    box-shadow: 0 1px 3px rgba(44, 26, 26, 0.05);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     padding: 20px 24px;
     transition: box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out), border-color 0.2s ease;
 }
 .stat-tile:hover {
-    box-shadow: 0 12px 28px rgba(123, 28, 46, 0.12);
-    border-color: var(--ava-gold-light);
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+    border-color: var(--ava-secondary-light);
     transform: translateY(-3px);
 }
 .stat-tile-label {
@@ -230,8 +238,8 @@ small, .small {
     color: var(--ava-muted);
 }
 .stat-tile-value {
-    font-family: var(--font-serif);
-    font-weight: 700;
+    font-family: var(--font-sans);
+    font-weight: 800;
     font-size: 2rem;
     color: var(--ava-text);
 }
@@ -241,8 +249,8 @@ small, .small {
 .auth-wrapper {
     min-height: 100vh;
     background:
-        radial-gradient(circle at 15% 15%, rgba(123, 28, 46, 0.06), transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(184, 134, 11, 0.08), transparent 40%),
+        radial-gradient(circle at 15% 15%, rgba(27, 42, 74, 0.06), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.08), transparent 40%),
         var(--ava-bg);
     display: flex;
     align-items: center;
@@ -305,7 +313,7 @@ small, .small {
 .sidebar-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(26, 10, 14, 0.5);
+    background: rgba(11, 18, 32, 0.5);
     z-index: 1035;
     animation: fadeInUp 0.2s var(--ease-out);
 }
@@ -354,7 +362,7 @@ small, .small {
     }
 }
 .sidebar-link {
-    color: rgba(255, 255, 255, 0.75);
+    color: rgba(255, 255, 255, 0.7);
     padding: 10px 14px;
     margin: 2px 12px;
     display: flex;
@@ -374,8 +382,8 @@ small, .small {
 .sidebar-link.active {
     color: #fff;
     font-weight: 600;
-    background: rgba(212, 168, 67, 0.22);
-    box-shadow: inset 3px 0 0 var(--ava-gold);
+    background: rgba(59, 130, 246, 0.22);
+    box-shadow: inset 3px 0 0 var(--ava-secondary);
 }
 
 .topbar {
@@ -405,28 +413,28 @@ small, .small {
     border-radius: 50%;
 }
 .status-pill-active, .status-pill-enabled {
-    background: rgba(45, 106, 79, 0.1);
+    background: rgba(22, 163, 74, 0.1);
     color: var(--ava-success);
 }
 .status-pill-active .status-pill-dot, .status-pill-enabled .status-pill-dot {
     background: var(--ava-success);
 }
 .status-pill-revoked, .status-pill-disabled {
-    background: rgba(139, 26, 26, 0.1);
+    background: rgba(220, 38, 38, 0.1);
     color: var(--ava-danger);
 }
 .status-pill-revoked .status-pill-dot, .status-pill-disabled .status-pill-dot {
     background: var(--ava-danger);
 }
 .status-pill-internal {
-    background: rgba(184, 134, 11, 0.12);
-    color: #8a6408;
+    background: rgba(59, 130, 246, 0.12);
+    color: #1D4ED8;
 }
 .status-pill-internal .status-pill-dot {
-    background: var(--ava-gold);
+    background: var(--ava-secondary);
 }
 .status-pill-external {
-    background: rgba(123, 28, 46, 0.1);
+    background: rgba(27, 42, 74, 0.08);
     color: var(--ava-primary);
 }
 .status-pill-external .status-pill-dot {
@@ -442,11 +450,11 @@ small, .small {
     border-color: var(--ava-border);
 }
 .otp-input:focus {
-    border-color: var(--ava-gold);
-    box-shadow: 0 0 0 0.2rem rgba(184, 134, 11, 0.18);
+    border-color: var(--ava-secondary);
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
 }
 
-.text-ava-gold { color: var(--ava-gold); }
+.text-ava-secondary { color: var(--ava-secondary); }
 .text-ava-primary { color: var(--ava-primary); }
 .text-ava-muted { color: var(--ava-muted); }
 .text-tiny { font-size: 12px; }
@@ -460,7 +468,7 @@ small, .small {
 .avatar-80 { width: 80px; height: 80px; object-fit: cover; }
 .icon-fs-48 { font-size: 48px; }
 .modal-backdrop-custom {
-    background: rgba(26, 10, 14, 0.45);
+    background: rgba(11, 18, 32, 0.45);
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 }
@@ -470,8 +478,8 @@ small, .small {
 }
 
 .app-requesting-banner {
-    background: rgba(212, 168, 67, 0.15);
-    border-left: 3px solid var(--ava-gold);
+    background: rgba(59, 130, 246, 0.1);
+    border-left: 3px solid var(--ava-secondary);
     padding: 10px 14px;
     border-radius: var(--bs-border-radius);
     font-size: 0.8125rem;
@@ -534,7 +542,7 @@ small, .small {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(184, 134, 11, 0.16), rgba(184, 134, 11, 0.05));
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.16), rgba(59, 130, 246, 0.05));
     font-size: 28px;
 }
 
@@ -545,7 +553,7 @@ small, .small {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(44, 26, 26, 0.08), rgba(44, 26, 26, 0.03));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.03));
     font-size: 18px;
 }
 
@@ -563,7 +571,7 @@ small, .small {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, rgba(44, 26, 26, 0.08), rgba(44, 26, 26, 0.03));
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.08), rgba(15, 23, 42, 0.03));
 }
 
 /* ---------- Mobile record cards ---------- */
@@ -572,7 +580,7 @@ small, .small {
     background: #fff;
     border-radius: var(--bs-border-radius-lg);
     border: 1px solid var(--ava-border);
-    box-shadow: 0 1px 3px rgba(44, 26, 26, 0.05);
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     padding: 16px;
 }
 .record-card + .record-card {
@@ -583,7 +591,7 @@ small, .small {
     justify-content: space-between;
     align-items: center;
     padding: 6px 0;
-    border-top: 1px solid rgba(212, 184, 150, 0.35);
+    border-top: 1px solid var(--ava-border);
     font-size: 0.875rem;
 }
 .record-card-row:first-of-type {
@@ -602,7 +610,7 @@ small, .small {
     gap: 8px;
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(212, 184, 150, 0.35);
+    border-top: 1px solid var(--ava-border);
 }
 .record-card-actions .btn {
     flex: 1;
@@ -627,7 +635,7 @@ small, .small {
 .table tbody td {
     padding: 14px 16px;
     vertical-align: middle;
-    border-bottom-color: rgba(212, 184, 150, 0.4);
+    border-bottom-color: var(--ava-border);
 }
 .table tbody tr:last-child td {
     border-bottom: none;
@@ -636,7 +644,7 @@ small, .small {
     transition: background-color 0.15s ease;
 }
 .table tbody tr:hover {
-    background-color: rgba(123, 28, 46, 0.03);
+    background-color: rgba(59, 130, 246, 0.04);
 }
 
 code {
@@ -661,15 +669,15 @@ code {
     font-weight: 600;
     padding: 4px 12px;
     border-radius: 999px;
-    background: rgba(44, 26, 26, 0.06);
+    background: rgba(15, 23, 42, 0.06);
     color: var(--ava-text);
 }
 .role-chip-super {
-    background: rgba(184, 134, 11, 0.12);
-    color: #8a6408;
+    background: rgba(59, 130, 246, 0.12);
+    color: #1D4ED8;
 }
 .role-chip-admin {
-    background: rgba(123, 28, 46, 0.1);
+    background: rgba(27, 42, 74, 0.08);
     color: var(--ava-primary);
 }
 

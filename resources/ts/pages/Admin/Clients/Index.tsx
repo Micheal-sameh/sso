@@ -202,7 +202,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
                                                     className="rounded"
                                                 />
                                             ) : (
-                                                <div className={`icon-tile ${client.is_internal ? 'text-ava-gold' : 'text-ava-muted'}`}>
+                                                <div className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'}`}>
                                                     <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
                                                 </div>
                                             )}
@@ -263,7 +263,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
                             {client.app_logo_url ? (
                                 <img src={client.app_logo_url} alt={client.app_name} width={40} height={40} className="rounded" />
                             ) : (
-                                <div className={`icon-tile ${client.is_internal ? 'text-ava-gold' : 'text-ava-muted'}`}>
+                                <div className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'}`}>
                                     <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
                                 </div>
                             )}
