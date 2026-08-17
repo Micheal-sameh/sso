@@ -17,10 +17,17 @@ use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 use Laravel\Passport\Http\Controllers\ApproveAuthorizationController;
 use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
 
-Route::get('/', fn () => redirect()->route(Auth::check() ? 'account.show' : 'login'));
+Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('account.show');
+    }
+
+    return Inertia::render('Welcome');
+})->name('welcome');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
