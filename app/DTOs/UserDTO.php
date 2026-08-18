@@ -44,7 +44,12 @@ readonly class UserDTO
             role: $user->role,
             is_active: $user->is_active,
             isAdmin: $user->hasAnyRole([AdminRole::SuperAdmin->value, AdminRole::Admin->value]),
-            canManageAdminAccess: $user->can(AdminPermission::ManageAdminAccess->value),
+            // Explicit guard: Spatie's permission check otherwise resolves against
+            // whichever guard authenticated the current request (web vs api), but
+            // every role/permission in this app was seeded under the "web" guard.
+            // Without this, the same user gets canManageAdminAccess=false purely
+            // because a request came in through the API instead of the browser.
+            canManageAdminAccess: $user->hasPermissionTo(AdminPermission::ManageAdminAccess->value, 'web'),
             stageId: $user->stage_id,
             stageName: $user->stage->name,
             stageCode: $user->stage->code,

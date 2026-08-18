@@ -37,4 +37,23 @@ class TokenRepository implements TokenRepositoryContract
 
         RefreshToken::where('access_token_id', $tokenId)->update(['revoked' => true]);
     }
+
+    /**
+     * Revoke a token only if it belongs to the given user.
+     */
+    public function revokeForUser(string $tokenId, int $userId): bool
+    {
+        $token = Token::where('id', $tokenId)->where('user_id', $userId)->first();
+
+        if ($token === null) {
+            return false;
+        }
+
+        $token->revoked = true;
+        $token->save();
+
+        RefreshToken::where('access_token_id', $tokenId)->update(['revoked' => true]);
+
+        return true;
+    }
 }
