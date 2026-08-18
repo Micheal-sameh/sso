@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\OAuthClientDTO;
 use App\Enums\ClientAccessMode;
+use App\Enums\ClientGrantType;
 use App\Models\ClientMeta;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -23,11 +24,16 @@ class OAuthClientService
      */
     public function registerClient(OAuthClientDTO $dto): array
     {
-        $client = $this->clientRepository->createAuthorizationCodeGrantClient(
-            name: $dto->name,
-            redirectUris: [$dto->redirect],
-            confidential: ! $dto->isPublicClient,
-        );
+        // Implicit-grant clients (e.g. Odoo's built-in OAuth login) are always
+        // non-confidential per the OAuth2 spec: the token is returned directly
+        // in the browser redirect fragment, so there's nowhere to keep a secret.
+        $client = $dto->grantType === ClientGrantType::Implicit
+            ? $this->clientRepository->createImplicitGrantClient($dto->name, [$dto->redirect])
+            : $this->clientRepository->createAuthorizationCodeGrantClient(
+                name: $dto->name,
+                redirectUris: [$dto->redirect],
+                confidential: ! $dto->isPublicClient,
+            );
 
         $meta = $this->clientMetaRepository->create($client->id, $dto);
 

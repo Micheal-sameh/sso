@@ -61,5 +61,9 @@ class AppServiceProvider extends ServiceProvider
             OAuthScope::Profile->value,
             OAuthScope::Email->value,
         ]);
+
+        // Disabled by default; needed for legacy OAuth consumers (e.g. Odoo's
+        // built-in auth_oauth module) that only support the implicit grant.
+        Passport::enableImplicitGrant();
     }
 }

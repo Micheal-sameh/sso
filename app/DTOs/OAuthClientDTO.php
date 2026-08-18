@@ -3,6 +3,7 @@
 namespace App\DTOs;
 
 use App\Enums\ClientAccessMode;
+use App\Enums\ClientGrantType;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 
@@ -19,6 +20,7 @@ readonly class OAuthClientDTO
         public ?UploadedFile $appLogo,
         public bool $isInternal,
         public bool $isPublicClient,
+        public ClientGrantType $grantType,
         public ClientAccessMode $accessMode,
         public array $stageIds,
         public array $userIds,
@@ -35,6 +37,7 @@ readonly class OAuthClientDTO
             appLogo: $appLogo instanceof UploadedFile ? $appLogo : null,
             isInternal: $request->boolean('is_internal'),
             isPublicClient: $request->boolean('is_public_client'),
+            grantType: ClientGrantType::from($request->string('grant_type')->toString() ?: ClientGrantType::AuthorizationCode->value),
             accessMode: ClientAccessMode::from($request->string('access_mode')->toString()),
             stageIds: array_map('intval', $request->array('stage_ids')),
             userIds: array_map('intval', $request->array('user_ids')),

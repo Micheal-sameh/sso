@@ -20,6 +20,7 @@ class OAuthClientRequest extends FormRequest
             'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
             'is_internal' => ['boolean'],
             'is_public_client' => ['boolean'],
+            'grant_type' => ['nullable', 'in:authorization_code,implicit'],
             'access_mode' => ['required', 'in:all,stage,specific'],
             'stage_ids' => ['required_if:access_mode,stage', 'array'],
             'stage_ids.*' => ['integer', 'exists:stages,id'],

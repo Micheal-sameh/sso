@@ -20,6 +20,7 @@ interface ClientForm {
     app_logo: File | null
     is_internal: boolean
     is_public_client: boolean
+    grant_type: 'authorization_code' | 'implicit'
     access_mode: 'all' | 'stage' | 'specific'
     stage_ids: number[]
     user_ids: number[]
@@ -38,6 +39,7 @@ const emptyForm: ClientForm = {
     app_logo: null,
     is_internal: false,
     is_public_client: false,
+    grant_type: 'authorization_code',
     access_mode: 'all',
     stage_ids: [],
     user_ids: [],
@@ -80,6 +82,7 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
             app_logo: null,
             is_internal: client.is_internal,
             is_public_client: false,
+            grant_type: client.oauth_client.grant_types?.includes('implicit') ? 'implicit' : 'authorization_code',
             access_mode: client.access_mode,
             stage_ids: (client.stages ?? []).map((s) => s.id),
             user_ids: (client.allowed_users ?? []).map((u) => u.id),
@@ -453,6 +456,26 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
                                     </div>
 
                                     {!editingClient && (
+                                        <div className="mb-3">
+                                            <label className="form-label" htmlFor="grant_type">Grant Type</label>
+                                            <select
+                                                id="grant_type"
+                                                className="form-select"
+                                                value={form.data.grant_type}
+                                                onChange={(e) => form.setData('grant_type', e.target.value as ClientForm['grant_type'])}
+                                            >
+                                                <option value="authorization_code">Authorization Code (PKCE)</option>
+                                                <option value="implicit">Implicit (legacy, e.g. Odoo)</option>
+                                            </select>
+                                            <p className="text-ava-muted text-tiny mt-1 mb-0">
+                                                Use Implicit only for legacy consumers that require it (e.g. Odoo&apos;s
+                                                built-in OAuth login). It always issues tokens without a client secret.
+                                                This cannot be changed after the client is created.
+                                            </p>
+                                        </div>
+                                    )}
+
+                                    {!editingClient && form.data.grant_type === 'authorization_code' && (
                                         <div className="form-check form-switch mb-3">
                                             <input
                                                 id="is_public_client"

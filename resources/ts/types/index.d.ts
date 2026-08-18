@@ -40,6 +40,7 @@ export interface OAuthClient {
     redirect: string
     personal_access_client: boolean
     password_client: boolean
+    grant_types: string[]
     revoked: boolean
 }
 
