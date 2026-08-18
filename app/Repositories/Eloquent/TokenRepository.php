@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Eloquent;
 
+use App\Models\Token;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Laravel\Passport\RefreshToken;
-use Laravel\Passport\Token;
 
 class TokenRepository implements TokenRepositoryContract
 {

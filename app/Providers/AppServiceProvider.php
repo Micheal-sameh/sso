@@ -65,5 +65,9 @@ class AppServiceProvider extends ServiceProvider
         // Disabled by default; needed for legacy OAuth consumers (e.g. Odoo's
         // built-in auth_oauth module) that only support the implicit grant.
         Passport::enableImplicitGrant();
+
+        // Passport's own Token::user() throws when eager-loaded (see
+        // App\Models\Token for why); use our override everywhere.
+        Passport::useTokenModel(\App\Models\Token::class);
     }
 }

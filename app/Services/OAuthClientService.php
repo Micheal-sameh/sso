@@ -6,11 +6,11 @@ use App\DTOs\OAuthClientDTO;
 use App\Enums\ClientAccessMode;
 use App\Enums\ClientGrantType;
 use App\Models\ClientMeta;
+use App\Models\Token;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Laravel\Passport\ClientRepository;
-use Laravel\Passport\Token;
 
 class OAuthClientService
 {
