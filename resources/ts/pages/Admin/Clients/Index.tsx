@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
 import type { ClientMeta, LiteUser, PaginatedData, Stage } from '@/types'
@@ -52,6 +53,7 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
     const [revealedSecret, setRevealedSecret] = useState(newClientSecret)
     const [secretCopied, setSecretCopied] = useState(false)
+    const confirm = useConfirm()
     const form = useForm<ClientForm>(emptyForm)
 
     const copySecret = async () => {
@@ -128,8 +130,8 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
         navigator.clipboard.writeText(id)
     }
 
-    const revoke = (client: ClientMeta) => {
-        if (confirm(`Revoke client ${client.app_name}?`)) {
+    const revoke = async (client: ClientMeta) => {
+        if (await confirm(`Revoke client ${client.app_name}?`, { confirmLabel: 'Revoke' })) {
             router.delete(`/admin/clients/${client.oauth_client_id}`)
         }
     }

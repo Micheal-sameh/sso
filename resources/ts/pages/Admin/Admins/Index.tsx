@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
@@ -15,6 +16,7 @@ interface IndexProps {
 export default function Index({ admins, filters }: IndexProps) {
     const [search, setSearch] = useState(filters.search ?? '')
     const { auth } = usePage<SharedProps>().props
+    const confirm = useConfirm()
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -29,8 +31,8 @@ export default function Index({ admins, filters }: IndexProps) {
         router.patch(`/admin/users/${user.id}/toggle`, {}, { preserveScroll: true })
     }
 
-    const revokeAdminAccess = (user: User) => {
-        if (confirm(`Revoke SSO admin access for ${user.name}?`)) {
+    const revokeAdminAccess = async (user: User) => {
+        if (await confirm(`Revoke SSO admin access for ${user.name}?`, { confirmLabel: 'Revoke' })) {
             router.patch(`/admin/users/${user.id}/toggle-admin-access`, {}, { preserveScroll: true })
         }
     }

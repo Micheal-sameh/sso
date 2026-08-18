@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
 import type { PaginatedData, Token } from '@/types'
@@ -9,8 +10,10 @@ interface IndexProps {
 }
 
 export default function Index({ tokens }: IndexProps) {
-    const revoke = (token: Token) => {
-        if (confirm('Revoke this token?')) {
+    const confirm = useConfirm()
+
+    const revoke = async (token: Token) => {
+        if (await confirm('Revoke this token?', { confirmLabel: 'Revoke' })) {
             router.delete(`/admin/tokens/${token.id}`)
         }
     }

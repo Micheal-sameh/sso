@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
 import { calculateAge, formatDateDMY } from '@/lib/date'
@@ -15,6 +16,7 @@ interface ShowProps {
 
 export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
     const { csrf_token } = usePage<SharedProps>().props
+    const confirm = useConfirm()
     const dobAge = calculateAge(viewedUser.date_of_birth)
     const [resetLinkBusy, setResetLinkBusy] = useState(false)
     const [resetLinkCopied, setResetLinkCopied] = useState(false)
@@ -108,26 +110,26 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
         }
     }
 
-    const forceLogout = (token: Token) => {
-        if (confirm(`Force ${viewedUser.name} to log out of ${token.client.name}?`)) {
+    const forceLogout = async (token: Token) => {
+        if (await confirm(`Force ${viewedUser.name} to log out of ${token.client.name}?`, { confirmLabel: 'Log out' })) {
             router.delete(`/admin/tokens/${token.id}`, { preserveScroll: true })
         }
     }
 
-    const forceLogoutAll = () => {
+    const forceLogoutAll = async () => {
         if (tokens.length === 0) {
             return
         }
 
-        if (confirm(`Force ${viewedUser.name} to log out of all ${tokens.length} apps?`)) {
+        if (await confirm(`Force ${viewedUser.name} to log out of all ${tokens.length} apps?`, { confirmLabel: 'Log out all' })) {
             tokens.forEach((token) => router.delete(`/admin/tokens/${token.id}`, { preserveScroll: true }))
         }
     }
 
-    const toggleActive = () => {
+    const toggleActive = async () => {
         const action = viewedUser.is_active ? 'deactivate' : 'activate'
 
-        if (confirm(`Are you sure you want to ${action} ${viewedUser.name}?`)) {
+        if (await confirm(`Are you sure you want to ${action} ${viewedUser.name}?`, { confirmLabel: action === 'deactivate' ? 'Deactivate' : 'Activate' })) {
             router.patch(`/admin/users/${viewedUser.id}/toggle`, {}, { preserveScroll: true })
         }
     }

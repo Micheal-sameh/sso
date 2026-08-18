@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react'
 import AppLayout from '@/components/layouts/AppLayout'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import type { Token } from '@/types'
 
 interface AppsProps {
@@ -7,8 +8,10 @@ interface AppsProps {
 }
 
 export default function Apps({ tokens }: AppsProps) {
-    const revoke = (token: Token) => {
-        if (confirm(`Revoke access for ${token.client.name}?`)) {
+    const confirm = useConfirm()
+
+    const revoke = async (token: Token) => {
+        if (await confirm(`Revoke access for ${token.client.name}?`, { confirmLabel: 'Revoke' })) {
             router.delete(`/account/apps/${token.id}`)
         }
     }

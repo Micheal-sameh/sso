@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import type { Stage } from '@/types'
 
 interface IndexProps {
@@ -16,14 +17,15 @@ interface StageForm {
 export default function Index({ stages }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
     const form = useForm<StageForm>({ name: '', code: '' })
+    const confirm = useConfirm()
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
         form.post('/admin/stages', { onSuccess: () => setShowModal(false) })
     }
 
-    const remove = (stage: Stage) => {
-        if (confirm(`Delete the "${stage.name}" stage?`)) {
+    const remove = async (stage: Stage) => {
+        if (await confirm(`Delete the "${stage.name}" stage?`, { confirmLabel: 'Delete' })) {
             router.delete(`/admin/stages/${stage.id}`)
         }
     }

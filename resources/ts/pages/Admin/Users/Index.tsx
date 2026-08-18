@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { router, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
@@ -18,6 +19,7 @@ export default function Index({ users, stages, filters }: IndexProps) {
     const [role, setRole] = useState(filters.role ?? '')
     const [stageId, setStageId] = useState(filters.stage_id ?? '')
     const { auth } = usePage<SharedProps>().props
+    const confirm = useConfirm()
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -32,10 +34,10 @@ export default function Index({ users, stages, filters }: IndexProps) {
         router.patch(`/admin/users/${user.id}/toggle`, {}, { preserveScroll: true })
     }
 
-    const toggleAdminAccess = (user: User) => {
+    const toggleAdminAccess = async (user: User) => {
         const action = user.is_admin ? 'revoke' : 'grant'
 
-        if (confirm(`Are you sure you want to ${action} SSO admin access for ${user.name}?`)) {
+        if (await confirm(`Are you sure you want to ${action} SSO admin access for ${user.name}?`, { confirmLabel: action === 'revoke' ? 'Revoke' : 'Grant' })) {
             router.patch(`/admin/users/${user.id}/toggle-admin-access`, {}, { preserveScroll: true })
         }
     }
