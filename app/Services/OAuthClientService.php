@@ -26,7 +26,7 @@ class OAuthClientService
         $client = $this->clientRepository->createAuthorizationCodeGrantClient(
             name: $dto->name,
             redirectUris: [$dto->redirect],
-            confidential: true,
+            confidential: ! $dto->isPublicClient,
         );
 
         $meta = $this->clientMetaRepository->create($client->id, $dto);

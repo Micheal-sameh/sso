@@ -10,6 +10,7 @@ interface IndexProps {
     clients: PaginatedData<ClientMeta>
     stages: Stage[]
     users: LiteUser[]
+    newClientSecret: string | null
 }
 
 interface ClientForm {
@@ -18,6 +19,7 @@ interface ClientForm {
     homepage_url: string
     app_logo: File | null
     is_internal: boolean
+    is_public_client: boolean
     access_mode: 'all' | 'stage' | 'specific'
     stage_ids: number[]
     user_ids: number[]
@@ -35,17 +37,30 @@ const emptyForm: ClientForm = {
     homepage_url: '',
     app_logo: null,
     is_internal: false,
+    is_public_client: false,
     access_mode: 'all',
     stage_ids: [],
     user_ids: [],
 }
 
-export default function Index({ clients, stages, users }: IndexProps) {
+export default function Index({ clients, stages, users, newClientSecret }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
     const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
     const [userSearch, setUserSearch] = useState('')
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
+    const [revealedSecret, setRevealedSecret] = useState(newClientSecret)
+    const [secretCopied, setSecretCopied] = useState(false)
     const form = useForm<ClientForm>(emptyForm)
+
+    const copySecret = async () => {
+        if (!revealedSecret) {
+            return
+        }
+
+        await navigator.clipboard.writeText(revealedSecret)
+        setSecretCopied(true)
+        setTimeout(() => setSecretCopied(false), 2000)
+    }
 
     const openCreateModal = () => {
         setEditingClient(null)
@@ -64,6 +79,7 @@ export default function Index({ clients, stages, users }: IndexProps) {
             homepage_url: client.homepage_url ?? '',
             app_logo: null,
             is_internal: client.is_internal,
+            is_public_client: false,
             access_mode: client.access_mode,
             stage_ids: (client.stages ?? []).map((s) => s.id),
             user_ids: (client.allowed_users ?? []).map((u) => u.id),
@@ -323,6 +339,38 @@ export default function Index({ clients, stages, users }: IndexProps) {
                 <Pagination links={clients.links} />
             </div>
 
+            {revealedSecret && (
+                <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">
+                                    <i className="bi bi-key-fill text-ava-secondary me-2" />
+                                    Client Secret
+                                </h5>
+                            </div>
+                            <div className="modal-body">
+                                <p className="text-ava-muted small">
+                                    Copy this secret now and store it securely &mdash; it will not be shown again. If
+                                    you lose it, you&apos;ll need to revoke this client and register a new one.
+                                </p>
+                                <div className="input-group">
+                                    <input type="text" readOnly className="form-control font-monospace small" value={revealedSecret} />
+                                    <button type="button" className="btn btn-outline-primary" onClick={copySecret}>
+                                        <i className={`bi ${secretCopied ? 'bi-check-lg' : 'bi-clipboard'}`} />
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary" onClick={() => setRevealedSecret(null)}>
+                                    I&apos;ve saved it
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showModal && (
                 <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
                     <div className="modal-dialog">
@@ -403,6 +451,26 @@ export default function Index({ clients, stages, users }: IndexProps) {
                                         />
                                         <label className="form-check-label" htmlFor="is_internal">Internal application</label>
                                     </div>
+
+                                    {!editingClient && (
+                                        <div className="form-check form-switch mb-3">
+                                            <input
+                                                id="is_public_client"
+                                                type="checkbox"
+                                                className="form-check-input"
+                                                checked={form.data.is_public_client}
+                                                onChange={(e) => form.setData('is_public_client', e.target.checked)}
+                                            />
+                                            <label className="form-check-label" htmlFor="is_public_client">
+                                                Public client (mobile / native app)
+                                            </label>
+                                            <p className="text-ava-muted text-tiny mt-1 mb-0">
+                                                No client secret is issued — the app must use PKCE. Leave unchecked for
+                                                server-side apps (web dashboards, backends), which get a secret to keep
+                                                confidential. This cannot be changed after the client is created.
+                                            </p>
+                                        </div>
+                                    )}
 
                                     <div className="mb-3">
                                         <label className="form-label" htmlFor="access_mode">Who can authenticate</label>

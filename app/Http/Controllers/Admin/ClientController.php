@@ -28,14 +28,20 @@ class ClientController extends BaseController
             'clients' => $this->oauthClientService->listAllClients(20),
             'stages' => $this->stageService->listAll(),
             'users' => $this->userRepository->allLite(),
+            'newClientSecret' => session()->pull('newClientSecret'),
         ]);
     }
 
     public function store(OAuthClientRequest $request): RedirectResponse
     {
-        $this->oauthClientService->registerClient(OAuthClientDTO::fromRequest($request));
+        $result = $this->oauthClientService->registerClient(OAuthClientDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.clients.index', 'Client registered successfully.');
+        $message = $result['secret'] !== null
+            ? 'Client registered. Copy the secret now — it will not be shown again.'
+            : 'Client registered successfully.';
+
+        return $this->redirectRoute('admin.clients.index', $message)
+            ->with('newClientSecret', $result['secret']);
     }
 
     public function update(string $client, OAuthClientRequest $request): RedirectResponse
