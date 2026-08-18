@@ -68,7 +68,7 @@ export interface UserMfa {
 export interface OAuthClient {
     id: string
     name: string
-    redirect: string
+    redirect_uris: string[]
     personal_access_client: boolean
     password_client: boolean
     grant_types: string[]

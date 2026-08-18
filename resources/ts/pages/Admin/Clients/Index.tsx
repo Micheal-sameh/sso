@@ -83,7 +83,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
         setEditingClient(client)
         form.setData({
             name: client.app_name,
-            redirect: client.oauth_client.redirect,
+            redirect: client.oauth_client.redirect_uris[0] ?? '',
             homepage_url: client.homepage_url ?? '',
             app_logo: null,
             is_internal: client.is_internal,
@@ -268,7 +268,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                     <td>
                                         <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
                                     </td>
-                                    <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect}</td>
+                                    <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect_uris[0]}</td>
                                     <td>
                                         <div className="d-flex gap-2">
                                             <button
@@ -338,7 +338,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                         <div className="record-card-row">
                             <span className="record-card-label">Redirect</span>
                             <span className="text-ava-muted text-tiny text-truncate cell-truncate-220">
-                                {client.oauth_client.redirect}
+                                {client.oauth_client.redirect_uris[0]}
                             </span>
                         </div>
 
