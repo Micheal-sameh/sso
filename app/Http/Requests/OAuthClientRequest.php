@@ -15,7 +15,12 @@ class OAuthClientRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'redirect' => ['required', 'url'],
+            // Laravel's built-in "url" rule only accepts a fixed whitelist of
+            // known URI schemes, which excludes bespoke reverse-DNS mobile
+            // app schemes (e.g. "com.avarewase.passport://callback") used by
+            // native OAuth clients (RFC 8252). Accept any syntactically valid
+            // "scheme://..." URI instead, in addition to normal http(s) URLs.
+            'redirect' => ['required', 'string', 'max:2048', 'regex:/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/'],
             'homepage_url' => ['nullable', 'url'],
             'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
             'is_internal' => ['boolean'],
