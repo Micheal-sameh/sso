@@ -22,6 +22,8 @@ interface ClientMetaRepositoryContract
 
     public function syncUserAccess(string $oauthClientId, array $userIds): void;
 
+    public function syncGroupAccess(string $oauthClientId, array $groupIds): void;
+
     /**
      * @return Collection<int, ClientMeta>
      */

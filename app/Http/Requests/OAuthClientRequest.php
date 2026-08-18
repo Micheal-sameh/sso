@@ -26,11 +26,13 @@ class OAuthClientRequest extends FormRequest
             'is_internal' => ['boolean'],
             'is_public_client' => ['boolean'],
             'grant_type' => ['nullable', 'in:authorization_code,implicit'],
-            'access_mode' => ['required', 'in:all,stage,specific'],
+            'access_mode' => ['required', 'in:all,stage,specific,group'],
             'stage_ids' => ['required_if:access_mode,stage', 'array'],
             'stage_ids.*' => ['integer', 'exists:stages,id'],
             'user_ids' => ['required_if:access_mode,specific', 'array'],
             'user_ids.*' => ['integer', 'exists:users,id'],
+            'group_ids' => ['required_if:access_mode,group', 'array'],
+            'group_ids.*' => ['integer', 'exists:groups,id'],
         ];
     }
 }

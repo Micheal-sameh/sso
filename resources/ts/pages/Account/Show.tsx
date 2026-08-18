@@ -48,6 +48,7 @@ export default function Show({ user }: ShowProps) {
         ...(age !== null ? [{ icon: 'bi-hourglass-split', label: 'Age', value: `${age} years` }] : []),
         { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
         { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
+        { icon: 'bi-collection', label: 'Groups', value: user.groups.length > 0 ? user.groups.map((g) => g.name).join(', ') : 'None' },
     ]
 
     return (
@@ -71,6 +72,11 @@ export default function Show({ user }: ShowProps) {
                         <div className="d-flex flex-wrap gap-2">
                             <RoleChip role={user.role} />
                             <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
+                            {user.groups.map((group) => (
+                                <span key={group.id} className="scope-chip">
+                                    {group.name}
+                                </span>
+                            ))}
                         </div>
                     </div>
                 </div>

@@ -7,6 +7,7 @@ enum ClientAccessMode: string
     case All = 'all';
     case Stage = 'stage';
     case Specific = 'specific';
+    case Group = 'group';
 
     public function label(): string
     {
@@ -14,6 +15,7 @@ enum ClientAccessMode: string
             self::All => 'All Users',
             self::Stage => 'Specific Stage(s)',
             self::Specific => 'Specific Users',
+            self::Group => 'Specific Group(s)',
         };
     }
 }

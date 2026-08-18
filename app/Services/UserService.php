@@ -125,6 +125,22 @@ class UserService
     }
 
     /**
+     * Add a user to a group.
+     */
+    public function addToGroup(User $user, int $groupId): void
+    {
+        $this->userRepository->attachGroup($user, $groupId);
+    }
+
+    /**
+     * Remove a user from a group.
+     */
+    public function removeFromGroup(User $user, int $groupId): void
+    {
+        $this->userRepository->detachGroup($user, $groupId);
+    }
+
+    /**
      * Resolve the authenticated user from the given request.
      */
     public function getFromToken(Request $request): User

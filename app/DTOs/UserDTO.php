@@ -26,11 +26,13 @@ readonly class UserDTO
         public string $stageName,
         public string $stageCode,
         public ?string $email_verified_at,
+        /** @var array<int, array{id: int, name: string}> */
+        public array $groups,
     ) {}
 
     public static function fromModel(User $user): self
     {
-        $user->loadMissing('roles', 'stage');
+        $user->loadMissing('roles', 'stage', 'groups');
 
         return new self(
             id: $user->id,
@@ -54,6 +56,7 @@ readonly class UserDTO
             stageName: $user->stage->name,
             stageCode: $user->stage->code,
             email_verified_at: $user->email_verified_at?->toIso8601String(),
+            groups: $user->groups->map(fn ($group) => ['id' => $group->id, 'name' => $group->name])->all(),
         );
     }
 
@@ -81,6 +84,7 @@ readonly class UserDTO
                 'code' => $this->stageCode,
             ],
             'email_verified_at' => $this->email_verified_at,
+            'groups' => $this->groups,
         ];
     }
 

@@ -12,6 +12,36 @@ export interface UserStageSummary {
     code: string
 }
 
+export interface GroupMember {
+    id: number
+    name: string
+    email: string
+    membership_code: string
+}
+
+export interface GroupMemberOption extends GroupMember {
+    is_member: boolean
+}
+
+export interface Group {
+    id: number
+    name: string
+    description: string | null
+    users_count?: number
+    users?: GroupMember[]
+}
+
+export interface UserGroupSummary {
+    id: number
+    name: string
+}
+
+export interface UserGroupOption {
+    id: number
+    name: string
+    is_member: boolean
+}
+
 export interface User {
     id: number
     uuid: string
@@ -27,6 +57,7 @@ export interface User {
     can_manage_admin_access: boolean
     stage: UserStageSummary
     email_verified_at: string | null
+    groups: UserGroupSummary[]
 }
 
 export interface UserMfa {
@@ -52,10 +83,11 @@ export interface ClientMeta {
     homepage_url: string | null
     is_internal: boolean
     is_verified: boolean
-    access_mode: 'all' | 'stage' | 'specific'
+    access_mode: 'all' | 'stage' | 'specific' | 'group'
     oauth_client: OAuthClient
     stages?: Stage[]
     allowed_users?: { id: number }[]
+    groups?: Group[]
 }
 
 export interface SpecificClientAccess {

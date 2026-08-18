@@ -6,15 +6,16 @@ import { useConfirm } from '@/components/shared/ConfirmDialog'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
 import { calculateAge, formatDateDMY } from '@/lib/date'
-import type { SharedProps, SpecificClientAccess, Token, User } from '@/types'
+import type { SharedProps, SpecificClientAccess, Token, User, UserGroupOption } from '@/types'
 
 interface ShowProps {
     viewedUser: User
     tokens: Token[]
     specificClients: SpecificClientAccess[]
+    groups: UserGroupOption[]
 }
 
-export default function Show({ viewedUser, tokens, specificClients }: ShowProps) {
+export default function Show({ viewedUser, tokens, specificClients, groups }: ShowProps) {
     const { csrf_token } = usePage<SharedProps>().props
     const confirm = useConfirm()
     const dobAge = calculateAge(viewedUser.date_of_birth)
@@ -107,6 +108,14 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
             router.delete(`/admin/users/${viewedUser.id}/client-access/${client.id}`, { preserveScroll: true })
         } else {
             router.post(`/admin/users/${viewedUser.id}/client-access/${client.id}`, {}, { preserveScroll: true })
+        }
+    }
+
+    const toggleGroup = (group: UserGroupOption) => {
+        if (group.is_member) {
+            router.delete(`/admin/users/${viewedUser.id}/groups/${group.id}`, { preserveScroll: true })
+        } else {
+            router.post(`/admin/users/${viewedUser.id}/groups/${group.id}`, {}, { preserveScroll: true })
         }
     }
 
@@ -209,6 +218,11 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                             <RoleChip role={viewedUser.role} />
                             <StatusBadge status={viewedUser.is_active ? 'active' : 'revoked'} />
                             <StatusBadge status={viewedUser.is_admin ? 'enabled' : 'disabled'} />
+                            {viewedUser.groups.map((group) => (
+                                <span key={group.id} className="scope-chip">
+                                    {group.name}
+                                </span>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -368,6 +382,44 @@ export default function Show({ viewedUser, tokens, specificClients }: ShowProps)
                                             onClick={() => toggleClientAccess(client)}
                                         >
                                             {client.has_access ? 'Revoke Access' : 'Grant Access'}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                <div className="col-lg-6">
+                    <h5 className="mb-3">Groups</h5>
+
+                    {groups.length === 0 ? (
+                        <div className="ava-card">
+                            <div className="text-center py-5">
+                                <i className="bi bi-collection text-ava-muted icon-fs-48" />
+                                <p className="text-ava-muted mt-3 mb-0 px-3">
+                                    No groups exist yet. Create one on the Groups page first.
+                                </p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="ava-card">
+                            <ul className="list-group list-group-flush">
+                                {groups.map((group) => (
+                                    <li
+                                        key={group.id}
+                                        className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3"
+                                    >
+                                        <div className="min-w-0">
+                                            <div className="fw-semibold">{group.name}</div>
+                                            <StatusBadge status={group.is_member ? 'active' : 'disabled'} />
+                                        </div>
+                                        <button
+                                            type="button"
+                                            className={`btn btn-sm text-nowrap ${group.is_member ? 'btn-outline-primary' : 'btn-primary'}`}
+                                            onClick={() => toggleGroup(group)}
+                                        >
+                                            {group.is_member ? 'Remove' : 'Add'}
                                         </button>
                                     </li>
                                 ))}

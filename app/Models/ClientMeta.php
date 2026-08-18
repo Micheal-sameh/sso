@@ -78,6 +78,20 @@ class ClientMeta extends Model implements HasMedia
         );
     }
 
+    /**
+     * Groups allowed to authenticate with this client, when access_mode is 'group'.
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Group::class,
+            'client_group_access',
+            'oauth_client_id',
+            'group_id',
+            'oauth_client_id',
+        );
+    }
+
     public function getAppLogoUrlAttribute(): ?string
     {
         return $this->getFirstMedia('logo')?->getUrl();

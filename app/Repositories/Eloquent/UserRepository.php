@@ -139,6 +139,22 @@ class UserRepository implements UserRepositoryContract
     }
 
     /**
+     * Add a user to a group without disturbing their other group memberships.
+     */
+    public function attachGroup(User $user, int $groupId): void
+    {
+        $user->groups()->syncWithoutDetaching([$groupId]);
+    }
+
+    /**
+     * Remove a user from a group.
+     */
+    public function detachGroup(User $user, int $groupId): void
+    {
+        $user->groups()->detach($groupId);
+    }
+
+    /**
      * List every user's identifying fields only, for lightweight admin pickers.
      */
     public function allLite(): Collection

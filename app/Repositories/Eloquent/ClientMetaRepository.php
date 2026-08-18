@@ -17,7 +17,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
      */
     public function findByClientId(string $clientId): ?ClientMeta
     {
-        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers'])
+        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers', 'groups'])
             ->where('oauth_client_id', $clientId)
             ->first();
     }
@@ -43,7 +43,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
     {
         $meta->update($data);
 
-        return $meta->fresh(['oauthClient', 'stages', 'allowedUsers']);
+        return $meta->fresh(['oauthClient', 'stages', 'allowedUsers', 'groups']);
     }
 
     /**
@@ -51,7 +51,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
      */
     public function listAll(int $perPage = 20): LengthAwarePaginator
     {
-        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers'])->latest()->paginate($perPage)->withQueryString();
+        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers', 'groups'])->latest()->paginate($perPage)->withQueryString();
     }
 
     /**
@@ -68,6 +68,14 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
     public function syncUserAccess(string $oauthClientId, array $userIds): void
     {
         ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->allowedUsers()->sync($userIds);
+    }
+
+    /**
+     * Replace the set of groups allowed to authenticate with this client.
+     */
+    public function syncGroupAccess(string $oauthClientId, array $groupIds): void
+    {
+        ClientMeta::where('oauth_client_id', $oauthClientId)->firstOrFail()->groups()->sync($groupIds);
     }
 
     /**

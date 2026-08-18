@@ -45,6 +45,8 @@ class OAuthClientService
             $this->clientMetaRepository->syncStageAccess($client->id, $dto->stageIds);
         } elseif ($dto->accessMode === ClientAccessMode::Specific) {
             $this->clientMetaRepository->syncUserAccess($client->id, $dto->userIds);
+        } elseif ($dto->accessMode === ClientAccessMode::Group) {
+            $this->clientMetaRepository->syncGroupAccess($client->id, $dto->groupIds);
         }
 
         return [
@@ -88,6 +90,11 @@ class OAuthClientService
         $this->clientMetaRepository->syncUserAccess(
             $clientId,
             $dto->accessMode === ClientAccessMode::Specific ? $dto->userIds : [],
+        );
+
+        $this->clientMetaRepository->syncGroupAccess(
+            $clientId,
+            $dto->accessMode === ClientAccessMode::Group ? $dto->groupIds : [],
         );
 
         return $meta;

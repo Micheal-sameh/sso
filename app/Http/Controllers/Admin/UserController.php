@@ -11,7 +11,9 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
 use App\Models\ClientMeta;
+use App\Models\Group;
 use App\Repositories\Contracts\TokenRepositoryContract;
+use App\Services\GroupService;
 use App\Services\OAuthClientService;
 use App\Services\PasswordResetService;
 use App\Services\StageService;
@@ -31,6 +33,7 @@ class UserController extends BaseController
         protected StageService $stageService,
         protected OAuthClientService $oauthClientService,
         protected PasswordResetService $passwordResetService,
+        protected GroupService $groupService,
     ) {}
 
     public function index(Request $request): Response
@@ -77,10 +80,20 @@ class UserController extends BaseController
             ])
             ->values();
 
+        $user->loadMissing('groups');
+        $groups = $this->groupService->listAll()
+            ->map(fn (Group $group) => [
+                'id' => $group->id,
+                'name' => $group->name,
+                'is_member' => $user->groups->contains('id', $group->id),
+            ])
+            ->values();
+
         return $this->inertia('Admin/Users/Show', [
             'viewedUser' => UserDTO::fromModel($user)->toArray(),
             'tokens' => $this->tokenRepository->listForUser($user->id),
             'specificClients' => $specificClients,
+            'groups' => $groups,
         ]);
     }
 
@@ -132,6 +145,20 @@ class UserController extends BaseController
         $this->oauthClientService->revokeUserAccess($client, $user->id);
 
         return $this->redirectBack('Access revoked.', 'success');
+    }
+
+    public function attachGroup(User $user, Group $group): RedirectResponse
+    {
+        $this->userService->addToGroup($user, $group->id);
+
+        return $this->redirectBack('Added to group.', 'success');
+    }
+
+    public function detachGroup(User $user, Group $group): RedirectResponse
+    {
+        $this->userService->removeFromGroup($user, $group->id);
+
+        return $this->redirectBack('Removed from group.', 'success');
     }
 
     public function generateResetLink(User $user): JsonResponse

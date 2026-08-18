@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\OAuthClientRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Repositories\Contracts\UserRepositoryContract;
+use App\Services\GroupService;
 use App\Services\OAuthClientService;
 use App\Services\StageService;
 use Illuminate\Http\RedirectResponse;
@@ -20,6 +21,7 @@ class ClientController extends BaseController
         protected OAuthClientService $oauthClientService,
         protected StageService $stageService,
         protected UserRepositoryContract $userRepository,
+        protected GroupService $groupService,
     ) {}
 
     public function index(): Response
@@ -28,6 +30,7 @@ class ClientController extends BaseController
             'clients' => $this->oauthClientService->listAllClients(20),
             'stages' => $this->stageService->listAll(),
             'users' => $this->userRepository->allLite(),
+            'groups' => $this->groupService->listAll(),
             'newClientSecret' => session()->pull('newClientSecret'),
         ]);
     }

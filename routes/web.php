@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\MfaSettingsController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
@@ -80,6 +81,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
         Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
             ->name('users.avatar-upload-link');
+        Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');
+        Route::delete('/users/{user}/groups/{group}', [UserController::class, 'detachGroup'])->name('users.groups.detach');
 
         Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
         Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
@@ -92,6 +95,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
         Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
         Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
+
+        Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+        Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show');
+        Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+        Route::put('/groups/{group}', [GroupController::class, 'update'])->name('groups.update');
+        Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
     });
 });
 

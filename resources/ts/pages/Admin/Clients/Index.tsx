@@ -5,12 +5,13 @@ import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
-import type { ClientMeta, LiteUser, PaginatedData, Stage } from '@/types'
+import type { ClientMeta, Group, LiteUser, PaginatedData, Stage } from '@/types'
 
 interface IndexProps {
     clients: PaginatedData<ClientMeta>
     stages: Stage[]
     users: LiteUser[]
+    groups: Group[]
     newClientSecret: string | null
 }
 
@@ -22,15 +23,17 @@ interface ClientForm {
     is_internal: boolean
     is_public_client: boolean
     grant_type: 'authorization_code' | 'implicit'
-    access_mode: 'all' | 'stage' | 'specific'
+    access_mode: 'all' | 'stage' | 'specific' | 'group'
     stage_ids: number[]
     user_ids: number[]
+    group_ids: number[]
 }
 
 const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
     all: 'All Users',
     stage: 'Specific Stage(s)',
     specific: 'Specific Users',
+    group: 'Specific Group(s)',
 }
 
 const emptyForm: ClientForm = {
@@ -44,9 +47,10 @@ const emptyForm: ClientForm = {
     access_mode: 'all',
     stage_ids: [],
     user_ids: [],
+    group_ids: [],
 }
 
-export default function Index({ clients, stages, users, newClientSecret }: IndexProps) {
+export default function Index({ clients, stages, users, groups, newClientSecret }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
     const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
     const [userSearch, setUserSearch] = useState('')
@@ -88,6 +92,7 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
             access_mode: client.access_mode,
             stage_ids: (client.stages ?? []).map((s) => s.id),
             user_ids: (client.allowed_users ?? []).map((u) => u.id),
+            group_ids: (client.groups ?? []).map((g) => g.id),
         })
         form.clearErrors()
         setUserSearch('')
@@ -151,6 +156,15 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
             form.data.user_ids.includes(userId)
                 ? form.data.user_ids.filter((id) => id !== userId)
                 : [...form.data.user_ids, userId],
+        )
+    }
+
+    const toggleGroup = (groupId: number) => {
+        form.setData(
+            'group_ids',
+            form.data.group_ids.includes(groupId)
+                ? form.data.group_ids.filter((id) => id !== groupId)
+                : [...form.data.group_ids, groupId],
         )
     }
 
@@ -508,6 +522,7 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
                                             <option value="all">All Users</option>
                                             <option value="stage">Specific Stage(s)</option>
                                             <option value="specific">Specific Users</option>
+                                            <option value="group">Specific Group(s)</option>
                                         </select>
                                         {form.errors.access_mode && (
                                             <div className="text-danger small mt-1">{form.errors.access_mode}</div>
@@ -571,6 +586,36 @@ export default function Index({ clients, stages, users, newClientSecret }: Index
                                             </div>
                                             {form.errors.user_ids && (
                                                 <div className="text-danger small mt-1">{form.errors.user_ids}</div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {form.data.access_mode === 'group' && (
+                                        <div className="mb-3">
+                                            <label className="form-label">Allowed Groups</label>
+                                            <div className="permission-list">
+                                                {groups.map((group) => (
+                                                    <div key={group.id} className="form-check">
+                                                        <input
+                                                            id={`group-${group.id}`}
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            checked={form.data.group_ids.includes(group.id)}
+                                                            onChange={() => toggleGroup(group.id)}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`group-${group.id}`}>
+                                                            {group.name}
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                                {groups.length === 0 && (
+                                                    <p className="text-ava-muted text-tiny mb-0">
+                                                        No groups exist yet. Create one on the Groups page first.
+                                                    </p>
+                                                )}
+                                            </div>
+                                            {form.errors.group_ids && (
+                                                <div className="text-danger small mt-1">{form.errors.group_ids}</div>
                                             )}
                                         </div>
                                     )}

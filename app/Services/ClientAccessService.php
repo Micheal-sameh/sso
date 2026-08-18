@@ -18,6 +18,10 @@ class ClientAccessService
             ClientAccessMode::All => true,
             ClientAccessMode::Stage => $meta->stages->contains('id', $user->stage_id),
             ClientAccessMode::Specific => $meta->allowedUsers->contains('id', $user->id),
+            ClientAccessMode::Group => $user->loadMissing('groups')->groups
+                ->pluck('id')
+                ->intersect($meta->groups->pluck('id'))
+                ->isNotEmpty(),
         };
     }
 }

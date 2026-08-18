@@ -30,5 +30,9 @@ interface UserRepositoryContract
 
     public function toggleAdminAccess(User $user, string $roleName): User;
 
+    public function attachGroup(User $user, int $groupId): void;
+
+    public function detachGroup(User $user, int $groupId): void;
+
     public function allLite(): Collection;
 }

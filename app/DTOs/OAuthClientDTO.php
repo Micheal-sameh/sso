@@ -12,6 +12,7 @@ readonly class OAuthClientDTO
     /**
      * @param  int[]  $stageIds
      * @param  int[]  $userIds
+     * @param  int[]  $groupIds
      */
     public function __construct(
         public string $name,
@@ -24,6 +25,7 @@ readonly class OAuthClientDTO
         public ClientAccessMode $accessMode,
         public array $stageIds,
         public array $userIds,
+        public array $groupIds,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -41,6 +43,7 @@ readonly class OAuthClientDTO
             accessMode: ClientAccessMode::from($request->string('access_mode')->toString()),
             stageIds: array_map('intval', $request->array('stage_ids')),
             userIds: array_map('intval', $request->array('user_ids')),
+            groupIds: array_map('intval', $request->array('group_ids')),
         );
     }
 }
