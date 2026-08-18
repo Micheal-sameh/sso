@@ -28,7 +28,9 @@ export default function Sidebar({ links, footerLinks, open, onClose }: SidebarPr
             {open && <div className="sidebar-overlay d-lg-none" onClick={onClose} />}
             <aside className={`sidebar-main d-flex flex-column py-4 ${open ? 'sidebar-open' : ''}`}>
                 <div className="sidebar-logo-row px-3 mb-4 d-flex align-items-center justify-content-between">
-                    <AvaLogo size={36} showText />
+                    <Link href="/" className="text-decoration-none">
+                        <AvaLogo size={36} showText />
+                    </Link>
                     <button
                         type="button"
                         className="btn-close d-lg-none"
