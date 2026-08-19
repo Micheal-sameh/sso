@@ -100,6 +100,7 @@ readonly class UserDTO
             'email_verified' => $this->email_verified_at !== null,
             'picture' => $this->avatar,
             'updated_at' => $this->email_verified_at,
+            'membership_code' => $this->membershipCode,
         ];
     }
 }
