@@ -15,6 +15,7 @@ const NAV_LINKS: SidebarLink[] = [
     { href: '/account', label: 'Identity', icon: 'bi-person' },
     { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
+    { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
 ]
 
 const ADMIN_LINK: SidebarLink = { href: '/admin/users', label: 'Manage SSO', icon: 'bi-speedometer2' }

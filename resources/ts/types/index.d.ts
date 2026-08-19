@@ -117,6 +117,31 @@ export interface Token {
     user?: User
 }
 
+export interface NotificationCreator {
+    id: number
+    name: string
+}
+
+export interface AppNotification {
+    id: number
+    message: string
+    image_url: string | null
+    target_type: 'all' | 'stage' | 'specific' | 'group'
+    creator: NotificationCreator | null
+    stages?: Stage[]
+    groups?: Group[]
+    target_users?: { id: number; name: string }[]
+    created_at: string
+}
+
+export interface UserNotification {
+    id: number
+    message: string
+    image_url: string | null
+    is_read: boolean
+    created_at: string
+}
+
 export interface PaginatedData<T> {
     data: T[]
     current_page: number
@@ -137,4 +162,6 @@ export interface SharedProps {
     flash: FlashMessage
     csrf_token: string
     errors: Record<string, string>
+    unread_notifications_count: number
+    recent_notifications: UserNotification[]
 }

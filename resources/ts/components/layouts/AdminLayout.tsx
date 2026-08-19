@@ -17,6 +17,7 @@ const NAV_LINKS: SidebarLink[] = [
     { href: '/admin/groups', label: 'Groups', icon: 'bi-collection' },
     { href: '/admin/clients', label: 'OAuth Clients', icon: 'bi-key' },
     { href: '/admin/tokens', label: 'Tokens', icon: 'bi-ticket-perforated' },
+    { href: '/admin/notifications', label: 'Notifications', icon: 'bi-bell' },
 ]
 
 const ACCOUNT_LINK: SidebarLink = { href: '/account', label: 'Back to Account', icon: 'bi-arrow-left' }

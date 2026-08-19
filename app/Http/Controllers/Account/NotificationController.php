@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Controllers\Account;
+
+use App\Http\Controllers\BaseController;
+use App\Http\Traits\HandlesInertiaResponses;
+use App\Models\Notification;
+use App\Services\NotificationService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response;
+
+class NotificationController extends BaseController
+{
+    use HandlesInertiaResponses;
+
+    public function __construct(
+        protected NotificationService $notificationService,
+    ) {}
+
+    public function index(): Response
+    {
+        $notifications = $this->notificationService->listForUser(Auth::user())
+            ->through(fn (Notification $notification) => $this->notificationService->toRecipientArray($notification));
+
+        return $this->inertia('Account/Notifications', [
+            'notifications' => $notifications,
+        ]);
+    }
+
+    public function markRead(Notification $notification): RedirectResponse
+    {
+        abort_unless($this->notificationService->isAddressedTo($notification, Auth::user()), 404);
+
+        $this->notificationService->markAsRead($notification, Auth::user());
+
+        return $this->redirectBack(null, 'success');
+    }
+}

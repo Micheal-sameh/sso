@@ -2,10 +2,12 @@
 
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
+use App\Http\Controllers\Account\NotificationController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\GroupController;
+use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
@@ -62,6 +64,9 @@ Route::middleware('auth')->group(function () {
         Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
     });
 
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+
     Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
         Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -101,6 +106,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
         Route::put('/groups/{group}', [GroupController::class, 'update'])->name('groups.update');
         Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+
+        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
+        Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
     });
 });
 
