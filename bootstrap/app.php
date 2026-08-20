@@ -9,15 +9,19 @@ use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
 use App\Exceptions\Auth\UserNotFoundException;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\HideServerFingerprint;
 use App\Http\Middleware\MfaPending;
 use App\Http\Middleware\SuperAdmin;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Laravel\Passport\Exceptions\InvalidAuthTokenException;
 use Laravel\Passport\Http\Middleware\CheckToken;
 use Laravel\Passport\Http\Middleware\CheckTokenForAnyScope;
+use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -27,6 +31,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->append(HideServerFingerprint::class);
+
         $middleware->web(append: [
             HandleInertiaRequests::class,
         ]);
@@ -115,5 +121,45 @@ return Application::configure(basePath: dirname(__DIR__))
             }
 
             return back()->with('flash', ['type' => 'error', 'message' => $message]);
+        });
+
+        // Database connectivity/query failures — deliberately vague to the
+        // client (never leak the SQL, table names, or driver message), but
+        // visually distinct from a generic 500 so it's obvious at a glance
+        // when triaging that this was a DB-layer failure, not app code.
+        $exceptions->render(function (QueryException $e, Request $request) {
+            $message = "We're unable to complete your request right now. Please try again in a few minutes.";
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $message], 500);
+            }
+
+            if (! config('app.debug')) {
+                return Inertia::render('Errors/Error', ['status' => 500, 'variant' => 'database', 'message' => $message])
+                    ->toResponse($request)
+                    ->setStatusCode(500);
+            }
+        });
+
+        // Branded error pages for the standard HTTP error statuses, rendered
+        // through Inertia so they match the rest of the app. Left alone for
+        // API/JSON requests (handled by shouldRenderJsonWhen above) and in
+        // local debug mode (so Ignition's stack traces still show).
+        $exceptions->respond(function (Response $response, \Throwable $exception, Request $request) {
+            $status = $response->getStatusCode();
+
+            if (
+                ! $request->is('api/*')
+                && ! $request->expectsJson()
+                && ! config('app.debug')
+                && ! $exception instanceof QueryException
+                && in_array($status, [401, 403, 404, 419, 500, 502, 503], true)
+            ) {
+                return Inertia::render('Errors/Error', ['status' => $status])
+                    ->toResponse($request)
+                    ->setStatusCode($status);
+            }
+
+            return $response;
         });
     })->create();
