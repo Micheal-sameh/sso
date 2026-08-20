@@ -62,6 +62,7 @@ RUN apk add --no-cache \
         intl \
         gd \
         exif \
+        pcntl \
     && apk del .build-deps
 
 COPY --from=vendor /usr/bin/composer /usr/bin/composer

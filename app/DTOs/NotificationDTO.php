@@ -19,7 +19,7 @@ readonly class NotificationDTO
         public array $stageIds,
         public array $groupIds,
         public array $userIds,
-        public ?UploadedFile $image,
+        public UploadedFile|string|null $image,
     ) {}
 
     public static function fromRequest(Request $request): self

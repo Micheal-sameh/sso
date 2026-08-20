@@ -6,12 +6,14 @@ use App\DTOs\NotificationDTO;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\NotificationRequest;
 use App\Http\Traits\HandlesInertiaResponses;
+use App\Jobs\SendNotificationJob;
 use App\Models\Notification;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Services\GroupService;
 use App\Services\NotificationService;
 use App\Services\StageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
 
@@ -38,9 +40,19 @@ class NotificationController extends BaseController
 
     public function store(NotificationRequest $request): RedirectResponse
     {
-        $this->notificationService->send(NotificationDTO::fromRequest($request), Auth::user());
+        $dto = NotificationDTO::fromRequest($request);
 
-        return $this->redirectRoute('admin.notifications.index', 'Notification sent.');
+        SendNotificationJob::dispatch(
+            message: $dto->message,
+            targetType: $dto->targetType,
+            stageIds: $dto->stageIds,
+            groupIds: $dto->groupIds,
+            userIds: $dto->userIds,
+            senderId: Auth::id(),
+            imagePath: $dto->image instanceof UploadedFile ? $dto->image->store('notification-uploads') : null,
+        );
+
+        return $this->redirectRoute('admin.notifications.index', 'Notification is being sent.');
     }
 
     public function destroy(Notification $notification): RedirectResponse
