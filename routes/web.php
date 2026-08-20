@@ -54,66 +54,71 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::prefix('account')->name('account.')->group(function () {
-        Route::get('/', [ProfileController::class, 'show'])->name('show');
-        Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
         Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
         Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
         Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
         Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
-        Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
-        Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
     });
 
-    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::middleware('mfa.required')->group(function () {
+        Route::prefix('account')->name('account.')->group(function () {
+            Route::get('/', [ProfileController::class, 'show'])->name('show');
+            Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
+            Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
+            Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
+        });
 
-    Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::patch('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
-        Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])
-            ->middleware('can:manage admin access')
-            ->name('users.toggle-admin-access');
-        Route::post('/users/{user}/client-access/{client}', [UserController::class, 'grantClientAccess'])
-            ->name('users.client-access.grant');
-        Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
-            ->name('users.client-access.revoke');
-        Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
-        Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
-            ->name('users.avatar-upload-link');
-        Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');
-        Route::delete('/users/{user}/groups/{group}', [UserController::class, 'detachGroup'])->name('users.groups.detach');
+        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
 
-        Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-        Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
-        Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
-        Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+        Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+            Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+            Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            Route::patch('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
+            Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])
+                ->middleware('can:manage admin access')
+                ->name('users.toggle-admin-access');
+            Route::post('/users/{user}/client-access/{client}', [UserController::class, 'grantClientAccess'])
+                ->name('users.client-access.grant');
+            Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
+                ->name('users.client-access.revoke');
+            Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
+            Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
+                ->name('users.avatar-upload-link');
+            Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');
+            Route::delete('/users/{user}/groups/{group}', [UserController::class, 'detachGroup'])->name('users.groups.detach');
 
-        Route::get('/tokens', [TokenController::class, 'index'])->name('tokens.index');
-        Route::delete('/tokens/{token}', [TokenController::class, 'revoke'])->name('tokens.revoke');
+            Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+            Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+            Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
+            Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
 
-        Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
-        Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
-        Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
+            Route::get('/tokens', [TokenController::class, 'index'])->name('tokens.index');
+            Route::delete('/tokens/{token}', [TokenController::class, 'revoke'])->name('tokens.revoke');
 
-        Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
-        Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show');
-        Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
-        Route::put('/groups/{group}', [GroupController::class, 'update'])->name('groups.update');
-        Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+            Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
+            Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
+            Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
 
-        Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
-        Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
-        Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+            Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');
+            Route::get('/groups/{group}', [GroupController::class, 'show'])->name('groups.show');
+            Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
+            Route::put('/groups/{group}', [GroupController::class, 'update'])->name('groups.update');
+            Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+
+            Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
+            Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
+            Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+        });
     });
 });
 
-Route::middleware('web')->group(function () {
+Route::middleware(['web', 'mfa.required'])->group(function () {
     Route::get('/oauth/authorize', [AuthorizationController::class, 'authorize'])->name('oauth.authorize');
     Route::post('/oauth/authorize', [ApproveAuthorizationController::class, 'approve'])->name('oauth.authorize.approve');
     Route::delete('/oauth/authorize', [DenyAuthorizationController::class, 'deny'])->name('oauth.authorize.deny');

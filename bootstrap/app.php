@@ -8,6 +8,7 @@ use App\Exceptions\Auth\PasswordResetException;
 use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
 use App\Exceptions\Auth\UserNotFoundException;
+use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HideServerFingerprint;
 use App\Http\Middleware\MfaPending;
@@ -39,6 +40,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'mfa.pending' => MfaPending::class,
+            'mfa.required' => EnsureMfaEnabled::class,
             'superadmin' => SuperAdmin::class,
             'scopes' => CheckToken::class,
             'scope' => CheckTokenForAnyScope::class,

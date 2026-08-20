@@ -28,14 +28,15 @@ Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa']);
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    Route::get('/me', [ProfileController::class, 'me']);
-
     Route::get('/security', [SecurityController::class, 'show']);
     Route::post('/security/mfa/enable', [SecurityController::class, 'mfaEnable']);
     Route::post('/security/mfa/confirm', [SecurityController::class, 'mfaConfirm']);
     Route::post('/security/mfa/disable', [SecurityController::class, 'mfaDisable']);
-    Route::post('/security/password', [SecurityController::class, 'updatePassword']);
 
-    Route::get('/connected-apps', [ConnectedAppsController::class, 'index']);
-    Route::delete('/connected-apps/{tokenId}', [ConnectedAppsController::class, 'revoke']);
+    Route::middleware('mfa.required')->group(function () {
+        Route::get('/me', [ProfileController::class, 'me']);
+        Route::post('/security/password', [SecurityController::class, 'updatePassword']);
+        Route::get('/connected-apps', [ConnectedAppsController::class, 'index']);
+        Route::delete('/connected-apps/{tokenId}', [ConnectedAppsController::class, 'revoke']);
+    });
 });
