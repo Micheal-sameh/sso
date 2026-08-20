@@ -31,6 +31,8 @@ readonly class UserDTO
         public string $stageName,
         public string $stageCode,
         public ?string $email_verified_at,
+        public ?string $createdAt,
+        public ?string $updatedAt,
         /** @var array<int, array{id: int, name: string}> */
         public array $groups,
     ) {}
@@ -65,6 +67,8 @@ readonly class UserDTO
             stageName: $user->stage->name,
             stageCode: $user->stage->code,
             email_verified_at: $user->email_verified_at?->toIso8601String(),
+            createdAt: $user->created_at?->format('d M Y, H:i'),
+            updatedAt: $user->updated_at?->format('d M Y, H:i'),
             groups: $user->groups->map(fn ($group) => ['id' => $group->id, 'name' => $group->name])->all(),
         );
     }
@@ -97,6 +101,8 @@ readonly class UserDTO
                 'code' => $this->stageCode,
             ],
             'email_verified_at' => $this->email_verified_at,
+            'created_at' => $this->createdAt,
+            'updated_at' => $this->updatedAt,
             'groups' => $this->groups,
         ];
     }

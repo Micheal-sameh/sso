@@ -61,6 +61,8 @@ export interface User {
     can_manage_admin_access: boolean
     stage: UserStageSummary
     email_verified_at: string | null
+    created_at: string | null
+    updated_at: string | null
     groups: UserGroupSummary[]
 }
 

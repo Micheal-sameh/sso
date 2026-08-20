@@ -246,6 +246,72 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                 </div>
             </div>
 
+            <h5 className="mb-3">Account Information</h5>
+            <div className="ava-card mb-4">
+                <div className="row g-0">
+                    <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
+                        <div className="text-ava-muted text-tiny mb-1">Membership Code</div>
+                        <div className="fw-semibold text-uppercase">{viewedUser.membership_code}</div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
+                        <div className="text-ava-muted text-tiny mb-1">Stage</div>
+                        <div className="fw-semibold">
+                            {viewedUser.stage.name} <span className="text-ava-muted">({viewedUser.stage.code})</span>
+                        </div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
+                        <div className="text-ava-muted text-tiny mb-1">Email Verified</div>
+                        <div className="fw-semibold">
+                            {viewedUser.email_verified_at ? (
+                                <span className="text-success">
+                                    <i className="bi bi-patch-check-fill me-1" />
+                                    Verified
+                                </span>
+                            ) : (
+                                <span className="text-danger">
+                                    <i className="bi bi-exclamation-circle me-1" />
+                                    Not verified
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-bottom">
+                        <div className="text-ava-muted text-tiny mb-1">Admin Access</div>
+                        <div className="fw-semibold">
+                            {viewedUser.is_admin ? (
+                                <span className="text-success">
+                                    <i className="bi bi-shield-check me-1" />
+                                    Granted
+                                </span>
+                            ) : (
+                                <span className="text-ava-muted">
+                                    <i className="bi bi-shield-slash me-1" />
+                                    None
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-end">
+                        <div className="text-ava-muted text-tiny mb-1">Account Created</div>
+                        <div className="fw-semibold">{viewedUser.created_at ?? '—'}</div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-end">
+                        <div className="text-ava-muted text-tiny mb-1">Last Updated</div>
+                        <div className="fw-semibold">{viewedUser.updated_at ?? '—'}</div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3 border-end">
+                        <div className="text-ava-muted text-tiny mb-1">Groups</div>
+                        <div className="fw-semibold">{viewedUser.groups.length > 0 ? viewedUser.groups.length : 'None'}</div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3">
+                        <div className="text-ava-muted text-tiny mb-1">User ID</div>
+                        <div className="fw-semibold text-truncate" title={viewedUser.uuid}>
+                            {viewedUser.uuid}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h5 className="mb-3">Admin Actions</h5>
             <div className="ava-card mb-4">
                 <ul className="list-group list-group-flush">

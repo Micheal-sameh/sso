@@ -17,7 +17,11 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - avarewase
+      - phpmyadmin-hub
 
 networks:
   avarewase:
     driver: bridge
+  phpmyadmin-hub:
+    name: phpmyadmin-hub_phpmyadmin-hub
+    external: true
