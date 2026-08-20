@@ -228,19 +228,24 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                 <tr key={client.id}>
                                     <td>
                                         <div className="d-flex align-items-center gap-2">
-                                            {client.app_logo_url ? (
+                                            {client.app_logo_url && (
                                                 <img
                                                     src={client.app_logo_url}
                                                     alt={client.app_name}
                                                     width={32}
                                                     height={32}
                                                     className="rounded"
+                                                    onError={(e) => {
+                                                        e.currentTarget.style.display = 'none';
+                                                        e.currentTarget.nextElementSibling?.classList.remove('d-none');
+                                                    }}
                                                 />
-                                            ) : (
-                                                <div className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'}`}>
-                                                    <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
-                                                </div>
                                             )}
+                                            <div
+                                                className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'} ${client.app_logo_url ? 'd-none' : ''}`}
+                                            >
+                                                <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
+                                            </div>
                                             <div>
                                                 <div>{client.app_name}</div>
                                                 {client.homepage_url && (
@@ -295,13 +300,24 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                 {clients.data.map((client) => (
                     <div key={client.id} className="record-card">
                         <div className="d-flex align-items-center gap-3 mb-2">
-                            {client.app_logo_url ? (
-                                <img src={client.app_logo_url} alt={client.app_name} width={40} height={40} className="rounded" />
-                            ) : (
-                                <div className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'}`}>
-                                    <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
-                                </div>
+                            {client.app_logo_url && (
+                                <img
+                                    src={client.app_logo_url}
+                                    alt={client.app_name}
+                                    width={40}
+                                    height={40}
+                                    className="rounded"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = 'none';
+                                        e.currentTarget.nextElementSibling?.classList.remove('d-none');
+                                    }}
+                                />
                             )}
+                            <div
+                                className={`icon-tile ${client.is_internal ? 'text-ava-secondary' : 'text-ava-muted'} ${client.app_logo_url ? 'd-none' : ''}`}
+                            >
+                                <i className={`bi ${client.is_internal ? 'bi-building' : 'bi-cloud'}`} />
+                            </div>
                             <div className="min-w-0">
                                 <div className="fw-semibold text-truncate">{client.app_name}</div>
                                 {client.homepage_url && (

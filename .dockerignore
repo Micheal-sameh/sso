@@ -29,7 +29,6 @@ storage/pail
 .env.*
 !.env.example
 
-docker
 Dockerfile
 docker-compose*.yml
 

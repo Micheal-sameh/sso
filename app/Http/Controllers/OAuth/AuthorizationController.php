@@ -77,7 +77,7 @@ class AuthorizationController extends PassportAuthorizationController
         return Inertia::render('OAuth/Authorize', [
             'client' => [
                 'name' => $meta?->app_name ?? $client->name,
-                'logo' => $meta?->logo_url,
+                'logo' => $meta?->app_logo_url,
                 'homepage_url' => $meta?->homepage_url,
             ],
             'scopes' => collect($scopes)->map(fn ($scope) => [

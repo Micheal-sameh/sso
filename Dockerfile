@@ -22,7 +22,8 @@ RUN composer install \
         --no-scripts \
         --no-autoloader \
         --no-interaction \
-        --prefer-dist
+        --prefer-dist \
+        --ignore-platform-req=ext-exif
 COPY . .
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
