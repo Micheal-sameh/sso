@@ -119,7 +119,20 @@ readonly class UserDTO
             'email_verified' => $this->email_verified_at !== null,
             'picture' => $this->avatar,
             'updated_at' => $this->email_verified_at,
+            'phone_number' => $this->phone,
+            'birthdate' => $this->dateOfBirth,
             'membership_code' => $this->membershipCode,
+            'role' => $this->role->value,
+            'is_active' => $this->is_active,
+            'is_admin' => $this->isAdmin,
+            'mfa_enabled' => $this->mfaEnabled,
+            'stage' => [
+                'id' => $this->stageId,
+                'name' => $this->stageName,
+                'code' => $this->stageCode,
+            ],
+            'groups' => $this->groups,
+            'created_at' => $this->createdAt,
         ];
     }
 }

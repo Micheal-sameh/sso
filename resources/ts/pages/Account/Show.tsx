@@ -50,6 +50,15 @@ export default function Show({ user }: ShowProps) {
         { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
         { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
         { icon: 'bi-collection', label: 'Groups', value: user.groups.length > 0 ? user.groups.map((g) => g.name).join(', ') : 'None' },
+        {
+            icon: 'bi-patch-check',
+            label: 'Email Verified',
+            value: user.email_verified_at ? formatDateDMY(user.email_verified_at.slice(0, 10)) ?? 'Verified' : 'Not verified',
+        },
+        { icon: 'bi-shield-lock', label: 'Two-Factor Authentication', value: user.mfa_enabled ? 'Enabled' : 'Disabled' },
+        { icon: 'bi-calendar-plus', label: 'Account Created', value: user.created_at ?? 'Unknown' },
+        { icon: 'bi-clock-history', label: 'Last Updated', value: user.updated_at ?? 'Unknown' },
+        { icon: 'bi-fingerprint', label: 'User ID', value: user.uuid, mono: true },
     ]
 
     return (
