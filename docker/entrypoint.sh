@@ -3,6 +3,12 @@ set -e
 
 cd /var/www/html
 
+# public/build is bind-mounted from the host (for host nginx to serve
+# directly), so the freshly compiled assets baked into the image must be
+# copied over it here rather than relying on the image's own copy.
+rm -rf public/build
+cp -r /opt/frontend-build public/build
+
 DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-3306}"
 DB_USERNAME="${DB_USERNAME:-root}"
