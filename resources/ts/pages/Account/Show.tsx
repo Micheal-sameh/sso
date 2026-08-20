@@ -68,11 +68,11 @@ export default function Show({ user }: ShowProps) {
     const isBirthday = isBirthdayToday(user.date_of_birth)
 
     const detailRows: DetailRow[] = [
-        { icon: 'bi-envelope', label: 'Email', value: user.email },
+        { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
         { icon: 'bi-telephone', label: 'Phone', value: user.phone ?? 'Not set' },
+        { icon: 'bi-envelope', label: 'Email', value: user.email },
         { icon: 'bi-cake2', label: 'Date of Birth', value: formatDateDMY(user.date_of_birth) ?? 'Not set' },
         ...(age !== null ? [{ icon: 'bi-hourglass-split', label: 'Age', value: `${age} years` }] : []),
-        { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
         { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
         { icon: 'bi-collection', label: 'Groups', value: user.groups.length > 0 ? user.groups.map((g) => g.name).join(', ') : 'None' },
         {
