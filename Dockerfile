@@ -28,7 +28,7 @@ COPY . .
 RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 
 ########################################
-# 3) Runtime image: php-fpm only
+# 3) Runtime image: php-fpm + the Laravel scheduler, managed by supervisor
 #    (nginx/webserver and MySQL are expected to already run on the host)
 ########################################
 FROM php:8.3-fpm-alpine AS runtime
@@ -44,6 +44,7 @@ RUN apk add --no-cache \
         libpng \
         libjpeg-turbo \
         freetype \
+        supervisor \
     && apk add --no-cache --virtual .build-deps \
         $PHPIZE_DEPS \
         icu-dev \
@@ -74,10 +75,11 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
     && chown -R www-data:www-data storage bootstrap/cache
 
 COPY docker/php/local.ini /usr/local/etc/php/conf.d/local.ini
+COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 9000
 
 ENTRYPOINT ["entrypoint.sh"]
-CMD ["php-fpm"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
