@@ -4,7 +4,7 @@ import AppLayout from '@/components/layouts/AppLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
-import { calculateAge, formatDateDMY } from '@/lib/date'
+import { calculateAge, formatDateDMY, isBirthdayToday } from '@/lib/date'
 import type { User } from '@/types'
 
 interface ShowProps {
@@ -40,6 +40,7 @@ export default function Show({ user }: ShowProps) {
     }
 
     const age = calculateAge(user.date_of_birth)
+    const isBirthday = isBirthdayToday(user.date_of_birth)
 
     const detailRows: DetailRow[] = [
         { icon: 'bi-envelope', label: 'Email', value: user.email },
@@ -53,6 +54,13 @@ export default function Show({ user }: ShowProps) {
 
     return (
         <AppLayout title="Identity">
+            {isBirthday && (
+                <div className="ava-card mb-4 p-3 d-flex align-items-center gap-2">
+                    <i className="bi bi-balloon-heart-fill text-ava-primary fs-4" />
+                    <span className="fw-semibold">🎉 Happy Birthday, {user.name}!</span>
+                </div>
+            )}
+
             <div className="ava-card mb-4">
                 <div className="card-accent card-accent-primary" />
                 <div className="p-4 d-flex flex-column flex-sm-row align-items-sm-center gap-3">

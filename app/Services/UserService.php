@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\DTOs\CreateUserDTO;
+use App\Enums\AdminPermission;
 use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Exceptions\Auth\SelfModificationException;
+use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Models\User;
 use App\Repositories\Contracts\AvatarUploadTokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
@@ -27,6 +29,10 @@ class UserService
      */
     public function create(CreateUserDTO $dto): User
     {
+        if ($dto->role !== UserRole::User && ! $this->canManageAdminAccess()) {
+            throw new UnauthorizedRoleChangeException;
+        }
+
         $user = $this->userRepository->create($dto);
 
         if ($dto->role === UserRole::Admin || $dto->role === UserRole::SuperAdmin) {
@@ -49,6 +55,12 @@ class UserService
 
         if (Auth::id() === $user->id && $newRole !== $user->role) {
             throw new SelfModificationException('You cannot change your own role.');
+        }
+
+        $touchesAdminRole = $newRole !== UserRole::User || $user->role !== UserRole::User;
+
+        if ($newRole !== $user->role && $touchesAdminRole && ! $this->canManageAdminAccess()) {
+            throw new UnauthorizedRoleChangeException;
         }
 
         $user = $this->userRepository->update($user, [
@@ -161,5 +173,14 @@ class UserService
         }
 
         return $this->userRepository->toggleAdminAccess($user, AdminRole::Admin->value);
+    }
+
+    /**
+     * Whether the authenticated user holds the permission that gates assigning
+     * or changing the Admin and Super Admin roles.
+     */
+    protected function canManageAdminAccess(): bool
+    {
+        return (bool) Auth::user()?->can(AdminPermission::ManageAdminAccess->value);
     }
 }

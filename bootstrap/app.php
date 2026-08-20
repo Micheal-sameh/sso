@@ -7,6 +7,7 @@ use App\Exceptions\Auth\OAuthClientException;
 use App\Exceptions\Auth\PasswordResetException;
 use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
+use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Exceptions\Auth\UserNotFoundException;
 use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
@@ -84,6 +85,14 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (SelfModificationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
+
+            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
+        });
+
+        $exceptions->render(function (UnauthorizedRoleChangeException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
             }

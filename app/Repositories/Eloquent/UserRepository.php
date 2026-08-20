@@ -164,4 +164,17 @@ class UserRepository implements UserRepositoryContract
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'membership_code', 'stage_id']);
     }
+
+    /**
+     * Active users whose date of birth falls on today's month and day.
+     */
+    public function withBirthdayToday(): Collection
+    {
+        return User::query()
+            ->active()
+            ->whereNotNull('date_of_birth')
+            ->whereMonth('date_of_birth', now()->month)
+            ->whereDay('date_of_birth', now()->day)
+            ->get();
+    }
 }

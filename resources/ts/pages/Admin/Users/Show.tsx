@@ -5,7 +5,7 @@ import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
-import { calculateAge, formatDateDMY } from '@/lib/date'
+import { calculateAge, formatDateDMY, isBirthdayToday } from '@/lib/date'
 import type { SharedProps, SpecificClientAccess, Token, User, UserGroupOption } from '@/types'
 
 interface ShowProps {
@@ -19,6 +19,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
     const { csrf_token } = usePage<SharedProps>().props
     const confirm = useConfirm()
     const dobAge = calculateAge(viewedUser.date_of_birth)
+    const isBirthday = isBirthdayToday(viewedUser.date_of_birth)
     const [resetLinkBusy, setResetLinkBusy] = useState(false)
     const [resetLinkCopied, setResetLinkCopied] = useState(false)
     const [avatarLinkBusy, setAvatarLinkBusy] = useState(false)
@@ -181,6 +182,13 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                 </div>
             }
         >
+            {isBirthday && (
+                <div className="ava-card mb-4 p-3 d-flex align-items-center gap-2">
+                    <i className="bi bi-balloon-heart-fill text-ava-primary fs-4" />
+                    <span className="fw-semibold">🎉 Happy Birthday, {viewedUser.name}!</span>
+                </div>
+            )}
+
             <div className="ava-card mb-4">
                 <div className="card-accent card-accent-primary" />
                 <div className="p-4 d-flex flex-column flex-sm-row align-items-sm-center gap-3">

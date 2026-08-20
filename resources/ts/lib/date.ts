@@ -52,3 +52,22 @@ export function calculateAge(dateOfBirth: string | null | undefined): number | n
 
     return age
 }
+
+/**
+ * Whether an ISO "yyyy-mm-dd" date of birth falls on today's month and day.
+ */
+export function isBirthdayToday(dateOfBirth: string | null | undefined): boolean {
+    if (!dateOfBirth) {
+        return false
+    }
+
+    const [, month, day] = dateOfBirth.split('-').map(Number)
+
+    if (!month || !day) {
+        return false
+    }
+
+    const today = new Date()
+
+    return today.getMonth() + 1 === month && today.getDate() === day
+}

@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
-import { router, useForm } from '@inertiajs/react'
+import { router, useForm, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
-import { formatDateDMY, parseDateDMY } from '@/lib/date'
-import type { Stage, User } from '@/types'
+import type { SharedProps, Stage, User } from '@/types'
 
 interface EditProps {
     viewedUser: User
@@ -22,9 +21,10 @@ interface EditForm {
 }
 
 export default function Edit({ viewedUser, stages }: EditProps) {
+    const { auth } = usePage<SharedProps>().props
+    const canManageAdminAccess = auth.user?.can_manage_admin_access ?? false
+    const roleLocked = !canManageAdminAccess && viewedUser.role !== 'user'
     const [preview, setPreview] = useState<string | null>(viewedUser.avatar)
-    const [dobText, setDobText] = useState(formatDateDMY(viewedUser.date_of_birth) ?? '')
-    const [dobError, setDobError] = useState<string | null>(null)
     const form = useForm<EditForm>({
         name: viewedUser.name,
         email: viewedUser.email,
@@ -34,27 +34,6 @@ export default function Edit({ viewedUser, stages }: EditProps) {
         stage_id: String(viewedUser.stage.id),
         avatar: null,
     })
-
-    const onDobChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const text = e.target.value
-        setDobText(text)
-
-        if (text.trim() === '') {
-            setDobError(null)
-            form.setData('date_of_birth', '')
-
-            return
-        }
-
-        const iso = parseDateDMY(text)
-
-        if (iso) {
-            setDobError(null)
-            form.setData('date_of_birth', iso)
-        } else {
-            setDobError('Enter the date as dd-mm-yyyy.')
-        }
-    }
 
     const onAvatarChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null
@@ -138,15 +117,12 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                         <label className="form-label" htmlFor="date_of_birth">Date of Birth</label>
                         <input
                             id="date_of_birth"
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="dd-mm-yyyy"
+                            type="date"
                             className="form-control"
-                            value={dobText}
-                            onChange={onDobChange}
+                            value={form.data.date_of_birth}
+                            onChange={(e) => form.setData('date_of_birth', e.target.value)}
                         />
-                        {dobError && <div className="text-danger small mt-1">{dobError}</div>}
-                        {!dobError && form.errors.date_of_birth && (
+                        {form.errors.date_of_birth && (
                             <div className="text-danger small mt-1">{form.errors.date_of_birth}</div>
                         )}
                     </div>
@@ -187,14 +163,19 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                             id="role"
                             className="form-select"
                             value={form.data.role}
+                            disabled={roleLocked}
                             onChange={(e) => form.setData('role', e.target.value)}
                         >
                             <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">Super Admin</option>
+                            {(canManageAdminAccess || viewedUser.role === 'admin') && <option value="admin">Admin</option>}
+                            {(canManageAdminAccess || viewedUser.role === 'superadmin') && (
+                                <option value="superadmin">Super Admin</option>
+                            )}
                         </select>
                         <p className="text-ava-muted text-tiny mt-1 mb-0">
-                            Admin and Super Admin roles are granted SSO admin panel access immediately.
+                            {roleLocked
+                                ? 'Only a super admin can change the Admin or Super Admin role.'
+                                : 'Admin and Super Admin roles are granted SSO admin panel access immediately.'}
                         </p>
                         {form.errors.role && <div className="text-danger small mt-1">{form.errors.role}</div>}
                     </div>

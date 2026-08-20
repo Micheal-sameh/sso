@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
-import { router, useForm } from '@inertiajs/react'
+import { router, useForm, usePage } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import type { Stage } from '@/types'
+import type { SharedProps, Stage } from '@/types'
 
 interface CreateProps {
     stages: Stage[]
@@ -20,6 +20,8 @@ interface CreateForm {
 }
 
 export default function Create({ stages }: CreateProps) {
+    const { auth } = usePage<SharedProps>().props
+    const canManageAdminAccess = auth.user?.can_manage_admin_access ?? false
     const form = useForm<CreateForm>({
         name: '',
         email: '',
@@ -152,11 +154,17 @@ export default function Create({ stages }: CreateProps) {
                             onChange={(e) => form.setData('role', e.target.value)}
                         >
                             <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                            <option value="superadmin">Super Admin</option>
+                            {canManageAdminAccess && (
+                                <>
+                                    <option value="admin">Admin</option>
+                                    <option value="superadmin">Super Admin</option>
+                                </>
+                            )}
                         </select>
                         <p className="text-ava-muted text-tiny mt-1 mb-0">
-                            Admin and Super Admin roles are granted SSO admin panel access immediately.
+                            {canManageAdminAccess
+                                ? 'Admin and Super Admin roles are granted SSO admin panel access immediately.'
+                                : 'Only a super admin can assign the Admin or Super Admin role.'}
                         </p>
                         {form.errors.role && <div className="text-danger small mt-1">{form.errors.role}</div>}
                     </div>

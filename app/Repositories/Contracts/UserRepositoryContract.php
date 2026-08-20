@@ -35,4 +35,9 @@ interface UserRepositoryContract
     public function detachGroup(User $user, int $groupId): void;
 
     public function allLite(): Collection;
+
+    /**
+     * Active users whose date of birth falls on today's month and day.
+     */
+    public function withBirthdayToday(): Collection;
 }
