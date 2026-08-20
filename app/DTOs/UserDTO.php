@@ -6,6 +6,7 @@ use App\Enums\AdminPermission;
 use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Services\MfaService;
 
 readonly class UserDTO
 {
@@ -22,6 +23,9 @@ readonly class UserDTO
         public bool $is_active,
         public bool $isAdmin,
         public bool $mfaEnabled,
+        public ?string $mfaEnabledAt,
+        public ?int $mfaRecoveryCodesRemaining,
+        public int $mfaRecoveryCodesTotal,
         public bool $canManageAdminAccess,
         public int $stageId,
         public string $stageName,
@@ -48,6 +52,9 @@ readonly class UserDTO
             is_active: $user->is_active,
             isAdmin: $user->hasAnyRole([AdminRole::SuperAdmin->value, AdminRole::Admin->value]),
             mfaEnabled: $user->mfa?->is_enabled ?? false,
+            mfaEnabledAt: $user->mfa?->is_enabled ? $user->mfa->updated_at?->format('d M Y, H:i') : null,
+            mfaRecoveryCodesRemaining: $user->mfa?->is_enabled ? count($user->mfa->recovery_codes ?? []) : null,
+            mfaRecoveryCodesTotal: MfaService::RECOVERY_CODE_COUNT,
             // Explicit guard: Spatie's permission check otherwise resolves against
             // whichever guard authenticated the current request (web vs api), but
             // every role/permission in this app was seeded under the "web" guard.
@@ -80,6 +87,9 @@ readonly class UserDTO
             'is_active' => $this->is_active,
             'is_admin' => $this->isAdmin,
             'mfa_enabled' => $this->mfaEnabled,
+            'mfa_enabled_at' => $this->mfaEnabledAt,
+            'mfa_recovery_codes_remaining' => $this->mfaRecoveryCodesRemaining,
+            'mfa_recovery_codes_total' => $this->mfaRecoveryCodesTotal,
             'can_manage_admin_access' => $this->canManageAdminAccess,
             'stage' => [
                 'id' => $this->stageId,

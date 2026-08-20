@@ -281,11 +281,22 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 Two-Factor Authentication
                                 <StatusBadge status={viewedUser.mfa_enabled ? 'enabled' : 'disabled'} />
                             </div>
-                            <div className="text-ava-muted text-tiny">
-                                {viewedUser.mfa_enabled
-                                    ? 'Clears their 2FA enrollment, e.g. if they lost their device. They must set it up again to sign in.'
-                                    : "Not enrolled yet — they'll be prompted to set it up on next sign-in."}
-                            </div>
+                            {viewedUser.mfa_enabled ? (
+                                <div className="text-ava-muted text-tiny">
+                                    <div>Enrolled on {viewedUser.mfa_enabled_at}.</div>
+                                    <div
+                                        className={
+                                            (viewedUser.mfa_recovery_codes_remaining ?? 0) <= 2 ? 'text-danger fw-semibold' : undefined
+                                        }
+                                    >
+                                        {viewedUser.mfa_recovery_codes_remaining ?? 0} of {viewedUser.mfa_recovery_codes_total} recovery
+                                        codes remaining.
+                                    </div>
+                                    <div>Resetting clears their enrollment, e.g. if they lost their device — they must set it up again to sign in.</div>
+                                </div>
+                            ) : (
+                                <div className="text-ava-muted text-tiny">Not enrolled yet — they'll be prompted to set it up on next sign-in.</div>
+                            )}
                         </div>
                         <div className="d-flex flex-wrap gap-2">
                             <button

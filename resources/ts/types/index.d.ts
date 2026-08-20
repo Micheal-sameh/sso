@@ -55,6 +55,9 @@ export interface User {
     is_active: boolean
     is_admin: boolean
     mfa_enabled: boolean
+    mfa_enabled_at: string | null
+    mfa_recovery_codes_remaining: number | null
+    mfa_recovery_codes_total: number
     can_manage_admin_access: boolean
     stage: UserStageSummary
     email_verified_at: string | null

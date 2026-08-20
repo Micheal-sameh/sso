@@ -10,6 +10,8 @@ use PragmaRX\Google2FAQRCode\Google2FA;
 
 class MfaService
 {
+    public const RECOVERY_CODE_COUNT = 8;
+
     protected Google2FA $google2fa;
 
     public function __construct()
@@ -139,7 +141,7 @@ class MfaService
      */
     public function generateRecoveryCodes(): array
     {
-        return collect(range(1, 8))
+        return collect(range(1, self::RECOVERY_CODE_COUNT))
             ->map(fn () => Str::upper(Str::random(4).'-'.Str::random(4)))
             ->all();
     }
