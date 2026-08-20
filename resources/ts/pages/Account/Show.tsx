@@ -63,6 +63,16 @@ export default function Show({ user }: ShowProps) {
 
     return (
         <AppLayout title="Identity">
+            {user.requires_data_update && (
+                <div className="ava-card mb-4 p-3 d-flex align-items-start gap-2 border-warning">
+                    <i className="bi bi-exclamation-triangle text-warning mt-1" />
+                    <span>
+                        Your account needs updated information before you can sign in to other Avarewase apps. Contact an
+                        administrator to update your details.
+                    </span>
+                </div>
+            )}
+
             {isBirthday && (
                 <div className="ava-card mb-4 p-3 d-flex align-items-center gap-2">
                     <i className="bi bi-balloon-heart-fill text-ava-primary fs-4" />

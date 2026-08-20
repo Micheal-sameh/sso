@@ -459,6 +459,13 @@ small, .small {
 .status-pill-external .status-pill-dot {
     background: var(--ava-primary);
 }
+.status-pill-warning {
+    background: rgba(217, 119, 6, 0.1);
+    color: #B45309;
+}
+.status-pill-warning .status-pill-dot {
+    background: #B45309;
+}
 
 .otp-box {
     width: 48px;

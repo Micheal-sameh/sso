@@ -80,6 +80,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
             Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
             Route::patch('/users/{user}/toggle', [UserController::class, 'toggleActive'])->name('users.toggle');
+            Route::patch('/users/{user}/toggle-requires-data-update', [UserController::class, 'toggleRequiresDataUpdate'])
+                ->name('users.toggle-requires-data-update');
             Route::patch('/users/{user}/toggle-admin-access', [UserController::class, 'toggleAdminAccess'])
                 ->middleware('can:manage admin access')
                 ->name('users.toggle-admin-access');

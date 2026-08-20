@@ -1,4 +1,4 @@
-type Status = 'active' | 'revoked' | 'enabled' | 'disabled' | 'internal' | 'external'
+type Status = 'active' | 'revoked' | 'enabled' | 'disabled' | 'internal' | 'external' | 'warning'
 
 interface StatusBadgeProps {
     status: Status
@@ -11,6 +11,7 @@ const LABELS: Record<Status, string> = {
     disabled: 'Disabled',
     internal: 'Internal',
     external: 'External',
+    warning: 'Needs Update',
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {

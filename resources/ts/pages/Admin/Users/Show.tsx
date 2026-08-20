@@ -144,6 +144,20 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
         }
     }
 
+    const toggleRequiresDataUpdate = async () => {
+        const message = viewedUser.requires_data_update
+            ? `Clear the data-update requirement for ${viewedUser.name}? They'll be able to sign in to other apps again.`
+            : `Require ${viewedUser.name} to update their data? They'll be blocked from signing in to any app other than the SSO admin panel until you clear this.`
+
+        if (
+            await confirm(message, {
+                confirmLabel: viewedUser.requires_data_update ? 'Clear Requirement' : 'Require Update',
+            })
+        ) {
+            router.patch(`/admin/users/${viewedUser.id}/toggle-requires-data-update`, {}, { preserveScroll: true })
+        }
+    }
+
     const resetMfa = async () => {
         if (
             await confirm(`Reset 2FA for ${viewedUser.name}? They'll be locked out until they set it up again.`, {
@@ -236,6 +250,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             <RoleChip role={viewedUser.role} />
                             <StatusBadge status={viewedUser.is_active ? 'active' : 'revoked'} />
                             <StatusBadge status={viewedUser.is_admin ? 'enabled' : 'disabled'} />
+                            {viewedUser.requires_data_update && <StatusBadge status="warning" />}
                             {viewedUser.groups.map((group) => (
                                 <span key={group.id} className="scope-chip">
                                     {group.name}
@@ -315,6 +330,32 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             <h5 className="mb-3">Admin Actions</h5>
             <div className="ava-card mb-4">
                 <ul className="list-group list-group-flush">
+                    <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
+                        <div className="icon-tile text-ava-primary flex-shrink-0">
+                            <i className="bi bi-person-gear" />
+                        </div>
+                        <div className="min-w-0 flex-grow-1">
+                            <div className="fw-semibold d-flex align-items-center gap-2">
+                                Data Update Requirement
+                                {viewedUser.requires_data_update && <StatusBadge status="warning" />}
+                            </div>
+                            <div className="text-ava-muted text-tiny">
+                                {viewedUser.requires_data_update
+                                    ? 'Blocked from signing in to any app other than this admin panel until you clear this.'
+                                    : "Force this user to update their data before they can sign in to any other app. They'll still be able to use this admin panel."}
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                className={`btn btn-sm text-nowrap ${viewedUser.requires_data_update ? 'btn-outline-primary' : 'btn-outline-danger'}`}
+                                onClick={toggleRequiresDataUpdate}
+                            >
+                                <i className={`bi ${viewedUser.requires_data_update ? 'bi-check-circle' : 'bi-exclamation-triangle'} me-1`} />
+                                {viewedUser.requires_data_update ? 'Clear Requirement' : 'Require Update'}
+                            </button>
+                        </div>
+                    </li>
                     <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
                         <div className="icon-tile text-ava-primary flex-shrink-0">
                             <i className="bi bi-key" />

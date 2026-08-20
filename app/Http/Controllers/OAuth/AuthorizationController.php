@@ -61,6 +61,12 @@ class AuthorizationController extends PassportAuthorizationController
         $client = $this->clients->find($authRequest->getClient()->getIdentifier());
         $meta = $this->clientMetaRepository->findByClientId($client->id);
 
+        if ($user->requires_data_update) {
+            return Inertia::render('OAuth/ProfileUpdateRequired', [
+                'client' => ['name' => $meta?->app_name ?? $client->name],
+            ])->toResponse($request);
+        }
+
         if ($meta !== null && ! $this->clientAccessService->userCanAccess($user, $meta)) {
             return Inertia::render('OAuth/AccessDenied', [
                 'client' => ['name' => $meta->app_name],

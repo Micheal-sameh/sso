@@ -37,6 +37,7 @@ class User extends Authenticatable implements HasMedia
         'role',
         'stage_id',
         'is_active',
+        'requires_data_update',
         'email_verified_at',
     ];
 
@@ -50,6 +51,7 @@ class User extends Authenticatable implements HasMedia
         return [
             'role' => UserRole::class,
             'is_active' => 'boolean',
+            'requires_data_update' => 'boolean',
             'email_verified_at' => 'datetime',
             'date_of_birth' => 'date',
             'password' => 'hashed',

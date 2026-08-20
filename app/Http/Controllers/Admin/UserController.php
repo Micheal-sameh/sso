@@ -128,6 +128,13 @@ class UserController extends BaseController
         return $this->redirectBack('User status updated.', 'success');
     }
 
+    public function toggleRequiresDataUpdate(User $user): RedirectResponse
+    {
+        $this->userService->toggleRequiresDataUpdate($user);
+
+        return $this->redirectBack('User data-update requirement updated.', 'success');
+    }
+
     public function toggleAdminAccess(User $user): RedirectResponse
     {
         $this->userService->toggleAdminAccess($user);

@@ -137,6 +137,15 @@ class UserService
     }
 
     /**
+     * Toggle whether a user must update their data before they can authenticate
+     * into any app other than the SSO admin panel itself.
+     */
+    public function toggleRequiresDataUpdate(User $user): User
+    {
+        return $this->userRepository->toggleRequiresDataUpdate($user);
+    }
+
+    /**
      * Add a user to a group.
      */
     public function addToGroup(User $user, int $groupId): void

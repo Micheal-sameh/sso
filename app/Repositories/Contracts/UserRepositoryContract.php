@@ -28,6 +28,8 @@ interface UserRepositoryContract
 
     public function toggleActive(User $user): User;
 
+    public function toggleRequiresDataUpdate(User $user): User;
+
     public function toggleAdminAccess(User $user, string $roleName): User;
 
     public function attachGroup(User $user, int $groupId): void;

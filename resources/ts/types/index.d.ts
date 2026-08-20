@@ -53,6 +53,7 @@ export interface User {
     avatar: string | null
     role: 'superadmin' | 'admin' | 'user'
     is_active: boolean
+    requires_data_update: boolean
     is_admin: boolean
     mfa_enabled: boolean
     mfa_enabled_at: string | null

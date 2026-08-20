@@ -125,6 +125,16 @@ class UserRepository implements UserRepositoryContract
     }
 
     /**
+     * Toggle whether a user must update their data before authenticating into other apps.
+     */
+    public function toggleRequiresDataUpdate(User $user): User
+    {
+        $user->update(['requires_data_update' => ! $user->requires_data_update]);
+
+        return $user->fresh();
+    }
+
+    /**
      * Toggle a user's SSO admin access by granting or revoking the super admin role.
      */
     public function toggleAdminAccess(User $user, string $roleName): User
