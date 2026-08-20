@@ -94,6 +94,19 @@ class MfaService
     }
 
     /**
+     * Forcibly clear a user's MFA enrollment (admin action, no code required),
+     * e.g. when they've lost their device. They'll need to re-enroll.
+     */
+    public function resetMfa(User $user): void
+    {
+        $user->mfa?->update([
+            'is_enabled' => false,
+            'secret' => null,
+            'recovery_codes' => null,
+        ]);
+    }
+
+    /**
      * Verify a TOTP or recovery code for the given user.
      */
     public function verify(User $user, string $code): bool

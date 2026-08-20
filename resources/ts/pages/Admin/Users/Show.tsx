@@ -143,6 +143,16 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
         }
     }
 
+    const resetMfa = async () => {
+        if (
+            await confirm(`Reset 2FA for ${viewedUser.name}? They'll be locked out until they set it up again.`, {
+                confirmLabel: 'Reset 2FA',
+            })
+        ) {
+            router.post(`/admin/users/${viewedUser.id}/mfa/reset`, {}, { preserveScroll: true })
+        }
+    }
+
     return (
         <AdminLayout
             title="User Detail"
@@ -260,6 +270,33 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                     WhatsApp
                                 </button>
                             )}
+                        </div>
+                    </li>
+                    <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
+                        <div className="icon-tile text-ava-primary flex-shrink-0">
+                            <i className="bi bi-shield-lock" />
+                        </div>
+                        <div className="min-w-0 flex-grow-1">
+                            <div className="fw-semibold d-flex align-items-center gap-2">
+                                Two-Factor Authentication
+                                <StatusBadge status={viewedUser.mfa_enabled ? 'enabled' : 'disabled'} />
+                            </div>
+                            <div className="text-ava-muted text-tiny">
+                                {viewedUser.mfa_enabled
+                                    ? 'Clears their 2FA enrollment, e.g. if they lost their device. They must set it up again to sign in.'
+                                    : "Not enrolled yet — they'll be prompted to set it up on next sign-in."}
+                            </div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button
+                                type="button"
+                                className="btn btn-outline-danger btn-sm text-nowrap"
+                                disabled={!viewedUser.mfa_enabled}
+                                onClick={resetMfa}
+                            >
+                                <i className="bi bi-shield-x me-1" />
+                                Reset 2FA
+                            </button>
                         </div>
                     </li>
                     <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">

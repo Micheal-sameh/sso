@@ -21,6 +21,7 @@ readonly class UserDTO
         public UserRole $role,
         public bool $is_active,
         public bool $isAdmin,
+        public bool $mfaEnabled,
         public bool $canManageAdminAccess,
         public int $stageId,
         public string $stageName,
@@ -32,7 +33,7 @@ readonly class UserDTO
 
     public static function fromModel(User $user): self
     {
-        $user->loadMissing('roles', 'stage', 'groups');
+        $user->loadMissing('roles', 'stage', 'groups', 'mfa');
 
         return new self(
             id: $user->id,
@@ -46,6 +47,7 @@ readonly class UserDTO
             role: $user->role,
             is_active: $user->is_active,
             isAdmin: $user->hasAnyRole([AdminRole::SuperAdmin->value, AdminRole::Admin->value]),
+            mfaEnabled: $user->mfa?->is_enabled ?? false,
             // Explicit guard: Spatie's permission check otherwise resolves against
             // whichever guard authenticated the current request (web vs api), but
             // every role/permission in this app was seeded under the "web" guard.
@@ -77,6 +79,7 @@ readonly class UserDTO
             'role' => $this->role->value,
             'is_active' => $this->is_active,
             'is_admin' => $this->isAdmin,
+            'mfa_enabled' => $this->mfaEnabled,
             'can_manage_admin_access' => $this->canManageAdminAccess,
             'stage' => [
                 'id' => $this->stageId,

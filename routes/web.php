@@ -88,6 +88,7 @@ Route::middleware('auth')->group(function () {
             Route::delete('/users/{user}/client-access/{client}', [UserController::class, 'revokeClientAccess'])
                 ->name('users.client-access.revoke');
             Route::post('/users/{user}/reset-link', [UserController::class, 'generateResetLink'])->name('users.reset-link');
+            Route::post('/users/{user}/mfa/reset', [UserController::class, 'resetMfa'])->name('users.mfa.reset');
             Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
                 ->name('users.avatar-upload-link');
             Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');

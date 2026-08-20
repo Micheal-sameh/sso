@@ -54,6 +54,7 @@ export interface User {
     role: 'superadmin' | 'admin' | 'user'
     is_active: boolean
     is_admin: boolean
+    mfa_enabled: boolean
     can_manage_admin_access: boolean
     stage: UserStageSummary
     email_verified_at: string | null

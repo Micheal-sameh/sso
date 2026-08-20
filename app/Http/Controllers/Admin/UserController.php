@@ -15,6 +15,7 @@ use App\Models\Group;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Services\GroupService;
 use App\Services\OAuthClientService;
+use App\Services\MfaService;
 use App\Services\PasswordResetService;
 use App\Services\StageService;
 use App\Services\UserService;
@@ -34,6 +35,7 @@ class UserController extends BaseController
         protected OAuthClientService $oauthClientService,
         protected PasswordResetService $passwordResetService,
         protected GroupService $groupService,
+        protected MfaService $mfaService,
     ) {}
 
     public function index(Request $request): Response
@@ -169,5 +171,12 @@ class UserController extends BaseController
     public function generateAvatarUploadLink(User $user): JsonResponse
     {
         return response()->json(['link' => $this->userService->generateAvatarUploadLink($user)]);
+    }
+
+    public function resetMfa(User $user): RedirectResponse
+    {
+        $this->mfaService->resetMfa($user);
+
+        return $this->redirectBack("2FA reset for {$user->name}. They'll need to set it up again.", 'success');
     }
 }
