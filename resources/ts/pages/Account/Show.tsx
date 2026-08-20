@@ -58,7 +58,6 @@ export default function Show({ user }: ShowProps) {
         { icon: 'bi-shield-lock', label: 'Two-Factor Authentication', value: user.mfa_enabled ? 'Enabled' : 'Disabled' },
         { icon: 'bi-calendar-plus', label: 'Account Created', value: user.created_at ?? 'Unknown' },
         { icon: 'bi-clock-history', label: 'Last Updated', value: user.updated_at ?? 'Unknown' },
-        { icon: 'bi-fingerprint', label: 'User ID', value: user.uuid, mono: true },
     ]
 
     return (

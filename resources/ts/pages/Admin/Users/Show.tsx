@@ -314,15 +314,9 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         <div className="text-ava-muted text-tiny mb-1">Last Updated</div>
                         <div className="fw-semibold">{viewedUser.updated_at ?? '—'}</div>
                     </div>
-                    <div className="col-sm-6 col-lg-3 p-3 border-end">
+                    <div className="col-sm-6 col-lg-3 p-3">
                         <div className="text-ava-muted text-tiny mb-1">Groups</div>
                         <div className="fw-semibold">{viewedUser.groups.length > 0 ? viewedUser.groups.length : 'None'}</div>
-                    </div>
-                    <div className="col-sm-6 col-lg-3 p-3">
-                        <div className="text-ava-muted text-tiny mb-1">User ID</div>
-                        <div className="fw-semibold text-truncate" title={viewedUser.uuid}>
-                            {viewedUser.uuid}
-                        </div>
                     </div>
                 </div>
             </div>
