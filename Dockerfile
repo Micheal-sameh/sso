@@ -69,7 +69,7 @@ COPY --from=vendor /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 
 COPY --from=vendor /app ./
-COPY --from=frontend /app/public/build ./public/build
+COPY --from=frontend /app/public/build /opt/frontend-build
 
 RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache
