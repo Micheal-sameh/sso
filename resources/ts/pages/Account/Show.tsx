@@ -16,6 +16,7 @@ interface PasswordForm {
     current_password: string
     password: string
     password_confirmation: string
+    code: string
 }
 
 interface DetailRow {
@@ -31,6 +32,7 @@ export default function Show({ user }: ShowProps) {
         current_password: '',
         password: '',
         password_confirmation: '',
+        code: '',
     })
 
     const closePasswordModal = () => {
@@ -198,7 +200,7 @@ export default function Show({ user }: ShowProps) {
                                         )}
                                     </div>
 
-                                    <div className="mb-1">
+                                    <div className={user.mfa_enabled ? 'mb-3' : 'mb-1'}>
                                         <label className="form-label" htmlFor="password_confirmation">Confirm New Password</label>
                                         <input
                                             id="password_confirmation"
@@ -208,6 +210,25 @@ export default function Show({ user }: ShowProps) {
                                             onChange={(e) => passwordForm.setData('password_confirmation', e.target.value)}
                                         />
                                     </div>
+
+                                    {user.mfa_enabled && (
+                                        <div className="mb-1">
+                                            <label className="form-label" htmlFor="code">Authentication Code</label>
+                                            <p className="text-ava-muted text-tiny mb-2">Enter the code from your authenticator app to confirm this change.</p>
+                                            <input
+                                                id="code"
+                                                type="text"
+                                                inputMode="numeric"
+                                                autoComplete="one-time-code"
+                                                className="form-control"
+                                                value={passwordForm.data.code}
+                                                onChange={(e) => passwordForm.setData('code', e.target.value)}
+                                            />
+                                            {passwordForm.errors.code && (
+                                                <div className="text-danger small mt-1">{passwordForm.errors.code}</div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-outline-primary" onClick={closePasswordModal}>

@@ -18,6 +18,7 @@ class UpdatePasswordRequest extends FormRequest
             // checks the default web guard, which has no user on a stateless call.
             'current_password' => ['required', 'current_password:api'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'code' => ['required', 'string'],
         ];
     }
 }

@@ -77,8 +77,15 @@ class SecurityController extends BaseController
         return response()->json(['message' => '2FA has been disabled.']);
     }
 
+    /**
+     * @throws InvalidMfaCodeException
+     */
     public function updatePassword(UpdatePasswordRequest $request): JsonResponse
     {
+        if (! $this->mfaService->verify($request->user(), $request->string('code')->toString())) {
+            throw new InvalidMfaCodeException;
+        }
+
         $this->userService->updateOwnPassword($request->user(), $request->string('password')->toString());
 
         return response()->json(['message' => 'Password updated.']);
