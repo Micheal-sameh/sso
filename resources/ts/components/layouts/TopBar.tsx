@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
+import echo from '@/lib/echo'
 import type { SharedProps, UserNotification } from '@/types'
 
 interface TopBarProps {
@@ -7,6 +9,28 @@ interface TopBarProps {
 
 export default function TopBar({ onToggleSidebar }: TopBarProps) {
     const { auth, unread_notifications_count, recent_notifications } = usePage<SharedProps>().props
+    const [unreadCount, setUnreadCount] = useState(unread_notifications_count)
+    const [notifications, setNotifications] = useState(recent_notifications)
+
+    useEffect(() => {
+        setUnreadCount(unread_notifications_count)
+        setNotifications(recent_notifications)
+    }, [unread_notifications_count, recent_notifications])
+
+    useEffect(() => {
+        const userId = auth.user?.id
+        if (!userId) return
+
+        const channel = echo.private(`App.Models.User.${userId}`)
+        channel.listen('.notification.sent', ({ notification }: { notification: UserNotification }) => {
+            setUnreadCount((count) => count + 1)
+            setNotifications((current) => [notification, ...current].slice(0, 5))
+        })
+
+        return () => {
+            echo.leave(`App.Models.User.${userId}`)
+        }
+    }, [auth.user?.id])
 
     const logout = () => {
         router.post('/logout')
@@ -36,19 +60,19 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                     data-bs-toggle="dropdown"
                 >
                     <i className="bi bi-bell" />
-                    {unread_notifications_count > 0 && (
+                    {unreadCount > 0 && (
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            {unread_notifications_count > 9 ? '9+' : unread_notifications_count}
+                            {unreadCount > 9 ? '9+' : unreadCount}
                         </span>
                     )}
                 </button>
                 <div className="dropdown-menu dropdown-menu-end notification-dropdown-menu p-0">
                     <div className="px-3 py-2 border-bottom fw-semibold">Notifications</div>
-                    {recent_notifications.length === 0 ? (
+                    {notifications.length === 0 ? (
                         <div className="px-3 py-4 text-center text-ava-muted text-tiny">No notifications yet.</div>
                     ) : (
                         <ul className="list-unstyled mb-0">
-                            {recent_notifications.map((notification) => (
+                            {notifications.map((notification) => (
                                 <li key={notification.id}>
                                     <button
                                         type="button"

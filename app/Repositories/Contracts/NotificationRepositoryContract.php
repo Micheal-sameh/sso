@@ -33,4 +33,11 @@ interface NotificationRepositoryContract
     public function unreadCountForUser(User $user): int;
 
     public function delete(Notification $notification): bool;
+
+    /**
+     * IDs of every user this notification is addressed to.
+     *
+     * @return Collection<int, int>
+     */
+    public function recipientUserIds(Notification $notification): Collection;
 }

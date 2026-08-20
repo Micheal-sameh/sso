@@ -123,6 +123,31 @@ class NotificationRepository implements NotificationRepositoryContract
     }
 
     /**
+     * IDs of every user this notification is addressed to.
+     *
+     * @return Collection<int, int>
+     */
+    public function recipientUserIds(Notification $notification): Collection
+    {
+        return match ($notification->target_type) {
+            NotificationTargetType::All => User::query()->pluck('id'),
+            NotificationTargetType::Stage => User::query()
+                ->whereHas('stage', fn (Builder $query) => $query->whereIn(
+                    'stages.id',
+                    $notification->stages()->pluck('stages.id'),
+                ))
+                ->pluck('id'),
+            NotificationTargetType::Group => User::query()
+                ->whereHas('groups', fn (Builder $query) => $query->whereIn(
+                    'groups.id',
+                    $notification->groups()->pluck('groups.id'),
+                ))
+                ->pluck('id'),
+            NotificationTargetType::Specific => $notification->targetUsers()->pluck('users.id'),
+        };
+    }
+
+    /**
      * Constrain a notifications query to those addressed to the given user,
      * whether by "all users", their stage, any of their groups, or by name.
      */

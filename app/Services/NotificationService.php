@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\NotificationDTO;
 use App\Enums\NotificationTargetType;
+use App\Events\NotificationSent;
 use App\Models\Notification;
 use App\Models\User;
 use App\Repositories\Contracts\NotificationRepositoryContract;
@@ -37,6 +38,12 @@ class NotificationService
             NotificationTargetType::Specific => $this->notificationRepository->syncUserTargets($notification, $dto->userIds),
             NotificationTargetType::All => null,
         };
+
+        $recipientIds = $this->notificationRepository->recipientUserIds($notification);
+
+        if ($recipientIds->isNotEmpty()) {
+            broadcast(new NotificationSent($recipientIds->all(), $this->toRecipientArray($notification)));
+        }
 
         return $notification;
     }

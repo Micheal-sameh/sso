@@ -9,6 +9,7 @@ services:
       - .env
     ports:
       - "127.0.0.1:6500:9000"
+      - "127.0.0.1:6501:8080"
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
