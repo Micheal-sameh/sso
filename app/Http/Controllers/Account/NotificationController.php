@@ -31,8 +31,6 @@ class NotificationController extends BaseController
 
     public function markRead(Notification $notification): RedirectResponse
     {
-        abort_unless($this->notificationService->isAddressedTo($notification, Auth::user()), 404);
-
         $this->notificationService->markAsRead($notification, Auth::user());
 
         return $this->redirectBack(null, 'success');

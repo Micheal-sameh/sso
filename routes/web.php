@@ -71,7 +71,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
         Route::post('/notifications/read-many', [NotificationController::class, 'markManyRead'])->name('notifications.read-many');
-        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
+            ->middleware('can:view,notification')
+            ->name('notifications.read');
 
         Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
