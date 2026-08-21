@@ -83,6 +83,24 @@ class NotificationService
     }
 
     /**
+     * Mark every notification addressed to the given user as read.
+     */
+    public function markAllAsRead(User $user): void
+    {
+        $this->notificationRepository->markAllAsRead($user);
+    }
+
+    /**
+     * Mark the given notifications as read by the user.
+     *
+     * @param  array<int, int>  $notificationIds
+     */
+    public function markManyAsRead(array $notificationIds, User $user): void
+    {
+        $this->notificationRepository->markManyAsRead(collect($notificationIds), $user);
+    }
+
+    /**
      * Whether the given notification is addressed to the given user.
      */
     public function isAddressedTo(Notification $notification, User $user): bool

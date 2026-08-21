@@ -9,6 +9,7 @@ use App\Repositories\Contracts\NotificationRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 class NotificationRepository implements NotificationRepositoryContract
 {
@@ -92,6 +93,53 @@ class NotificationRepository implements NotificationRepositoryContract
         $notification->readers()->syncWithoutDetaching([
             $user->id => ['read_at' => now()],
         ]);
+    }
+
+    /**
+     * Mark every notification addressed to the given user as read (idempotent).
+     */
+    public function markAllAsRead(User $user): void
+    {
+        $unreadIds = $this->scopeForUser(Notification::query(), $user)
+            ->whereDoesntHave('readers', fn (Builder $query) => $query->where('users.id', $user->id))
+            ->pluck('id');
+
+        $this->upsertReads($unreadIds, $user);
+    }
+
+    /**
+     * Mark the given notifications as read by the user, ignoring any ids not
+     * actually addressed to them (idempotent).
+     */
+    public function markManyAsRead(Collection $notificationIds, User $user): void
+    {
+        $ids = $this->scopeForUser(Notification::query(), $user)
+            ->whereIn('id', $notificationIds)
+            ->pluck('id');
+
+        $this->upsertReads($ids, $user);
+    }
+
+    /**
+     * Bulk-upsert read receipts for the given notification ids and user.
+     */
+    private function upsertReads(Collection $notificationIds, User $user): void
+    {
+        if ($notificationIds->isEmpty()) {
+            return;
+        }
+
+        $now = now();
+
+        DB::table('notification_reads')->upsert(
+            $notificationIds->map(fn (int $id) => [
+                'notification_id' => $id,
+                'user_id' => $user->id,
+                'read_at' => $now,
+            ])->all(),
+            ['notification_id', 'user_id'],
+            ['read_at'],
+        );
     }
 
     /**

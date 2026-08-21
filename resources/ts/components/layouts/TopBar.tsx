@@ -42,6 +42,12 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
         }
     }
 
+    const markAllRead = () => {
+        setUnreadCount(0)
+        setNotifications((current) => current.map((notification) => ({ ...notification, is_read: true })))
+        router.post('/notifications/read-all', {}, { preserveScroll: true })
+    }
+
     return (
         <div className="topbar d-flex justify-content-between align-items-center border-bottom px-3 px-md-4 py-3 gap-2">
             <button
@@ -67,7 +73,14 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                     )}
                 </button>
                 <div className="dropdown-menu dropdown-menu-end notification-dropdown-menu p-0">
-                    <div className="px-3 py-2 border-bottom fw-semibold">Notifications</div>
+                    <div className="px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
+                        <span className="fw-semibold">Notifications</span>
+                        {unreadCount > 0 && (
+                            <button type="button" className="btn btn-link btn-sm p-0 text-ava-secondary" onClick={markAllRead}>
+                                Mark all as read
+                            </button>
+                        )}
+                    </div>
                     {notifications.length === 0 ? (
                         <div className="px-3 py-4 text-center text-ava-muted text-tiny">No notifications yet.</div>
                     ) : (

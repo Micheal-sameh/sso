@@ -28,6 +28,13 @@ interface NotificationRepositoryContract
 
     public function markAsRead(Notification $notification, User $user): void;
 
+    public function markAllAsRead(User $user): void;
+
+    /**
+     * @param  Collection<int, int>  $notificationIds
+     */
+    public function markManyAsRead(Collection $notificationIds, User $user): void;
+
     public function isAddressedTo(Notification $notification, User $user): bool;
 
     public function unreadCountForUser(User $user): int;
