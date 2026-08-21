@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\NotificationDTO;
 use App\Enums\NotificationTargetType;
+use App\Events\CmcPostCreated;
 use App\Models\CmcPost;
 use App\Models\User;
 use App\Repositories\Contracts\CmcPostRepositoryContract;
@@ -39,6 +40,9 @@ class CmcPostService
         if ($image !== null) {
             $post->addMedia($image)->toMediaCollection('image');
         }
+
+        $post->setRelation('creator', $creator);
+        broadcast(new CmcPostCreated($this->toArray($post)));
 
         $this->notificationService->send(
             new NotificationDTO(

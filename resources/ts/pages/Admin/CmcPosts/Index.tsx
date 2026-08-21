@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import AdminLayout from '@/components/layouts/AdminLayout'
@@ -6,6 +6,7 @@ import { useConfirm } from '@/components/shared/ConfirmDialog'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
 import Pagination from '@/components/shared/Pagination'
+import echo from '@/lib/echo'
 import type { CmcPost, PaginatedData } from '@/types'
 
 interface IndexProps {
@@ -24,8 +25,27 @@ export default function Index({ posts }: IndexProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [openUrl, setOpenUrl] = useState<string | null>(null)
     const [editingPost, setEditingPost] = useState<CmcPost | null>(null)
+    const [livePosts, setLivePosts] = useState<CmcPost[]>(posts.data)
     const form = useForm<PostForm>(emptyForm)
     const confirm = useConfirm()
+
+    useEffect(() => {
+        setLivePosts(posts.data)
+    }, [posts])
+
+    useEffect(() => {
+        if (posts.current_page !== 1) return
+
+        const channel = echo.private('cmc-posts.admin')
+        channel.listen('.cmc-post.created', ({ post }: { post: CmcPost }) => {
+            setLivePosts((current) => [post, ...current.filter((p) => p.id !== post.id)])
+        })
+
+        return () => {
+            echo.leave('cmc-posts.admin')
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [posts.current_page])
 
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null
@@ -162,7 +182,7 @@ export default function Index({ posts }: IndexProps) {
                     <h5 className="mb-3">Published Posts</h5>
                     <div className="ava-card">
                         <ul className="list-group list-group-flush">
-                            {posts.data.map((post) => (
+                            {livePosts.map((post) => (
                                 <li key={post.id} className={`list-group-item p-3 ${editingPost?.id === post.id ? 'notification-unread' : ''}`}>
                                     <div className="d-flex gap-3">
                                         {post.image_url && (
@@ -211,7 +231,7 @@ export default function Index({ posts }: IndexProps) {
                                     </div>
                                 </li>
                             ))}
-                            {posts.data.length === 0 && (
+                            {livePosts.length === 0 && (
                                 <li className="list-group-item text-center text-ava-muted py-4">No posts yet.</li>
                             )}
                         </ul>
