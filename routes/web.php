@@ -28,7 +28,7 @@ use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('account.show');
+        return redirect()->route('cmc.index');
     }
 
     return Inertia::render('Welcome');

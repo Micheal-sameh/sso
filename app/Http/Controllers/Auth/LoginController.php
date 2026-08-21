@@ -34,6 +34,6 @@ class LoginController extends BaseController
             return $this->redirectRoute('mfa.show');
         }
 
-        return $this->redirectIntended('account.show', "Welcome back, {$user->name}!");
+        return $this->redirectIntended('cmc.index', "Welcome back, {$user->name}!");
     }
 }
