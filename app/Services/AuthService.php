@@ -20,7 +20,10 @@ class AuthService
 
     /**
      * Attempt to authenticate a user with the given credentials, establishing
-     * a session (web login).
+     * a session (web login) unless MFA is still owed — in that case the
+     * session is deliberately left unauthenticated until MfaController::verify()
+     * confirms the second factor, so protected routes stay inaccessible in
+     * the meantime (rather than relying on route-level checks to catch it).
      *
      * @throws AuthenticationException
      */
@@ -28,7 +31,9 @@ class AuthService
     {
         $user = $this->verifyCredentials($dto->membershipCode, $dto->password);
 
-        Auth::login($user, $dto->remember);
+        if (! $this->requiresMfa($user)) {
+            Auth::login($user, $dto->remember);
+        }
 
         return $user;
     }

@@ -45,13 +45,13 @@ Route::middleware('guest')->group(function () {
 Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
 Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
 
+Route::middleware('mfa.pending')->group(function () {
+    Route::get('/mfa', [MfaController::class, 'showMfa'])->name('mfa.show');
+    Route::post('/mfa', [MfaController::class, 'verify'])->name('mfa.verify');
+});
+
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
-
-    Route::middleware('mfa.pending')->group(function () {
-        Route::get('/mfa', [MfaController::class, 'showMfa'])->name('mfa.show');
-        Route::post('/mfa', [MfaController::class, 'verify'])->name('mfa.verify');
-    });
 
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');

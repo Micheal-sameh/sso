@@ -25,10 +25,11 @@ class LoginController extends BaseController
 
     public function login(LoginRequest $request): RedirectResponse
     {
-        $user = $this->authService->attempt(LoginDTO::fromRequest($request));
+        $dto = LoginDTO::fromRequest($request);
+        $user = $this->authService->attempt($dto);
 
         if ($this->authService->requiresMfa($user)) {
-            session(['mfa_pending' => true, 'mfa_user_id' => $user->id]);
+            session(['mfa_pending' => true, 'mfa_user_id' => $user->id, 'mfa_remember' => $dto->remember]);
 
             return $this->redirectRoute('mfa.show');
         }
