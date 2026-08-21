@@ -126,6 +126,26 @@ class NotificationService
     }
 
     /**
+     * Shape a notification for the admin "Sent" list.
+     *
+     * @return array{id: int, message: string, image_url: ?string, target_type: string, creator: ?array, stages: array, groups: array, target_users: array, created_at: string}
+     */
+    public function toAdminArray(Notification $notification): array
+    {
+        return [
+            'id' => $notification->id,
+            'message' => $notification->message,
+            'image_url' => $notification->image_url,
+            'target_type' => $notification->target_type->value,
+            'creator' => $notification->creator ? ['id' => $notification->creator->id, 'name' => $notification->creator->name] : null,
+            'stages' => $notification->stages->map(fn ($stage) => ['id' => $stage->id, 'name' => $stage->name])->all(),
+            'groups' => $notification->groups->map(fn ($group) => ['id' => $group->id, 'name' => $group->name])->all(),
+            'target_users' => $notification->targetUsers->map(fn ($user) => ['id' => $user->id, 'name' => $user->name])->all(),
+            'created_at' => $notification->created_at->format('d M Y, H:i'),
+        ];
+    }
+
+    /**
      * Shape a notification for a recipient's own view (inbox list or bell dropdown).
      *
      * @return array{id: int, message: string, image_url: ?string, is_read: bool, created_at: string, cmc_post_id: ?int}

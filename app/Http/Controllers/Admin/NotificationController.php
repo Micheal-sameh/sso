@@ -31,7 +31,8 @@ class NotificationController extends BaseController
     public function index(): Response
     {
         return $this->inertia('Admin/Notifications/Index', [
-            'notifications' => $this->notificationService->listAllPaginated(20),
+            'notifications' => $this->notificationService->listAllPaginated(20)
+                ->through(fn (Notification $notification) => $this->notificationService->toAdminArray($notification)),
             'stages' => $this->stageService->listAll(),
             'groups' => $this->groupService->listAll(),
             'users' => $this->userRepository->allLite(),

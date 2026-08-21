@@ -9,13 +9,13 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Traits\HandlesInertiaResponses;
-use App\Models\User;
 use App\Models\ClientMeta;
 use App\Models\Group;
+use App\Models\User;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Services\GroupService;
-use App\Services\OAuthClientService;
 use App\Services\MfaService;
+use App\Services\OAuthClientService;
 use App\Services\PasswordResetService;
 use App\Services\StageService;
 use App\Services\UserService;
@@ -93,7 +93,7 @@ class UserController extends BaseController
 
         return $this->inertia('Admin/Users/Show', [
             'viewedUser' => UserDTO::fromModel($user)->toArray(),
-            'tokens' => $this->tokenRepository->listForUser($user->id),
+            'tokens' => $this->tokenRepository->listForUser($user->id)->map(fn ($token) => $token->toDisplayArray()),
             'specificClients' => $specificClients,
             'groups' => $groups,
         ]);

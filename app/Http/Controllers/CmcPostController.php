@@ -19,7 +19,7 @@ class CmcPostController extends BaseController
     {
         return $this->inertia('CmcPost/Index', [
             'posts' => $this->cmcPostService->listAllPaginated(20)
-                ->through(fn (CmcPost $post) => $this->toArray($post)),
+                ->through(fn (CmcPost $post) => $this->cmcPostService->toArray($post)),
         ]);
     }
 
@@ -28,22 +28,7 @@ class CmcPostController extends BaseController
         $cmcPost->loadMissing('creator');
 
         return $this->inertia('CmcPost/Show', [
-            'post' => $this->toArray($cmcPost),
+            'post' => $this->cmcPostService->toArray($cmcPost),
         ]);
-    }
-
-    private function toArray(CmcPost $cmcPost): array
-    {
-        return [
-            'id' => $cmcPost->id,
-            'text' => $cmcPost->text,
-            'image_url' => $cmcPost->image_url,
-            'url' => $cmcPost->url,
-            'url_title' => $cmcPost->url_title,
-            'url_description' => $cmcPost->url_description,
-            'url_image' => $cmcPost->url_image,
-            'creator' => $cmcPost->creator ? ['id' => $cmcPost->creator->id, 'name' => $cmcPost->creator->name] : null,
-            'created_at' => $cmcPost->created_at->format('d M Y, H:i'),
-        ];
     }
 }

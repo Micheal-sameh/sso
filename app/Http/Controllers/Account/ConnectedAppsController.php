@@ -19,7 +19,7 @@ class ConnectedAppsController extends BaseController
 
     public function index(): Response
     {
-        $tokens = $this->tokenRepository->listForUser(Auth::id());
+        $tokens = $this->tokenRepository->listForUser(Auth::id())->map(fn ($token) => $token->toDisplayArray());
 
         return $this->inertia('Account/Apps', ['tokens' => $tokens]);
     }

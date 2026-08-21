@@ -93,6 +93,26 @@ class CmcPostService
         return $this->cmcPostRepository->paginateAll($perPage);
     }
 
+    /**
+     * Shape a post for the frontend, formatting its timestamp for display.
+     *
+     * @return array{id: int, text: ?string, image_url: ?string, url: ?string, url_title: ?string, url_description: ?string, url_image: ?string, creator: ?array, created_at: string}
+     */
+    public function toArray(CmcPost $cmcPost): array
+    {
+        return [
+            'id' => $cmcPost->id,
+            'text' => $cmcPost->text,
+            'image_url' => $cmcPost->image_url,
+            'url' => $cmcPost->url,
+            'url_title' => $cmcPost->url_title,
+            'url_description' => $cmcPost->url_description,
+            'url_image' => $cmcPost->url_image,
+            'creator' => $cmcPost->creator ? ['id' => $cmcPost->creator->id, 'name' => $cmcPost->creator->name] : null,
+            'created_at' => $cmcPost->created_at->format('d M Y, H:i'),
+        ];
+    }
+
     public function delete(CmcPost $cmcPost): void
     {
         $this->cmcPostRepository->delete($cmcPost);

@@ -18,4 +18,17 @@ class Token extends PassportToken
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    /**
+     * Shape this token for the frontend, formatting its timestamps for display
+     * instead of leaking Carbon's raw ISO-8601-with-microseconds format.
+     */
+    public function toDisplayArray(): array
+    {
+        return [
+            ...$this->toArray(),
+            'created_at' => $this->created_at?->format('d M Y, H:i'),
+            'expires_at' => $this->expires_at?->format('d M Y, H:i'),
+        ];
+    }
 }

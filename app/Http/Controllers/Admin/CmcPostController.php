@@ -26,7 +26,8 @@ class CmcPostController extends BaseController
     public function index(): Response
     {
         return $this->inertia('Admin/CmcPosts/Index', [
-            'posts' => $this->cmcPostService->listAllPaginated(20),
+            'posts' => $this->cmcPostService->listAllPaginated(20)
+                ->through(fn (CmcPost $post) => $this->cmcPostService->toArray($post)),
         ]);
     }
 

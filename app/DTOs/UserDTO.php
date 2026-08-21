@@ -7,6 +7,7 @@ use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Services\MfaService;
+use Carbon\Carbon;
 
 readonly class UserDTO
 {
@@ -106,7 +107,7 @@ readonly class UserDTO
                 'name' => $this->stageName,
                 'code' => $this->stageCode,
             ],
-            'email_verified_at' => $this->email_verified_at,
+            'email_verified_at' => $this->email_verified_at ? Carbon::parse($this->email_verified_at)->format('d M Y, H:i') : null,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
             'groups' => $this->groups,
