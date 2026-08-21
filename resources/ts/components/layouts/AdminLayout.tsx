@@ -21,6 +21,8 @@ const FULL_NAV_LINKS: SidebarLink[] = [
     { href: '/admin/tokens', label: 'Tokens', icon: 'bi-ticket-perforated' },
     { href: '/admin/notifications', label: 'Notifications', icon: 'bi-bell' },
     { href: '/admin/cmc-posts', label: 'CMC Posts', icon: 'bi-newspaper' },
+    { href: '/admin/donations', label: 'Donations', icon: 'bi-heart' },
+    { href: '/admin/funds', label: 'Funds', icon: 'bi-piggy-bank' },
 ]
 
 const CMC_ONLY_NAV_LINKS: SidebarLink[] = [

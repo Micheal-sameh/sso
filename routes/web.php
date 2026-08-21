@@ -7,6 +7,8 @@ use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\CmcPostController as AdminCmcPostController;
+use App\Http\Controllers\Admin\DonationController as AdminDonationController;
+use App\Http\Controllers\Admin\FundController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\StageController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\CmcPostController;
+use App\Http\Controllers\DonationController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -80,6 +83,15 @@ Route::middleware('auth')->group(function () {
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
         Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
 
+        Route::prefix('donations')->name('donations.')->group(function () {
+            Route::get('/', [DonationController::class, 'create'])->name('create');
+            Route::post('/', [DonationController::class, 'store'])->name('store');
+            Route::get('/history', [DonationController::class, 'history'])->name('history');
+            Route::get('/return', [DonationController::class, 'returnPage'])->name('return');
+            Route::get('/sandbox/{donation:uuid}', [DonationController::class, 'sandbox'])->name('sandbox');
+            Route::post('/sandbox/{donation:uuid}/pay', [DonationController::class, 'sandboxPay'])->name('sandbox.pay');
+        });
+
         Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -133,6 +145,20 @@ Route::middleware('auth')->group(function () {
                 Route::post('/', [AdminCmcPostController::class, 'store'])->name('store');
                 Route::put('/{cmcPost}', [AdminCmcPostController::class, 'update'])->name('update');
                 Route::delete('/{cmcPost}', [AdminCmcPostController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::middleware('can:manage donations')->group(function () {
+                Route::prefix('donations')->name('donations.')->group(function () {
+                    Route::get('/', [AdminDonationController::class, 'index'])->name('index');
+                    Route::get('/export', [AdminDonationController::class, 'export'])->name('export');
+                });
+
+                Route::prefix('funds')->name('funds.')->group(function () {
+                    Route::get('/', [FundController::class, 'index'])->name('index');
+                    Route::post('/', [FundController::class, 'store'])->name('store');
+                    Route::put('/{fund}', [FundController::class, 'update'])->name('update');
+                    Route::delete('/{fund}', [FundController::class, 'destroy'])->name('destroy');
+                });
             });
         });
     });

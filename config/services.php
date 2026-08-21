@@ -35,4 +35,22 @@ return [
         ],
     ],
 
+    // Donation bank gateways. Both default to sandbox mode (DonationGatewayFactory
+    // routes to MockDonationGateway) until merchant onboarding is complete and
+    // NbeDonationGateway/CibDonationGateway are implemented against the bank's
+    // integration guide — see those classes for details.
+    'nbe' => [
+        'sandbox' => env('NBE_SANDBOX', true),
+        'merchant_id' => env('NBE_MERCHANT_ID'),
+        'api_key' => env('NBE_API_KEY'),
+        'webhook_secret' => env('NBE_WEBHOOK_SECRET'),
+    ],
+
+    'cib' => [
+        'sandbox' => env('CIB_SANDBOX', true),
+        'merchant_id' => env('CIB_MERCHANT_ID'),
+        'api_key' => env('CIB_API_KEY'),
+        'webhook_secret' => env('CIB_WEBHOOK_SECRET'),
+    ],
+
 ];

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ConnectedAppsController;
+use App\Http\Controllers\Api\DonationCallbackController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SecurityController;
@@ -24,6 +25,11 @@ Route::post('/password/forgot', [PasswordResetController::class, 'forgot']);
 // login against this SSO's own API, no OAuth consent screen involved.
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa']);
+
+// Server-to-server: bank gateway payment notifications. Not session/token
+// authenticated — DonationService verifies each request's signature against
+// the gateway's webhook secret before trusting it.
+Route::post('/donations/callback/{gateway}', [DonationCallbackController::class, 'handle'])->middleware('throttle');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);

@@ -18,11 +18,14 @@ const NAV_LINKS: SidebarLink[] = [
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
     { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
     { href: '/cmc', label: 'CMC Posts', icon: 'bi-newspaper' },
+    { href: '/donations', label: 'Donate', icon: 'bi-heart' },
+    { href: '/donations/history', label: 'My Donations', icon: 'bi-receipt' },
 ]
 
 const BOTTOM_NAV_LINKS: SidebarLink[] = [
     { href: '/account', label: 'Profile', icon: 'bi-person' },
     { href: '/cmc', label: 'CMC', icon: 'bi-newspaper' },
+    { href: '/donations', label: 'Donate', icon: 'bi-heart' },
     { href: '/account/apps', label: 'Apps', icon: 'bi-grid' },
 ]
 

@@ -30,6 +30,7 @@ readonly class UserDTO
         public int $mfaRecoveryCodesTotal,
         public bool $canManageAdminAccess,
         public bool $canManageCmcPosts,
+        public bool $canManageDonations,
         public int $stageId,
         public string $stageName,
         public string $stageCode,
@@ -68,6 +69,7 @@ readonly class UserDTO
             // because a request came in through the API instead of the browser.
             canManageAdminAccess: $user->hasPermissionTo(AdminPermission::ManageAdminAccess->value, 'web'),
             canManageCmcPosts: $user->hasPermissionTo(AdminPermission::ManageCmcPosts->value, 'web'),
+            canManageDonations: $user->hasPermissionTo(AdminPermission::ManageDonations->value, 'web'),
             stageId: $user->stage_id,
             stageName: $user->stage->name,
             stageCode: $user->stage->code,
@@ -102,6 +104,7 @@ readonly class UserDTO
             'mfa_recovery_codes_total' => $this->mfaRecoveryCodesTotal,
             'can_manage_admin_access' => $this->canManageAdminAccess,
             'can_manage_cmc_posts' => $this->canManageCmcPosts,
+            'can_manage_donations' => $this->canManageDonations,
             'stage' => [
                 'id' => $this->stageId,
                 'name' => $this->stageName,
