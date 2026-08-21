@@ -31,7 +31,7 @@ class CopticCalendarService
     private function fetch(): array
     {
         try {
-            $response = Http::timeout(5)->get('https://api.coptic.io/api/readings');
+            $response = Http::timeout(5)->get('https://api.coptic.io/api/readings', ['lang' => 'ar']);
 
             if (! $response->successful()) {
                 return ['date' => null, 'commemorations' => []];

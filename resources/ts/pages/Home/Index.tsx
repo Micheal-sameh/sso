@@ -14,18 +14,18 @@ export default function Index({ coptic, recentPosts }: IndexProps) {
         <AppLayout>
             <h3 className="mb-4">Welcome, {auth.user?.name}</h3>
 
-            <div className="ava-card p-3 mb-3">
+            <div className="ava-card p-3 mb-3" dir="rtl">
                 <h5 className="mb-2">
                     <i className="bi bi-calendar-event me-2" />
-                    Coptic Date
+                    التاريخ القبطي
                 </h5>
-                <p className="mb-0">{coptic.date ?? 'Unavailable right now.'}</p>
+                <p className="mb-0">{coptic.date ?? 'غير متاح حالياً.'}</p>
             </div>
 
-            <div className="ava-card p-3 mb-3">
+            <div className="ava-card p-3 mb-3" dir="rtl">
                 <h5 className="mb-2">تذكار اليوم من السنكسار</h5>
                 {coptic.commemorations.length > 0 ? (
-                    <ul className="mb-0 ps-3">
+                    <ul className="mb-0 pe-3">
                         {coptic.commemorations.map((commemoration, index) => (
                             <li key={index} className="mb-1">
                                 {commemoration.url ? (
@@ -39,7 +39,7 @@ export default function Index({ coptic, recentPosts }: IndexProps) {
                         ))}
                     </ul>
                 ) : (
-                    <p className="text-ava-muted mb-0">No commemoration data available.</p>
+                    <p className="text-ava-muted mb-0">لا يوجد تذكار متاح حالياً.</p>
                 )}
             </div>
 
