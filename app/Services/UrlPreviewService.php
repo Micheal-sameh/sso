@@ -23,6 +23,17 @@ class UrlPreviewService
             return $empty;
         }
 
+        // YouTube's watch page doesn't reliably serve og: meta tags to a
+        // plain server-side fetch (it varies by locale/consent state), but
+        // its thumbnail CDN is predictable from the video id alone.
+        if ($videoId = $this->extractYoutubeVideoId($url)) {
+            return [
+                'title' => null,
+                'description' => null,
+                'image' => "https://i.ytimg.com/vi/{$videoId}/hqdefault.jpg",
+            ];
+        }
+
         try {
             $response = Http::timeout(5)
                 ->withUserAgent('Mozilla/5.0 (compatible; AvarewaseLinkPreview/1.0)')
@@ -65,6 +76,23 @@ class UrlPreviewService
         $ip = filter_var($host, FILTER_VALIDATE_IP) ? $host : gethostbyname($host);
 
         return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) !== false;
+    }
+
+    private function extractYoutubeVideoId(string $url): ?string
+    {
+        $host = parse_url($url, PHP_URL_HOST);
+
+        if (! $host || ! Str::endsWith(strtolower($host), ['youtube.com', 'youtu.be'])) {
+            return null;
+        }
+
+        if (strtolower($host) === 'youtu.be') {
+            return trim(parse_url($url, PHP_URL_PATH) ?? '', '/') ?: null;
+        }
+
+        parse_str(parse_url($url, PHP_URL_QUERY) ?? '', $query);
+
+        return $query['v'] ?? null;
     }
 
     private function extractMeta(string $html, string $property): ?string

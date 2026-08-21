@@ -7,6 +7,33 @@ interface InAppLinkModalProps {
 
 const LOAD_FALLBACK_DELAY_MS = 5000
 
+function toYoutubeEmbedUrl(url: string): string | null {
+    let parsed: URL
+    try {
+        parsed = new URL(url)
+    } catch {
+        return null
+    }
+
+    const host = parsed.host.toLowerCase()
+    let videoId: string | null = null
+
+    if (host === 'youtu.be' || host.endsWith('.youtu.be')) {
+        videoId = parsed.pathname.replace(/^\//, '') || null
+    } else if (host.endsWith('youtube.com')) {
+        videoId = parsed.searchParams.get('v')
+    }
+
+    if (!videoId) return null
+
+    // The embedded player validates the embedding page's origin; without it
+    // (and with a referrer-stripping policy on the iframe) it refuses to
+    // play and shows "Error 153: Video player configuration error".
+    const origin = encodeURIComponent(window.location.origin)
+
+    return `https://www.youtube.com/embed/${videoId}?origin=${origin}`
+}
+
 export default function InAppLinkModal({ url, onClose }: InAppLinkModalProps) {
     const [loaded, setLoaded] = useState(false)
     const [showFallback, setShowFallback] = useState(false)
@@ -34,6 +61,11 @@ export default function InAppLinkModal({ url, onClose }: InAppLinkModalProps) {
     } catch {
         // keep raw url as the label
     }
+
+    // YouTube's normal watch/short-link pages send X-Frame-Options and
+    // refuse to load in an iframe at all; only /embed/{id} is embeddable.
+    const youtubeEmbedSrc = toYoutubeEmbedUrl(url)
+    const embedSrc = youtubeEmbedSrc ?? url
 
     return (
         <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
@@ -68,10 +100,10 @@ export default function InAppLinkModal({ url, onClose }: InAppLinkModalProps) {
                             </div>
                         )}
                         <iframe
-                            src={url}
+                            src={embedSrc}
                             title={host}
                             className="flex-grow-1 border-0 w-100"
-                            referrerPolicy="no-referrer"
+                            referrerPolicy={youtubeEmbedSrc ? 'strict-origin-when-cross-origin' : 'no-referrer'}
                             sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
                             onLoad={() => setLoaded(true)}
                         />
