@@ -20,6 +20,7 @@ readonly class NotificationDTO
         public array $groupIds,
         public array $userIds,
         public UploadedFile|string|null $image,
+        public ?int $cmcPostId = null,
     ) {}
 
     public static function fromRequest(Request $request): self

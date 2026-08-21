@@ -6,6 +6,7 @@ use App\Http\Controllers\Account\NotificationController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\ClientController;
+use App\Http\Controllers\Admin\CmcPostController as AdminCmcPostController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
 use App\Http\Controllers\Admin\StageController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\CmcPostController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -75,6 +77,9 @@ Route::middleware('auth')->group(function () {
             ->middleware('can:view,notification')
             ->name('notifications.read');
 
+        Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
+        Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
+
         Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
@@ -121,6 +126,13 @@ Route::middleware('auth')->group(function () {
             Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
             Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
             Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+
+            Route::middleware('can:manage cmc posts')->prefix('cmc-posts')->name('cmc-posts.')->group(function () {
+                Route::get('/', [AdminCmcPostController::class, 'index'])->name('index');
+                Route::post('/', [AdminCmcPostController::class, 'store'])->name('store');
+                Route::put('/{cmcPost}', [AdminCmcPostController::class, 'update'])->name('update');
+                Route::delete('/{cmcPost}', [AdminCmcPostController::class, 'destroy'])->name('destroy');
+            });
         });
     });
 });

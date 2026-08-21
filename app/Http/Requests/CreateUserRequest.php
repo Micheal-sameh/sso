@@ -20,7 +20,7 @@ class CreateUserRequest extends FormRequest
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'membership_code' => ['required', 'string', 'max:255', 'unique:users,membership_code'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'in:superadmin,admin,user'],
+            'role' => ['required', 'in:superadmin,admin,secretary,user'],
             'stage_id' => ['required', 'integer', 'exists:stages,id'],
         ];
     }

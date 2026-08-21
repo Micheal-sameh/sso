@@ -167,6 +167,9 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                             onChange={(e) => form.setData('role', e.target.value)}
                         >
                             <option value="user">User</option>
+                            {(canManageAdminAccess || viewedUser.role === 'secretary') && (
+                                <option value="secretary">Secretary</option>
+                            )}
                             {(canManageAdminAccess || viewedUser.role === 'admin') && <option value="admin">Admin</option>}
                             {(canManageAdminAccess || viewedUser.role === 'superadmin') && (
                                 <option value="superadmin">Super Admin</option>

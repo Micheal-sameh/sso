@@ -19,6 +19,12 @@ export default function Notifications({ notifications }: NotificationsProps) {
         router.post(`/notifications/${notification.id}/read`, {}, { preserveScroll: true })
     }
 
+    const openNotification = (notification: UserNotification) => {
+        if (!notification.cmc_post_id) return
+        markRead(notification)
+        router.visit(`/cmc/${notification.cmc_post_id}`)
+    }
+
     const markAllRead = () => {
         router.post('/notifications/read-all', {}, { preserveScroll: true })
     }
@@ -101,12 +107,22 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                         className="rounded object-fit-cover flex-shrink-0"
                                     />
                                 )}
-                                <div className="min-w-0 flex-grow-1">
+                                <div
+                                    className={`min-w-0 flex-grow-1 ${notification.cmc_post_id ? 'cursor-pointer' : ''}`}
+                                    onClick={notification.cmc_post_id ? () => openNotification(notification) : undefined}
+                                >
                                     <div className="d-flex align-items-start justify-content-between gap-2">
                                         <div className={notification.is_read ? '' : 'fw-semibold'}>{notification.message}</div>
                                         {!notification.is_read && <span className="scope-chip text-nowrap">New</span>}
                                     </div>
-                                    <div className="text-ava-muted text-tiny mt-1">{notification.created_at}</div>
+                                    <div className="text-ava-muted text-tiny mt-1">
+                                        {notification.created_at}
+                                        {notification.cmc_post_id && (
+                                            <span className="text-ava-secondary ms-2">
+                                                View post <i className="bi bi-arrow-right" />
+                                            </span>
+                                        )}
+                                    </div>
                                 </div>
                                 {!notification.is_read && (
                                     <button

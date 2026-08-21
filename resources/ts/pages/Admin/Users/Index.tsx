@@ -94,6 +94,7 @@ export default function Index({ users, stages, filters }: IndexProps) {
                     <option value="">All roles</option>
                     <option value="superadmin">Super Admin</option>
                     <option value="admin">Admin</option>
+                    <option value="secretary">Secretary</option>
                     <option value="user">User</option>
                 </select>
                 <select className="form-select max-w-200-sm" value={stageId} onChange={(e) => setStageId(e.target.value)}>

@@ -6,6 +6,7 @@ enum UserRole: string
 {
     case SuperAdmin = 'superadmin';
     case Admin = 'admin';
+    case Secretary = 'secretary';
     case User = 'user';
 
     public function label(): string
@@ -13,6 +14,7 @@ enum UserRole: string
         return match ($this) {
             self::SuperAdmin => 'Super Admin',
             self::Admin => 'Admin',
+            self::Secretary => 'Secretary',
             self::User => 'User',
         };
     }

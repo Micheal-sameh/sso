@@ -16,6 +16,7 @@ class Notification extends Model implements HasMedia
     protected $fillable = [
         'message',
         'target_type',
+        'cmc_post_id',
         'created_by',
     ];
 
@@ -40,6 +41,14 @@ class Notification extends Model implements HasMedia
     public function creator(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    /**
+     * The CMC post this notification routes to, when it was generated from one.
+     */
+    public function cmcPost(): BelongsTo
+    {
+        return $this->belongsTo(CmcPost::class);
     }
 
     /**

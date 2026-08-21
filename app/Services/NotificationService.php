@@ -25,6 +25,7 @@ class NotificationService
         $notification = $this->notificationRepository->create([
             'message' => $dto->message,
             'target_type' => $dto->targetType,
+            'cmc_post_id' => $dto->cmcPostId,
             'created_by' => $sender?->id,
         ]);
 
@@ -127,7 +128,7 @@ class NotificationService
     /**
      * Shape a notification for a recipient's own view (inbox list or bell dropdown).
      *
-     * @return array{id: int, message: string, image_url: ?string, is_read: bool, created_at: string}
+     * @return array{id: int, message: string, image_url: ?string, is_read: bool, created_at: string, cmc_post_id: ?int}
      */
     public function toRecipientArray(Notification $notification): array
     {
@@ -137,6 +138,7 @@ class NotificationService
             'image_url' => $notification->image_url,
             'is_read' => (bool) $notification->is_read,
             'created_at' => $notification->created_at->diffForHumans(),
+            'cmc_post_id' => $notification->cmc_post_id,
         ];
     }
 }

@@ -42,6 +42,13 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
         }
     }
 
+    const openNotification = (notification: UserNotification) => {
+        markRead(notification)
+        if (notification.cmc_post_id) {
+            router.visit(`/cmc/${notification.cmc_post_id}`)
+        }
+    }
+
     const markAllRead = () => {
         setUnreadCount(0)
         setNotifications((current) => current.map((notification) => ({ ...notification, is_read: true })))
@@ -90,7 +97,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                                     <button
                                         type="button"
                                         className={`dropdown-item d-flex gap-2 py-2 px-3 ${notification.is_read ? '' : 'notification-unread'}`}
-                                        onClick={() => markRead(notification)}
+                                        onClick={() => openNotification(notification)}
                                     >
                                         {notification.image_url && (
                                             <img

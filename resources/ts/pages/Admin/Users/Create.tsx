@@ -156,6 +156,7 @@ export default function Create({ stages }: CreateProps) {
                             <option value="user">User</option>
                             {canManageAdminAccess && (
                                 <>
+                                    <option value="secretary">Secretary</option>
                                     <option value="admin">Admin</option>
                                     <option value="superadmin">Super Admin</option>
                                 </>

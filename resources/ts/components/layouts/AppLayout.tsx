@@ -16,19 +16,27 @@ const NAV_LINKS: SidebarLink[] = [
     { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
     { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
+    { href: '/cmc', label: 'CMC Posts', icon: 'bi-newspaper' },
 ]
 
 const ADMIN_LINK: SidebarLink = { href: '/admin/users', label: 'Manage SSO', icon: 'bi-speedometer2' }
+const CMC_POSTS_LINK: SidebarLink = { href: '/admin/cmc-posts', label: 'Manage CMC Posts', icon: 'bi-pencil-square' }
 
 export default function AppLayout({ children, title }: AppLayoutProps) {
     const { auth } = usePage<SharedProps>().props
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
+    const footerLinks = auth.user?.is_admin
+        ? [ADMIN_LINK]
+        : auth.user?.can_manage_cmc_posts
+          ? [CMC_POSTS_LINK]
+          : undefined
+
     return (
         <div className="d-flex">
             <Sidebar
                 links={NAV_LINKS}
-                footerLinks={auth.user?.is_admin ? [ADMIN_LINK] : undefined}
+                footerLinks={footerLinks}
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
             />

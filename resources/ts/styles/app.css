@@ -712,6 +712,10 @@ code {
     background: rgba(27, 42, 74, 0.08);
     color: var(--ava-primary);
 }
+.role-chip-secretary {
+    background: rgba(13, 148, 136, 0.1);
+    color: #0d9488;
+}
 
 .scope-chip {
     display: inline-block;
@@ -742,6 +746,14 @@ code {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+}
+
+.link-preview-card {
+    cursor: pointer;
+    transition: border-color 0.15s ease;
+}
+.link-preview-card:hover {
+    border-color: var(--bs-primary, #0d6efd) !important;
 }
 
 .chips-lg .code-chip {

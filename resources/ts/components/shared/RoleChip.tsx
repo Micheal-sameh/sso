@@ -7,12 +7,14 @@ interface RoleChipProps {
 const LABELS: Record<User['role'], string> = {
     superadmin: 'Super Admin',
     admin: 'Admin',
+    secretary: 'Secretary',
     user: 'User',
 }
 
 const CLASSES: Record<User['role'], string> = {
     superadmin: 'role-chip-super',
     admin: 'role-chip-admin',
+    secretary: 'role-chip-secretary',
     user: '',
 }
 

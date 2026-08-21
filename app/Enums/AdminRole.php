@@ -6,4 +6,5 @@ enum AdminRole: string
 {
     case SuperAdmin = 'superadmin';
     case Admin = 'admin';
+    case Secretary = 'secretary';
 }

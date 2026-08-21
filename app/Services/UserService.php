@@ -35,7 +35,7 @@ class UserService
 
         $user = $this->userRepository->create($dto);
 
-        if ($dto->role === UserRole::Admin || $dto->role === UserRole::SuperAdmin) {
+        if ($dto->role !== UserRole::User) {
             $user->assignRole($dto->role->value);
         }
 

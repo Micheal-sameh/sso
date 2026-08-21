@@ -28,6 +28,7 @@ readonly class UserDTO
         public ?int $mfaRecoveryCodesRemaining,
         public int $mfaRecoveryCodesTotal,
         public bool $canManageAdminAccess,
+        public bool $canManageCmcPosts,
         public int $stageId,
         public string $stageName,
         public string $stageCode,
@@ -65,6 +66,7 @@ readonly class UserDTO
             // Without this, the same user gets canManageAdminAccess=false purely
             // because a request came in through the API instead of the browser.
             canManageAdminAccess: $user->hasPermissionTo(AdminPermission::ManageAdminAccess->value, 'web'),
+            canManageCmcPosts: $user->hasPermissionTo(AdminPermission::ManageCmcPosts->value, 'web'),
             stageId: $user->stage_id,
             stageName: $user->stage->name,
             stageCode: $user->stage->code,
@@ -98,6 +100,7 @@ readonly class UserDTO
             'mfa_recovery_codes_remaining' => $this->mfaRecoveryCodesRemaining,
             'mfa_recovery_codes_total' => $this->mfaRecoveryCodesTotal,
             'can_manage_admin_access' => $this->canManageAdminAccess,
+            'can_manage_cmc_posts' => $this->canManageCmcPosts,
             'stage' => [
                 'id' => $this->stageId,
                 'name' => $this->stageName,

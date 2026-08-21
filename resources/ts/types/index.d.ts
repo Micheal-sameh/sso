@@ -51,7 +51,7 @@ export interface User {
     phone: string | null
     date_of_birth: string | null
     avatar: string | null
-    role: 'superadmin' | 'admin' | 'user'
+    role: 'superadmin' | 'admin' | 'secretary' | 'user'
     is_active: boolean
     requires_data_update: boolean
     is_admin: boolean
@@ -60,6 +60,7 @@ export interface User {
     mfa_recovery_codes_remaining: number | null
     mfa_recovery_codes_total: number
     can_manage_admin_access: boolean
+    can_manage_cmc_posts: boolean
     stage: UserStageSummary
     email_verified_at: string | null
     created_at: string | null
@@ -146,6 +147,24 @@ export interface UserNotification {
     message: string
     image_url: string | null
     is_read: boolean
+    created_at: string
+    cmc_post_id: number | null
+}
+
+export interface CmcPostCreator {
+    id: number
+    name: string
+}
+
+export interface CmcPost {
+    id: number
+    text: string | null
+    image_url: string | null
+    url: string | null
+    url_title: string | null
+    url_description: string | null
+    url_image: string | null
+    creator: CmcPostCreator | null
     created_at: string
 }
 
