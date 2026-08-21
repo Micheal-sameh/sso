@@ -22,7 +22,6 @@ const NAV_LINKS: SidebarLink[] = [
 
 const BOTTOM_NAV_LINKS: SidebarLink[] = [
     { href: '/account', label: 'Profile', icon: 'bi-person' },
-    { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
     { href: '/cmc', label: 'CMC', icon: 'bi-newspaper' },
     { href: '/account/apps', label: 'Apps', icon: 'bi-grid' },
 ]
