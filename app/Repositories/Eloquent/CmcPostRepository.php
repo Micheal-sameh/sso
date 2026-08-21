@@ -5,6 +5,7 @@ namespace App\Repositories\Eloquent;
 use App\Models\CmcPost;
 use App\Repositories\Contracts\CmcPostRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class CmcPostRepository implements CmcPostRepositoryContract
 {
@@ -26,6 +27,14 @@ class CmcPostRepository implements CmcPostRepositoryContract
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
+    }
+
+    public function recent(int $limit = 5): Collection
+    {
+        return CmcPost::with('creator')
+            ->latest()
+            ->limit($limit)
+            ->get();
     }
 
     public function delete(CmcPost $cmcPost): bool

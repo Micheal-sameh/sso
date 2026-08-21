@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Repositories\Contracts\CmcPostRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class CmcPostService
@@ -95,6 +96,11 @@ class CmcPostService
     public function listAllPaginated(int $perPage = 20): LengthAwarePaginator
     {
         return $this->cmcPostRepository->paginateAll($perPage);
+    }
+
+    public function listRecent(int $limit = 5): Collection
+    {
+        return $this->cmcPostRepository->recent($limit);
     }
 
     /**

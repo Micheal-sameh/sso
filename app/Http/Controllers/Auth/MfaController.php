@@ -37,6 +37,6 @@ class MfaController extends BaseController
 
         session()->forget(['mfa_pending', 'mfa_user_id', 'mfa_remember']);
 
-        return $this->redirectIntended('cmc.index', 'Verified successfully.');
+        return $this->redirectIntended('home.index', 'Verified successfully.');
     }
 }

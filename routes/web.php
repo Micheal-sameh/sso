@@ -19,6 +19,7 @@ use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\CmcPostController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +29,7 @@ use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('cmc.index');
+        return redirect()->route('home.index');
     }
 
     return Inertia::render('Welcome');
@@ -76,6 +77,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
             ->middleware('can:view,notification')
             ->name('notifications.read');
+
+        Route::get('/home', [HomeController::class, 'index'])->name('home.index');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
         Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');

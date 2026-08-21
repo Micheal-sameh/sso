@@ -168,6 +168,16 @@ export interface CmcPost {
     created_at: string
 }
 
+export interface CopticCommemoration {
+    name: string
+    url: string | null
+}
+
+export interface CopticCalendar {
+    date: string | null
+    commemorations: CopticCommemoration[]
+}
+
 export interface PaginatedData<T> {
     data: T[]
     current_page: number

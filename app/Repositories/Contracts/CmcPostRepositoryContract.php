@@ -4,6 +4,7 @@ namespace App\Repositories\Contracts;
 
 use App\Models\CmcPost;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 interface CmcPostRepositoryContract
 {
@@ -12,6 +13,8 @@ interface CmcPostRepositoryContract
     public function update(CmcPost $cmcPost, array $data): CmcPost;
 
     public function paginateAll(int $perPage = 20): LengthAwarePaginator;
+
+    public function recent(int $limit = 5): Collection;
 
     public function delete(CmcPost $cmcPost): bool;
 }

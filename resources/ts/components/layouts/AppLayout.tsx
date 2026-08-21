@@ -13,6 +13,7 @@ interface AppLayoutProps {
 }
 
 const NAV_LINKS: SidebarLink[] = [
+    { href: '/home', label: 'Home', icon: 'bi-house' },
     { href: '/account', label: 'Identity', icon: 'bi-person' },
     { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
@@ -23,6 +24,7 @@ const NAV_LINKS: SidebarLink[] = [
 const BOTTOM_NAV_LINKS: SidebarLink[] = [
     { href: '/account', label: 'Profile', icon: 'bi-person' },
     { href: '/cmc', label: 'CMC', icon: 'bi-newspaper' },
+    { href: '/home', label: 'Home', icon: 'bi-house' },
     { href: '/account/apps', label: 'Apps', icon: 'bi-grid' },
 ]
 
