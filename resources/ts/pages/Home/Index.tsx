@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import AppLayout from '@/components/layouts/AppLayout'
+import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import type { CmcPost, CopticCalendar, SharedProps } from '@/types'
 
 interface IndexProps {
@@ -9,6 +11,7 @@ interface IndexProps {
 
 export default function Index({ coptic, recentPosts }: IndexProps) {
     const { auth } = usePage<SharedProps>().props
+    const [openUrl, setOpenUrl] = useState<string | null>(null)
 
     return (
         <AppLayout>
@@ -29,9 +32,13 @@ export default function Index({ coptic, recentPosts }: IndexProps) {
                         {coptic.commemorations.map((commemoration, index) => (
                             <li key={index} className="mb-1">
                                 {commemoration.url ? (
-                                    <a href={commemoration.url} target="_blank" rel="noopener noreferrer">
+                                    <button
+                                        type="button"
+                                        className="btn btn-link p-0 align-baseline"
+                                        onClick={() => setOpenUrl(commemoration.url)}
+                                    >
                                         {commemoration.name}
-                                    </a>
+                                    </button>
                                 ) : (
                                     commemoration.name
                                 )}
@@ -87,6 +94,8 @@ export default function Index({ coptic, recentPosts }: IndexProps) {
                     )}
                 </ul>
             </div>
+
+            <InAppLinkModal url={openUrl} onClose={() => setOpenUrl(null)} />
         </AppLayout>
     )
 }

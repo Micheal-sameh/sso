@@ -18,20 +18,22 @@ class CopticCalendarService
      */
     public function today(): array
     {
+        $locale = app()->getLocale() === 'ar' ? 'ar' : 'en';
+
         return Cache::remember(
-            'coptic-calendar:'.now()->toDateString(),
+            "coptic-calendar:{$locale}:".now()->toDateString(),
             now()->endOfDay(),
-            fn () => $this->fetch(),
+            fn () => $this->fetch($locale),
         );
     }
 
     /**
      * @return array{date: ?string, commemorations: array<int, array{name: string, url: ?string}>}
      */
-    private function fetch(): array
+    private function fetch(string $locale): array
     {
         try {
-            $response = Http::timeout(5)->get('https://api.coptic.io/api/readings', ['lang' => 'ar']);
+            $response = Http::timeout(5)->get('https://api.coptic.io/api/readings', ['lang' => $locale]);
 
             if (! $response->successful()) {
                 return ['date' => null, 'commemorations' => []];
