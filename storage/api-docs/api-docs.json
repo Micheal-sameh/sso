@@ -1,0 +1,1196 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Avarewase SSO API",
+        "description": "Member-facing API consumed by the first-party \"Avarewase Passport\" mobile app: authentication, profile, security (MFA), connected apps, the home dashboard, CMC posts, and notifications.",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Current host"
+        }
+    ],
+    "paths": {
+        "/api/auth/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Log in with membership code + password",
+                "description": "First-party mobile login: verify membership code + password directly\nagainst this SSO (no OAuth consent screen, since this isn't a\nthird-party client). Issues a token immediately, or an MFA challenge\nif the account has two-factor enabled.",
+                "operationId": "dd51a484b7fa0f97c7680fdbde14cf5f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "membership_code",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "membership_code": {
+                                        "type": "string",
+                                        "example": "AV-00123"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Either an access token, or an MFA challenge if the account has 2FA enabled.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "properties": {
+                                                "token": {
+                                                    "type": "string"
+                                                },
+                                                "token_type": {
+                                                    "type": "string",
+                                                    "example": "Bearer"
+                                                },
+                                                "user": {
+                                                    "$ref": "#/components/schemas/User"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "mfa_required": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "mfa_token": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid credentials",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/auth/mfa/verify": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Complete a login that required MFA",
+                "description": "Complete a login that required MFA, exchanging the challenge token\nfrom login() plus a TOTP/recovery code for an access token.",
+                "operationId": "95575bcc3f936a950aa075c0dafc262f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "mfa_token",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "mfa_token": {
+                                        "description": "Returned by /api/auth/login when mfa_required is true",
+                                        "type": "string"
+                                    },
+                                    "code": {
+                                        "description": "TOTP code or a recovery code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Access token issued.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid or expired MFA code/token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Revoke the current access token",
+                "description": "Revoke the access token used to authenticate this request.",
+                "operationId": "df9bdc6c7a6d9f20b983526b2ec0f698",
+                "responses": {
+                    "200": {
+                        "description": "Logged out.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cmc-posts": {
+            "get": {
+                "tags": [
+                    "CMC Posts"
+                ],
+                "summary": "List CMC posts (paginated, newest first)",
+                "operationId": "ffe1e641d17204e4769ad878bc984161",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/CmcPost"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/cmc-posts/{cmcPost}": {
+            "get": {
+                "tags": [
+                    "CMC Posts"
+                ],
+                "summary": "Get a single CMC post",
+                "operationId": "bfa63206fac33cdbe3ac912676104e0e",
+                "parameters": [
+                    {
+                        "name": "cmcPost",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CmcPost"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/connected-apps": {
+            "get": {
+                "tags": [
+                    "Connected Apps"
+                ],
+                "summary": "List authorized OAuth clients (active tokens)",
+                "operationId": "dd769f33107caf339b5dbc22f7390a1e",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/connected-apps/{tokenId}": {
+            "delete": {
+                "tags": [
+                    "Connected Apps"
+                ],
+                "summary": "Revoke an authorized app's access",
+                "operationId": "51ef01a439a43b470eac24d321694c28",
+                "parameters": [
+                    {
+                        "name": "tokenId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Revoked.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Token not found or not owned by this user"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/home": {
+            "get": {
+                "tags": [
+                    "Home"
+                ],
+                "summary": "Dashboard data (Coptic date + recent CMC posts)",
+                "operationId": "d65ef76cbb32ae304c5a24c525b95adb",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "coptic": {
+                                            "$ref": "#/components/schemas/CopticDate"
+                                        },
+                                        "recent_posts": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/CmcPost"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "List notifications addressed to the current user (paginated)",
+                "operationId": "6d56a555955089a73fdf3f7229e8ead8",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "allOf": [
+                                        {
+                                            "$ref": "#/components/schemas/PaginatedResponse"
+                                        },
+                                        {
+                                            "properties": {
+                                                "data": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/components/schemas/Notification"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/{notification}/read": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark one notification as read",
+                "operationId": "72e815431bf7f79bc33df9bcc2d4d957",
+                "parameters": [
+                    {
+                        "name": "notification",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Marked as read.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/read-all": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark every notification as read",
+                "operationId": "fc83170240b5026140e1ab9ffc095173",
+                "responses": {
+                    "200": {
+                        "description": "All marked as read.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/notifications/read-many": {
+            "post": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Mark specific notifications as read",
+                "operationId": "8795cd0b503a0d33c5dc352f12bcf5e7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ids"
+                                ],
+                                "properties": {
+                                    "ids": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Marked as read.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/password/forgot": {
+            "post": {
+                "tags": [
+                    "Password Reset"
+                ],
+                "summary": "Request a password reset email (client-authenticated, no user token)",
+                "description": "Allow a registered OAuth client to request a password reset email be\nsent to one of its users, authenticating via client_id/client_secret.",
+                "operationId": "899384033a2ba88ca7180330148da409",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client_id",
+                                    "client_secret"
+                                ],
+                                "properties": {
+                                    "client_id": {
+                                        "type": "string"
+                                    },
+                                    "client_secret": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "description": "Required if membership_code is omitted",
+                                        "type": "string",
+                                        "format": "email",
+                                        "nullable": true
+                                    },
+                                    "membership_code": {
+                                        "description": "Required if email is omitted",
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Email sent (if the account exists).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid client credentials"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/me": {
+            "get": {
+                "tags": [
+                    "Profile"
+                ],
+                "summary": "Get the authenticated user's profile",
+                "operationId": "f7776a9dbf516cf5166949db0bc230c8",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/security": {
+            "get": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Current MFA status",
+                "description": "Current MFA status. Recovery codes are only ever returned at the moment\nthey're (re)generated (enable/confirm), never re-fetchable here.",
+                "operationId": "652dd86f2b6f270d8f33adaa40ac4bc3",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "mfa_enabled": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/security/mfa/enable": {
+            "post": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Start MFA setup (generate secret + QR code)",
+                "description": "Start MFA setup: generate a secret + QR code. Unlike the web flow\n(which stashes the pending secret in the session), a stateless caller\ngets it back as an encrypted `setup_token` to round-trip to confirm().",
+                "operationId": "3be6ef4280b2614ed18e357468f03d92",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "setup_token": {
+                                            "description": "Encrypted secret; round-trip this to /api/security/mfa/confirm",
+                                            "type": "string"
+                                        },
+                                        "secret": {
+                                            "type": "string"
+                                        },
+                                        "qr_code_svg": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/security/mfa/confirm": {
+            "post": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Confirm MFA setup with a TOTP code",
+                "operationId": "6bacd9316b3a98dbde1506b81b641949",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "setup_token",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "setup_token": {
+                                        "type": "string"
+                                    },
+                                    "code": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "MFA enabled.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "recovery_codes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid code or expired setup session",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/security/mfa/disable": {
+            "post": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Disable MFA",
+                "operationId": "ad94fa26751f4072eae68d1b17415cca",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code"
+                                ],
+                                "properties": {
+                                    "code": {
+                                        "description": "TOTP code or a recovery code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "MFA disabled.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Invalid code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/security/password": {
+            "post": {
+                "tags": [
+                    "Security"
+                ],
+                "summary": "Change password (requires MFA code)",
+                "operationId": "2ef7e3c2afd2a97d0123b1caefa8884d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "current_password",
+                                    "password",
+                                    "password_confirmation",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "current_password": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 8
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password"
+                                    },
+                                    "code": {
+                                        "description": "TOTP code or a recovery code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password updated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error or invalid MFA code",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "properties": {
+                    "id": {
+                        "description": "Pure attribute holders for reusable OpenAPI component schemas.\nReferenced from controllers as `#[OA\\JsonContent(ref: '#/components/schemas/User')]`.",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "uuid": {
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "membership_code": {
+                        "type": "string",
+                        "example": "AV-00123"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Micheal Samir"
+                    },
+                    "email": {
+                        "type": "string",
+                        "format": "email"
+                    },
+                    "phone": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "date_of_birth": {
+                        "type": "string",
+                        "format": "date",
+                        "nullable": true
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "is_active": {
+                        "type": "boolean"
+                    },
+                    "requires_data_update": {
+                        "type": "boolean"
+                    },
+                    "is_admin": {
+                        "type": "boolean"
+                    },
+                    "mfa_enabled": {
+                        "type": "boolean"
+                    },
+                    "mfa_enabled_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "mfa_recovery_codes_remaining": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "mfa_recovery_codes_total": {
+                        "type": "integer"
+                    },
+                    "can_manage_admin_access": {
+                        "type": "boolean"
+                    },
+                    "can_manage_cmc_posts": {
+                        "type": "boolean"
+                    },
+                    "stage": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "code": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object"
+                    },
+                    "email_verified_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "groups": {
+                        "type": "array",
+                        "items": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer"
+                                },
+                                "name": {
+                                    "type": "string"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "CmcPost": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "text": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url_title": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url_description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "url_image": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "creator": {
+                        "properties": {
+                            "id": {
+                                "type": "integer"
+                            },
+                            "name": {
+                                "type": "string"
+                            }
+                        },
+                        "type": "object",
+                        "nullable": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "21 Aug 2026, 14:05"
+                    }
+                },
+                "type": "object"
+            },
+            "Notification": {
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "image_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "is_read": {
+                        "type": "boolean"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2 hours ago"
+                    },
+                    "cmc_post_id": {
+                        "type": "integer",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "CopticDate": {
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "example": "14 Mesori 1742",
+                        "nullable": true
+                    },
+                    "commemorations": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "PaginatedResponse": {
+                "properties": {
+                    "current_page": {
+                        "type": "integer"
+                    },
+                    "data": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "last_page": {
+                        "type": "integer"
+                    },
+                    "per_page": {
+                        "type": "integer"
+                    },
+                    "total": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "Error": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "Token returned by POST /api/auth/login (or /api/auth/mfa/verify). Send as 'Authorization: Bearer {token}'.",
+                "bearerFormat": "Passport access token",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "First-party mobile login (membership code + password), no OAuth consent screen."
+        },
+        {
+            "name": "CMC Posts"
+        },
+        {
+            "name": "Connected Apps",
+            "description": "Third-party OAuth clients the user has authorized."
+        },
+        {
+            "name": "Home",
+            "description": "Dashboard: today's Coptic date/synaxarium and the latest CMC posts."
+        },
+        {
+            "name": "Notifications"
+        },
+        {
+            "name": "Password Reset",
+            "description": "Server-to-server: registered OAuth clients trigger reset emails for their users."
+        },
+        {
+            "name": "Profile"
+        },
+        {
+            "name": "Security",
+            "description": "MFA (TOTP) setup and password changes."
+        }
+    ]
+}

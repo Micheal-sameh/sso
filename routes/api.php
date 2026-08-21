@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CmcPostController;
 use App\Http\Controllers\Api\ConnectedAppsController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SecurityController;
@@ -38,5 +41,15 @@ Route::middleware('auth:api')->group(function () {
         Route::post('/security/password', [SecurityController::class, 'updatePassword']);
         Route::get('/connected-apps', [ConnectedAppsController::class, 'index']);
         Route::delete('/connected-apps/{tokenId}', [ConnectedAppsController::class, 'revoke']);
+
+        Route::get('/home', [HomeController::class, 'index']);
+
+        Route::get('/cmc-posts', [CmcPostController::class, 'index']);
+        Route::get('/cmc-posts/{cmcPost}', [CmcPostController::class, 'show']);
+
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
+        Route::post('/notifications/read-many', [NotificationController::class, 'markManyRead']);
+        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead']);
     });
 });
