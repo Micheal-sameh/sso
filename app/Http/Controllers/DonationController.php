@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class DonationController extends BaseController
 {
@@ -30,7 +31,7 @@ class DonationController extends BaseController
         ]);
     }
 
-    public function store(DonationRequest $request): RedirectResponse
+    public function store(DonationRequest $request): SymfonyResponse
     {
         $dto = DonationDTO::fromRequest($request, Auth::user());
 
@@ -49,7 +50,8 @@ class DonationController extends BaseController
 
     public function returnPage(Request $request): Response
     {
-        $donation = Donation::where('uuid', $request->query('donation'))
+        $donation = Donation::with(['fund', 'user'])
+            ->where('uuid', $request->query('donation'))
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
@@ -66,6 +68,8 @@ class DonationController extends BaseController
     public function sandbox(Donation $donation): Response
     {
         abort_unless($donation->user_id === Auth::id() && $donation->status === 'pending', 404);
+
+        $donation->loadMissing(['fund', 'user']);
 
         return $this->inertia('Donations/Sandbox', [
             'donation' => $this->donationService->toArray($donation),

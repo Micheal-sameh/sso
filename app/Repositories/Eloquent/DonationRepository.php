@@ -46,7 +46,7 @@ class DonationRepository implements DonationRepositoryContract
 
     public function forUser(User $user, int $perPage = 20): LengthAwarePaginator
     {
-        return Donation::with('fund')
+        return Donation::with(['fund', 'user'])
             ->where('user_id', $user->id)
             ->latest()
             ->paginate($perPage)
