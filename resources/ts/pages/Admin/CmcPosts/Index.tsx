@@ -179,7 +179,13 @@ export default function Index({ posts }: IndexProps) {
                 </div>
 
                 <div className="col-lg-7">
-                    <h5 className="mb-3">Published Posts</h5>
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h5 className="mb-0">Published Posts</h5>
+                        <a href="/cmc" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
+                            <i className="bi bi-box-arrow-up-right me-1" />
+                            View All Posts
+                        </a>
+                    </div>
                     <div className="ava-card">
                         <ul className="list-group list-group-flush">
                             {livePosts.map((post) => (
