@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { usePage } from '@inertiajs/react'
 import type { SharedProps } from '@/types'
+import BottomNav from '@/components/layouts/BottomNav'
 import FlashMessage from '@/components/shared/FlashMessage'
 import Sidebar, { type SidebarLink } from '@/components/layouts/Sidebar'
 import TopBar from '@/components/layouts/TopBar'
@@ -17,6 +18,13 @@ const NAV_LINKS: SidebarLink[] = [
     { href: '/account/apps', label: 'Connected Apps', icon: 'bi-grid' },
     { href: '/notifications', label: 'Notifications', icon: 'bi-bell' },
     { href: '/cmc', label: 'CMC Posts', icon: 'bi-newspaper' },
+]
+
+const BOTTOM_NAV_LINKS: SidebarLink[] = [
+    { href: '/account', label: 'Profile', icon: 'bi-person' },
+    { href: '/account/mfa', label: 'Security', icon: 'bi-shield-lock' },
+    { href: '/cmc', label: 'CMC', icon: 'bi-newspaper' },
+    { href: '/account/apps', label: 'Apps', icon: 'bi-grid' },
 ]
 
 const ADMIN_LINK: SidebarLink = { href: '/admin/users', label: 'Manage SSO', icon: 'bi-speedometer2' }
@@ -41,7 +49,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                 onClose={() => setSidebarOpen(false)}
             />
 
-            <main className="flex-grow-1 main-content-area">
+            <main className="flex-grow-1 main-content-area has-bottom-nav">
                 <TopBar onToggleSidebar={() => setSidebarOpen((o) => !o)} />
                 <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
@@ -49,6 +57,8 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
                     {children}
                 </div>
             </main>
+
+            <BottomNav links={BOTTOM_NAV_LINKS} />
         </div>
     )
 }

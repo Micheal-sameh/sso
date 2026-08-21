@@ -21,6 +21,19 @@
     --bs-body-font-family: var(--font-sans);
 
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+    --bottom-nav-height: 62px;
+}
+
+html {
+    /* Prevent the rubber-band/pull-to-refresh gesture browsers show on
+       vertical overscroll — one of the biggest tells that a page is "just a
+       website" rather than an installed app. */
+    overscroll-behavior-y: contain;
 }
 
 * {
@@ -49,6 +62,8 @@ body {
     font-size: 15px;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    /* Remove the gray flash Android/Chrome shows on every tap. */
+    -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -322,6 +337,8 @@ small, .small {
     position: fixed;
     top: 0;
     left: 0;
+    padding-top: var(--safe-top);
+    padding-left: var(--safe-left);
     overflow-x: hidden;
     overflow-y: auto;
     flex-shrink: 0;
@@ -408,9 +425,73 @@ small, .small {
     position: sticky;
     top: 0;
     z-index: 10;
+    padding-top: calc(0.75rem + var(--safe-top));
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+}
+
+/* ---------- Bottom tab bar (mobile) ---------- */
+
+.bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1030;
+    display: flex;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-top: 1px solid var(--ava-border);
+    padding: 6px calc(4px + var(--safe-left)) calc(4px + var(--safe-bottom)) calc(4px + var(--safe-right));
+    height: calc(var(--bottom-nav-height) + var(--safe-bottom));
+}
+
+.bottom-nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: var(--ava-muted);
+    text-decoration: none;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    border-radius: var(--bs-border-radius-sm);
+    padding: 4px 2px;
+    transition: color 0.15s ease;
+}
+.bottom-nav-link i {
+    font-size: 1.25rem;
+}
+.bottom-nav-link.active {
+    color: var(--ava-secondary);
+}
+.bottom-nav-link:hover {
+    color: var(--ava-primary);
+}
+
+@media (max-width: 991.98px) {
+    .main-content-area.has-bottom-nav {
+        padding-bottom: var(--bottom-nav-height);
+    }
+
+    /* Bigger touch targets so nothing needs a precise tap. */
+    .btn,
+    .form-control,
+    .form-select {
+        min-height: 44px;
+    }
+    .btn-sm {
+        min-height: 36px;
+    }
+    .dropdown-item,
+    .sidebar-link {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
 }
 
 /* ---------- Status pills ---------- */

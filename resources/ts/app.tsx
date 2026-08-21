@@ -19,3 +19,13 @@ createInertiaApp({
         )
     },
 })
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {
+            // Installability/offline support is a progressive enhancement; a
+            // failed registration (e.g. unsupported browser policy) shouldn't
+            // block the app from working normally.
+        })
+    })
+}
