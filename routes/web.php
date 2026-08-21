@@ -115,6 +115,7 @@ Route::middleware('auth')->group(function () {
 
             Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
             Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
+            Route::put('/stages/{stage}', [StageController::class, 'update'])->name('stages.update');
             Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
 
             Route::get('/groups', [GroupController::class, 'index'])->name('groups.index');

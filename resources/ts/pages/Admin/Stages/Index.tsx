@@ -14,14 +14,40 @@ interface StageForm {
     code: string
 }
 
+const emptyForm: StageForm = { name: '', code: '' }
+
 export default function Index({ stages }: IndexProps) {
     const [showModal, setShowModal] = useState(false)
-    const form = useForm<StageForm>({ name: '', code: '' })
+    const [editingStage, setEditingStage] = useState<Stage | null>(null)
+    const form = useForm<StageForm>(emptyForm)
     const confirm = useConfirm()
+
+    const openCreateModal = () => {
+        setEditingStage(null)
+        form.reset()
+        form.clearErrors()
+        setShowModal(true)
+    }
+
+    const openEditModal = (stage: Stage) => {
+        setEditingStage(stage)
+        form.setData({ name: stage.name, code: stage.code })
+        form.clearErrors()
+        setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+        setEditingStage(null)
+    }
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
-        form.post('/admin/stages', { onSuccess: () => setShowModal(false) })
+        if (editingStage) {
+            form.put(`/admin/stages/${editingStage.id}`, { onSuccess: closeModal })
+        } else {
+            form.post('/admin/stages', { onSuccess: closeModal })
+        }
     }
 
     const remove = async (stage: Stage) => {
@@ -34,7 +60,7 @@ export default function Index({ stages }: IndexProps) {
         <AdminLayout
             title="Stages"
             action={
-                <button type="button" className="btn btn-primary btn-sm" onClick={() => setShowModal(true)}>
+                <button type="button" className="btn btn-primary btn-sm" onClick={openCreateModal}>
                     <i className="bi bi-plus-lg" />
                     <span className="d-none d-sm-inline ms-1">Add Stage</span>
                 </button>
@@ -44,7 +70,8 @@ export default function Index({ stages }: IndexProps) {
                 Every user must belong to a stage (e.g. Primary, Preparatory, Secondary, Youth, Adult).
             </p>
 
-            <div className="ava-card">
+            {/* Table view (md and up) */}
+            <div className="ava-card d-none d-md-block">
                 <div className="table-responsive">
                     <table className="table mb-0">
                         <thead>
@@ -64,19 +91,28 @@ export default function Index({ stages }: IndexProps) {
                                     </td>
                                     <td className="text-ava-muted">{stage.users_count ?? 0}</td>
                                     <td className="text-nowrap">
-                                        <button
-                                            type="button"
-                                            className="btn btn-sm btn-outline-primary"
-                                            disabled={(stage.users_count ?? 0) > 0}
-                                            title={
-                                                (stage.users_count ?? 0) > 0
-                                                    ? 'Reassign these users to another stage before deleting'
-                                                    : undefined
-                                            }
-                                            onClick={() => remove(stage)}
-                                        >
-                                            Delete
-                                        </button>
+                                        <div className="d-flex gap-2">
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-primary"
+                                                onClick={() => openEditModal(stage)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-primary"
+                                                disabled={(stage.users_count ?? 0) > 0}
+                                                title={
+                                                    (stage.users_count ?? 0) > 0
+                                                        ? 'Reassign these users to another stage before deleting'
+                                                        : undefined
+                                                }
+                                                onClick={() => remove(stage)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -85,13 +121,52 @@ export default function Index({ stages }: IndexProps) {
                 </div>
             </div>
 
+            {/* Card view (below md) */}
+            <div className="d-md-none">
+                {stages.map((stage) => (
+                    <div key={stage.id} className="record-card">
+                        <div className="d-flex align-items-center justify-content-between mb-2">
+                            <div className="fw-semibold">{stage.name}</div>
+                            <span className="code-chip">{stage.code}</span>
+                        </div>
+
+                        <div className="record-card-row">
+                            <span className="record-card-label">Users</span>
+                            <span className="text-ava-muted">{stage.users_count ?? 0}</span>
+                        </div>
+
+                        <div className="record-card-actions">
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(stage)}>
+                                Edit
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-outline-primary"
+                                disabled={(stage.users_count ?? 0) > 0}
+                                title={
+                                    (stage.users_count ?? 0) > 0
+                                        ? 'Reassign these users to another stage before deleting'
+                                        : undefined
+                                }
+                                onClick={() => remove(stage)}
+                            >
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                {stages.length === 0 && (
+                    <div className="ava-card text-center text-ava-muted py-4">No stages yet.</div>
+                )}
+            </div>
+
             {showModal && (
                 <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Add Stage</h5>
-                                <button type="button" className="btn-close" onClick={() => setShowModal(false)} />
+                                <h5 className="modal-title">{editingStage ? `Edit ${editingStage.name}` : 'Add Stage'}</h5>
+                                <button type="button" className="btn-close" onClick={closeModal} />
                             </div>
                             <form onSubmit={submit}>
                                 <div className="modal-body">
@@ -119,11 +194,11 @@ export default function Index({ stages }: IndexProps) {
                                     </div>
                                 </div>
                                 <div className="modal-footer">
-                                    <button type="button" className="btn btn-outline-primary" onClick={() => setShowModal(false)}>
+                                    <button type="button" className="btn btn-outline-primary" onClick={closeModal}>
                                         Cancel
                                     </button>
                                     <button type="submit" className="btn btn-primary" disabled={form.processing}>
-                                        Add Stage
+                                        {editingStage ? 'Save Changes' : 'Add Stage'}
                                     </button>
                                 </div>
                             </form>

@@ -11,5 +11,7 @@ interface StageRepositoryContract
 
     public function create(array $data): Stage;
 
+    public function update(Stage $stage, array $data): Stage;
+
     public function delete(Stage $stage): bool;
 }

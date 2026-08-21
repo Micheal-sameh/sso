@@ -27,6 +27,16 @@ class StageRepository implements StageRepositoryContract
     }
 
     /**
+     * Update a stage's name and code.
+     */
+    public function update(Stage $stage, array $data): Stage
+    {
+        $stage->update($data);
+
+        return $stage->fresh();
+    }
+
+    /**
      * Delete a stage.
      */
     public function delete(Stage $stage): bool

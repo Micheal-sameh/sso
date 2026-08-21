@@ -36,6 +36,17 @@ class StageService
     }
 
     /**
+     * Update a stage's name and code.
+     */
+    public function update(Stage $stage, CreateStageDTO $dto): Stage
+    {
+        return $this->stageRepository->update($stage, [
+            'name' => $dto->name,
+            'code' => Str::lower($dto->code),
+        ]);
+    }
+
+    /**
      * Delete a stage, refusing if any user is still assigned to it.
      *
      * @throws StageInUseException

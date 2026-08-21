@@ -71,7 +71,8 @@ export default function Index({ groups }: IndexProps) {
                 to authenticate with a given OAuth client.
             </p>
 
-            <div className="ava-card">
+            {/* Table view (md and up) */}
+            <div className="ava-card d-none d-md-block">
                 <div className="table-responsive">
                     <table className="table mb-0">
                         <thead>
@@ -126,6 +127,41 @@ export default function Index({ groups }: IndexProps) {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* Card view (below md) */}
+            <div className="d-md-none">
+                {groups.map((group) => (
+                    <div key={group.id} className="record-card">
+                        <div className="fw-semibold mb-1">{group.name}</div>
+                        <div className="text-ava-muted text-tiny mb-2">{group.description ?? '—'}</div>
+
+                        <div className="record-card-row">
+                            <span className="record-card-label">Users</span>
+                            <span className="text-ava-muted">{group.users_count ?? 0}</span>
+                        </div>
+
+                        <div className="record-card-actions">
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-primary"
+                                onClick={() => router.visit(`/admin/groups/${group.id}`)}
+                            >
+                                <i className="bi bi-people me-1" />
+                                Manage Users
+                            </button>
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(group)}>
+                                Edit
+                            </button>
+                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => remove(group)}>
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                ))}
+                {groups.length === 0 && (
+                    <div className="ava-card text-center text-ava-muted py-4">No groups yet.</div>
+                )}
             </div>
 
             {showModal && (
