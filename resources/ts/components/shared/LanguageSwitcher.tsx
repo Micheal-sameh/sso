@@ -8,7 +8,14 @@ export default function LanguageSwitcher() {
     const nextLocale = locale === 'ar' ? 'en' : 'ar'
 
     const switchLocale = () => {
-        router.post(`/locale/${nextLocale}`, {}, { preserveScroll: true })
+        router.post(
+            `/locale/${nextLocale}`,
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => window.location.reload(),
+            },
+        )
     }
 
     return (
