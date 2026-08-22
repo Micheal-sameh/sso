@@ -8,11 +8,10 @@ import type { PaginatedData, UserNotification } from '@/types'
 interface NotificationsProps {
     notifications: PaginatedData<UserNotification>
     filters: { type?: string }
+    availableTypes: UserNotification['type'][]
 }
 
-const NOTIFICATION_TYPES: UserNotification['type'][] = ['manual', 'cmc', 'youtube', 'donation_reminder', 'birthday']
-
-export default function Notifications({ notifications, filters }: NotificationsProps) {
+export default function Notifications({ notifications, filters, availableTypes }: NotificationsProps) {
     const { t } = useTranslation('account')
     const [selectedIds, setSelectedIds] = useState<number[]>([])
 
@@ -81,7 +80,7 @@ export default function Notifications({ notifications, filters }: NotificationsP
                         onChange={(e) => applyTypeFilter(e.target.value)}
                     >
                         <option value="">{t('notifications.types.all')}</option>
-                        {NOTIFICATION_TYPES.map((type) => (
+                        {availableTypes.map((type) => (
                             <option key={type} value={type}>{TYPE_LABELS[type]}</option>
                         ))}
                     </select>

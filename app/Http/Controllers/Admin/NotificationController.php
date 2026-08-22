@@ -40,6 +40,7 @@ class NotificationController extends BaseController
             'groups' => $this->groupService->listAll(),
             'users' => $this->userRepository->allLite(),
             'filters' => $filters,
+            'availableTypes' => $this->notificationService->availableTypes(),
         ]);
     }
 

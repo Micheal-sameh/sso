@@ -83,6 +83,26 @@ class NotificationRepository implements NotificationRepositoryContract
     }
 
     /**
+     * Distinct notification types that exist across every notification ever sent.
+     *
+     * @return Collection<int, string>
+     */
+    public function distinctTypes(): Collection
+    {
+        return Notification::query()->distinct()->pluck('type');
+    }
+
+    /**
+     * Distinct notification types among the notifications addressed to the given user.
+     *
+     * @return Collection<int, string>
+     */
+    public function distinctTypesForUser(User $user): Collection
+    {
+        return $this->scopeForUser(Notification::query(), $user)->distinct()->pluck('type');
+    }
+
+    /**
      * The most recent notifications addressed to the given user, each
      * annotated with whether that user has read it. Used for the bell dropdown.
      *

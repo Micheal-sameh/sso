@@ -29,6 +29,7 @@ class NotificationController extends BaseController
         return $this->inertia('Account/Notifications', [
             'notifications' => $notifications,
             'filters' => $filters,
+            'availableTypes' => $this->notificationService->availableTypesForUser(Auth::user()),
         ]);
     }
 

@@ -13,6 +13,7 @@ interface IndexProps {
     groups: Group[]
     users: LiteUser[]
     filters: { type?: string }
+    availableTypes: AppNotification['type'][]
 }
 
 interface NotificationForm {
@@ -33,9 +34,7 @@ const emptyForm: NotificationForm = {
     group_ids: [],
 }
 
-const NOTIFICATION_TYPES: AppNotification['type'][] = ['manual', 'cmc', 'youtube', 'donation_reminder', 'birthday']
-
-export default function Index({ notifications, stages, groups, users, filters }: IndexProps) {
+export default function Index({ notifications, stages, groups, users, filters, availableTypes }: IndexProps) {
     const { t } = useTranslation(['admin', 'common'])
     const TARGET_TYPE_LABELS: Record<AppNotification['target_type'], string> = {
         all: t('targeting.all'),
@@ -309,7 +308,7 @@ export default function Index({ notifications, stages, groups, users, filters }:
                                 onChange={(e) => applyTypeFilter(e.target.value)}
                             >
                                 <option value="">{t('notifications.types.all')}</option>
-                                {NOTIFICATION_TYPES.map((type) => (
+                                {availableTypes.map((type) => (
                                     <option key={type} value={type}>{TYPE_LABELS[type]}</option>
                                 ))}
                             </select>

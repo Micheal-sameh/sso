@@ -28,6 +28,16 @@ interface NotificationRepositoryContract
     public function paginateForUser(User $user, array $filters = [], int $perPage = 20): LengthAwarePaginator;
 
     /**
+     * @return Collection<int, string>
+     */
+    public function distinctTypes(): Collection;
+
+    /**
+     * @return Collection<int, string>
+     */
+    public function distinctTypesForUser(User $user): Collection;
+
+    /**
      * @return Collection<int, Notification>
      */
     public function recentForUser(User $user, int $limit = 5): Collection;

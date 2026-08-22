@@ -71,6 +71,28 @@ class NotificationService
     }
 
     /**
+     * The distinct notification types that exist across every notification ever sent,
+     * for populating the admin "Sent" list's type filter.
+     *
+     * @return array<int, string>
+     */
+    public function availableTypes(): array
+    {
+        return $this->notificationRepository->distinctTypes()->all();
+    }
+
+    /**
+     * The distinct notification types among the notifications addressed to the given
+     * user, for populating their inbox's type filter.
+     *
+     * @return array<int, string>
+     */
+    public function availableTypesForUser(User $user): array
+    {
+        return $this->notificationRepository->distinctTypesForUser($user)->all();
+    }
+
+    /**
      * The most recent notifications addressed to the given user, for the bell dropdown.
      *
      * @return Collection<int, Notification>
