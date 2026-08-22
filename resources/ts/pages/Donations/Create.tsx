@@ -1,8 +1,9 @@
+import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useForm } from '@inertiajs/react'
+import { router, useForm, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
-import type { DonationGateway, Fund } from '@/types'
+import type { DonationGateway, Fund, SharedProps } from '@/types'
 
 interface CreateProps {
     funds: Fund[]
@@ -19,6 +20,9 @@ const GATEWAY_VALUES: DonationGateway[] = ['nbe', 'cib']
 
 export default function Create({ funds }: CreateProps) {
     const { t } = useTranslation('donations')
+    const { auth } = usePage<SharedProps>().props
+    const [reminderProcessing, setReminderProcessing] = useState(false)
+    const wantsDonationReminders = auth.user?.wants_donation_reminders ?? false
     const form = useForm<DonationForm>({
         fund_id: funds[0] ? String(funds[0].id) : '',
         amount: '',
@@ -30,8 +34,40 @@ export default function Create({ funds }: CreateProps) {
         form.post('/donations')
     }
 
+    const toggleDonationReminders = () => {
+        setReminderProcessing(true)
+        router.post(
+            wantsDonationReminders ? '/donations/reminders/disable' : '/donations/reminders/enable',
+            {},
+            { preserveScroll: true, onFinish: () => setReminderProcessing(false) },
+        )
+    }
+
     return (
         <AppLayout title={t('create.title')}>
+            <div
+                className="ava-card p-3 mb-3 d-flex align-items-center justify-content-between gap-3 flex-wrap"
+                style={{ maxWidth: 520 }}
+            >
+                <div className="d-flex align-items-center gap-2">
+                    <i className="bi bi-heart text-ava-primary fs-4" />
+                    <div>
+                        <div className="fw-semibold">{t('reminder.title')}</div>
+                        <div className="text-ava-muted text-tiny">
+                            {wantsDonationReminders ? t('reminder.enabledHelp') : t('reminder.disabledHelp')}
+                        </div>
+                    </div>
+                </div>
+                <button
+                    type="button"
+                    className={`btn btn-sm ${wantsDonationReminders ? 'btn-outline-secondary' : 'btn-primary'}`}
+                    disabled={reminderProcessing}
+                    onClick={toggleDonationReminders}
+                >
+                    {wantsDonationReminders ? t('reminder.disable') : t('reminder.enable')}
+                </button>
+            </div>
+
             <div className="ava-card p-3 p-md-4" style={{ maxWidth: 520 }}>
                 <p className="text-ava-muted mb-4">
                     {t('create.intro')}

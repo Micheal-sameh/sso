@@ -54,6 +54,7 @@ export interface User {
     role: 'superadmin' | 'admin' | 'secretary' | 'user'
     is_active: boolean
     requires_data_update: boolean
+    wants_donation_reminders: boolean
     is_admin: boolean
     mfa_enabled: boolean
     mfa_enabled_at: string | null

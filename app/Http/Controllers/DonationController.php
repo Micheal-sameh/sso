@@ -84,4 +84,18 @@ class DonationController extends BaseController
 
         return redirect()->route('donations.return', ['donation' => $donation->uuid]);
     }
+
+    public function enableReminders(): RedirectResponse
+    {
+        $this->donationService->enableMonthlyReminder(Auth::user());
+
+        return back();
+    }
+
+    public function disableReminders(): RedirectResponse
+    {
+        $this->donationService->disableMonthlyReminder(Auth::user());
+
+        return back();
+    }
 }

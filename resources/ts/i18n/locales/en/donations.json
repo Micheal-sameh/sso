@@ -27,6 +27,13 @@
     "redirecting": "Redirecting…",
     "donateNow": "Donate Now"
   },
+  "reminder": {
+    "title": "Notify me monthly",
+    "enabledHelp": "We'll remind you on this day every month, plus every Friday until you donate.",
+    "disabledHelp": "Get a reminder every month on today's date, and a nudge every Friday if you haven't donated yet.",
+    "enable": "Notify Me Monthly",
+    "disable": "Turn Off Reminders"
+  },
   "history": {
     "title": "My Donations",
     "table": {

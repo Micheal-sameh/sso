@@ -187,4 +187,25 @@ class UserRepository implements UserRepositoryContract
             ->whereDay('date_of_birth', now()->day)
             ->get();
     }
+
+    public function wantingMonthlyDonationReminderToday(): Collection
+    {
+        $today = now();
+        $day = min($today->day, $today->daysInMonth);
+
+        return User::query()
+            ->active()
+            ->where('wants_donation_reminders', true)
+            ->where('donation_reminder_day', $day)
+            ->get();
+    }
+
+    public function wantingDonationReminders(): Collection
+    {
+        return User::query()
+            ->active()
+            ->where('wants_donation_reminders', true)
+            ->whereNotNull('donation_reminder_day')
+            ->get();
+    }
 }

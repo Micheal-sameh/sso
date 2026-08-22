@@ -38,6 +38,8 @@ class User extends Authenticatable implements HasMedia
         'stage_id',
         'is_active',
         'requires_data_update',
+        'wants_donation_reminders',
+        'donation_reminder_day',
         'email_verified_at',
     ];
 
@@ -52,6 +54,7 @@ class User extends Authenticatable implements HasMedia
             'role' => UserRole::class,
             'is_active' => 'boolean',
             'requires_data_update' => 'boolean',
+            'wants_donation_reminders' => 'boolean',
             'email_verified_at' => 'datetime',
             'date_of_birth' => 'date',
             'password' => 'hashed',

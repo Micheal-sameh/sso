@@ -3,12 +3,15 @@
 namespace App\Services;
 
 use App\DTOs\DonationDTO;
+use App\DTOs\NotificationDTO;
 use App\Enums\DonationGateway as DonationGatewayEnum;
 use App\Enums\DonationPlanStatus;
 use App\Enums\DonationStatus;
+use App\Enums\NotificationTargetType;
 use App\Models\Donation;
 use App\Models\User;
 use App\Repositories\Contracts\DonationRepositoryContract;
+use App\Repositories\Contracts\UserRepositoryContract;
 use App\Services\Payments\DonationGatewayFactory;
 use App\Services\Payments\DTOs\GatewayCallbackResult;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -21,7 +24,103 @@ class DonationService
     public function __construct(
         protected DonationRepositoryContract $donationRepository,
         protected DonationGatewayFactory $gatewayFactory,
+        protected UserRepositoryContract $userRepository,
+        protected NotificationService $notificationService,
     ) {}
+
+    /**
+     * Opt the user into monthly donation reminders, anchored to today's day of month.
+     */
+    public function enableMonthlyReminder(User $user): void
+    {
+        $this->userRepository->update($user, [
+            'wants_donation_reminders' => true,
+            'donation_reminder_day' => now()->day,
+        ]);
+    }
+
+    public function disableMonthlyReminder(User $user): void
+    {
+        $this->userRepository->update($user, [
+            'wants_donation_reminders' => false,
+            'donation_reminder_day' => null,
+        ]);
+    }
+
+    public function hasDonatedThisMonth(User $user): bool
+    {
+        return $this->donationRepository->hasPaidDonationBetween(
+            $user->id,
+            now()->startOfMonth(),
+            now()->endOfMonth(),
+        );
+    }
+
+    /**
+     * Notify every user whose reminder day is today, unless they've already
+     * donated this month. Intended to run daily via the scheduler.
+     */
+    public function sendMonthlyDonationReminders(): int
+    {
+        $sent = 0;
+
+        foreach ($this->userRepository->wantingMonthlyDonationReminderToday() as $user) {
+            if ($this->hasDonatedThisMonth($user)) {
+                continue;
+            }
+
+            $this->sendDonationReminder(
+                $user,
+                "Hi {$user->name}, it's your monthly donation reminder — thank you for your generosity!"
+            );
+
+            $sent++;
+        }
+
+        return $sent;
+    }
+
+    /**
+     * Follow-up nudge for opted-in users who still haven't donated this month,
+     * once their reminder day has already passed. Intended to run every Friday.
+     */
+    public function sendFridayDonationReminders(): int
+    {
+        $today = now();
+        $sent = 0;
+
+        foreach ($this->userRepository->wantingDonationReminders() as $user) {
+            $cycleStartDay = min($user->donation_reminder_day, $today->daysInMonth);
+
+            if ($today->day < $cycleStartDay || $this->hasDonatedThisMonth($user)) {
+                continue;
+            }
+
+            $this->sendDonationReminder(
+                $user,
+                "Hi {$user->name}, just a friendly reminder — you haven't made your donation for this month yet."
+            );
+
+            $sent++;
+        }
+
+        return $sent;
+    }
+
+    private function sendDonationReminder(User $user, string $message): void
+    {
+        $this->notificationService->send(
+            new NotificationDTO(
+                message: $message,
+                targetType: NotificationTargetType::Specific,
+                stageIds: [],
+                groupIds: [],
+                userIds: [$user->id],
+                image: null,
+            ),
+            null,
+        );
+    }
 
     /**
      * Create a pending donation (and, for recurring gifts, its plan), then

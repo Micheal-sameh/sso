@@ -30,6 +30,8 @@ interface DonationRepositoryContract
 
     public function totalPaid(array $filters = []): float;
 
+    public function hasPaidDonationBetween(int $userId, \DateTimeInterface $from, \DateTimeInterface $to): bool;
+
     public function createPlan(array $data): DonationPlan;
 
     public function updatePlan(DonationPlan $plan, array $data): DonationPlan;

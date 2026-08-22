@@ -98,6 +98,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/return', [DonationController::class, 'returnPage'])->name('return');
             Route::get('/sandbox/{donation:uuid}', [DonationController::class, 'sandbox'])->name('sandbox');
             Route::post('/sandbox/{donation:uuid}/pay', [DonationController::class, 'sandboxPay'])->name('sandbox.pay');
+            Route::post('/reminders/enable', [DonationController::class, 'enableReminders'])->name('reminders.enable');
+            Route::post('/reminders/disable', [DonationController::class, 'disableReminders'])->name('reminders.disable');
         });
 
         Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {

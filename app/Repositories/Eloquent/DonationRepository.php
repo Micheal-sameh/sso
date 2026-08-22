@@ -60,6 +60,14 @@ class DonationRepository implements DonationRepositoryContract
             ->sum('amount');
     }
 
+    public function hasPaidDonationBetween(int $userId, \DateTimeInterface $from, \DateTimeInterface $to): bool
+    {
+        return Donation::where('user_id', $userId)
+            ->where('status', DonationStatus::Paid->value)
+            ->whereBetween('paid_at', [$from, $to])
+            ->exists();
+    }
+
     public function createPlan(array $data): DonationPlan
     {
         return DonationPlan::create($data);

@@ -42,4 +42,15 @@ interface UserRepositoryContract
      * Active users whose date of birth falls on today's month and day.
      */
     public function withBirthdayToday(): Collection;
+
+    /**
+     * Active users opted into donation reminders whose reminder day is today
+     * (clamped to the current month's length).
+     */
+    public function wantingMonthlyDonationReminderToday(): Collection;
+
+    /**
+     * Every active user currently opted into donation reminders, regardless of day.
+     */
+    public function wantingDonationReminders(): Collection;
 }
