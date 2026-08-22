@@ -1,6 +1,7 @@
 {
   "home": {
     "welcome": "Welcome, {{name}}",
+    "watchLive": "Watch Live on YouTube",
     "happyBirthday": "Happy Birthday, {{name}}!",
     "copticDate": "Coptic Date",
     "copticDateUnavailable": "Not available right now.",

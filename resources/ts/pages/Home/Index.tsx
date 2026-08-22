@@ -9,9 +9,10 @@ import type { CmcPost, CopticCalendar, SharedProps } from '@/types'
 interface IndexProps {
     coptic: CopticCalendar
     recentPosts: CmcPost[]
+    youtubeLiveUrl: string | null
 }
 
-export default function Index({ coptic, recentPosts }: IndexProps) {
+export default function Index({ coptic, recentPosts, youtubeLiveUrl }: IndexProps) {
     const { t } = useTranslation('home')
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
@@ -27,6 +28,18 @@ export default function Index({ coptic, recentPosts }: IndexProps) {
             )}
 
             <h3 className="mb-4">{t('home.welcome', { name: auth.user?.name })}</h3>
+
+            {youtubeLiveUrl && (
+                <a
+                    href={youtubeLiveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="btn btn-danger w-100 mb-3 d-flex align-items-center justify-content-center gap-2"
+                >
+                    <i className="bi bi-youtube fs-5" />
+                    {t('home.watchLive')}
+                </a>
+            )}
 
             <div className="ava-card p-3 mb-3" dir="rtl">
                 <h5 className="mb-2">
