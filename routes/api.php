@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SecurityController;
+use App\Http\Controllers\Api\YoutubeWebhookController;
 use App\Http\Controllers\OAuth\OdooTokenValidationController;
 use App\Http\Controllers\OAuth\UserinfoController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,11 @@ Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa']);
 // authenticated — DonationService verifies each request's signature against
 // the gateway's webhook secret before trusting it.
 Route::post('/donations/callback/{gateway}', [DonationCallbackController::class, 'handle'])->middleware('throttle');
+
+// YouTube WebSub (PubSubHubbub) callback: the hub GETs this URL to verify a
+// subscription and POSTs an Atom feed here on every new upload.
+Route::middleware('throttle')->get('/webhooks/youtube', [YoutubeWebhookController::class, 'verify'])->name('webhooks.youtube');
+Route::middleware('throttle')->post('/webhooks/youtube', [YoutubeWebhookController::class, 'handle']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);

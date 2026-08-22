@@ -24,10 +24,18 @@ class CmcPostService
     /**
      * Create a CMC post (fetching a link preview for its URL, when given
      * one) and broadcast a notification to every user that routes to it.
+     *
+     * @param  array{title: ?string, description: ?string, image: ?string}|null  $preview  skip the URL preview
+     *         fetch and use this instead — for posts created from a source that already has this metadata
      */
-    public function create(?string $text, ?string $url, UploadedFile|string|null $image, ?User $creator): CmcPost
-    {
-        $preview = $url ? $this->urlPreviewService->fetch($url) : ['title' => null, 'description' => null, 'image' => null];
+    public function create(
+        ?string $text,
+        ?string $url,
+        UploadedFile|string|null $image,
+        ?User $creator,
+        ?array $preview = null,
+    ): CmcPost {
+        $preview ??= $url ? $this->urlPreviewService->fetch($url) : ['title' => null, 'description' => null, 'image' => null];
 
         $post = $this->cmcPostRepository->create([
             'text' => $text,

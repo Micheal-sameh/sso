@@ -53,4 +53,9 @@ return [
         'webhook_secret' => env('CIB_WEBHOOK_SECRET'),
     ],
 
+    'youtube' => [
+        'channel_id' => env('YOUTUBE_CHANNEL_ID'),
+        'webhook_secret' => env('YOUTUBE_WEBHOOK_SECRET'),
+    ],
+
 ];
