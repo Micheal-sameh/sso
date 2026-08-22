@@ -20,9 +20,15 @@ class ClientMeta extends Model implements HasMedia
         'oauth_client_id',
         'app_name',
         'homepage_url',
+        'logout_uri',
+        'logout_secret',
         'is_internal',
         'is_verified',
         'access_mode',
+    ];
+
+    protected $hidden = [
+        'logout_secret',
     ];
 
     protected $appends = [
@@ -35,6 +41,7 @@ class ClientMeta extends Model implements HasMedia
             'is_internal' => 'boolean',
             'is_verified' => 'boolean',
             'access_mode' => ClientAccessMode::class,
+            'logout_secret' => 'encrypted',
         ];
     }
 

@@ -32,6 +32,7 @@ class ClientController extends BaseController
             'users' => $this->userRepository->allLite(),
             'groups' => $this->groupService->listAll(),
             'newClientSecret' => session()->pull('newClientSecret'),
+            'newLogoutSecret' => session()->pull('newLogoutSecret'),
         ]);
     }
 
@@ -44,14 +45,16 @@ class ClientController extends BaseController
             : __('messages.client_registered');
 
         return $this->redirectRoute('admin.clients.index', $message)
-            ->with('newClientSecret', $result['secret']);
+            ->with('newClientSecret', $result['secret'])
+            ->with('newLogoutSecret', $result['logoutSecret']);
     }
 
     public function update(string $client, OAuthClientRequest $request): RedirectResponse
     {
-        $this->oauthClientService->updateClient($client, OAuthClientDTO::fromRequest($request));
+        $result = $this->oauthClientService->updateClient($client, OAuthClientDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.clients.index', __('messages.client_updated'));
+        return $this->redirectRoute('admin.clients.index', __('messages.client_updated'))
+            ->with('newLogoutSecret', $result['logoutSecret']);
     }
 
     public function destroy(string $client): RedirectResponse

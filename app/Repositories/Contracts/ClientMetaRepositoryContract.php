@@ -12,7 +12,7 @@ interface ClientMetaRepositoryContract
 {
     public function findByClientId(string $clientId): ?ClientMeta;
 
-    public function create(string $clientId, OAuthClientDTO $dto): ClientMeta;
+    public function create(string $clientId, OAuthClientDTO $dto, ?string $logoutSecret): ClientMeta;
 
     public function update(ClientMeta $meta, array $data): ClientMeta;
 

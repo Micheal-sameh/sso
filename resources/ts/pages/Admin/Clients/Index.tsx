@@ -14,12 +14,14 @@ interface IndexProps {
     users: LiteUser[]
     groups: Group[]
     newClientSecret: string | null
+    newLogoutSecret: string | null
 }
 
 interface ClientForm {
     name: string
     redirect: string
     homepage_url: string
+    logout_uri: string
     app_logo: File | null
     is_internal: boolean
     is_public_client: boolean
@@ -34,6 +36,7 @@ const emptyForm: ClientForm = {
     name: '',
     redirect: '',
     homepage_url: '',
+    logout_uri: '',
     app_logo: null,
     is_internal: false,
     is_public_client: false,
@@ -44,7 +47,7 @@ const emptyForm: ClientForm = {
     group_ids: [],
 }
 
-export default function Index({ clients, stages, users, groups, newClientSecret }: IndexProps) {
+export default function Index({ clients, stages, users, groups, newClientSecret, newLogoutSecret }: IndexProps) {
     const { t } = useTranslation(['admin', 'common'])
     const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
         all: t('targeting.all'),
@@ -57,7 +60,9 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
     const [userSearch, setUserSearch] = useState('')
     const [logoPreview, setLogoPreview] = useState<string | null>(null)
     const [revealedSecret, setRevealedSecret] = useState(newClientSecret)
+    const [revealedLogoutSecret, setRevealedLogoutSecret] = useState(newLogoutSecret)
     const [secretCopied, setSecretCopied] = useState(false)
+    const [logoutSecretCopied, setLogoutSecretCopied] = useState(false)
     const confirm = useConfirm()
     const form = useForm<ClientForm>(emptyForm)
 
@@ -71,12 +76,23 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
         setTimeout(() => setSecretCopied(false), 2000)
     }
 
+    const copyLogoutSecret = async () => {
+        if (!revealedLogoutSecret) {
+            return
+        }
+
+        await navigator.clipboard.writeText(revealedLogoutSecret)
+        setLogoutSecretCopied(true)
+        setTimeout(() => setLogoutSecretCopied(false), 2000)
+    }
+
     const openCreateModal = () => {
         setEditingClient(null)
         form.reset()
         form.clearErrors()
         setUserSearch('')
         setLogoPreview(null)
+        setRevealedLogoutSecret(null)
         setShowModal(true)
     }
 
@@ -86,6 +102,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
             name: client.app_name,
             redirect: client.oauth_client.redirect_uris[0] ?? '',
             homepage_url: client.homepage_url ?? '',
+            logout_uri: client.logout_uri ?? '',
             app_logo: null,
             is_internal: client.is_internal,
             is_public_client: false,
@@ -375,7 +392,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                 <Pagination links={clients.links} />
             </div>
 
-            {revealedSecret && (
+            {(revealedSecret || revealedLogoutSecret) && (
                 <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -386,16 +403,43 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                 </h5>
                             </div>
                             <div className="modal-body">
-                                <p className="text-ava-muted small">{t('clients.secretModal.body')}</p>
-                                <div className="input-group">
-                                    <input type="text" readOnly className="form-control font-monospace small" value={revealedSecret} />
-                                    <button type="button" className="btn btn-outline-primary" onClick={copySecret}>
-                                        <i className={`bi ${secretCopied ? 'bi-check-lg' : 'bi-clipboard'}`} />
-                                    </button>
-                                </div>
+                                {revealedSecret && (
+                                    <>
+                                        <p className="text-ava-muted small">{t('clients.secretModal.body')}</p>
+                                        <div className="input-group mb-3">
+                                            <input type="text" readOnly className="form-control font-monospace small" value={revealedSecret} />
+                                            <button type="button" className="btn btn-outline-primary" onClick={copySecret}>
+                                                <i className={`bi ${secretCopied ? 'bi-check-lg' : 'bi-clipboard'}`} />
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
+                                {revealedLogoutSecret && (
+                                    <>
+                                        <p className="text-ava-muted small">{t('clients.secretModal.logoutSecretBody')}</p>
+                                        <div className="input-group">
+                                            <input
+                                                type="text"
+                                                readOnly
+                                                className="form-control font-monospace small"
+                                                value={revealedLogoutSecret}
+                                            />
+                                            <button type="button" className="btn btn-outline-primary" onClick={copyLogoutSecret}>
+                                                <i className={`bi ${logoutSecretCopied ? 'bi-check-lg' : 'bi-clipboard'}`} />
+                                            </button>
+                                        </div>
+                                    </>
+                                )}
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-primary" onClick={() => setRevealedSecret(null)}>
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        setRevealedSecret(null)
+                                        setRevealedLogoutSecret(null)
+                                    }}
+                                >
                                     {t('clients.secretModal.saved')}
                                 </button>
                             </div>
@@ -446,6 +490,19 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                         />
                                         {form.errors.homepage_url && (
                                             <div className="text-danger small mt-1">{form.errors.homepage_url}</div>
+                                        )}
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="logout_uri">{t('clients.modal.logoutUri')}</label>
+                                        <input
+                                            id="logout_uri"
+                                            className="form-control"
+                                            value={form.data.logout_uri}
+                                            onChange={(e) => form.setData('logout_uri', e.target.value)}
+                                        />
+                                        <div className="form-text">{t('clients.modal.logoutUriHelp')}</div>
+                                        {form.errors.logout_uri && (
+                                            <div className="text-danger small mt-1">{form.errors.logout_uri}</div>
                                         )}
                                     </div>
                                     <div className="mb-3">

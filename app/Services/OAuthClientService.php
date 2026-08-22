@@ -5,11 +5,14 @@ namespace App\Services;
 use App\DTOs\OAuthClientDTO;
 use App\Enums\ClientAccessMode;
 use App\Enums\ClientGrantType;
+use App\Jobs\NotifyClientLogoutJob;
 use App\Models\ClientMeta;
 use App\Models\Token;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
+use App\Repositories\Contracts\TokenRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use Laravel\Passport\ClientRepository;
 
 class OAuthClientService
@@ -17,6 +20,7 @@ class OAuthClientService
     public function __construct(
         protected ClientRepository $clientRepository,
         protected ClientMetaRepositoryContract $clientMetaRepository,
+        protected TokenRepositoryContract $tokenRepository,
     ) {}
 
     /**
@@ -35,7 +39,9 @@ class OAuthClientService
                 confidential: ! $dto->isPublicClient,
             );
 
-        $meta = $this->clientMetaRepository->create($client->id, $dto);
+        $logoutSecret = $dto->logoutUri !== null ? Str::random(40) : null;
+
+        $meta = $this->clientMetaRepository->create($client->id, $dto, $logoutSecret);
 
         if ($dto->appLogo !== null) {
             $meta->addMedia($dto->appLogo)->toMediaCollection('logo');
@@ -53,13 +59,18 @@ class OAuthClientService
             'client' => $client,
             'meta' => $meta,
             'secret' => $client->plainSecret,
+            'logoutSecret' => $logoutSecret,
         ];
     }
 
     /**
      * Update an existing OAuth client's registration details and access rules.
+     *
+     * @return array{meta: ClientMeta, logoutSecret: ?string} logoutSecret is set only when a
+     *                                                         new one was just generated (i.e. logout_uri
+     *                                                         was newly configured), so it can be revealed once.
      */
-    public function updateClient(string $clientId, OAuthClientDTO $dto): ClientMeta
+    public function updateClient(string $clientId, OAuthClientDTO $dto): array
     {
         $client = $this->clientRepository->find($clientId);
 
@@ -71,9 +82,21 @@ class OAuthClientService
 
         abort_if($meta === null, 404);
 
+        // Only mint a signing secret the first time a logout_uri is configured;
+        // otherwise keep the existing one so previously-issued signatures stay valid.
+        $newLogoutSecret = null;
+        $logoutSecret = $meta->logout_secret;
+        if ($dto->logoutUri === null) {
+            $logoutSecret = null;
+        } elseif ($logoutSecret === null) {
+            $logoutSecret = $newLogoutSecret = Str::random(40);
+        }
+
         $meta = $this->clientMetaRepository->update($meta, [
             'app_name' => $dto->name,
             'homepage_url' => $dto->homepageUrl,
+            'logout_uri' => $dto->logoutUri,
+            'logout_secret' => $logoutSecret,
             'is_internal' => $dto->isInternal,
             'access_mode' => $dto->accessMode,
         ]);
@@ -97,7 +120,7 @@ class OAuthClientService
             $dto->accessMode === ClientAccessMode::Group ? $dto->groupIds : [],
         );
 
-        return $meta;
+        return ['meta' => $meta, 'logoutSecret' => $newLogoutSecret];
     }
 
     /**
@@ -154,5 +177,11 @@ class OAuthClientService
         abort_if($meta === null || $meta->access_mode !== ClientAccessMode::Specific, 404);
 
         $this->clientMetaRepository->detachUser($clientId, $userId);
+
+        $this->tokenRepository->revokeAllForUserAndClient($userId, $clientId);
+
+        if ($meta->logout_uri !== null && $meta->logout_secret !== null) {
+            NotifyClientLogoutJob::dispatch($clientId, $userId, $meta->logout_uri, $meta->logout_secret);
+        }
     }
 }

@@ -79,6 +79,7 @@
     "secretModal": {
       "title": "Client Secret",
       "body": "Copy this secret now and store it securely — it will not be shown again. If you lose it, you'll need to revoke this client and register a new one.",
+      "logoutSecretBody": "Copy this logout webhook signing secret now and share it with the client app's team — it will not be shown again. They'll need it to verify the X-SSO-Signature header on incoming logout notifications.",
       "saved": "I've saved it"
     },
     "modal": {
@@ -87,6 +88,8 @@
       "appName": "App Name",
       "redirectUri": "Redirect URI",
       "homepageUrl": "Homepage URL",
+      "logoutUri": "Logout Webhook URL",
+      "logoutUriHelp": "Optional. If set, this app is notified whenever an admin revokes a user's access, so it can end its own local session immediately.",
       "logo": "Logo",
       "internalApp": "Internal application",
       "grantType": "Grant Type",

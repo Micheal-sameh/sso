@@ -91,6 +91,7 @@ export interface ClientMeta {
     app_name: string
     app_logo_url: string | null
     homepage_url: string | null
+    logout_uri: string | null
     is_internal: boolean
     is_verified: boolean
     access_mode: 'all' | 'stage' | 'specific' | 'group'

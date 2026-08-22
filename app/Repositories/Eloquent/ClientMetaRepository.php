@@ -25,12 +25,14 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
     /**
      * Create client metadata for a newly registered OAuth client.
      */
-    public function create(string $clientId, OAuthClientDTO $dto): ClientMeta
+    public function create(string $clientId, OAuthClientDTO $dto, ?string $logoutSecret): ClientMeta
     {
         return ClientMeta::create([
             'oauth_client_id' => $clientId,
             'app_name' => $dto->name,
             'homepage_url' => $dto->homepageUrl,
+            'logout_uri' => $dto->logoutUri,
+            'logout_secret' => $logoutSecret,
             'is_internal' => $dto->isInternal,
             'access_mode' => $dto->accessMode,
         ]);

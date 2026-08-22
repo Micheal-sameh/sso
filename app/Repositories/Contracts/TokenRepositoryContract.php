@@ -18,4 +18,9 @@ interface TokenRepositoryContract
      * the token doesn't exist or belongs to someone else.
      */
     public function revokeForUser(string $tokenId, int $userId): bool;
+
+    /**
+     * Revoke all active tokens (and their refresh tokens) issued to a user for a given client.
+     */
+    public function revokeAllForUserAndClient(int $userId, string $clientId): void;
 }

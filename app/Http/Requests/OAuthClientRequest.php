@@ -22,6 +22,7 @@ class OAuthClientRequest extends FormRequest
             // "scheme://..." URI instead, in addition to normal http(s) URLs.
             'redirect' => ['required', 'string', 'max:2048', 'regex:/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/'],
             'homepage_url' => ['nullable', 'url'],
+            'logout_uri' => ['nullable', 'url'],
             'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
             'is_internal' => ['boolean'],
             'is_public_client' => ['boolean'],
