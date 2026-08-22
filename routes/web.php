@@ -165,6 +165,8 @@ Route::middleware('auth')->group(function () {
                 Route::get('/', [AdminYoutubeVideoController::class, 'index'])->name('index');
                 Route::post('/sync', [AdminYoutubeVideoController::class, 'sync'])->name('sync');
                 Route::patch('/{youtubeVideo}/toggle-pin', [AdminYoutubeVideoController::class, 'togglePin'])->name('toggle-pin');
+                Route::patch('/{youtubeVideo}/move-up', [AdminYoutubeVideoController::class, 'moveUp'])->name('move-up');
+                Route::patch('/{youtubeVideo}/move-down', [AdminYoutubeVideoController::class, 'moveDown'])->name('move-down');
             });
 
             Route::middleware('can:manage donations')->group(function () {

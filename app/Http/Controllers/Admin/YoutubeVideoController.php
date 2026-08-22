@@ -22,6 +22,9 @@ class YoutubeVideoController extends BaseController
         return $this->inertia('Admin/Videos/Index', [
             'videos' => $this->youtubeVideoService->listAllPaginated(20)
                 ->through(fn (YoutubeVideo $video) => $this->youtubeVideoService->toArray($video)),
+            'pinnedVideos' => $this->youtubeVideoService->listPinned()
+                ->map(fn (YoutubeVideo $video) => $this->youtubeVideoService->toArray($video))
+                ->values(),
         ]);
     }
 
@@ -35,6 +38,20 @@ class YoutubeVideoController extends BaseController
     public function togglePin(YoutubeVideo $youtubeVideo): RedirectResponse
     {
         $this->youtubeVideoService->togglePin($youtubeVideo);
+
+        return $this->redirectBack();
+    }
+
+    public function moveUp(YoutubeVideo $youtubeVideo): RedirectResponse
+    {
+        $this->youtubeVideoService->movePinUp($youtubeVideo);
+
+        return $this->redirectBack();
+    }
+
+    public function moveDown(YoutubeVideo $youtubeVideo): RedirectResponse
+    {
+        $this->youtubeVideoService->movePinDown($youtubeVideo);
 
         return $this->redirectBack();
     }

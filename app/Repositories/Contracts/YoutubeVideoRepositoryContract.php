@@ -13,4 +13,6 @@ interface YoutubeVideoRepositoryContract
     public function pinned(): Collection;
 
     public function togglePin(YoutubeVideo $youtubeVideo): YoutubeVideo;
+
+    public function movePin(YoutubeVideo $youtubeVideo, string $direction): void;
 }

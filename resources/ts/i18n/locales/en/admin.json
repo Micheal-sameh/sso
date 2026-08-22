@@ -126,6 +126,9 @@
     "pin": "Pin",
     "unpin": "Unpin",
     "pinned": "Pinned",
+    "pinnedVideos": "Pinned Videos (order shown on Home)",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
     "published": "Published {{date}}",
     "empty": "No videos synced yet. Click \"Sync Now\" to pull the channel's uploads."
   },

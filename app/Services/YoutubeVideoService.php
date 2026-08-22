@@ -29,6 +29,16 @@ class YoutubeVideoService
         return $this->youtubeVideoRepository->togglePin($youtubeVideo);
     }
 
+    public function movePinUp(YoutubeVideo $youtubeVideo): void
+    {
+        $this->youtubeVideoRepository->movePin($youtubeVideo, 'up');
+    }
+
+    public function movePinDown(YoutubeVideo $youtubeVideo): void
+    {
+        $this->youtubeVideoRepository->movePin($youtubeVideo, 'down');
+    }
+
     public function sync(): int
     {
         return $this->youtubeChannelSyncService->sync();
