@@ -168,6 +168,7 @@ export interface CmcPost {
     url_image: string | null
     creator: CmcPostCreator | null
     created_at: string
+    is_pinned: boolean
 }
 
 export interface YoutubeVideo {

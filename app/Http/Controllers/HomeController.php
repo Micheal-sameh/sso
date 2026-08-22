@@ -29,6 +29,9 @@ class HomeController extends BaseController
             'recentPosts' => $this->cmcPostService->listRecent(5)
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
+            'pinnedPosts' => $this->cmcPostService->listPinned()
+                ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
+                ->values(),
             'youtubeLive' => $this->youtubeLiveStatusService->current(),
             'pinnedVideos' => $this->youtubeVideoService->listPinned()
                 ->map(fn (YoutubeVideo $video) => $this->youtubeVideoService->toArray($video))

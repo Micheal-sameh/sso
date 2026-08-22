@@ -111,10 +111,30 @@ class CmcPostService
         return $this->cmcPostRepository->recent($limit);
     }
 
+    public function listPinned(): Collection
+    {
+        return $this->cmcPostRepository->pinned();
+    }
+
+    public function togglePin(CmcPost $cmcPost): CmcPost
+    {
+        return $this->cmcPostRepository->togglePin($cmcPost);
+    }
+
+    public function movePinUp(CmcPost $cmcPost): void
+    {
+        $this->cmcPostRepository->movePin($cmcPost, 'up');
+    }
+
+    public function movePinDown(CmcPost $cmcPost): void
+    {
+        $this->cmcPostRepository->movePin($cmcPost, 'down');
+    }
+
     /**
      * Shape a post for the frontend, formatting its timestamp for display.
      *
-     * @return array{id: int, text: ?string, image_url: ?string, url: ?string, url_title: ?string, url_description: ?string, url_image: ?string, creator: ?array, created_at: string}
+     * @return array{id: int, text: ?string, image_url: ?string, url: ?string, url_title: ?string, url_description: ?string, url_image: ?string, creator: ?array, created_at: string, is_pinned: bool}
      */
     public function toArray(CmcPost $cmcPost): array
     {
@@ -128,6 +148,7 @@ class CmcPostService
             'url_image' => $cmcPost->url_image,
             'creator' => $cmcPost->creator ? ['id' => $cmcPost->creator->id, 'name' => $cmcPost->creator->name] : null,
             'created_at' => $cmcPost->created_at->format('d M Y, H:i'),
+            'is_pinned' => $cmcPost->is_pinned,
         ];
     }
 

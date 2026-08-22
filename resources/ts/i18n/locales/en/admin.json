@@ -117,7 +117,12 @@
     "postedBy": "Posted {{date}} by {{name}}",
     "posted": "Posted {{date}}",
     "empty": "No posts yet.",
-    "confirmDelete": "Delete this post? It will disappear for everyone."
+    "confirmDelete": "Delete this post? It will disappear for everyone.",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinnedPosts": "Pinned Posts (order shown on Home)",
+    "moveUp": "Move up",
+    "moveDown": "Move down"
   },
   "videos": {
     "title": "Videos",

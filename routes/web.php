@@ -159,6 +159,9 @@ Route::middleware('auth')->group(function () {
                 Route::post('/', [AdminCmcPostController::class, 'store'])->name('store');
                 Route::put('/{cmcPost}', [AdminCmcPostController::class, 'update'])->name('update');
                 Route::delete('/{cmcPost}', [AdminCmcPostController::class, 'destroy'])->name('destroy');
+                Route::patch('/{cmcPost}/toggle-pin', [AdminCmcPostController::class, 'togglePin'])->name('toggle-pin');
+                Route::patch('/{cmcPost}/move-up', [AdminCmcPostController::class, 'moveUp'])->name('move-up');
+                Route::patch('/{cmcPost}/move-down', [AdminCmcPostController::class, 'moveDown'])->name('move-down');
             });
 
             Route::middleware('can:manage cmc posts')->prefix('videos')->name('videos.')->group(function () {

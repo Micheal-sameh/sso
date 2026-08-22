@@ -28,6 +28,9 @@ class CmcPostController extends BaseController
         return $this->inertia('Admin/CmcPosts/Index', [
             'posts' => $this->cmcPostService->listAllPaginated(20)
                 ->through(fn (CmcPost $post) => $this->cmcPostService->toArray($post)),
+            'pinnedPosts' => $this->cmcPostService->listPinned()
+                ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
+                ->values(),
         ]);
     }
 
@@ -64,5 +67,26 @@ class CmcPostController extends BaseController
         $this->cmcPostService->delete($cmcPost);
 
         return $this->redirectBack(__('messages.post_deleted'), 'success');
+    }
+
+    public function togglePin(CmcPost $cmcPost): RedirectResponse
+    {
+        $this->cmcPostService->togglePin($cmcPost);
+
+        return $this->redirectBack();
+    }
+
+    public function moveUp(CmcPost $cmcPost): RedirectResponse
+    {
+        $this->cmcPostService->movePinUp($cmcPost);
+
+        return $this->redirectBack();
+    }
+
+    public function moveDown(CmcPost $cmcPost): RedirectResponse
+    {
+        $this->cmcPostService->movePinDown($cmcPost);
+
+        return $this->redirectBack();
     }
 }

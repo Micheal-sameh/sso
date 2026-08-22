@@ -76,6 +76,7 @@ use OpenApi\Attributes as OA;
             ],
         ),
         new OA\Property(property: 'created_at', type: 'string', example: '21 Aug 2026, 14:05'),
+        new OA\Property(property: 'is_pinned', type: 'boolean'),
     ],
 )]
 #[OA\Schema(

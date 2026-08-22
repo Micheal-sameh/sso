@@ -12,6 +12,7 @@ import type { CmcPost, PaginatedData } from '@/types'
 
 interface IndexProps {
     posts: PaginatedData<CmcPost>
+    pinnedPosts: CmcPost[]
 }
 
 interface PostForm {
@@ -22,7 +23,7 @@ interface PostForm {
 
 const emptyForm: PostForm = { text: '', url: '', image: null }
 
-export default function Index({ posts }: IndexProps) {
+export default function Index({ posts, pinnedPosts }: IndexProps) {
     const { t } = useTranslation(['admin', 'common'])
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [openUrl, setOpenUrl] = useState<string | null>(null)
@@ -98,6 +99,18 @@ export default function Index({ posts }: IndexProps) {
         if (await confirm(t('cmcPosts.confirmDelete'), { confirmLabel: t('common:actions.delete') })) {
             router.delete(`/admin/cmc-posts/${post.id}`)
         }
+    }
+
+    const togglePin = (post: CmcPost) => {
+        router.patch(`/admin/cmc-posts/${post.id}/toggle-pin`, {}, { preserveScroll: true })
+    }
+
+    const moveUp = (post: CmcPost) => {
+        router.patch(`/admin/cmc-posts/${post.id}/move-up`, {}, { preserveScroll: true })
+    }
+
+    const moveDown = (post: CmcPost) => {
+        router.patch(`/admin/cmc-posts/${post.id}/move-down`, {}, { preserveScroll: true })
     }
 
     return (
@@ -181,6 +194,71 @@ export default function Index({ posts }: IndexProps) {
                 </div>
 
                 <div className="col-lg-7">
+                    {pinnedPosts.length > 0 && (
+                        <div className="mb-4">
+                            <h5 className="mb-3">
+                                <i className="bi bi-pin-angle-fill me-2" />
+                                {t('cmcPosts.pinnedPosts')}
+                            </h5>
+                            <div className="ava-card">
+                                <ul className="list-group list-group-flush">
+                                    {pinnedPosts.map((post, index) => (
+                                        <li key={post.id} className="list-group-item p-3">
+                                            <div className="d-flex gap-3">
+                                                {post.image_url && (
+                                                    <img
+                                                        src={post.image_url}
+                                                        alt=""
+                                                        width={48}
+                                                        height={48}
+                                                        className="rounded object-fit-cover flex-shrink-0"
+                                                    />
+                                                )}
+                                                <div className="min-w-0 flex-grow-1">
+                                                    {post.text && <div className="mb-2 text-truncate-2">{post.text}</div>}
+                                                    <div className="text-ava-muted text-tiny mt-2">
+                                                        {post.creator
+                                                            ? t('cmcPosts.postedBy', { date: post.created_at, name: post.creator.name })
+                                                            : t('cmcPosts.posted', { date: post.created_at })}
+                                                    </div>
+                                                </div>
+                                                <div className="d-flex flex-column gap-2 align-items-stretch flex-shrink-0">
+                                                    <div className="d-flex gap-1">
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            onClick={() => moveUp(post)}
+                                                            disabled={index === 0}
+                                                            aria-label={t('cmcPosts.moveUp')}
+                                                        >
+                                                            <i className="bi bi-arrow-up" />
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            className="btn btn-sm btn-outline-primary"
+                                                            onClick={() => moveDown(post)}
+                                                            disabled={index === pinnedPosts.length - 1}
+                                                            aria-label={t('cmcPosts.moveDown')}
+                                                        >
+                                                            <i className="bi bi-arrow-down" />
+                                                        </button>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        className="btn btn-sm btn-outline-primary text-nowrap"
+                                                        onClick={() => togglePin(post)}
+                                                    >
+                                                        {t('cmcPosts.unpin')}
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+                    )}
+
                     <div className="d-flex align-items-center justify-content-between mb-3">
                         <h5 className="mb-0">{t('cmcPosts.publishedPosts')}</h5>
                         <a href="/cmc" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
@@ -222,6 +300,13 @@ export default function Index({ posts }: IndexProps) {
                                             </div>
                                         </div>
                                         <div className="d-flex flex-column gap-2 align-items-stretch">
+                                            <button
+                                                type="button"
+                                                className="btn btn-sm btn-outline-primary text-nowrap"
+                                                onClick={() => togglePin(post)}
+                                            >
+                                                {post.is_pinned ? t('cmcPosts.unpin') : t('cmcPosts.pin')}
+                                            </button>
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-outline-primary text-nowrap"

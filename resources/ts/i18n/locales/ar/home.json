@@ -13,6 +13,7 @@
     "seeAll": "عرض الكل",
     "postedBy": "بواسطة {{name}}",
     "noPostsYet": "لا توجد منشورات بعد.",
-    "pinnedVideos": "الفيديوهات المثبّتة"
+    "pinnedVideos": "الفيديوهات المثبّتة",
+    "pinnedPosts": "المنشورات المثبّتة"
   }
 }

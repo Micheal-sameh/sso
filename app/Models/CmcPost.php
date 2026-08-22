@@ -18,6 +18,13 @@ class CmcPost extends Model implements HasMedia
         'url_description',
         'url_image',
         'created_by',
+        'is_pinned',
+        'pin_order',
+    ];
+
+    protected $casts = [
+        'is_pinned' => 'boolean',
+        'pin_order' => 'integer',
     ];
 
     protected $appends = [

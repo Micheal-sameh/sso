@@ -18,6 +18,7 @@ interface YoutubeLive {
 interface IndexProps {
     coptic: CopticCalendar
     recentPosts: CmcPost[]
+    pinnedPosts: CmcPost[]
     youtubeLive: YoutubeLive | null
     pinnedVideos: YoutubeVideo[]
 }
@@ -27,7 +28,7 @@ interface IndexProps {
 // webhook push is missed, so it can stay slow.
 const LIVE_STATUS_POLL_INTERVAL_MS = 5 * 60_000
 
-export default function Index({ coptic, recentPosts, youtubeLive: initialYoutubeLive, pinnedVideos }: IndexProps) {
+export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: initialYoutubeLive, pinnedVideos }: IndexProps) {
     const { t, i18n } = useTranslation('home')
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
@@ -174,6 +175,47 @@ export default function Index({ coptic, recentPosts, youtubeLive: initialYoutube
                             </a>
                         ))}
                     </div>
+                </div>
+            )}
+
+            {pinnedPosts.length > 0 && (
+                <div className="ava-card mb-3">
+                    <div className="p-3 pb-0">
+                        <h5 className="mb-0">
+                            <i className="bi bi-pin-angle-fill me-2" />
+                            {t('home.pinnedPosts')}
+                        </h5>
+                    </div>
+                    <ul className="list-group list-group-flush">
+                        {pinnedPosts.map((post) => (
+                            <li key={post.id} className="list-group-item p-3">
+                                <div className="d-flex gap-3">
+                                    {post.image_url && (
+                                        <Link href={`/cmc/${post.id}`}>
+                                            <img
+                                                src={post.image_url}
+                                                alt=""
+                                                width={64}
+                                                height={64}
+                                                className="rounded object-fit-cover flex-shrink-0"
+                                            />
+                                        </Link>
+                                    )}
+                                    <div className="min-w-0 flex-grow-1">
+                                        {post.text && (
+                                            <Link href={`/cmc/${post.id}`} className="text-reset text-decoration-none">
+                                                <div className="text-truncate-2 mb-2">{post.text}</div>
+                                            </Link>
+                                        )}
+                                        <div className="text-ava-muted text-tiny mt-2">
+                                            {post.created_at}
+                                            {post.creator && ` · ${t('home.postedBy', { name: post.creator.name })}`}
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             )}
 

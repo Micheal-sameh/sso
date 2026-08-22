@@ -31,6 +31,7 @@ class HomeController extends BaseController
             new OA\Response(response: 200, description: 'OK', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'coptic', ref: '#/components/schemas/CopticDate'),
                 new OA\Property(property: 'recent_posts', type: 'array', items: new OA\Items(ref: '#/components/schemas/CmcPost')),
+                new OA\Property(property: 'pinned_posts', type: 'array', items: new OA\Items(ref: '#/components/schemas/CmcPost')),
                 new OA\Property(property: 'pinned_videos', type: 'array', items: new OA\Items(ref: '#/components/schemas/YoutubeVideo')),
             ])),
         ],
@@ -40,6 +41,9 @@ class HomeController extends BaseController
         return response()->json([
             'coptic' => $this->copticCalendarService->today(),
             'recent_posts' => $this->cmcPostService->listRecent(5)
+                ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
+                ->values(),
+            'pinned_posts' => $this->cmcPostService->listPinned()
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
             'youtube_live' => $this->youtubeLiveStatusService->current(),
