@@ -18,9 +18,33 @@ class YoutubeVideoRepository implements YoutubeVideoRepositoryContract
 
     public function pinned(): Collection
     {
+        $this->backfillMissingPinOrders();
+
         return YoutubeVideo::where('is_pinned', true)
             ->orderBy('pin_order')
             ->get();
+    }
+
+    /**
+     * Pinned rows should always carry a pin_order, but can end up without
+     * one (e.g. rows pinned before the column existed). NULL sorts first in
+     * MySQL, which stranded such a row at the top of the list with its "up"
+     * button permanently disabled. Assign it the next order instead of
+     * leaving it in limbo.
+     */
+    private function backfillMissingPinOrders(): void
+    {
+        $missing = YoutubeVideo::where('is_pinned', true)->whereNull('pin_order')->get();
+
+        if ($missing->isEmpty()) {
+            return;
+        }
+
+        $next = (int) (YoutubeVideo::where('is_pinned', true)->max('pin_order')) + 1;
+
+        foreach ($missing as $video) {
+            $video->update(['pin_order' => $next++]);
+        }
     }
 
     public function togglePin(YoutubeVideo $youtubeVideo): YoutubeVideo
@@ -47,7 +71,14 @@ class YoutubeVideoRepository implements YoutubeVideoRepositoryContract
             return;
         }
 
+        if ($youtubeVideo->pin_order === null) {
+            $nextOrder = (int) (YoutubeVideo::where('is_pinned', true)->max('pin_order')) + 1;
+            $youtubeVideo->update(['pin_order' => $nextOrder]);
+        }
+
         $neighbor = YoutubeVideo::where('is_pinned', true)
+            ->whereNotNull('pin_order')
+            ->where('id', '!=', $youtubeVideo->id)
             ->where('pin_order', $direction === 'up' ? '<' : '>', $youtubeVideo->pin_order)
             ->orderBy('pin_order', $direction === 'up' ? 'desc' : 'asc')
             ->first();
