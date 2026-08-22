@@ -72,6 +72,39 @@ export default function Index({ coptic, recentPosts, youtubeLive: initialYoutube
 
             <h3 className="mb-4">{t('home.welcome', { name: auth.user?.name })}</h3>
 
+            <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                <h5 className="mb-2">
+                    <i className="bi bi-calendar-event me-2" />
+                    {t('home.copticDate')}
+                </h5>
+                <p className="mb-0">{coptic.date ?? t('home.copticDateUnavailable')}</p>
+            </div>
+
+            <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+                <h5 className="mb-2">{t('home.synaxariumToday')}</h5>
+                {coptic.commemorations.length > 0 ? (
+                    <ul className={`mb-0 ${i18n.language === 'ar' ? 'pe-3' : 'ps-3'}`}>
+                        {coptic.commemorations.map((commemoration, index) => (
+                            <li key={index} className="mb-1">
+                                {commemoration.url ? (
+                                    <button
+                                        type="button"
+                                        className="btn btn-link p-0 align-baseline"
+                                        onClick={() => setOpenUrl(commemoration.url)}
+                                    >
+                                        {commemoration.name}
+                                    </button>
+                                ) : (
+                                    commemoration.name
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-ava-muted mb-0">{t('home.noCommemorationToday')}</p>
+                )}
+            </div>
+
             {youtubeLive?.status === 'live' && (
                 <div className="ava-card mb-3 overflow-hidden">
                     <div className="ratio ratio-16x9">
@@ -143,39 +176,6 @@ export default function Index({ coptic, recentPosts, youtubeLive: initialYoutube
                     </div>
                 </div>
             )}
-
-            <div className="ava-card p-3 mb-3" dir="rtl">
-                <h5 className="mb-2">
-                    <i className="bi bi-calendar-event me-2" />
-                    {t('home.copticDate')}
-                </h5>
-                <p className="mb-0">{coptic.date ?? t('home.copticDateUnavailable')}</p>
-            </div>
-
-            <div className="ava-card p-3 mb-3" dir="rtl">
-                <h5 className="mb-2">{t('home.synaxariumToday')}</h5>
-                {coptic.commemorations.length > 0 ? (
-                    <ul className="mb-0 pe-3">
-                        {coptic.commemorations.map((commemoration, index) => (
-                            <li key={index} className="mb-1">
-                                {commemoration.url ? (
-                                    <button
-                                        type="button"
-                                        className="btn btn-link p-0 align-baseline"
-                                        onClick={() => setOpenUrl(commemoration.url)}
-                                    >
-                                        {commemoration.name}
-                                    </button>
-                                ) : (
-                                    commemoration.name
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-ava-muted mb-0">{t('home.noCommemorationToday')}</p>
-                )}
-            </div>
 
             <div className="ava-card">
                 <div className="d-flex justify-content-between align-items-center p-3 pb-0">
