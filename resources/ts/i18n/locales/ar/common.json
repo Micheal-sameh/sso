@@ -17,7 +17,11 @@
     "groups": "المجموعات",
     "oauthClients": "تطبيقات OAuth",
     "tokens": "الرموز",
-    "backToAccount": "العودة إلى الحساب"
+    "backToAccount": "العودة إلى الحساب",
+    "donations": "التبرعات",
+    "funds": "الصناديق",
+    "donate": "تبرع",
+    "myDonations": "تبرعاتي"
   },
   "topbar": {
     "openMenu": "فتح القائمة",

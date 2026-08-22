@@ -7,6 +7,7 @@ import enHome from './locales/en/home.json'
 import enAccount from './locales/en/account.json'
 import enAdmin from './locales/en/admin.json'
 import enCmcPost from './locales/en/cmcPost.json'
+import enDonations from './locales/en/donations.json'
 import enOauth from './locales/en/oauth.json'
 import enErrors from './locales/en/errors.json'
 
@@ -16,6 +17,7 @@ import arHome from './locales/ar/home.json'
 import arAccount from './locales/ar/account.json'
 import arAdmin from './locales/ar/admin.json'
 import arCmcPost from './locales/ar/cmcPost.json'
+import arDonations from './locales/ar/donations.json'
 import arOauth from './locales/ar/oauth.json'
 import arErrors from './locales/ar/errors.json'
 
@@ -25,7 +27,7 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'oauth', 'errors'],
+    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'donations', 'oauth', 'errors'],
     resources: {
         en: {
             common: enCommon,
@@ -34,6 +36,7 @@ i18n.use(initReactI18next).init({
             account: enAccount,
             admin: enAdmin,
             cmcPost: enCmcPost,
+            donations: enDonations,
             oauth: enOauth,
             errors: enErrors,
         },
@@ -44,6 +47,7 @@ i18n.use(initReactI18next).init({
             account: arAccount,
             admin: arAdmin,
             cmcPost: arCmcPost,
+            donations: arDonations,
             oauth: arOauth,
             errors: arErrors,
         },

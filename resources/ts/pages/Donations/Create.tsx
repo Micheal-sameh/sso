@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import type { DonationGateway, Fund } from '@/types'
 
@@ -15,13 +16,10 @@ interface DonationForm {
 }
 
 const QUICK_AMOUNTS = [100, 250, 500, 1000]
-
-const GATEWAYS: { value: DonationGateway; label: string; description: string }[] = [
-    { value: 'nbe', label: 'National Bank of Egypt', description: 'Pay via NBE’s secure payment page.' },
-    { value: 'cib', label: 'CIB', description: 'Pay via CIB’s secure payment page.' },
-]
+const GATEWAY_VALUES: DonationGateway[] = ['nbe', 'cib']
 
 export default function Create({ funds }: CreateProps) {
+    const { t } = useTranslation('donations')
     const form = useForm<DonationForm>({
         fund_id: funds[0] ? String(funds[0].id) : '',
         amount: '',
@@ -35,16 +33,15 @@ export default function Create({ funds }: CreateProps) {
     }
 
     return (
-        <AppLayout title="Donate">
+        <AppLayout title={t('create.title')}>
             <div className="ava-card p-3 p-md-4" style={{ maxWidth: 520 }}>
                 <p className="text-ava-muted mb-4">
-                    Support the church online. Payments are processed securely through your chosen bank’s payment
-                    page — we never see or store your card or account details.
+                    {t('create.intro')}
                 </p>
 
                 <form onSubmit={submit}>
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="fund_id">Give to</label>
+                        <label className="form-label" htmlFor="fund_id">{t('create.giveTo')}</label>
                         <select
                             id="fund_id"
                             className="form-select"
@@ -59,7 +56,7 @@ export default function Create({ funds }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="amount">Amount (EGP)</label>
+                        <label className="form-label" htmlFor="amount">{t('create.amountEgp')}</label>
                         <div className="d-flex gap-2 mb-2 flex-wrap">
                             {QUICK_AMOUNTS.map((amount) => (
                                 <button
@@ -78,7 +75,7 @@ export default function Create({ funds }: CreateProps) {
                             min={10}
                             step="0.01"
                             className="form-control"
-                            placeholder="Other amount"
+                            placeholder={t('create.otherAmount')}
                             value={form.data.amount}
                             onChange={(e) => form.setData('amount', e.target.value)}
                         />
@@ -86,20 +83,20 @@ export default function Create({ funds }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label">Pay via</label>
-                        {GATEWAYS.map((gateway) => (
-                            <div key={gateway.value} className="form-check mb-2">
+                        <label className="form-label">{t('create.payVia')}</label>
+                        {GATEWAY_VALUES.map((gateway) => (
+                            <div key={gateway} className="form-check mb-2">
                                 <input
-                                    id={`gateway-${gateway.value}`}
+                                    id={`gateway-${gateway}`}
                                     type="radio"
                                     className="form-check-input"
                                     name="gateway"
-                                    checked={form.data.gateway === gateway.value}
-                                    onChange={() => form.setData('gateway', gateway.value)}
+                                    checked={form.data.gateway === gateway}
+                                    onChange={() => form.setData('gateway', gateway)}
                                 />
-                                <label className="form-check-label" htmlFor={`gateway-${gateway.value}`}>
-                                    <span className="fw-semibold">{gateway.label}</span>
-                                    <div className="text-ava-muted text-tiny">{gateway.description}</div>
+                                <label className="form-check-label" htmlFor={`gateway-${gateway}`}>
+                                    <span className="fw-semibold">{t(`gateways.${gateway}.label`)}</span>
+                                    <div className="text-ava-muted text-tiny">{t(`gateways.${gateway}.description`)}</div>
                                 </label>
                             </div>
                         ))}
@@ -115,12 +112,12 @@ export default function Create({ funds }: CreateProps) {
                             onChange={(e) => form.setData('is_recurring', e.target.checked)}
                         />
                         <label className="form-check-label" htmlFor="is_recurring">
-                            Make this a monthly recurring donation
+                            {t('create.makeRecurring')}
                         </label>
                     </div>
 
                     <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
-                        {form.processing ? 'Redirecting…' : 'Donate Now'}
+                        {form.processing ? t('create.redirecting') : t('create.donateNow')}
                     </button>
                 </form>
             </div>

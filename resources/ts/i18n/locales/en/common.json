@@ -17,7 +17,11 @@
     "groups": "Groups",
     "oauthClients": "OAuth Clients",
     "tokens": "Tokens",
-    "backToAccount": "Back to Account"
+    "backToAccount": "Back to Account",
+    "donations": "Donations",
+    "funds": "Funds",
+    "donate": "Donate",
+    "myDonations": "My Donations"
   },
   "topbar": {
     "openMenu": "Open menu",

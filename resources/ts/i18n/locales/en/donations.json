@@ -1,0 +1,116 @@
+{
+  "gateways": {
+    "nbe": {
+      "label": "National Bank of Egypt",
+      "description": "Pay via NBE’s secure payment page."
+    },
+    "cib": {
+      "label": "CIB",
+      "description": "Pay via CIB’s secure payment page."
+    }
+  },
+  "status": {
+    "pending": "Pending",
+    "paid": "Paid",
+    "failed": "Failed",
+    "cancelled": "Cancelled",
+    "refunded": "Refunded"
+  },
+  "create": {
+    "title": "Donate",
+    "intro": "Support the church online. Payments are processed securely through your chosen bank’s payment page — we never see or store your card or account details.",
+    "giveTo": "Give to",
+    "amountEgp": "Amount (EGP)",
+    "otherAmount": "Other amount",
+    "payVia": "Pay via",
+    "makeRecurring": "Make this a monthly recurring donation",
+    "redirecting": "Redirecting…",
+    "donateNow": "Donate Now"
+  },
+  "history": {
+    "title": "My Donations",
+    "table": {
+      "date": "Date",
+      "fund": "Fund",
+      "amount": "Amount",
+      "gateway": "Gateway",
+      "status": "Status"
+    },
+    "monthly": "Monthly",
+    "empty": "No donations yet."
+  },
+  "return": {
+    "title": "Donation Status",
+    "thankYou": "Thank you for your generosity!",
+    "notCompleted": "Payment Not Completed",
+    "successMessage": "Your donation of {{amount}} {{currency}} to {{fund}} was received.",
+    "failureMessage": "This payment was not completed. No amount was charged. You can try again from the donate page.",
+    "viewHistory": "View History",
+    "donateAgain": "Donate Again",
+    "tryAgain": "Try Again"
+  },
+  "sandbox": {
+    "sandboxMode": "Sandbox mode",
+    "sandboxNotice": "— this stands in for {{gateway}}’s real payment page while bank merchant onboarding is pending. No real money moves here.",
+    "securePaymentSimulated": "Secure Payment (Simulated)",
+    "fund": "Fund",
+    "amount": "Amount",
+    "payNow": "Pay Now",
+    "simulateFailedPayment": "Simulate Failed Payment"
+  },
+  "admin": {
+    "index": {
+      "title": "Donations",
+      "exportCsv": "Export CSV",
+      "totalReceived": "Total Received",
+      "thisMonth": "This Month",
+      "thisYear": "This Year",
+      "filters": {
+        "status": "Status",
+        "all": "All",
+        "fund": "Fund",
+        "gateway": "Gateway",
+        "from": "From",
+        "to": "To",
+        "filter": "Filter"
+      },
+      "table": {
+        "date": "Date",
+        "donor": "Donor",
+        "fund": "Fund",
+        "amount": "Amount",
+        "gateway": "Gateway",
+        "status": "Status"
+      },
+      "monthly": "Monthly",
+      "empty": "No donations found."
+    }
+  },
+  "funds": {
+    "title": "Funds",
+    "addFund": "Add Fund",
+    "description": "Funds are the donation designations donors can give to (e.g. General Offering, Building Fund). Only active funds appear on the donate page.",
+    "table": {
+      "name": "Name",
+      "description": "Description",
+      "donations": "Donations",
+      "status": "Status"
+    },
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "empty": "No funds yet.",
+    "modal": {
+      "editTitle": "Edit {{name}}",
+      "createTitle": "Add Fund",
+      "name": "Name",
+      "namePlaceholder": "e.g. Building Fund",
+      "description": "Description",
+      "activeHelp": "Active (visible on the donate page)"
+    },
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "confirmDelete": "Delete the \"{{name}}\" fund?"
+  }
+}

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import Pagination from '@/components/shared/Pagination'
 import type { Donation, DonationStatus, PaginatedData } from '@/types'
@@ -15,18 +16,20 @@ const STATUS_BADGES: Record<DonationStatus, string> = {
 }
 
 export default function History({ donations }: HistoryProps) {
+    const { t } = useTranslation('donations')
+
     return (
-        <AppLayout title="My Donations">
+        <AppLayout title={t('history.title')}>
             <div className="ava-card">
                 <div className="table-responsive">
                     <table className="table mb-0">
                         <thead>
                             <tr>
-                                <th>Date</th>
-                                <th>Fund</th>
-                                <th>Amount</th>
-                                <th>Gateway</th>
-                                <th>Status</th>
+                                <th>{t('history.table.date')}</th>
+                                <th>{t('history.table.fund')}</th>
+                                <th>{t('history.table.amount')}</th>
+                                <th>{t('history.table.gateway')}</th>
+                                <th>{t('history.table.status')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -35,17 +38,17 @@ export default function History({ donations }: HistoryProps) {
                                     <td className="text-ava-muted">{donation.created_at}</td>
                                     <td>
                                         {donation.fund?.name}
-                                        {donation.is_recurring && <span className="badge bg-light text-dark ms-2">Monthly</span>}
+                                        {donation.is_recurring && <span className="badge bg-light text-dark ms-2">{t('history.monthly')}</span>}
                                     </td>
                                     <td className="fw-semibold">{donation.amount.toFixed(2)} {donation.currency}</td>
                                     <td className="text-uppercase text-ava-muted">{donation.gateway}</td>
-                                    <td><span className={`badge ${STATUS_BADGES[donation.status]}`}>{donation.status}</span></td>
+                                    <td><span className={`badge ${STATUS_BADGES[donation.status]}`}>{t(`status.${donation.status}`)}</span></td>
                                 </tr>
                             ))}
                             {donations.data.length === 0 && (
                                 <tr>
                                     <td colSpan={5} className="text-center text-ava-muted py-4">
-                                        No donations yet.
+                                        {t('history.empty')}
                                     </td>
                                 </tr>
                             )}
