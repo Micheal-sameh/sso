@@ -216,6 +216,17 @@ export default function Index({ posts, pinnedPosts }: IndexProps) {
                                                 )}
                                                 <div className="min-w-0 flex-grow-1">
                                                     {post.text && <div className="mb-2 text-truncate-2">{post.text}</div>}
+                                                    {post.url && (
+                                                        <div style={{ maxWidth: 360 }}>
+                                                            <LinkPreviewCard
+                                                                url={post.url}
+                                                                title={post.url_title}
+                                                                description={post.url_description}
+                                                                image={post.url_image}
+                                                                onOpen={setOpenUrl}
+                                                            />
+                                                        </div>
+                                                    )}
                                                     <div className="text-ava-muted text-tiny mt-2">
                                                         {post.creator
                                                             ? t('cmcPosts.postedBy', { date: post.created_at, name: post.creator.name })
