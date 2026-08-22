@@ -56,6 +56,7 @@ return [
     'youtube' => [
         'channel_id' => env('YOUTUBE_CHANNEL_ID'),
         'webhook_secret' => env('YOUTUBE_WEBHOOK_SECRET'),
+        'api_key' => env('YOUTUBE_API_KEY'),
     ],
 
 ];

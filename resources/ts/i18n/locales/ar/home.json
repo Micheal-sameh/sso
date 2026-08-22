@@ -2,6 +2,8 @@
   "home": {
     "welcome": "أهلاً، {{name}}",
     "watchLive": "شاهد البث المباشر على يوتيوب",
+    "liveNow": "بث مباشر الآن",
+    "upcomingLive": "بث مباشر قادم",
     "happyBirthday": "عيد ميلاد سعيد يا {{name}}!",
     "copticDate": "التاريخ القبطي",
     "copticDateUnavailable": "غير متاح حالياً.",

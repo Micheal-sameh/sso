@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\CheckYoutubeLiveStatusJob;
 use App\Jobs\CreateCmcPostFromYoutubeJob;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -58,6 +59,7 @@ class YoutubeWebhookController extends Controller
             }
 
             CreateCmcPostFromYoutubeJob::dispatch($videoId, $title, $publishedAt);
+            CheckYoutubeLiveStatusJob::dispatch($videoId);
         }
 
         return response('', 200);

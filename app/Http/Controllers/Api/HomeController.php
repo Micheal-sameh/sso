@@ -6,6 +6,7 @@ use App\Http\Controllers\BaseController;
 use App\Models\CmcPost;
 use App\Services\CmcPostService;
 use App\Services\CopticCalendarService;
+use App\Services\YoutubeLiveStatusService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -15,6 +16,7 @@ class HomeController extends BaseController
     public function __construct(
         protected CmcPostService $cmcPostService,
         protected CopticCalendarService $copticCalendarService,
+        protected YoutubeLiveStatusService $youtubeLiveStatusService,
     ) {}
 
     #[OA\Get(
@@ -36,6 +38,7 @@ class HomeController extends BaseController
             'recent_posts' => $this->cmcPostService->listRecent(5)
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
+            'youtube_live' => $this->youtubeLiveStatusService->current(),
         ]);
     }
 }

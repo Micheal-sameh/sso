@@ -6,6 +6,7 @@ use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\CmcPost;
 use App\Services\CmcPostService;
 use App\Services\CopticCalendarService;
+use App\Services\YoutubeLiveStatusService;
 use Inertia\Response;
 
 class HomeController extends BaseController
@@ -15,18 +16,17 @@ class HomeController extends BaseController
     public function __construct(
         protected CmcPostService $cmcPostService,
         protected CopticCalendarService $copticCalendarService,
+        protected YoutubeLiveStatusService $youtubeLiveStatusService,
     ) {}
 
     public function index(): Response
     {
-        $youtubeChannelId = config('services.youtube.channel_id');
-
         return $this->inertia('Home/Index', [
             'coptic' => $this->copticCalendarService->today(),
             'recentPosts' => $this->cmcPostService->listRecent(5)
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
-            'youtubeLiveUrl' => $youtubeChannelId ? "https://www.youtube.com/channel/{$youtubeChannelId}/live" : null,
+            'youtubeLive' => $this->youtubeLiveStatusService->current(),
         ]);
     }
 }

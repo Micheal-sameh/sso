@@ -1,22 +1,64 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
+import echo from '@/lib/echo'
 import { isBirthdayToday } from '@/lib/date'
 import type { CmcPost, CopticCalendar, SharedProps } from '@/types'
+
+interface YoutubeLive {
+    status: 'live' | 'upcoming'
+    video_id: string
+    title: string | null
+    thumbnail_url: string | null
+    scheduled_start_time: string | null
+}
 
 interface IndexProps {
     coptic: CopticCalendar
     recentPosts: CmcPost[]
-    youtubeLiveUrl: string | null
+    youtubeLive: YoutubeLive | null
 }
 
-export default function Index({ coptic, recentPosts, youtubeLiveUrl }: IndexProps) {
-    const { t } = useTranslation('home')
+// The YouTube webhook pushes status changes over Reverb instantly (see
+// CheckYoutubeLiveStatusJob); this poll only exists as a fallback in case a
+// webhook push is missed, so it can stay slow.
+const LIVE_STATUS_POLL_INTERVAL_MS = 5 * 60_000
+
+export default function Index({ coptic, recentPosts, youtubeLive: initialYoutubeLive }: IndexProps) {
+    const { t, i18n } = useTranslation('home')
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
+    const [youtubeLive, setYoutubeLive] = useState(initialYoutubeLive)
     const isBirthday = isBirthdayToday(auth.user?.date_of_birth)
+
+    useEffect(() => {
+        const channel = echo.channel('youtube-live')
+        channel.listen('.status.updated', ({ status }: { status: YoutubeLive | null }) => {
+            setYoutubeLive(status)
+        })
+
+        return () => echo.leaveChannel('youtube-live')
+    }, [])
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            fetch('/youtube/live-status', {
+                headers: { Accept: 'application/json' },
+                credentials: 'same-origin',
+            })
+                .then((response) => (response.ok ? response.json() : null))
+                .then((data) => {
+                    if (data && 'youtubeLive' in data) {
+                        setYoutubeLive(data.youtubeLive)
+                    }
+                })
+                .catch(() => undefined)
+        }, LIVE_STATUS_POLL_INTERVAL_MS)
+
+        return () => clearInterval(interval)
+    }, [])
 
     return (
         <AppLayout>
@@ -29,16 +71,44 @@ export default function Index({ coptic, recentPosts, youtubeLiveUrl }: IndexProp
 
             <h3 className="mb-4">{t('home.welcome', { name: auth.user?.name })}</h3>
 
-            {youtubeLiveUrl && (
-                <a
-                    href={youtubeLiveUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-danger w-100 mb-3 d-flex align-items-center justify-content-center gap-2"
-                >
-                    <i className="bi bi-youtube fs-5" />
-                    {t('home.watchLive')}
-                </a>
+            {youtubeLive?.status === 'live' && (
+                <div className="ava-card mb-3 overflow-hidden">
+                    <div className="ratio ratio-16x9">
+                        <iframe
+                            src={`https://www.youtube.com/embed/${youtubeLive.video_id}?autoplay=1`}
+                            title={youtubeLive.title ?? t('home.watchLive')}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        />
+                    </div>
+                    <div className="p-3 d-flex align-items-center gap-2">
+                        <span className="badge bg-danger d-flex align-items-center gap-1">
+                            <i className="bi bi-broadcast" />
+                            {t('home.liveNow')}
+                        </span>
+                        {youtubeLive.title && <span className="fw-semibold text-truncate">{youtubeLive.title}</span>}
+                    </div>
+                </div>
+            )}
+
+            {youtubeLive?.status === 'upcoming' && (
+                <div className="ava-card mb-3 overflow-hidden">
+                    {youtubeLive.thumbnail_url && (
+                        <img src={youtubeLive.thumbnail_url} alt="" className="w-100 object-fit-cover" style={{ maxHeight: 200 }} />
+                    )}
+                    <div className="p-3">
+                        <span className="badge bg-secondary d-flex align-items-center gap-1 mb-2" style={{ width: 'fit-content' }}>
+                            <i className="bi bi-clock-history" />
+                            {t('home.upcomingLive')}
+                        </span>
+                        {youtubeLive.title && <div className="fw-semibold mb-1 text-truncate-2">{youtubeLive.title}</div>}
+                        {youtubeLive.scheduled_start_time && (
+                            <div className="text-ava-muted text-tiny">
+                                {new Date(youtubeLive.scheduled_start_time).toLocaleString(i18n.language)}
+                            </div>
+                        )}
+                    </div>
+                </div>
             )}
 
             <div className="ava-card p-3 mb-3" dir="rtl">

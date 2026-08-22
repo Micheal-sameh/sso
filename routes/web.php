@@ -25,6 +25,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OAuth\AuthorizationController;
+use App\Http\Controllers\YoutubeLiveStatusController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -85,6 +86,7 @@ Route::middleware('auth')->group(function () {
             ->name('notifications.read');
 
         Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+        Route::middleware('throttle')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
         Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
