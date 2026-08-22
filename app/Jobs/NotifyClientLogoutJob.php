@@ -24,9 +24,13 @@ class NotifyClientLogoutJob implements ShouldQueue
 
     public array $backoff = [10, 60, 300];
 
+    /**
+     * @param  string  $sub  the OIDC "sub" claim (this SSO's user uuid) — the same
+     *                       value client apps store as their local "avarewase_sub" key
+     */
     public function __construct(
         protected string $clientId,
-        protected int $userId,
+        protected string $sub,
         protected string $logoutUri,
         protected string $logoutSecret,
     ) {}
@@ -36,7 +40,7 @@ class NotifyClientLogoutJob implements ShouldQueue
         $payload = [
             'event' => 'user.access_revoked',
             'client_id' => $this->clientId,
-            'user_id' => $this->userId,
+            'sub' => $this->sub,
             'revoked_at' => now()->toIso8601String(),
             'nonce' => Str::random(16),
         ];
@@ -57,7 +61,7 @@ class NotifyClientLogoutJob implements ShouldQueue
     {
         Log::warning('Back-channel logout notification failed permanently', [
             'client_id' => $this->clientId,
-            'user_id' => $this->userId,
+            'sub' => $this->sub,
             'logout_uri' => $this->logoutUri,
             'error' => $exception->getMessage(),
         ]);

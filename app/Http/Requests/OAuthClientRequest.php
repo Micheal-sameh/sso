@@ -22,7 +22,17 @@ class OAuthClientRequest extends FormRequest
             // "scheme://..." URI instead, in addition to normal http(s) URLs.
             'redirect' => ['required', 'string', 'max:2048', 'regex:/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/'],
             'homepage_url' => ['nullable', 'url'],
-            'logout_uri' => ['nullable', 'url'],
+            // https-only: this URL receives a signed webhook carrying a
+            // user's OIDC sub over plain HTTP would let it be tampered
+            // with in transit. localhost/127.0.0.1 are exempted so local
+            // development against a client app running without TLS still works.
+            'logout_uri' => ['nullable', 'url', function ($attribute, $value, $fail) {
+                $host = parse_url($value, PHP_URL_HOST);
+
+                if (! str_starts_with($value, 'https://') && ! in_array($host, ['localhost', '127.0.0.1'], true)) {
+                    $fail('The logout webhook URL must use https://.');
+                }
+            }],
             'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
             'is_internal' => ['boolean'],
             'is_public_client' => ['boolean'],

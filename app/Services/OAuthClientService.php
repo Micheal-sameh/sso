@@ -8,6 +8,7 @@ use App\Enums\ClientGrantType;
 use App\Jobs\NotifyClientLogoutJob;
 use App\Models\ClientMeta;
 use App\Models\Token;
+use App\Models\User;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -181,7 +182,14 @@ class OAuthClientService
         $this->tokenRepository->revokeAllForUserAndClient($userId, $clientId);
 
         if ($meta->logout_uri !== null && $meta->logout_secret !== null) {
-            NotifyClientLogoutJob::dispatch($clientId, $userId, $meta->logout_uri, $meta->logout_secret);
+            // Client apps key their local users by the OIDC "sub" claim
+            // (this SSO's uuid, see UserDTO::toOidcArray()), not our
+            // internal integer id — send that, not $userId.
+            $sub = User::where('id', $userId)->value('uuid');
+
+            if ($sub !== null) {
+                NotifyClientLogoutJob::dispatch($clientId, $sub, $meta->logout_uri, $meta->logout_secret);
+            }
         }
     }
 }
