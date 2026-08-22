@@ -86,7 +86,47 @@ https://your-domain.com/api/donations/callback/cib
 https://your-domain.com/donations/return
 ```
 
-## 3. Apple Pay
+## 3. Re-enabling recurring donations in the UI
+
+The "Make this a monthly recurring donation" checkbox is currently **hidden**
+from `resources/ts/pages/Donations/Create.tsx` — `chargeToken()` is still a
+stub in both `NbeDonationGateway` and `CibDonationGateway` (see §1's note on
+tokenization), so a donor could previously opt into a recurring plan whose
+monthly recharge would silently fail forever. The plan/recharge backend
+(`DonationService::processRecurringPlans`, the `donations:process-recurring`
+scheduled command, `DonationPlan` model) was left in place — only the form
+control was removed.
+
+Once at least one bank's `chargeToken()` is actually implemented (per §1/§2
+above), re-enable it:
+
+1. In `resources/ts/pages/Donations/Create.tsx`:
+   - Add `is_recurring: boolean` back to the `DonationForm` interface.
+   - Add `is_recurring: false` back to the `useForm<DonationForm>({...})` initial data.
+   - Restore the checkbox block before the submit button:
+     ```tsx
+     <div className="form-check mb-4">
+         <input
+             id="is_recurring"
+             type="checkbox"
+             className="form-check-input"
+             checked={form.data.is_recurring}
+             onChange={(e) => form.setData('is_recurring', e.target.checked)}
+         />
+         <label className="form-check-label" htmlFor="is_recurring">
+             {t('create.makeRecurring')}
+         </label>
+     </div>
+     ```
+   - Change the submit button's `className` back from `"btn btn-primary w-100 mt-4"` to `"btn btn-primary w-100"`.
+2. No backend changes needed — `DonationRequest`, `DonationDTO`, and
+   `DonationService::createDonation` already handle `is_recurring` end to
+   end; the field was only removed from the form, not the API.
+3. If only one bank supports tokenization, consider gating the checkbox to
+   only show when the selected gateway is that bank, rather than a blanket
+   enable for both.
+
+## 4. Apple Pay
 
 Apple Pay is a wallet UI layered on top of a payment processor, not a
 processor itself. Whether donors can use it depends on whether NBE/CIB's

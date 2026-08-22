@@ -12,7 +12,6 @@ interface DonationForm {
     fund_id: string
     amount: string
     gateway: DonationGateway
-    is_recurring: boolean
 }
 
 const QUICK_AMOUNTS = [100, 250, 500, 1000]
@@ -24,7 +23,6 @@ export default function Create({ funds }: CreateProps) {
         fund_id: funds[0] ? String(funds[0].id) : '',
         amount: '',
         gateway: 'nbe',
-        is_recurring: false,
     })
 
     const submit = (e: FormEvent) => {
@@ -103,20 +101,7 @@ export default function Create({ funds }: CreateProps) {
                         {form.errors.gateway && <div className="text-danger small mt-1">{form.errors.gateway}</div>}
                     </div>
 
-                    <div className="form-check mb-4">
-                        <input
-                            id="is_recurring"
-                            type="checkbox"
-                            className="form-check-input"
-                            checked={form.data.is_recurring}
-                            onChange={(e) => form.setData('is_recurring', e.target.checked)}
-                        />
-                        <label className="form-check-label" htmlFor="is_recurring">
-                            {t('create.makeRecurring')}
-                        </label>
-                    </div>
-
-                    <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
+                    <button type="submit" className="btn btn-primary w-100 mt-4" disabled={form.processing}>
                         {form.processing ? t('create.redirecting') : t('create.donateNow')}
                     </button>
                 </form>
