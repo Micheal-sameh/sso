@@ -271,6 +271,17 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                             <div className="text-truncate-2 mb-2">{post.text}</div>
                                         </Link>
                                     )}
+                                    {post.url && (
+                                        <div style={{ maxWidth: 360 }}>
+                                            <LinkPreviewCard
+                                                url={post.url}
+                                                title={post.url_title}
+                                                description={post.url_description}
+                                                image={post.url_image}
+                                                onOpen={setOpenUrl}
+                                            />
+                                        </div>
+                                    )}
                                     <div className="text-ava-muted text-tiny mt-2">
                                         {post.created_at}
                                         {post.creator && ` · ${t('home.postedBy', { name: post.creator.name })}`}
