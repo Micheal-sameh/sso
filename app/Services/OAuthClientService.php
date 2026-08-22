@@ -181,15 +181,31 @@ class OAuthClientService
 
         $this->tokenRepository->revokeAllForUserAndClient($userId, $clientId);
 
-        if ($meta->logout_uri !== null && $meta->logout_secret !== null) {
-            // Client apps key their local users by the OIDC "sub" claim
-            // (this SSO's uuid, see UserDTO::toOidcArray()), not our
-            // internal integer id — send that, not $userId.
-            $sub = User::where('id', $userId)->value('uuid');
+        $this->notifyClientLogout($clientId, $userId);
+    }
 
-            if ($sub !== null) {
-                NotifyClientLogoutJob::dispatch($clientId, $sub, $meta->logout_uri, $meta->logout_secret);
-            }
+    /**
+     * Push a back-channel logout notification to a client app for a given
+     * user, if that client has a logout webhook configured. Called after
+     * revoking access (revokeUserAccess above) as well as after revoking an
+     * individual token (see Admin\TokenController, Account\ConnectedAppsController,
+     * Api\ConnectedAppsController) — any of those should end that user's
+     * session on the client, not just mark the token revoked in this DB.
+     */
+    public function notifyClientLogout(string $clientId, int $userId): void
+    {
+        $meta = $this->clientMetaRepository->findByClientId($clientId);
+
+        if ($meta === null || $meta->logout_uri === null || $meta->logout_secret === null) {
+            return;
+        }
+
+        // Client apps key their local users by the OIDC "sub" claim (this
+        // SSO's uuid, see UserDTO::toOidcArray()), not our internal integer id.
+        $sub = User::where('id', $userId)->value('uuid');
+
+        if ($sub !== null) {
+            NotifyClientLogoutJob::dispatch($clientId, $sub, $meta->logout_uri, $meta->logout_secret);
         }
     }
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
+use App\Models\Token;
 use App\Repositories\Contracts\TokenRepositoryContract;
+use App\Services\OAuthClientService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -13,6 +15,7 @@ class ConnectedAppsController extends BaseController
 {
     public function __construct(
         protected TokenRepositoryContract $tokenRepository,
+        protected OAuthClientService $oauthClientService,
     ) {}
 
     #[OA\Get(
@@ -44,9 +47,15 @@ class ConnectedAppsController extends BaseController
     )]
     public function revoke(Request $request, string $tokenId): JsonResponse
     {
+        $token = Token::where('id', $tokenId)->where('user_id', $request->user()->id)->first();
+
         $revoked = $this->tokenRepository->revokeForUser($tokenId, $request->user()->id);
 
         abort_if(! $revoked, 404);
+
+        if ($token !== null) {
+            $this->oauthClientService->notifyClientLogout($token->client_id, $token->user_id);
+        }
 
         return response()->json(['message' => __('messages.app_access_revoked')]);
     }
