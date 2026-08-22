@@ -34,6 +34,7 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
     const [youtubeLive, setYoutubeLive] = useState(initialYoutubeLive)
+    const [showAllCommemorations, setShowAllCommemorations] = useState(false)
     const isBirthday = isBirthdayToday(auth.user?.date_of_birth)
 
     useEffect(() => {
@@ -85,23 +86,34 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
             <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
                 <h5 className="mb-2">{t('home.synaxariumToday')}</h5>
                 {coptic.commemorations.length > 0 ? (
-                    <ul className={`mb-0 ${i18n.language === 'ar' ? 'pe-3' : 'ps-3'}`}>
-                        {coptic.commemorations.map((commemoration, index) => (
-                            <li key={index} className="mb-1">
-                                {commemoration.url ? (
-                                    <button
-                                        type="button"
-                                        className="btn btn-link p-0 align-baseline"
-                                        onClick={() => setOpenUrl(commemoration.url)}
-                                    >
-                                        {commemoration.name}
-                                    </button>
-                                ) : (
-                                    commemoration.name
-                                )}
-                            </li>
-                        ))}
-                    </ul>
+                    <>
+                        <ul className={`mb-0 ${i18n.language === 'ar' ? 'pe-3' : 'ps-3'}`}>
+                            {(showAllCommemorations ? coptic.commemorations : coptic.commemorations.slice(0, 2)).map((commemoration, index) => (
+                                <li key={index} className="mb-1">
+                                    {commemoration.url ? (
+                                        <button
+                                            type="button"
+                                            className="btn btn-link p-0 align-baseline"
+                                            onClick={() => setOpenUrl(commemoration.url)}
+                                        >
+                                            {commemoration.name}
+                                        </button>
+                                    ) : (
+                                        commemoration.name
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                        {coptic.commemorations.length > 2 && (
+                            <button
+                                type="button"
+                                className="btn btn-link p-0 align-baseline mt-2"
+                                onClick={() => setShowAllCommemorations((prev) => !prev)}
+                            >
+                                {showAllCommemorations ? t('home.seeLess') : t('home.seeMore')}
+                            </button>
+                        )}
+                    </>
                 ) : (
                     <p className="text-ava-muted mb-0">{t('home.noCommemorationToday')}</p>
                 )}
