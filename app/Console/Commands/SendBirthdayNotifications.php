@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\DTOs\NotificationDTO;
 use App\Enums\NotificationTargetType;
+use App\Enums\NotificationType;
 use App\Repositories\Contracts\UserRepositoryContract;
 use App\Services\NotificationService;
 use Illuminate\Console\Command;
@@ -27,6 +28,7 @@ class SendBirthdayNotifications extends Command
                     groupIds: [],
                     userIds: [$user->id],
                     image: null,
+                    type: NotificationType::Birthday,
                 ),
                 null,
             );

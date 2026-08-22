@@ -175,7 +175,16 @@
     "confirmDelete": "Delete this notification? Recipients will no longer see it.",
     "noStages": "No stages",
     "noGroups": "No groups",
-    "noUsers": "No users"
+    "noUsers": "No users",
+    "filterByType": "Filter by type",
+    "types": {
+      "all": "All Types",
+      "manual": "Manual",
+      "cmc": "CMC Post",
+      "youtube": "YouTube Video",
+      "donation_reminder": "Donation Reminder",
+      "birthday": "Birthday"
+    }
   },
   "stages": {
     "title": "Stages",

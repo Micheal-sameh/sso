@@ -19,13 +19,16 @@ class NotificationController extends BaseController
         protected NotificationService $notificationService,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $notifications = $this->notificationService->listForUser(Auth::user())
+        $filters = $request->only(['type']);
+
+        $notifications = $this->notificationService->listForUser(Auth::user(), $filters)
             ->through(fn (Notification $notification) => $this->notificationService->toRecipientArray($notification));
 
         return $this->inertia('Account/Notifications', [
             'notifications' => $notifications,
+            'filters' => $filters,
         ]);
     }
 

@@ -3,6 +3,7 @@
 namespace App\DTOs;
 
 use App\Enums\NotificationTargetType;
+use App\Enums\NotificationType;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 
@@ -21,6 +22,7 @@ readonly class NotificationDTO
         public array $userIds,
         public UploadedFile|string|null $image,
         public ?int $cmcPostId = null,
+        public NotificationType $type = NotificationType::Manual,
     ) {}
 
     public static function fromRequest(Request $request): self

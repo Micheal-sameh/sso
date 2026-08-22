@@ -47,10 +47,12 @@ class NotificationRepository implements NotificationRepositoryContract
 
     /**
      * Paginate every notification ever sent, for the admin "Sent" list.
+     *
+     * @param  array{type?: string}  $filters
      */
-    public function paginateAll(int $perPage = 20): LengthAwarePaginator
+    public function paginateAll(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return Notification::with(['creator', 'stages', 'groups', 'targetUsers'])
+        return $this->applyFilters(Notification::with(['creator', 'stages', 'groups', 'targetUsers']), $filters)
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -60,14 +62,24 @@ class NotificationRepository implements NotificationRepositoryContract
      * Paginate the notifications addressed to the given user (by direct
      * targeting, their stage, or any of their groups), newest first, each
      * annotated with whether that user has read it.
+     *
+     * @param  array{type?: string}  $filters
      */
-    public function paginateForUser(User $user, int $perPage = 20): LengthAwarePaginator
+    public function paginateForUser(User $user, array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->scopeForUser(Notification::query(), $user)
+        return $this->applyFilters($this->scopeForUser(Notification::query(), $user), $filters)
             ->withCount(['readers as is_read' => fn (Builder $query) => $query->where('users.id', $user->id)])
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
+    }
+
+    /**
+     * @param  array{type?: string}  $filters
+     */
+    private function applyFilters(Builder $query, array $filters): Builder
+    {
+        return $query->when($filters['type'] ?? null, fn (Builder $q, string $type) => $q->where('type', $type));
     }
 
     /**

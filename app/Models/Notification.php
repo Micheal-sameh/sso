@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\NotificationTargetType;
+use App\Enums\NotificationType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -16,6 +17,7 @@ class Notification extends Model implements HasMedia
     protected $fillable = [
         'message',
         'target_type',
+        'type',
         'cmc_post_id',
         'created_by',
     ];
@@ -28,6 +30,7 @@ class Notification extends Model implements HasMedia
     {
         return [
             'target_type' => NotificationTargetType::class,
+            'type' => NotificationType::class,
         ];
     }
 

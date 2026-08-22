@@ -71,7 +71,16 @@
     "new": "جديد",
     "viewPost": "عرض المنشور",
     "markAsRead": "تعيين كمقروء",
-    "noNotificationsYet": "لا توجد إشعارات بعد."
+    "noNotificationsYet": "لا توجد إشعارات بعد.",
+    "filterByType": "تصفية حسب النوع",
+    "types": {
+      "all": "كل الأنواع",
+      "manual": "يدوي",
+      "cmc": "منشور المركز الإعلامي",
+      "youtube": "فيديو يوتيوب",
+      "donation_reminder": "تذكير بالتبرع",
+      "birthday": "عيد ميلاد"
+    }
   },
   "apps": {
     "title": "التطبيقات المرتبطة",

@@ -12,6 +12,7 @@ interface IndexProps {
     stages: Stage[]
     groups: Group[]
     users: LiteUser[]
+    filters: { type?: string }
 }
 
 interface NotificationForm {
@@ -32,7 +33,9 @@ const emptyForm: NotificationForm = {
     group_ids: [],
 }
 
-export default function Index({ notifications, stages, groups, users }: IndexProps) {
+const NOTIFICATION_TYPES: AppNotification['type'][] = ['manual', 'cmc', 'youtube', 'donation_reminder', 'birthday']
+
+export default function Index({ notifications, stages, groups, users, filters }: IndexProps) {
     const { t } = useTranslation(['admin', 'common'])
     const TARGET_TYPE_LABELS: Record<AppNotification['target_type'], string> = {
         all: t('targeting.all'),
@@ -40,10 +43,23 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
         specific: t('targeting.specific'),
         group: t('targeting.group'),
     }
+    const TYPE_LABELS: Record<AppNotification['type'], string> = {
+        manual: t('notifications.types.manual'),
+        cmc: t('notifications.types.cmc'),
+        youtube: t('notifications.types.youtube'),
+        donation_reminder: t('notifications.types.donation_reminder'),
+        birthday: t('notifications.types.birthday'),
+    }
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [userSearch, setUserSearch] = useState('')
     const form = useForm<NotificationForm>(emptyForm)
+    const filterForm = useForm({ type: filters.type ?? '' })
     const confirm = useConfirm()
+
+    const applyTypeFilter = (type: string) => {
+        filterForm.setData('type', type)
+        router.get('/admin/notifications', { type: type || undefined }, { preserveState: true })
+    }
 
     const onImageChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] ?? null
@@ -283,7 +299,22 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                 </div>
 
                 <div className="col-lg-7">
-                    <h5 className="mb-3">{t('notifications.sentNotifications')}</h5>
+                    <div className="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                        <h5 className="mb-0">{t('notifications.sentNotifications')}</h5>
+                        <div style={{ minWidth: 200 }}>
+                            <select
+                                className="form-select form-select-sm"
+                                aria-label={t('notifications.filterByType')}
+                                value={filterForm.data.type}
+                                onChange={(e) => applyTypeFilter(e.target.value)}
+                            >
+                                <option value="">{t('notifications.types.all')}</option>
+                                {NOTIFICATION_TYPES.map((type) => (
+                                    <option key={type} value={type}>{TYPE_LABELS[type]}</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
                     <div className="ava-card">
                         <ul className="list-group list-group-flush">
                             {notifications.data.map((notification) => (
@@ -301,6 +332,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                                         <div className="min-w-0 flex-grow-1">
                                             <div className="mb-1">{notification.message}</div>
                                             <div className="d-flex flex-wrap align-items-center gap-2">
+                                                <span className="role-chip">{TYPE_LABELS[notification.type]}</span>
                                                 <span className="role-chip">{TARGET_TYPE_LABELS[notification.target_type]}</span>
                                                 <span className="text-ava-muted text-tiny">{targetSummary(notification)}</span>
                                             </div>

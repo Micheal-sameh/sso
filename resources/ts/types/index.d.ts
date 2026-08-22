@@ -132,11 +132,14 @@ export interface NotificationCreator {
     name: string
 }
 
+export type NotificationType = 'manual' | 'cmc' | 'youtube' | 'donation_reminder' | 'birthday'
+
 export interface AppNotification {
     id: number
     message: string
     image_url: string | null
     target_type: 'all' | 'stage' | 'specific' | 'group'
+    type: NotificationType
     creator: NotificationCreator | null
     stages?: Stage[]
     groups?: Group[]
@@ -151,6 +154,7 @@ export interface UserNotification {
     is_read: boolean
     created_at: string
     cmc_post_id: number | null
+    type: NotificationType
 }
 
 export interface CmcPostCreator {

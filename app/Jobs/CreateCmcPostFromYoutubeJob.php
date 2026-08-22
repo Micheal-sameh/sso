@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\NotificationType;
 use App\Models\YoutubeVideo;
 use App\Services\CmcPostService;
 use Illuminate\Bus\Queueable;
@@ -47,6 +48,7 @@ class CreateCmcPostFromYoutubeJob implements ShouldQueue
                 'description' => null,
                 'image' => $thumbnailUrl,
             ],
+            notificationType: NotificationType::Youtube,
         );
 
         $video->update(['cmc_post_id' => $post->id]);

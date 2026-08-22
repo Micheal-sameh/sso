@@ -25,6 +25,7 @@ class NotificationService
         $notification = $this->notificationRepository->create([
             'message' => $dto->message,
             'target_type' => $dto->targetType,
+            'type' => $dto->type,
             'cmc_post_id' => $dto->cmcPostId,
             'created_by' => $sender?->id,
         ]);
@@ -51,18 +52,22 @@ class NotificationService
 
     /**
      * Paginate every notification ever sent, for the admin "Sent" list.
+     *
+     * @param  array{type?: string}  $filters
      */
-    public function listAllPaginated(int $perPage = 20): LengthAwarePaginator
+    public function listAllPaginated(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->notificationRepository->paginateAll($perPage);
+        return $this->notificationRepository->paginateAll($filters, $perPage);
     }
 
     /**
      * Paginate the notifications addressed to the given user.
+     *
+     * @param  array{type?: string}  $filters
      */
-    public function listForUser(User $user, int $perPage = 20): LengthAwarePaginator
+    public function listForUser(User $user, array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->notificationRepository->paginateForUser($user, $perPage);
+        return $this->notificationRepository->paginateForUser($user, $filters, $perPage);
     }
 
     /**
@@ -128,7 +133,7 @@ class NotificationService
     /**
      * Shape a notification for the admin "Sent" list.
      *
-     * @return array{id: int, message: string, image_url: ?string, target_type: string, creator: ?array, stages: array, groups: array, target_users: array, created_at: string}
+     * @return array{id: int, message: string, image_url: ?string, target_type: string, type: string, creator: ?array, stages: array, groups: array, target_users: array, created_at: string}
      */
     public function toAdminArray(Notification $notification): array
     {
@@ -137,6 +142,7 @@ class NotificationService
             'message' => $notification->message,
             'image_url' => $notification->image_url,
             'target_type' => $notification->target_type->value,
+            'type' => $notification->type->value,
             'creator' => $notification->creator ? ['id' => $notification->creator->id, 'name' => $notification->creator->name] : null,
             'stages' => $notification->stages->map(fn ($stage) => ['id' => $stage->id, 'name' => $stage->name])->all(),
             'groups' => $notification->groups->map(fn ($group) => ['id' => $group->id, 'name' => $group->name])->all(),
@@ -148,7 +154,7 @@ class NotificationService
     /**
      * Shape a notification for a recipient's own view (inbox list or bell dropdown).
      *
-     * @return array{id: int, message: string, image_url: ?string, is_read: bool, created_at: string, cmc_post_id: ?int}
+     * @return array{id: int, message: string, image_url: ?string, is_read: bool, created_at: string, cmc_post_id: ?int, type: string}
      */
     public function toRecipientArray(Notification $notification): array
     {
@@ -159,6 +165,7 @@ class NotificationService
             'is_read' => (bool) $notification->is_read,
             'created_at' => $notification->created_at->diffForHumans(),
             'cmc_post_id' => $notification->cmc_post_id,
+            'type' => $notification->type->value,
         ];
     }
 }

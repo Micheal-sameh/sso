@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\NotificationDTO;
 use App\Enums\NotificationTargetType;
+use App\Enums\NotificationType;
 use App\Events\CmcPostCreated;
 use App\Models\CmcPost;
 use App\Models\User;
@@ -34,6 +35,7 @@ class CmcPostService
         UploadedFile|string|null $image,
         ?User $creator,
         ?array $preview = null,
+        NotificationType $notificationType = NotificationType::Cmc,
     ): CmcPost {
         $preview ??= $url ? $this->urlPreviewService->fetch($url) : ['title' => null, 'description' => null, 'image' => null];
 
@@ -62,6 +64,7 @@ class CmcPostService
                 userIds: [],
                 image: null,
                 cmcPostId: $post->id,
+                type: $notificationType,
             ),
             $creator,
         );

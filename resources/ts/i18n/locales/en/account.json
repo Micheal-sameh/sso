@@ -71,7 +71,16 @@
     "new": "New",
     "viewPost": "View post",
     "markAsRead": "Mark as Read",
-    "noNotificationsYet": "No notifications yet."
+    "noNotificationsYet": "No notifications yet.",
+    "filterByType": "Filter by type",
+    "types": {
+      "all": "All Types",
+      "manual": "Manual",
+      "cmc": "CMC Post",
+      "youtube": "YouTube Video",
+      "donation_reminder": "Donation Reminder",
+      "birthday": "Birthday"
+    }
   },
   "apps": {
     "title": "Connected Apps",

@@ -17,9 +17,15 @@ interface NotificationRepositoryContract
 
     public function syncUserTargets(Notification $notification, array $userIds): void;
 
-    public function paginateAll(int $perPage = 20): LengthAwarePaginator;
+    /**
+     * @param  array{type?: string}  $filters
+     */
+    public function paginateAll(array $filters = [], int $perPage = 20): LengthAwarePaginator;
 
-    public function paginateForUser(User $user, int $perPage = 20): LengthAwarePaginator;
+    /**
+     * @param  array{type?: string}  $filters
+     */
+    public function paginateForUser(User $user, array $filters = [], int $perPage = 20): LengthAwarePaginator;
 
     /**
      * @return Collection<int, Notification>

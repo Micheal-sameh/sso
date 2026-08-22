@@ -13,6 +13,7 @@ use App\Services\GroupService;
 use App\Services\NotificationService;
 use App\Services\StageService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -28,14 +29,17 @@ class NotificationController extends BaseController
         protected UserRepositoryContract $userRepository,
     ) {}
 
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $filters = $request->only(['type']);
+
         return $this->inertia('Admin/Notifications/Index', [
-            'notifications' => $this->notificationService->listAllPaginated(20)
+            'notifications' => $this->notificationService->listAllPaginated($filters, 20)
                 ->through(fn (Notification $notification) => $this->notificationService->toAdminArray($notification)),
             'stages' => $this->stageService->listAll(),
             'groups' => $this->groupService->listAll(),
             'users' => $this->userRepository->allLite(),
+            'filters' => $filters,
         ]);
     }
 

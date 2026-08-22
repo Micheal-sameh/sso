@@ -8,6 +8,7 @@ use App\Enums\DonationGateway as DonationGatewayEnum;
 use App\Enums\DonationPlanStatus;
 use App\Enums\DonationStatus;
 use App\Enums\NotificationTargetType;
+use App\Enums\NotificationType;
 use App\Models\Donation;
 use App\Models\User;
 use App\Repositories\Contracts\DonationRepositoryContract;
@@ -117,6 +118,7 @@ class DonationService
                 groupIds: [],
                 userIds: [$user->id],
                 image: null,
+                type: NotificationType::DonationReminder,
             ),
             null,
         );

@@ -7,11 +7,26 @@ import type { PaginatedData, UserNotification } from '@/types'
 
 interface NotificationsProps {
     notifications: PaginatedData<UserNotification>
+    filters: { type?: string }
 }
 
-export default function Notifications({ notifications }: NotificationsProps) {
+const NOTIFICATION_TYPES: UserNotification['type'][] = ['manual', 'cmc', 'youtube', 'donation_reminder', 'birthday']
+
+export default function Notifications({ notifications, filters }: NotificationsProps) {
     const { t } = useTranslation('account')
     const [selectedIds, setSelectedIds] = useState<number[]>([])
+
+    const TYPE_LABELS: Record<UserNotification['type'], string> = {
+        manual: t('notifications.types.manual'),
+        cmc: t('notifications.types.cmc'),
+        youtube: t('notifications.types.youtube'),
+        donation_reminder: t('notifications.types.donation_reminder'),
+        birthday: t('notifications.types.birthday'),
+    }
+
+    const applyTypeFilter = (type: string) => {
+        router.get('/notifications', { type: type || undefined }, { preserveState: true })
+    }
 
     useEffect(() => {
         setSelectedIds([])
@@ -57,6 +72,21 @@ export default function Notifications({ notifications }: NotificationsProps) {
 
     return (
         <AppLayout title={t('notifications.title')}>
+            <div className="d-flex justify-content-end mb-3">
+                <div style={{ minWidth: 200 }}>
+                    <select
+                        className="form-select form-select-sm"
+                        aria-label={t('notifications.filterByType')}
+                        value={filters.type ?? ''}
+                        onChange={(e) => applyTypeFilter(e.target.value)}
+                    >
+                        <option value="">{t('notifications.types.all')}</option>
+                        {NOTIFICATION_TYPES.map((type) => (
+                            <option key={type} value={type}>{TYPE_LABELS[type]}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
             <div className="ava-card">
                 {hasUnread && (
                     <div className="d-flex align-items-center justify-content-between gap-2 p-3 pb-0">
@@ -118,6 +148,7 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                         {!notification.is_read && <span className="scope-chip text-nowrap">{t('notifications.new')}</span>}
                                     </div>
                                     <div className="text-ava-muted text-tiny mt-1">
+                                        <span className="role-chip me-2">{TYPE_LABELS[notification.type]}</span>
                                         {notification.created_at}
                                         {notification.cmc_post_id && (
                                             <span className="text-ava-secondary ms-2">
