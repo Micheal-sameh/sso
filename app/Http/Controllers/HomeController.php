@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\CmcPost;
+use App\Models\YoutubeVideo;
 use App\Services\CmcPostService;
 use App\Services\CopticCalendarService;
 use App\Services\YoutubeLiveStatusService;
+use App\Services\YoutubeVideoService;
 use Inertia\Response;
 
 class HomeController extends BaseController
@@ -17,6 +19,7 @@ class HomeController extends BaseController
         protected CmcPostService $cmcPostService,
         protected CopticCalendarService $copticCalendarService,
         protected YoutubeLiveStatusService $youtubeLiveStatusService,
+        protected YoutubeVideoService $youtubeVideoService,
     ) {}
 
     public function index(): Response
@@ -27,6 +30,9 @@ class HomeController extends BaseController
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
             'youtubeLive' => $this->youtubeLiveStatusService->current(),
+            'pinnedVideos' => $this->youtubeVideoService->listPinned()
+                ->map(fn (YoutubeVideo $video) => $this->youtubeVideoService->toArray($video))
+                ->values(),
         ]);
     }
 }

@@ -12,6 +12,7 @@
     "latestCmcPosts": "أحدث منشورات المركز الإعلامي",
     "seeAll": "عرض الكل",
     "postedBy": "بواسطة {{name}}",
-    "noPostsYet": "لا توجد منشورات بعد."
+    "noPostsYet": "لا توجد منشورات بعد.",
+    "pinnedVideos": "الفيديوهات المثبّتة"
   }
 }

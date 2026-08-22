@@ -5,7 +5,7 @@ import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import echo from '@/lib/echo'
 import { isBirthdayToday } from '@/lib/date'
-import type { CmcPost, CopticCalendar, SharedProps } from '@/types'
+import type { CmcPost, CopticCalendar, SharedProps, YoutubeVideo } from '@/types'
 
 interface YoutubeLive {
     status: 'live' | 'upcoming'
@@ -19,6 +19,7 @@ interface IndexProps {
     coptic: CopticCalendar
     recentPosts: CmcPost[]
     youtubeLive: YoutubeLive | null
+    pinnedVideos: YoutubeVideo[]
 }
 
 // The YouTube webhook pushes status changes over Reverb instantly (see
@@ -26,7 +27,7 @@ interface IndexProps {
 // webhook push is missed, so it can stay slow.
 const LIVE_STATUS_POLL_INTERVAL_MS = 5 * 60_000
 
-export default function Index({ coptic, recentPosts, youtubeLive: initialYoutubeLive }: IndexProps) {
+export default function Index({ coptic, recentPosts, youtubeLive: initialYoutubeLive, pinnedVideos }: IndexProps) {
     const { t, i18n } = useTranslation('home')
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
@@ -107,6 +108,38 @@ export default function Index({ coptic, recentPosts, youtubeLive: initialYoutube
                                 {new Date(youtubeLive.scheduled_start_time).toLocaleString(i18n.language)}
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {pinnedVideos.length > 0 && (
+                <div className="ava-card p-3 mb-3">
+                    <h5 className="mb-3">
+                        <i className="bi bi-pin-angle-fill me-2" />
+                        {t('home.pinnedVideos')}
+                    </h5>
+                    <div className="d-flex gap-3 overflow-auto pb-1">
+                        {pinnedVideos.map((video) => (
+                            <a
+                                key={video.id}
+                                href={video.watch_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-reset text-decoration-none flex-shrink-0"
+                                style={{ width: 220 }}
+                            >
+                                {video.thumbnail_url && (
+                                    <div className="ratio ratio-16x9 mb-2">
+                                        <img
+                                            src={video.thumbnail_url}
+                                            alt=""
+                                            className="w-100 h-100 object-fit-cover rounded"
+                                        />
+                                    </div>
+                                )}
+                                <div className="text-truncate-2 text-tiny fw-semibold">{video.title}</div>
+                            </a>
+                        ))}
                     </div>
                 </div>
             )}

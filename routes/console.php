@@ -5,6 +5,7 @@ use App\Console\Commands\SendBirthdayNotifications;
 use App\Console\Commands\SendFridayDonationReminders;
 use App\Console\Commands\SendMonthlyDonationReminders;
 use App\Console\Commands\SubscribeYoutubeWebhook;
+use App\Console\Commands\SyncYoutubeChannel;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -22,3 +23,7 @@ Schedule::command(SendFridayDonationReminders::class)->weeklyOn(5, '11:00')->tim
 
 // YouTube WebSub subscriptions expire after ~5 days; renew before then.
 Schedule::command(SubscribeYoutubeWebhook::class)->cron('0 0 */4 * *')->withoutOverlapping();
+
+// Backfills/refreshes the full upload history; the webhook only covers new
+// uploads going forward, so this is what keeps older videos in sync.
+Schedule::command(SyncYoutubeChannel::class)->hourly()->withoutOverlapping();

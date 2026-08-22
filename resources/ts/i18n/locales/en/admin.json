@@ -119,6 +119,16 @@
     "empty": "No posts yet.",
     "confirmDelete": "Delete this post? It will disappear for everyone."
   },
+  "videos": {
+    "title": "Videos",
+    "syncNow": "Sync Now",
+    "syncing": "Syncing...",
+    "pin": "Pin",
+    "unpin": "Unpin",
+    "pinned": "Pinned",
+    "published": "Published {{date}}",
+    "empty": "No videos synced yet. Click \"Sync Now\" to pull the channel's uploads."
+  },
   "groups": {
     "title": "Groups",
     "addGroup": "Add Group",

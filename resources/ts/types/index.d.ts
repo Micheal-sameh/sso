@@ -170,6 +170,16 @@ export interface CmcPost {
     created_at: string
 }
 
+export interface YoutubeVideo {
+    id: number
+    video_id: string
+    title: string
+    thumbnail_url: string | null
+    published_at: string | null
+    is_pinned: boolean
+    watch_url: string
+}
+
 export interface CopticCommemoration {
     name: string
     url: string | null

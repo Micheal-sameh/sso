@@ -27,12 +27,14 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
         { href: '/admin/tokens', label: t('nav.tokens'), icon: 'bi-ticket-perforated' },
         { href: '/admin/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
         { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+        { href: '/admin/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
         { href: '/admin/donations', label: t('nav.donations'), icon: 'bi-heart' },
         { href: '/admin/funds', label: t('nav.funds'), icon: 'bi-piggy-bank' },
     ]
 
     const cmcOnlyNavLinks: SidebarLink[] = [
         { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+        { href: '/admin/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
     ]
 
     const accountLink: SidebarLink = { href: '/account', label: t('nav.backToAccount'), icon: 'bi-arrow-left' }

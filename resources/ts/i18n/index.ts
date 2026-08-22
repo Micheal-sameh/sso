@@ -10,6 +10,7 @@ import enCmcPost from './locales/en/cmcPost.json'
 import enDonations from './locales/en/donations.json'
 import enOauth from './locales/en/oauth.json'
 import enErrors from './locales/en/errors.json'
+import enVideos from './locales/en/videos.json'
 
 import arCommon from './locales/ar/common.json'
 import arAuth from './locales/ar/auth.json'
@@ -20,6 +21,7 @@ import arCmcPost from './locales/ar/cmcPost.json'
 import arDonations from './locales/ar/donations.json'
 import arOauth from './locales/ar/oauth.json'
 import arErrors from './locales/ar/errors.json'
+import arVideos from './locales/ar/videos.json'
 
 export const defaultNS = 'common'
 
@@ -27,7 +29,7 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'donations', 'oauth', 'errors'],
+    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'donations', 'oauth', 'errors', 'videos'],
     resources: {
         en: {
             common: enCommon,
@@ -39,6 +41,7 @@ i18n.use(initReactI18next).init({
             donations: enDonations,
             oauth: enOauth,
             errors: enErrors,
+            videos: enVideos,
         },
         ar: {
             common: arCommon,
@@ -50,6 +53,7 @@ i18n.use(initReactI18next).init({
             donations: arDonations,
             oauth: arOauth,
             errors: arErrors,
+            videos: arVideos,
         },
     },
     interpolation: {

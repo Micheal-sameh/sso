@@ -76,6 +76,9 @@ return [
     'post_being_updated' => 'جارٍ تحديث المنشور.',
     'post_deleted' => 'تم حذف المنشور.',
 
+    // YouTube videos
+    'videos_synced' => 'تمت مزامنة :count فيديو من القناة.',
+
     // Notifications
     'notification_being_sent' => 'جارٍ إرسال الإشعار.',
     'notification_deleted' => 'تم حذف الإشعار.',

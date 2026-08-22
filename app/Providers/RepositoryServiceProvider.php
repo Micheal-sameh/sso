@@ -12,6 +12,7 @@ use App\Repositories\Contracts\NotificationRepositoryContract;
 use App\Repositories\Contracts\StageRepositoryContract;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
+use App\Repositories\Contracts\YoutubeVideoRepositoryContract;
 use App\Repositories\Eloquent\AvatarUploadTokenRepository;
 use App\Repositories\Eloquent\ClientMetaRepository;
 use App\Repositories\Eloquent\CmcPostRepository;
@@ -22,6 +23,7 @@ use App\Repositories\Eloquent\NotificationRepository;
 use App\Repositories\Eloquent\StageRepository;
 use App\Repositories\Eloquent\TokenRepository;
 use App\Repositories\Eloquent\UserRepository;
+use App\Repositories\Eloquent\YoutubeVideoRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -38,5 +40,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(CmcPostRepositoryContract::class, CmcPostRepository::class);
         $this->app->bind(FundRepositoryContract::class, FundRepository::class);
         $this->app->bind(DonationRepositoryContract::class, DonationRepository::class);
+        $this->app->bind(YoutubeVideoRepositoryContract::class, YoutubeVideoRepository::class);
     }
 }

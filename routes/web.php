@@ -24,7 +24,9 @@ use App\Http\Controllers\CmcPostController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\Admin\YoutubeVideoController as AdminYoutubeVideoController;
 use App\Http\Controllers\OAuth\AuthorizationController;
+use App\Http\Controllers\VideoController;
 use App\Http\Controllers\YoutubeLiveStatusController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -91,6 +93,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
         Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
 
+        Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
+
         Route::prefix('donations')->name('donations.')->group(function () {
             Route::get('/', [DonationController::class, 'create'])->name('create');
             Route::post('/', [DonationController::class, 'store'])->name('store');
@@ -155,6 +159,12 @@ Route::middleware('auth')->group(function () {
                 Route::post('/', [AdminCmcPostController::class, 'store'])->name('store');
                 Route::put('/{cmcPost}', [AdminCmcPostController::class, 'update'])->name('update');
                 Route::delete('/{cmcPost}', [AdminCmcPostController::class, 'destroy'])->name('destroy');
+            });
+
+            Route::middleware('can:manage cmc posts')->prefix('videos')->name('videos.')->group(function () {
+                Route::get('/', [AdminYoutubeVideoController::class, 'index'])->name('index');
+                Route::post('/sync', [AdminYoutubeVideoController::class, 'sync'])->name('sync');
+                Route::patch('/{youtubeVideo}/toggle-pin', [AdminYoutubeVideoController::class, 'togglePin'])->name('toggle-pin');
             });
 
             Route::middleware('can:manage donations')->group(function () {

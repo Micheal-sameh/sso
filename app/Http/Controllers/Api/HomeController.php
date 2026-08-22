@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\BaseController;
 use App\Models\CmcPost;
+use App\Models\YoutubeVideo;
 use App\Services\CmcPostService;
 use App\Services\CopticCalendarService;
 use App\Services\YoutubeLiveStatusService;
+use App\Services\YoutubeVideoService;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -17,6 +19,7 @@ class HomeController extends BaseController
         protected CmcPostService $cmcPostService,
         protected CopticCalendarService $copticCalendarService,
         protected YoutubeLiveStatusService $youtubeLiveStatusService,
+        protected YoutubeVideoService $youtubeVideoService,
     ) {}
 
     #[OA\Get(
@@ -28,6 +31,7 @@ class HomeController extends BaseController
             new OA\Response(response: 200, description: 'OK', content: new OA\JsonContent(properties: [
                 new OA\Property(property: 'coptic', ref: '#/components/schemas/CopticDate'),
                 new OA\Property(property: 'recent_posts', type: 'array', items: new OA\Items(ref: '#/components/schemas/CmcPost')),
+                new OA\Property(property: 'pinned_videos', type: 'array', items: new OA\Items(ref: '#/components/schemas/YoutubeVideo')),
             ])),
         ],
     )]
@@ -39,6 +43,9 @@ class HomeController extends BaseController
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
             'youtube_live' => $this->youtubeLiveStatusService->current(),
+            'pinned_videos' => $this->youtubeVideoService->listPinned()
+                ->map(fn (YoutubeVideo $video) => $this->youtubeVideoService->toArray($video))
+                ->values(),
         ]);
     }
 }

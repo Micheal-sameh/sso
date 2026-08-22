@@ -12,6 +12,7 @@
     "latestCmcPosts": "Latest CMC Posts",
     "seeAll": "See all",
     "postedBy": "Posted by {{name}}",
-    "noPostsYet": "No posts yet."
+    "noPostsYet": "No posts yet.",
+    "pinnedVideos": "Pinned Videos"
   }
 }

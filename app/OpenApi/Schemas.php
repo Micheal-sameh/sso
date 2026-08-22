@@ -79,6 +79,19 @@ use OpenApi\Attributes as OA;
     ],
 )]
 #[OA\Schema(
+    schema: 'YoutubeVideo',
+    type: 'object',
+    properties: [
+        new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'video_id', type: 'string'),
+        new OA\Property(property: 'title', type: 'string'),
+        new OA\Property(property: 'thumbnail_url', type: 'string', nullable: true),
+        new OA\Property(property: 'published_at', type: 'string', nullable: true, example: '21 Aug 2026'),
+        new OA\Property(property: 'is_pinned', type: 'boolean'),
+        new OA\Property(property: 'watch_url', type: 'string'),
+    ],
+)]
+#[OA\Schema(
     schema: 'Notification',
     type: 'object',
     properties: [

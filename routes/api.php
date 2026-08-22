@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SecurityController;
+use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Api\YoutubeWebhookController;
 use App\Http\Controllers\OAuth\OdooTokenValidationController;
 use App\Http\Controllers\OAuth\UserinfoController;
@@ -58,6 +59,8 @@ Route::middleware('auth:api')->group(function () {
 
         Route::get('/cmc-posts', [CmcPostController::class, 'index']);
         Route::get('/cmc-posts/{cmcPost}', [CmcPostController::class, 'show']);
+
+        Route::get('/videos', [VideoController::class, 'index']);
 
         Route::get('/notifications', [NotificationController::class, 'index']);
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);

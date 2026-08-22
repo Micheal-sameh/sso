@@ -25,6 +25,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },
         { href: '/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
         { href: '/cmc', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+        { href: '/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
         { href: '/donations', label: t('nav.donate'), icon: 'bi-heart' },
         { href: '/donations/history', label: t('nav.myDonations'), icon: 'bi-receipt' },
     ]
@@ -34,16 +35,17 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         { href: '/cmc', label: t('nav.cmc'), icon: 'bi-newspaper' },
         { href: '/home', label: t('nav.home'), icon: 'bi-house' },
         { href: '/donations', label: t('nav.donate'), icon: 'bi-heart' },
-        { href: '/account/apps', label: t('nav.apps'), icon: 'bi-grid' },
+        { href: '/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
     ]
 
     const adminLink: SidebarLink = { href: '/admin/users', label: t('nav.manageSso'), icon: 'bi-speedometer2' }
     const cmcPostsLink: SidebarLink = { href: '/admin/cmc-posts', label: t('nav.manageCmcPosts'), icon: 'bi-pencil-square' }
+    const videosLink: SidebarLink = { href: '/admin/videos', label: t('nav.manageVideos'), icon: 'bi-play-btn' }
 
     const footerLinks = auth.user?.is_admin
         ? [adminLink]
         : auth.user?.can_manage_cmc_posts
-          ? [cmcPostsLink]
+          ? [cmcPostsLink, videosLink]
           : undefined
 
     return (

@@ -76,6 +76,9 @@ return [
     'post_being_updated' => 'Post is being updated.',
     'post_deleted' => 'Post deleted.',
 
+    // YouTube videos
+    'videos_synced' => 'Synced :count video(s) from the channel.',
+
     // Notifications
     'notification_being_sent' => 'Notification is being sent.',
     'notification_deleted' => 'Notification deleted.',

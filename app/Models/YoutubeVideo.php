@@ -13,10 +13,12 @@ class YoutubeVideo extends Model
         'thumbnail_url',
         'published_at',
         'cmc_post_id',
+        'is_pinned',
     ];
 
     protected $casts = [
         'published_at' => 'datetime',
+        'is_pinned' => 'boolean',
     ];
 
     public function cmcPost(): BelongsTo
