@@ -23,7 +23,11 @@
     "donations": "التبرعات",
     "funds": "الصناديق",
     "donate": "تبرع",
-    "myDonations": "تبرعاتي"
+    "myDonations": "تبرعاتي",
+    "groupPeople": "الأعضاء",
+    "groupAccessSecurity": "الوصول والأمان",
+    "groupContent": "المحتوى",
+    "groupFinance": "المالية"
   },
   "topbar": {
     "openMenu": "فتح القائمة",

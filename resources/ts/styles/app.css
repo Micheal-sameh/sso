@@ -417,6 +417,60 @@ small, .small {
         max-width: 160px;
     }
 }
+.sidebar-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 8px 26px;
+    margin-top: 8px;
+    background: none;
+    border: none;
+    color: var(--ava-muted);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.sidebar-group:first-child .sidebar-group-header {
+    margin-top: 0;
+}
+
+.sidebar-group-chevron {
+    font-size: 0.6875rem;
+    transition: transform 0.15s var(--ease-out);
+}
+
+.sidebar-group.collapsed .sidebar-group-chevron {
+    transform: rotate(-90deg);
+}
+
+[dir="rtl"] .sidebar-group.collapsed .sidebar-group-chevron {
+    transform: rotate(90deg);
+}
+
+.sidebar-group-items {
+    overflow: hidden;
+    max-height: 500px;
+    transition: max-height 0.2s var(--ease-out);
+}
+
+.sidebar-group.collapsed .sidebar-group-items {
+    max-height: 0;
+}
+
+@media (min-width: 992px) {
+    /* Rail mode (not hovered): always show icons regardless of collapse/expand state. */
+    .sidebar-main:not(:hover) .sidebar-group-header {
+        display: none;
+    }
+    .sidebar-main:not(:hover) .sidebar-group-items {
+        max-height: none !important;
+    }
+}
+
 .sidebar-link {
     color: var(--ava-muted);
     padding: 10px 14px;

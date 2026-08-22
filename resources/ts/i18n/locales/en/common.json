@@ -23,7 +23,11 @@
     "donations": "Donations",
     "funds": "Funds",
     "donate": "Donate",
-    "myDonations": "My Donations"
+    "myDonations": "My Donations",
+    "groupPeople": "People",
+    "groupAccessSecurity": "Access & Security",
+    "groupContent": "Content",
+    "groupFinance": "Finance"
   },
   "topbar": {
     "openMenu": "Open menu",

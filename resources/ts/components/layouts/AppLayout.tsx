@@ -51,7 +51,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
     return (
         <div className="d-flex">
             <Sidebar
-                links={navLinks}
+                groups={[{ id: 'main', label: '', links: navLinks }]}
                 footerLinks={footerLinks}
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
