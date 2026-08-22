@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { router, useForm, usePage } from '@inertiajs/react'
+import { Link, router, useForm, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import type { DonationGateway, Fund, SharedProps } from '@/types'
@@ -45,6 +45,12 @@ export default function Create({ funds }: CreateProps) {
 
     return (
         <AppLayout title={t('create.title')}>
+            <div className="d-flex justify-content-end mb-3" style={{ maxWidth: 520 }}>
+                <Link href="/donations/history" className="btn btn-sm btn-outline-primary">
+                    <i className="bi bi-clock-history me-1" />
+                    {t('return.viewHistory')}
+                </Link>
+            </div>
             <div
                 className="ava-card p-3 mb-3 d-flex align-items-center justify-content-between gap-3 flex-wrap"
                 style={{ maxWidth: 520 }}
