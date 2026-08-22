@@ -1,6 +1,7 @@
 {
   "home": {
     "welcome": "أهلاً، {{name}}",
+    "happyBirthday": "عيد ميلاد سعيد يا {{name}}!",
     "copticDate": "التاريخ القبطي",
     "copticDateUnavailable": "غير متاح حالياً.",
     "synaxariumToday": "تذكار اليوم من السنكسار",

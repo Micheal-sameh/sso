@@ -1,6 +1,7 @@
 {
   "home": {
     "welcome": "Welcome, {{name}}",
+    "happyBirthday": "Happy Birthday, {{name}}!",
     "copticDate": "Coptic Date",
     "copticDateUnavailable": "Not available right now.",
     "synaxariumToday": "Today's Commemoration from the Synaxarium",
