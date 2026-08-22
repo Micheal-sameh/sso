@@ -25,12 +25,15 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },
         { href: '/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
         { href: '/cmc', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+        { href: '/donations', label: t('nav.donate'), icon: 'bi-heart' },
+        { href: '/donations/history', label: t('nav.myDonations'), icon: 'bi-receipt' },
     ]
 
     const bottomNavLinks: SidebarLink[] = [
         { href: '/account', label: t('nav.profile'), icon: 'bi-person' },
         { href: '/cmc', label: t('nav.cmc'), icon: 'bi-newspaper' },
         { href: '/home', label: t('nav.home'), icon: 'bi-house' },
+        { href: '/donations', label: t('nav.donate'), icon: 'bi-heart' },
         { href: '/account/apps', label: t('nav.apps'), icon: 'bi-grid' },
     ]
 

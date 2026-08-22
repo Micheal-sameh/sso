@@ -1,0 +1,182 @@
+import { useState } from 'react'
+import type { FormEvent } from 'react'
+import { router, useForm } from '@inertiajs/react'
+import AdminLayout from '@/components/layouts/AdminLayout'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
+import type { Fund } from '@/types'
+
+interface IndexProps {
+    funds: Fund[]
+}
+
+interface FundForm {
+    name: string
+    description: string
+    is_active: boolean
+}
+
+const emptyForm: FundForm = { name: '', description: '', is_active: true }
+
+export default function Index({ funds }: IndexProps) {
+    const [showModal, setShowModal] = useState(false)
+    const [editingFund, setEditingFund] = useState<Fund | null>(null)
+    const form = useForm<FundForm>(emptyForm)
+    const confirm = useConfirm()
+
+    const openCreateModal = () => {
+        setEditingFund(null)
+        form.reset()
+        form.clearErrors()
+        setShowModal(true)
+    }
+
+    const openEditModal = (fund: Fund) => {
+        setEditingFund(fund)
+        form.setData({ name: fund.name, description: fund.description ?? '', is_active: fund.is_active })
+        form.clearErrors()
+        setShowModal(true)
+    }
+
+    const closeModal = () => {
+        setShowModal(false)
+        setEditingFund(null)
+    }
+
+    const submit = (e: FormEvent) => {
+        e.preventDefault()
+        if (editingFund) {
+            form.put(`/admin/funds/${editingFund.id}`, { onSuccess: closeModal })
+        } else {
+            form.post('/admin/funds', { onSuccess: closeModal })
+        }
+    }
+
+    const remove = async (fund: Fund) => {
+        if (await confirm(`Delete the "${fund.name}" fund?`, { confirmLabel: 'Delete' })) {
+            router.delete(`/admin/funds/${fund.id}`)
+        }
+    }
+
+    return (
+        <AdminLayout
+            title="Funds"
+            action={
+                <button type="button" className="btn btn-primary btn-sm" onClick={openCreateModal}>
+                    <i className="bi bi-plus-lg" />
+                    <span className="d-none d-sm-inline ms-1">Add Fund</span>
+                </button>
+            }
+        >
+            <p className="text-ava-muted mb-4">
+                Funds are the donation designations donors can give to (e.g. General Offering, Building Fund).
+                Only active funds appear on the donate page.
+            </p>
+
+            <div className="ava-card">
+                <div className="table-responsive">
+                    <table className="table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Donations</th>
+                                <th>Status</th>
+                                <th />
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {funds.map((fund) => (
+                                <tr key={fund.id}>
+                                    <td className="fw-semibold">{fund.name}</td>
+                                    <td className="text-ava-muted">{fund.description ?? '—'}</td>
+                                    <td className="text-ava-muted">{fund.donations_count ?? 0}</td>
+                                    <td>
+                                        <span className={`badge ${fund.is_active ? 'bg-success' : 'bg-secondary'}`}>
+                                            {fund.is_active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </td>
+                                    <td className="text-nowrap">
+                                        <div className="d-flex gap-2">
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(fund)}>
+                                                Edit
+                                            </button>
+                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => remove(fund)}>
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                            {funds.length === 0 && (
+                                <tr>
+                                    <td colSpan={5} className="text-center text-ava-muted py-4">No funds yet.</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {showModal && (
+                <div className="modal d-block modal-backdrop-custom" tabIndex={-1}>
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">{editingFund ? `Edit ${editingFund.name}` : 'Add Fund'}</h5>
+                                <button type="button" className="btn-close" onClick={closeModal} />
+                            </div>
+                            <form onSubmit={submit}>
+                                <div className="modal-body">
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="name">Name</label>
+                                        <input
+                                            id="name"
+                                            className="form-control"
+                                            placeholder="e.g. Building Fund"
+                                            value={form.data.name}
+                                            onChange={(e) => form.setData('name', e.target.value)}
+                                        />
+                                        {form.errors.name && <div className="text-danger small mt-1">{form.errors.name}</div>}
+                                    </div>
+                                    <div className="mb-3">
+                                        <label className="form-label" htmlFor="description">Description</label>
+                                        <textarea
+                                            id="description"
+                                            className="form-control"
+                                            rows={3}
+                                            value={form.data.description}
+                                            onChange={(e) => form.setData('description', e.target.value)}
+                                        />
+                                        {form.errors.description && (
+                                            <div className="text-danger small mt-1">{form.errors.description}</div>
+                                        )}
+                                    </div>
+                                    <div className="form-check">
+                                        <input
+                                            id="is_active"
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            checked={form.data.is_active}
+                                            onChange={(e) => form.setData('is_active', e.target.checked)}
+                                        />
+                                        <label className="form-check-label" htmlFor="is_active">
+                                            Active (visible on the donate page)
+                                        </label>
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-outline-primary" onClick={closeModal}>
+                                        Cancel
+                                    </button>
+                                    <button type="submit" className="btn btn-primary" disabled={form.processing}>
+                                        {editingFund ? 'Save Changes' : 'Add Fund'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </AdminLayout>
+    )
+}

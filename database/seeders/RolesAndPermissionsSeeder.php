@@ -15,12 +15,13 @@ class RolesAndPermissionsSeeder extends Seeder
         $accessAdminPanel = Permission::firstOrCreate(['name' => AdminPermission::AccessAdminPanel->value, 'guard_name' => 'web']);
         $manageAdminAccess = Permission::firstOrCreate(['name' => AdminPermission::ManageAdminAccess->value, 'guard_name' => 'web']);
         $manageCmcPosts = Permission::firstOrCreate(['name' => AdminPermission::ManageCmcPosts->value, 'guard_name' => 'web']);
+        $manageDonations = Permission::firstOrCreate(['name' => AdminPermission::ManageDonations->value, 'guard_name' => 'web']);
 
         Role::firstOrCreate(['name' => AdminRole::SuperAdmin->value, 'guard_name' => 'web'])
-            ->syncPermissions([$accessAdminPanel, $manageAdminAccess, $manageCmcPosts]);
+            ->syncPermissions([$accessAdminPanel, $manageAdminAccess, $manageCmcPosts, $manageDonations]);
 
         Role::firstOrCreate(['name' => AdminRole::Admin->value, 'guard_name' => 'web'])
-            ->syncPermissions([$accessAdminPanel, $manageCmcPosts]);
+            ->syncPermissions([$accessAdminPanel, $manageCmcPosts, $manageDonations]);
 
         Role::firstOrCreate(['name' => AdminRole::Secretary->value, 'guard_name' => 'web'])
             ->syncPermissions([$accessAdminPanel, $manageCmcPosts]);

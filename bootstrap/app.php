@@ -9,6 +9,8 @@ use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
 use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Exceptions\Auth\UserNotFoundException;
+use App\Exceptions\Donations\FundInUseException;
+use App\Exceptions\Donations\GatewayNotConfiguredException;
 use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HideServerFingerprint;
@@ -120,6 +122,22 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (UserNotFoundException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
+
+            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
+        });
+
+        $exceptions->render(function (FundInUseException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
+            }
+
+            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
+        });
+
+        $exceptions->render(function (GatewayNotConfiguredException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
             }

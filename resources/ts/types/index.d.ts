@@ -61,6 +61,7 @@ export interface User {
     mfa_recovery_codes_total: number
     can_manage_admin_access: boolean
     can_manage_cmc_posts: boolean
+    can_manage_donations: boolean
     stage: UserStageSummary
     email_verified_at: string | null
     created_at: string | null
@@ -176,6 +177,37 @@ export interface CopticCommemoration {
 export interface CopticCalendar {
     date: string | null
     commemorations: CopticCommemoration[]
+}
+
+export interface Fund {
+    id: number
+    name: string
+    description: string | null
+    is_active: boolean
+    donations_count?: number
+}
+
+export type DonationGateway = 'nbe' | 'cib'
+export type DonationStatus = 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded'
+
+export interface Donation {
+    id: number
+    uuid: string
+    amount: number
+    currency: string
+    gateway: DonationGateway
+    status: DonationStatus
+    is_recurring: boolean
+    fund: { id: number; name: string } | null
+    donor: { id: number; name: string } | null
+    paid_at: string | null
+    created_at: string
+}
+
+export interface DonationTotals {
+    total_paid: number
+    this_month: number
+    this_year: number
 }
 
 export interface PaginatedData<T> {

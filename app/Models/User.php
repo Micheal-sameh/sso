@@ -85,6 +85,16 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsToMany(Group::class, 'user_group');
     }
 
+    public function donations(): HasMany
+    {
+        return $this->hasMany(Donation::class);
+    }
+
+    public function donationPlans(): HasMany
+    {
+        return $this->hasMany(DonationPlan::class);
+    }
+
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
