@@ -1,0 +1,19 @@
+{
+  "accessDenied": {
+    "title": "Access Denied",
+    "description": "Your Avarewase account doesn't have access to <strong>{{clientName}}</strong>. Contact an administrator if you believe this is a mistake.",
+    "backToAccount": "Back to My Account"
+  },
+  "authorize": {
+    "wantsToAccess": "{{clientName}} wants to access your Avarewase account",
+    "thisWillAllow": "This will allow {{clientName}} to:",
+    "deny": "Deny",
+    "allowAccess": "Allow Access",
+    "revokeNotice": "You can revoke access at any time in your Avarewase Security Settings."
+  },
+  "profileUpdateRequired": {
+    "title": "Update Your Data",
+    "description": "Your Avarewase account needs to be updated before you can sign in to <strong>{{clientName}}</strong>. Contact an administrator to update your details, then try again.",
+    "backToAccount": "Back to My Account"
+  }
+}

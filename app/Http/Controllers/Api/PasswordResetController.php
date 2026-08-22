@@ -47,6 +47,6 @@ class PasswordResetController extends BaseController
             $request->filled('membership_code') ? $request->string('membership_code')->toString() : null,
         );
 
-        return response()->json(['message' => 'Password reset email sent.']);
+        return response()->json(['message' => __('messages.password_reset_email_sent')]);
     }
 }

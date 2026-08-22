@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
@@ -14,6 +15,7 @@ interface IndexProps {
 }
 
 export default function Index({ admins, filters }: IndexProps) {
+    const { t } = useTranslation('admin')
     const [search, setSearch] = useState(filters.search ?? '')
     const { auth } = usePage<SharedProps>().props
     const confirm = useConfirm()
@@ -32,7 +34,7 @@ export default function Index({ admins, filters }: IndexProps) {
     }
 
     const revokeAdminAccess = async (user: User) => {
-        if (await confirm(`Revoke SSO admin access for ${user.name}?`, { confirmLabel: 'Revoke' })) {
+        if (await confirm(t('admins.confirmRevoke', { name: user.name }), { confirmLabel: t('actions.revoke') })) {
             router.patch(`/admin/users/${user.id}/toggle-admin-access`, {}, { preserveScroll: true })
         }
     }
@@ -41,25 +43,25 @@ export default function Index({ admins, filters }: IndexProps) {
     const adminCount = admins.data.filter((u) => u.role === 'admin').length
 
     return (
-        <AdminLayout title="SSO Admins">
-            <p className="text-ava-muted mb-4">Everyone currently granted Super Admin or Admin access to this panel.</p>
+        <AdminLayout title={t('admins.title')}>
+            <p className="text-ava-muted mb-4">{t('admins.description')}</p>
 
             <div className="row g-3 mb-4">
                 <div className="col-6 col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Total Admins</p>
+                        <p className="stat-tile-label mb-2">{t('admins.stats.total')}</p>
                         <p className="stat-tile-value mb-0">{admins.total}</p>
                     </div>
                 </div>
                 <div className="col-6 col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Super Admins (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('admins.stats.superAdminsPage')}</p>
                         <p className="stat-tile-value mb-0">{superAdminCount}</p>
                     </div>
                 </div>
                 <div className="col-6 col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Admins (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('admins.stats.adminsPage')}</p>
                         <p className="stat-tile-value mb-0">{adminCount}</p>
                     </div>
                 </div>
@@ -68,7 +70,7 @@ export default function Index({ admins, filters }: IndexProps) {
             <div className="mb-3">
                 <input
                     className="form-control"
-                    placeholder="Search by name, email, or membership code"
+                    placeholder={t('search.byNameEmailMembership')}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
@@ -78,7 +80,7 @@ export default function Index({ admins, filters }: IndexProps) {
                 <div className="ava-card">
                     <div className="text-center py-5">
                         <i className="bi bi-shield-check text-ava-muted icon-fs-48" />
-                        <p className="text-ava-muted mt-3 mb-0">No SSO admins found.</p>
+                        <p className="text-ava-muted mt-3 mb-0">{t('admins.empty')}</p>
                     </div>
                 </div>
             ) : (
@@ -90,13 +92,13 @@ export default function Index({ admins, filters }: IndexProps) {
                                 <thead>
                                     <tr>
                                         <th />
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Membership</th>
-                                        <th>Stage</th>
-                                        <th>Role</th>
-                                        <th>Status</th>
-                                        <th>Granted</th>
+                                        <th>{t('table.name')}</th>
+                                        <th>{t('table.email')}</th>
+                                        <th>{t('table.membership')}</th>
+                                        <th>{t('table.stage')}</th>
+                                        <th>{t('table.role')}</th>
+                                        <th>{t('table.status')}</th>
+                                        <th>{t('admins.table.granted')}</th>
                                         <th />
                                     </tr>
                                 </thead>
@@ -139,10 +141,10 @@ export default function Index({ admins, filters }: IndexProps) {
                                                     className="btn btn-sm btn-outline-primary me-2"
                                                     onClick={() => router.visit(`/admin/users/${user.id}`)}
                                                 >
-                                                    View
+                                                    {t('actions.view')}
                                                 </button>
                                                 <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
-                                                    Toggle Active
+                                                    {t('actions.toggleActive')}
                                                 </button>
                                                 {auth.user?.can_manage_admin_access && user.role !== 'superadmin' && (
                                                     <button
@@ -151,7 +153,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                                         disabled={user.id === auth.user?.id}
                                                         onClick={() => revokeAdminAccess(user)}
                                                     >
-                                                        Revoke Admin
+                                                        {t('actions.revokeAdmin')}
                                                     </button>
                                                 )}
                                             </td>
@@ -179,19 +181,19 @@ export default function Index({ admins, filters }: IndexProps) {
                                 </div>
 
                                 <div className="record-card-row">
-                                    <span className="record-card-label">Membership</span>
+                                    <span className="record-card-label">{t('table.membership')}</span>
                                     <span className="code-chip text-uppercase">{user.membership_code}</span>
                                 </div>
                                 <div className="record-card-row">
-                                    <span className="record-card-label">Stage</span>
+                                    <span className="record-card-label">{t('table.stage')}</span>
                                     <span>{user.stage.name}</span>
                                 </div>
                                 <div className="record-card-row">
-                                    <span className="record-card-label">Role</span>
+                                    <span className="record-card-label">{t('table.role')}</span>
                                     <RoleChip role={user.role} />
                                 </div>
                                 <div className="record-card-row">
-                                    <span className="record-card-label">Status</span>
+                                    <span className="record-card-label">{t('table.status')}</span>
                                     <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
                                 </div>
 
@@ -201,10 +203,10 @@ export default function Index({ admins, filters }: IndexProps) {
                                         className="btn btn-sm btn-outline-primary"
                                         onClick={() => router.visit(`/admin/users/${user.id}`)}
                                     >
-                                        View
+                                        {t('actions.view')}
                                     </button>
                                     <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => toggle(user)}>
-                                        Toggle Active
+                                        {t('actions.toggleActive')}
                                     </button>
                                     {auth.user?.can_manage_admin_access && user.role !== 'superadmin' && (
                                         <button
@@ -213,7 +215,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                             disabled={user.id === auth.user?.id}
                                             onClick={() => revokeAdminAccess(user)}
                                         >
-                                            Revoke Admin
+                                            {t('actions.revokeAdmin')}
                                         </button>
                                     )}
                                 </div>

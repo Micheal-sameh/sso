@@ -34,6 +34,6 @@ class ResetPasswordController extends BaseController
             $request->string('password')->toString(),
         );
 
-        return $this->redirectRoute('login', 'Your password has been reset. Please sign in.', 'success');
+        return $this->redirectRoute('login', __('messages.password_reset_success'), 'success');
     }
 }

@@ -1,0 +1,19 @@
+{
+  "accessDenied": {
+    "title": "تم رفض الوصول",
+    "description": "لا يملك حسابك في Avarewase صلاحية الوصول إلى <strong>{{clientName}}</strong>. تواصل مع أحد المسؤولين إذا كنت تعتقد أن هذا خطأ.",
+    "backToAccount": "العودة إلى حسابي"
+  },
+  "authorize": {
+    "wantsToAccess": "يريد {{clientName}} الوصول إلى حسابك في Avarewase",
+    "thisWillAllow": "سيتيح هذا لتطبيق {{clientName}}:",
+    "deny": "رفض",
+    "allowAccess": "السماح بالوصول",
+    "revokeNotice": "يمكنك إلغاء الوصول في أي وقت من إعدادات الأمان في Avarewase."
+  },
+  "profileUpdateRequired": {
+    "title": "حدّث بياناتك",
+    "description": "يحتاج حسابك في Avarewase إلى التحديث قبل أن تتمكن من تسجيل الدخول إلى <strong>{{clientName}}</strong>. تواصل مع أحد المسؤولين لتحديث بياناتك، ثم أعد المحاولة.",
+    "backToAccount": "العودة إلى حسابي"
+  }
+}

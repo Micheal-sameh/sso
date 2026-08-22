@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AvaLogo from '@/components/shared/AvaLogo'
 
 export interface SidebarLink {
@@ -16,6 +17,7 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ links, footerLinks, open, onClose }: SidebarProps) {
+    const { t } = useTranslation('common')
     const { url } = usePage()
 
     useEffect(() => {
@@ -34,7 +36,7 @@ export default function Sidebar({ links, footerLinks, open, onClose }: SidebarPr
                     <button
                         type="button"
                         className="btn-close d-lg-none"
-                        aria-label="Close menu"
+                        aria-label={t('sidebar.closeMenu')}
                         onClick={onClose}
                     />
                 </div>

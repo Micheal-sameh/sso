@@ -1,14 +1,8 @@
+import { useTranslation } from 'react-i18next'
 import type { User } from '@/types'
 
 interface RoleChipProps {
     role: User['role']
-}
-
-const LABELS: Record<User['role'], string> = {
-    superadmin: 'Super Admin',
-    admin: 'Admin',
-    secretary: 'Secretary',
-    user: 'User',
 }
 
 const CLASSES: Record<User['role'], string> = {
@@ -19,5 +13,7 @@ const CLASSES: Record<User['role'], string> = {
 }
 
 export default function RoleChip({ role }: RoleChipProps) {
-    return <span className={`role-chip ${CLASSES[role]}`}>{LABELS[role]}</span>
+    const { t } = useTranslation('common')
+
+    return <span className={`role-chip ${CLASSES[role]}`}>{t(`roleChip.${role}`)}</span>
 }

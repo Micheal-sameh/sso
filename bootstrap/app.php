@@ -13,6 +13,7 @@ use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HideServerFingerprint;
 use App\Http\Middleware\MfaPending;
+use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SuperAdmin;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
@@ -37,6 +38,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->append(HideServerFingerprint::class);
 
         $middleware->web(append: [
+            SetLocale::class,
             HandleInertiaRequests::class,
         ]);
 

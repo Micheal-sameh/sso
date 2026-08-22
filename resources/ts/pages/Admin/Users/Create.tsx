@@ -1,5 +1,6 @@
 import type { FormEvent } from 'react'
 import { router, useForm, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import type { SharedProps, Stage } from '@/types'
 
@@ -20,6 +21,7 @@ interface CreateForm {
 }
 
 export default function Create({ stages }: CreateProps) {
+    const { t } = useTranslation(['admin', 'common'])
     const { auth } = usePage<SharedProps>().props
     const canManageAdminAccess = auth.user?.can_manage_admin_access ?? false
     const form = useForm<CreateForm>({
@@ -40,11 +42,11 @@ export default function Create({ stages }: CreateProps) {
     }
 
     return (
-        <AdminLayout title="Create User">
+        <AdminLayout title={t('users.createTitle')}>
             <div className="ava-card p-4 max-w-560">
                 <form onSubmit={submit}>
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="name">Name</label>
+                        <label className="form-label" htmlFor="name">{t('users.fields.name')}</label>
                         <input
                             id="name"
                             className="form-control"
@@ -55,7 +57,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="email">Email</label>
+                        <label className="form-label" htmlFor="email">{t('users.fields.email')}</label>
                         <input
                             id="email"
                             type="email"
@@ -67,7 +69,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="phone">Phone</label>
+                        <label className="form-label" htmlFor="phone">{t('users.fields.phone')}</label>
                         <input
                             id="phone"
                             type="tel"
@@ -79,7 +81,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="date_of_birth">Date of Birth</label>
+                        <label className="form-label" htmlFor="date_of_birth">{t('users.fields.dob')}</label>
                         <input
                             id="date_of_birth"
                             type="date"
@@ -93,7 +95,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="membership_code">Membership Code</label>
+                        <label className="form-label" htmlFor="membership_code">{t('users.fields.membershipCode')}</label>
                         <input
                             id="membership_code"
                             className="form-control text-uppercase"
@@ -106,7 +108,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="password">Password</label>
+                        <label className="form-label" htmlFor="password">{t('users.fields.password')}</label>
                         <input
                             id="password"
                             type="password"
@@ -118,7 +120,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="password_confirmation">Confirm Password</label>
+                        <label className="form-label" htmlFor="password_confirmation">{t('users.fields.confirmPassword')}</label>
                         <input
                             id="password_confirmation"
                             type="password"
@@ -129,7 +131,7 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-3">
-                        <label className="form-label" htmlFor="stage_id">Stage</label>
+                        <label className="form-label" htmlFor="stage_id">{t('users.fields.stage')}</label>
                         <select
                             id="stage_id"
                             className="form-select"
@@ -146,40 +148,40 @@ export default function Create({ stages }: CreateProps) {
                     </div>
 
                     <div className="mb-4">
-                        <label className="form-label" htmlFor="role">Role</label>
+                        <label className="form-label" htmlFor="role">{t('users.fields.role')}</label>
                         <select
                             id="role"
                             className="form-select"
                             value={form.data.role}
                             onChange={(e) => form.setData('role', e.target.value)}
                         >
-                            <option value="user">User</option>
+                            <option value="user">{t('roles.user')}</option>
                             {canManageAdminAccess && (
                                 <>
-                                    <option value="secretary">Secretary</option>
-                                    <option value="admin">Admin</option>
-                                    <option value="superadmin">Super Admin</option>
+                                    <option value="secretary">{t('roles.secretary')}</option>
+                                    <option value="admin">{t('roles.admin')}</option>
+                                    <option value="superadmin">{t('roles.superadmin')}</option>
                                 </>
                             )}
                         </select>
                         <p className="text-ava-muted text-tiny mt-1 mb-0">
                             {canManageAdminAccess
-                                ? 'Admin and Super Admin roles are granted SSO admin panel access immediately.'
-                                : 'Only a super admin can assign the Admin or Super Admin role.'}
+                                ? t('users.roleHelpCanManage')
+                                : t('users.roleHelpCannotManageCreate')}
                         </p>
                         {form.errors.role && <div className="text-danger small mt-1">{form.errors.role}</div>}
                     </div>
 
                     <div className="d-flex gap-2">
                         <button type="submit" className="btn btn-primary" disabled={form.processing}>
-                            Create User
+                            {t('users.createUser')}
                         </button>
                         <button
                             type="button"
                             className="btn btn-outline-primary"
                             onClick={() => router.visit('/admin/users')}
                         >
-                            Cancel
+                            {t('common:actions.cancel')}
                         </button>
                     </div>
                 </form>

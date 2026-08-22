@@ -48,6 +48,6 @@ class ConnectedAppsController extends BaseController
 
         abort_if(! $revoked, 404);
 
-        return response()->json(['message' => 'App access revoked.']);
+        return response()->json(['message' => __('messages.app_access_revoked')]);
     }
 }

@@ -1,6 +1,7 @@
 import type { FormEvent } from 'react'
 import { useState } from 'react'
 import { useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import RoleChip from '@/components/shared/RoleChip'
@@ -27,6 +28,7 @@ interface DetailRow {
 }
 
 export default function Show({ user }: ShowProps) {
+    const { t } = useTranslation('account')
     const [showPasswordModal, setShowPasswordModal] = useState(false)
     const passwordForm = useForm<PasswordForm>({
         current_password: '',
@@ -68,42 +70,49 @@ export default function Show({ user }: ShowProps) {
     const isBirthday = isBirthdayToday(user.date_of_birth)
 
     const detailRows: DetailRow[] = [
-        { icon: 'bi-credit-card-2-front', label: 'Membership Code', value: user.membership_code, mono: true },
-        { icon: 'bi-telephone', label: 'Phone', value: user.phone ?? 'Not set' },
-        { icon: 'bi-envelope', label: 'Email', value: user.email },
-        { icon: 'bi-cake2', label: 'Date of Birth', value: formatDateDMY(user.date_of_birth) ?? 'Not set' },
-        ...(age !== null ? [{ icon: 'bi-hourglass-split', label: 'Age', value: `${age} years` }] : []),
-        { icon: 'bi-signpost-split', label: 'Stage', value: user.stage.name },
-        { icon: 'bi-collection', label: 'Groups', value: user.groups.length > 0 ? user.groups.map((g) => g.name).join(', ') : 'None' },
+        { icon: 'bi-credit-card-2-front', label: t('profile.membershipCode'), value: user.membership_code, mono: true },
+        { icon: 'bi-telephone', label: t('profile.phone'), value: user.phone ?? t('profile.notSet') },
+        { icon: 'bi-envelope', label: t('profile.email'), value: user.email },
+        { icon: 'bi-cake2', label: t('profile.dateOfBirth'), value: formatDateDMY(user.date_of_birth) ?? t('profile.notSet') },
+        ...(age !== null ? [{ icon: 'bi-hourglass-split', label: t('profile.age'), value: t('profile.ageYears', { count: age }) }] : []),
+        { icon: 'bi-signpost-split', label: t('profile.stage'), value: user.stage.name },
+        {
+            icon: 'bi-collection',
+            label: t('profile.groups'),
+            value: user.groups.length > 0 ? user.groups.map((g) => g.name).join(', ') : t('profile.none'),
+        },
         {
             icon: 'bi-patch-check',
-            label: 'Email Verified',
-            value: user.email_verified_at ? formatDateDMY(user.email_verified_at.slice(0, 10)) ?? 'Verified' : 'Not verified',
+            label: t('profile.emailVerified'),
+            value: user.email_verified_at
+                ? formatDateDMY(user.email_verified_at.slice(0, 10)) ?? t('profile.verified')
+                : t('profile.notVerified'),
         },
-        { icon: 'bi-shield-lock', label: 'Two-Factor Authentication', value: user.mfa_enabled ? 'Enabled' : 'Disabled' },
-        { icon: 'bi-calendar-plus', label: 'Account Created', value: user.created_at ?? 'Unknown' },
-        { icon: 'bi-clock-history', label: 'Last Updated', value: user.updated_at ?? 'Unknown' },
+        {
+            icon: 'bi-shield-lock',
+            label: t('profile.twoFactorAuthentication'),
+            value: user.mfa_enabled ? t('profile.enabled') : t('profile.disabled'),
+        },
+        { icon: 'bi-calendar-plus', label: t('profile.accountCreated'), value: user.created_at ?? t('profile.unknown') },
+        { icon: 'bi-clock-history', label: t('profile.lastUpdated'), value: user.updated_at ?? t('profile.unknown') },
     ]
     const detailRowsMidpoint = Math.ceil(detailRows.length / 2)
     const detailRowsLeft = detailRows.slice(0, detailRowsMidpoint)
     const detailRowsRight = detailRows.slice(detailRowsMidpoint)
 
     return (
-        <AppLayout title="Identity">
+        <AppLayout title={t('profile.title')}>
             {user.requires_data_update && (
                 <div className="ava-card mb-4 p-3 d-flex align-items-start gap-2 border-warning">
                     <i className="bi bi-exclamation-triangle text-warning mt-1" />
-                    <span>
-                        Your account needs updated information before you can sign in to other Avarewase apps. Contact an
-                        administrator to update your details.
-                    </span>
+                    <span>{t('profile.requiresDataUpdate')}</span>
                 </div>
             )}
 
             {isBirthday && (
                 <div className="ava-card mb-4 p-3 d-flex align-items-center gap-2">
                     <i className="bi bi-balloon-heart-fill text-ava-primary fs-4" />
-                    <span className="fw-semibold">🎉 Happy Birthday, {user.name}!</span>
+                    <span className="fw-semibold">🎉 {t('profile.happyBirthday', { name: user.name })}</span>
                 </div>
             )}
 
@@ -137,10 +146,10 @@ export default function Show({ user }: ShowProps) {
             </div>
 
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Account Details</h5>
+                <h5 className="mb-0">{t('profile.accountDetails')}</h5>
                 <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setShowPasswordModal(true)}>
                     <i className="bi bi-shield-lock me-1" />
-                    Change Password
+                    {t('profile.changePassword')}
                 </button>
             </div>
             <div className="ava-card">
@@ -156,7 +165,7 @@ export default function Show({ user }: ShowProps) {
 
             <div className="app-requesting-banner mt-3 d-flex align-items-start gap-2">
                 <i className="bi bi-info-circle mt-1" />
-                <span>Your profile details and photo are managed by a Church Secretary. Please visit them to update.</span>
+                <span>{t('profile.managedByChurchSecretary')}</span>
             </div>
 
             {showPasswordModal && (
@@ -165,14 +174,14 @@ export default function Show({ user }: ShowProps) {
                         <div className="modal-content">
                             <form onSubmit={submitPassword}>
                                 <div className="modal-header">
-                                    <h5 className="modal-title">Change Password</h5>
-                                    <button type="button" className="btn-close" aria-label="Close" onClick={closePasswordModal} />
+                                    <h5 className="modal-title">{t('profile.changePassword')}</h5>
+                                    <button type="button" className="btn-close" aria-label={t('profile.close')} onClick={closePasswordModal} />
                                 </div>
                                 <div className="modal-body">
-                                    <p className="text-ava-muted text-tiny mb-3">Use a strong password that you don&apos;t reuse elsewhere.</p>
+                                    <p className="text-ava-muted text-tiny mb-3">{t('profile.strongPasswordHint')}</p>
 
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="current_password">Current Password</label>
+                                        <label className="form-label" htmlFor="current_password">{t('profile.currentPassword')}</label>
                                         <input
                                             id="current_password"
                                             type="password"
@@ -187,7 +196,7 @@ export default function Show({ user }: ShowProps) {
                                     </div>
 
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="password">New Password</label>
+                                        <label className="form-label" htmlFor="password">{t('profile.newPassword')}</label>
                                         <input
                                             id="password"
                                             type="password"
@@ -201,7 +210,7 @@ export default function Show({ user }: ShowProps) {
                                     </div>
 
                                     <div className={user.mfa_enabled ? 'mb-3' : 'mb-1'}>
-                                        <label className="form-label" htmlFor="password_confirmation">Confirm New Password</label>
+                                        <label className="form-label" htmlFor="password_confirmation">{t('profile.confirmNewPassword')}</label>
                                         <input
                                             id="password_confirmation"
                                             type="password"
@@ -213,8 +222,8 @@ export default function Show({ user }: ShowProps) {
 
                                     {user.mfa_enabled && (
                                         <div className="mb-1">
-                                            <label className="form-label" htmlFor="code">Authentication Code</label>
-                                            <p className="text-ava-muted text-tiny mb-2">Enter the code from your authenticator app to confirm this change.</p>
+                                            <label className="form-label" htmlFor="code">{t('profile.authenticationCode')}</label>
+                                            <p className="text-ava-muted text-tiny mb-2">{t('profile.authenticationCodeHint')}</p>
                                             <input
                                                 id="code"
                                                 type="text"
@@ -232,11 +241,11 @@ export default function Show({ user }: ShowProps) {
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-outline-primary" onClick={closePasswordModal}>
-                                        Cancel
+                                        {t('common:actions.cancel')}
                                     </button>
                                     <button type="submit" className="btn btn-primary" disabled={passwordForm.processing}>
                                         <i className="bi bi-shield-lock me-1" />
-                                        Update Password
+                                        {t('profile.updatePassword')}
                                     </button>
                                 </div>
                             </form>

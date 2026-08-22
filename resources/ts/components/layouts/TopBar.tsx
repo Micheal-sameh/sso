@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import echo from '@/lib/echo'
+import LanguageSwitcher from '@/components/shared/LanguageSwitcher'
 import type { SharedProps, UserNotification } from '@/types'
 
 interface TopBarProps {
@@ -8,6 +10,7 @@ interface TopBarProps {
 }
 
 export default function TopBar({ onToggleSidebar }: TopBarProps) {
+    const { t } = useTranslation('common')
     const { auth, unread_notifications_count, recent_notifications } = usePage<SharedProps>().props
     const [unreadCount, setUnreadCount] = useState(unread_notifications_count)
     const [notifications, setNotifications] = useState(recent_notifications)
@@ -57,19 +60,21 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
 
     return (
         <div className="topbar d-flex justify-content-between align-items-center border-bottom px-3 px-md-4 py-3 gap-2">
-            <button
-                type="button"
-                className="btn btn-outline-primary btn-sm d-lg-none"
-                aria-label="Open menu"
-                onClick={onToggleSidebar}
-            >
-                <i className="bi bi-list" />
-            </button>
+            {auth.user?.is_admin && (
+                <button
+                    type="button"
+                    className="btn btn-outline-primary btn-sm d-lg-none"
+                    aria-label={t('topbar.openMenu')}
+                    onClick={onToggleSidebar}
+                >
+                    <i className="bi bi-list" />
+                </button>
+            )}
             <div className="dropdown ms-auto">
                 <button
                     type="button"
                     className="btn btn-outline-primary position-relative"
-                    aria-label="Notifications"
+                    aria-label={t('topbar.notifications')}
                     data-bs-toggle="dropdown"
                 >
                     <i className="bi bi-bell" />
@@ -81,15 +86,15 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                 </button>
                 <div className="dropdown-menu dropdown-menu-end notification-dropdown-menu p-0">
                     <div className="px-3 py-2 border-bottom d-flex justify-content-between align-items-center">
-                        <span className="fw-semibold">Notifications</span>
+                        <span className="fw-semibold">{t('topbar.notifications')}</span>
                         {unreadCount > 0 && (
                             <button type="button" className="btn btn-link btn-sm p-0 text-ava-secondary" onClick={markAllRead}>
-                                Mark all as read
+                                {t('topbar.markAllAsRead')}
                             </button>
                         )}
                     </div>
                     {notifications.length === 0 ? (
-                        <div className="px-3 py-4 text-center text-ava-muted text-tiny">No notifications yet.</div>
+                        <div className="px-3 py-4 text-center text-ava-muted text-tiny">{t('topbar.noNotificationsYet')}</div>
                     ) : (
                         <ul className="list-unstyled mb-0">
                             {notifications.map((notification) => (
@@ -120,10 +125,11 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                         </ul>
                     )}
                     <Link href="/notifications" className="dropdown-item text-center text-ava-secondary border-top py-2">
-                        See all notifications
+                        {t('topbar.seeAllNotifications')}
                     </Link>
                 </div>
             </div>
+            <LanguageSwitcher />
             <div className="dropdown">
                 <button type="button" className="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
                     <span className="d-none d-sm-inline">{auth.user?.name}</span>
@@ -132,7 +138,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                 <ul className="dropdown-menu dropdown-menu-end">
                     <li>
                         <button type="button" className="dropdown-item" onClick={logout}>
-                            Log out
+                            {t('topbar.logOut')}
                         </button>
                     </li>
                 </ul>

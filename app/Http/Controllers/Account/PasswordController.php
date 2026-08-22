@@ -33,6 +33,6 @@ class PasswordController extends BaseController
 
         $this->userService->updateOwnPassword($user, $request->string('password')->toString());
 
-        return $this->redirectRoute('account.show', 'Password updated.', 'success');
+        return $this->redirectRoute('account.show', __('messages.password_updated'), 'success');
     }
 }

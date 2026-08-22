@@ -31,20 +31,20 @@ class StageController extends BaseController
     {
         $this->stageService->create(CreateStageDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.stages.index', 'Stage created successfully.');
+        return $this->redirectRoute('admin.stages.index', __('messages.stage_created'));
     }
 
     public function update(Stage $stage, UpdateStageRequest $request): RedirectResponse
     {
         $this->stageService->update($stage, CreateStageDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.stages.index', 'Stage updated successfully.');
+        return $this->redirectRoute('admin.stages.index', __('messages.stage_updated'));
     }
 
     public function destroy(Stage $stage): RedirectResponse
     {
         $this->stageService->delete($stage);
 
-        return $this->redirectBack('Stage deleted.', 'success');
+        return $this->redirectBack(__('messages.stage_deleted'), 'success');
     }
 }

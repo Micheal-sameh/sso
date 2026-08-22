@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react'
+import { Trans, useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 
 interface ProfileUpdateRequiredProps {
@@ -6,19 +7,25 @@ interface ProfileUpdateRequiredProps {
 }
 
 export default function ProfileUpdateRequired({ client }: ProfileUpdateRequiredProps) {
+    const { t } = useTranslation('oauth')
+
     return (
         <AuthLayout>
             <div className="text-center">
                 <div className="icon-circle text-ava-primary mx-auto mb-3">
                     <i className="bi bi-person-gear" />
                 </div>
-                <h4 className="mb-2">Update Your Data</h4>
+                <h4 className="mb-2">{t('profileUpdateRequired.title')}</h4>
                 <p className="text-ava-muted mb-4">
-                    Your Avarewase account needs to be updated before you can sign in to <strong>{client.name}</strong>.
-                    Contact an administrator to update your details, then try again.
+                    <Trans
+                        t={t}
+                        i18nKey="profileUpdateRequired.description"
+                        values={{ clientName: client.name }}
+                        components={{ strong: <strong /> }}
+                    />
                 </p>
                 <button type="button" className="btn btn-primary w-100" onClick={() => router.visit('/account')}>
-                    Back to My Account
+                    {t('profileUpdateRequired.backToAccount')}
                 </button>
             </div>
         </AuthLayout>

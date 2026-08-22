@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import Pagination from '@/components/shared/Pagination'
 import type { PaginatedData, UserNotification } from '@/types'
@@ -9,6 +10,7 @@ interface NotificationsProps {
 }
 
 export default function Notifications({ notifications }: NotificationsProps) {
+    const { t } = useTranslation('account')
     const [selectedIds, setSelectedIds] = useState<number[]>([])
 
     useEffect(() => {
@@ -54,7 +56,7 @@ export default function Notifications({ notifications }: NotificationsProps) {
     }
 
     return (
-        <AppLayout title="Notifications">
+        <AppLayout title={t('notifications.title')}>
             <div className="ava-card">
                 {hasUnread && (
                     <div className="d-flex align-items-center justify-content-between gap-2 p-3 pb-0">
@@ -67,17 +69,17 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                 onChange={(e) => toggleSelectAll(e.target.checked)}
                             />
                             <label className="form-check-label text-tiny text-ava-muted" htmlFor="select-all-unread">
-                                Select all unread
+                                {t('notifications.selectAllUnread')}
                             </label>
                         </div>
                         <div className="d-flex gap-2">
                             {selectedIds.length > 0 && (
                                 <button type="button" className="btn btn-sm btn-outline-primary" onClick={markSelectedRead}>
-                                    Mark selected as read ({selectedIds.length})
+                                    {t('notifications.markSelectedAsRead', { count: selectedIds.length })}
                                 </button>
                             )}
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={markAllRead}>
-                                Mark all as read
+                                {t('notifications.markAllAsRead')}
                             </button>
                         </div>
                     </div>
@@ -93,7 +95,7 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                     <input
                                         type="checkbox"
                                         className="form-check-input mt-1 flex-shrink-0"
-                                        aria-label="Select notification"
+                                        aria-label={t('notifications.selectNotification')}
                                         checked={selectedIds.includes(notification.id)}
                                         onChange={(e) => toggleSelected(notification, e.target.checked)}
                                     />
@@ -113,13 +115,13 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                 >
                                     <div className="d-flex align-items-start justify-content-between gap-2">
                                         <div className={notification.is_read ? '' : 'fw-semibold'}>{notification.message}</div>
-                                        {!notification.is_read && <span className="scope-chip text-nowrap">New</span>}
+                                        {!notification.is_read && <span className="scope-chip text-nowrap">{t('notifications.new')}</span>}
                                     </div>
                                     <div className="text-ava-muted text-tiny mt-1">
                                         {notification.created_at}
                                         {notification.cmc_post_id && (
                                             <span className="text-ava-secondary ms-2">
-                                                View post <i className="bi bi-arrow-right" />
+                                                {t('notifications.viewPost')} <i className="bi bi-arrow-right" />
                                             </span>
                                         )}
                                     </div>
@@ -130,7 +132,7 @@ export default function Notifications({ notifications }: NotificationsProps) {
                                         className="btn btn-sm btn-outline-primary text-nowrap align-self-start"
                                         onClick={() => markRead(notification)}
                                     >
-                                        Mark as Read
+                                        {t('notifications.markAsRead')}
                                     </button>
                                 )}
                             </div>
@@ -139,7 +141,7 @@ export default function Notifications({ notifications }: NotificationsProps) {
                     {notifications.data.length === 0 && (
                         <li className="list-group-item text-center py-5">
                             <i className="bi bi-bell text-ava-muted icon-fs-48 d-block mb-3" />
-                            <p className="text-ava-muted mb-0">No notifications yet.</p>
+                            <p className="text-ava-muted mb-0">{t('notifications.noNotificationsYet')}</p>
                         </li>
                     )}
                 </ul>

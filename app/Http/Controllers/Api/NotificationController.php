@@ -58,7 +58,7 @@ class NotificationController extends BaseController
     {
         $this->notificationService->markAsRead($notification, $request->user());
 
-        return response()->json(['message' => 'Notification marked as read.']);
+        return response()->json(['message' => __('messages.notification_marked_read')]);
     }
 
     #[OA\Post(
@@ -74,7 +74,7 @@ class NotificationController extends BaseController
     {
         $this->notificationService->markAllAsRead($request->user());
 
-        return response()->json(['message' => 'All notifications marked as read.']);
+        return response()->json(['message' => __('messages.all_notifications_marked_read')]);
     }
 
     #[OA\Post(
@@ -102,6 +102,6 @@ class NotificationController extends BaseController
 
         $this->notificationService->markManyAsRead($validated['ids'], $request->user());
 
-        return response()->json(['message' => 'Notifications marked as read.']);
+        return response()->json(['message' => __('messages.notifications_marked_read')]);
     }
 }

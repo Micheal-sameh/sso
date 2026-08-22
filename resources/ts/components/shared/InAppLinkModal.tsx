@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface InAppLinkModalProps {
     url: string | null
@@ -35,6 +36,7 @@ function toYoutubeEmbedUrl(url: string): string | null {
 }
 
 export default function InAppLinkModal({ url, onClose }: InAppLinkModalProps) {
+    const { t } = useTranslation('common')
     const [loaded, setLoaded] = useState(false)
     const [showFallback, setShowFallback] = useState(false)
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -78,24 +80,24 @@ export default function InAppLinkModal({ url, onClose }: InAppLinkModalProps) {
                         </div>
                         <div className="d-flex align-items-center gap-2">
                             <a href={url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
-                                Open in new tab <i className="bi bi-box-arrow-up-right ms-1" />
+                                {t('inAppLinkModal.openInNewTab')} <i className="bi bi-box-arrow-up-right ms-1" />
                             </a>
-                            <button type="button" className="btn-close" aria-label="Close" onClick={onClose} />
+                            <button type="button" className="btn-close" aria-label={t('actions.close')} onClick={onClose} />
                         </div>
                     </div>
                     <div className="modal-body p-0 position-relative d-flex flex-column">
                         {!loaded && (
                             <div className="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white">
                                 <div className="spinner-border text-ava-secondary" role="status">
-                                    <span className="visually-hidden">Loading...</span>
+                                    <span className="visually-hidden">{t('inAppLinkModal.loading')}</span>
                                 </div>
                             </div>
                         )}
                         {showFallback && (
                             <div className="alert alert-warning m-3 mb-0 d-flex align-items-center justify-content-between gap-2">
-                                <span>This site may not display correctly here.</span>
+                                <span>{t('inAppLinkModal.mayNotDisplayCorrectly')}</span>
                                 <a href={url} target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-warning text-nowrap">
-                                    Open in new tab
+                                    {t('inAppLinkModal.openInNewTab')}
                                 </a>
                             </div>
                         )}

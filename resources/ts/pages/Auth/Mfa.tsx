@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import OtpInput from '@/components/shared/OtpInput'
 
@@ -9,6 +10,7 @@ interface MfaForm {
 }
 
 export default function Mfa() {
+    const { t } = useTranslation('auth')
     const [mode, setMode] = useState<'totp' | 'recovery'>('totp')
     const form = useForm<MfaForm>({ code: '' })
 
@@ -23,11 +25,9 @@ export default function Mfa() {
                 <div className="icon-circle text-ava-secondary mx-auto mb-3">
                     <i className="bi bi-shield-lock-fill" />
                 </div>
-                <h4>Two-Factor Authentication</h4>
+                <h4>{t('mfa.title')}</h4>
                 <p className="text-ava-muted small mb-0">
-                    {mode === 'totp'
-                        ? 'Enter the 6-digit code from your authenticator app to verify your identity.'
-                        : 'Enter one of your recovery codes to verify your identity.'}
+                    {mode === 'totp' ? t('mfa.totpDescription') : t('mfa.recoveryDescription')}
                 </p>
             </div>
 
@@ -39,7 +39,7 @@ export default function Mfa() {
                 ) : (
                     <input
                         className="form-control mb-3"
-                        placeholder="XXXX-XXXX"
+                        placeholder={t('mfa.recoveryCodePlaceholder')}
                         maxLength={9}
                         autoFocus
                         value={form.data.code}
@@ -49,7 +49,7 @@ export default function Mfa() {
                 {form.errors.code && <div className="text-danger small mb-3">{form.errors.code}</div>}
 
                 <button type="submit" className="btn btn-primary w-100 mb-3 d-flex align-items-center justify-content-center gap-2" disabled={form.processing}>
-                    Verify Code
+                    {t('mfa.verifyCode')}
                     <i className="bi bi-arrow-right" />
                 </button>
             </form>
@@ -61,21 +61,21 @@ export default function Mfa() {
                     onClick={() => setMode(mode === 'totp' ? 'recovery' : 'totp')}
                 >
                     <i className={`bi ${mode === 'totp' ? 'bi-key' : 'bi-shield-lock'} me-1`} />
-                    {mode === 'totp' ? 'Use a recovery code instead' : 'Use authenticator app instead'}
+                    {mode === 'totp' ? t('mfa.useRecoveryCodeInstead') : t('mfa.useAuthenticatorInstead')}
                 </button>
             </div>
 
             <div className="text-center mt-3 pt-3 border-top">
                 <span className="text-ava-muted small">
                     <i className="bi bi-info-circle me-1" />
-                    Need help?
+                    {t('mfa.needHelp')}
                 </span>{' '}
                 <button
                     type="button"
                     className="btn btn-link text-ava-secondary text-decoration-none small p-0"
                     onClick={() => router.visit('/login')}
                 >
-                    Return to Sign In
+                    {t('mfa.returnToSignIn')}
                 </button>
             </div>
         </AuthLayout>

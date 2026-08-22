@@ -6,9 +6,9 @@ class UserNotFoundException extends \RuntimeException
 {
     protected int $statusCode = 404;
 
-    public function __construct(string $message = 'No matching user found.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('messages.user_not_found'));
     }
 
     public function getStatusCode(): int

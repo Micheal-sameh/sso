@@ -54,7 +54,7 @@ class UserService
         $newRole = UserRole::from($validated['role']);
 
         if (Auth::id() === $user->id && $newRole !== $user->role) {
-            throw new SelfModificationException('You cannot change your own role.');
+            throw new SelfModificationException(__('messages.cannot_change_own_role'));
         }
 
         $touchesAdminRole = $newRole !== UserRole::User || $user->role !== UserRole::User;

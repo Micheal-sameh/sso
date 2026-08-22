@@ -28,6 +28,6 @@ class ConnectedAppsController extends BaseController
     {
         $this->tokenRepository->revoke($tokenId);
 
-        return $this->redirectBack('App access revoked.', 'success');
+        return $this->redirectBack(__('messages.app_access_revoked'), 'success');
     }
 }

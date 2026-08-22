@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import type { SharedProps } from '@/types'
 import FlashMessage from '@/components/shared/FlashMessage'
 import Sidebar, { type SidebarLink } from '@/components/layouts/Sidebar'
@@ -12,31 +13,33 @@ interface AdminLayoutProps {
     action?: ReactNode
 }
 
-const FULL_NAV_LINKS: SidebarLink[] = [
-    { href: '/admin/users', label: 'Users', icon: 'bi-people' },
-    { href: '/admin/admins', label: 'SSO Admins', icon: 'bi-shield-check' },
-    { href: '/admin/stages', label: 'Stages', icon: 'bi-signpost-split' },
-    { href: '/admin/groups', label: 'Groups', icon: 'bi-collection' },
-    { href: '/admin/clients', label: 'OAuth Clients', icon: 'bi-key' },
-    { href: '/admin/tokens', label: 'Tokens', icon: 'bi-ticket-perforated' },
-    { href: '/admin/notifications', label: 'Notifications', icon: 'bi-bell' },
-    { href: '/admin/cmc-posts', label: 'CMC Posts', icon: 'bi-newspaper' },
-]
-
-const CMC_ONLY_NAV_LINKS: SidebarLink[] = [
-    { href: '/admin/cmc-posts', label: 'CMC Posts', icon: 'bi-newspaper' },
-]
-
-const ACCOUNT_LINK: SidebarLink = { href: '/account', label: 'Back to Account', icon: 'bi-arrow-left' }
-
 export default function AdminLayout({ children, title, action }: AdminLayoutProps) {
+    const { t } = useTranslation('common')
     const [sidebarOpen, setSidebarOpen] = useState(false)
     const { auth } = usePage<SharedProps>().props
-    const navLinks = auth.user?.is_admin ? FULL_NAV_LINKS : CMC_ONLY_NAV_LINKS
+
+    const fullNavLinks: SidebarLink[] = [
+        { href: '/admin/users', label: t('nav.users'), icon: 'bi-people' },
+        { href: '/admin/admins', label: t('nav.ssoAdmins'), icon: 'bi-shield-check' },
+        { href: '/admin/stages', label: t('nav.stages'), icon: 'bi-signpost-split' },
+        { href: '/admin/groups', label: t('nav.groups'), icon: 'bi-collection' },
+        { href: '/admin/clients', label: t('nav.oauthClients'), icon: 'bi-key' },
+        { href: '/admin/tokens', label: t('nav.tokens'), icon: 'bi-ticket-perforated' },
+        { href: '/admin/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
+        { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+    ]
+
+    const cmcOnlyNavLinks: SidebarLink[] = [
+        { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
+    ]
+
+    const accountLink: SidebarLink = { href: '/account', label: t('nav.backToAccount'), icon: 'bi-arrow-left' }
+
+    const navLinks = auth.user?.is_admin ? fullNavLinks : cmcOnlyNavLinks
 
     return (
         <div className="d-flex">
-            <Sidebar links={navLinks} footerLinks={[ACCOUNT_LINK]} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+            <Sidebar links={navLinks} footerLinks={[accountLink]} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
             <main className="flex-grow-1 main-content-area">
                 <TopBar onToggleSidebar={() => setSidebarOpen((o) => !o)} />

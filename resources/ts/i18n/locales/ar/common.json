@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "home": "الرئيسية",
+    "identity": "الهوية",
+    "security": "الأمان",
+    "connectedApps": "التطبيقات المرتبطة",
+    "notifications": "الإشعارات",
+    "cmcPosts": "منشورات المركز الإعلامي",
+    "profile": "الملف الشخصي",
+    "cmc": "المركز الإعلامي",
+    "apps": "التطبيقات",
+    "manageSso": "إدارة SSO",
+    "manageCmcPosts": "إدارة منشورات المركز الإعلامي",
+    "users": "المستخدمون",
+    "ssoAdmins": "مديرو SSO",
+    "stages": "المراحل",
+    "groups": "المجموعات",
+    "oauthClients": "تطبيقات OAuth",
+    "tokens": "الرموز",
+    "backToAccount": "العودة إلى الحساب"
+  },
+  "topbar": {
+    "openMenu": "فتح القائمة",
+    "notifications": "الإشعارات",
+    "markAllAsRead": "تعيين الكل كمقروء",
+    "noNotificationsYet": "لا توجد إشعارات بعد.",
+    "seeAllNotifications": "عرض كل الإشعارات",
+    "logOut": "تسجيل الخروج"
+  },
+  "locale": {
+    "english": "en",
+    "arabic": "عر",
+    "switchLanguage": "تغيير اللغة"
+  },
+  "actions": {
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "confirm": "تأكيد",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "back": "رجوع"
+  },
+  "sidebar": {
+    "closeMenu": "إغلاق القائمة"
+  },
+  "confirmDialog": {
+    "defaultTitle": "هل أنت متأكد؟"
+  },
+  "inAppLinkModal": {
+    "openInNewTab": "فتح في تبويب جديد",
+    "loading": "جارٍ التحميل...",
+    "mayNotDisplayCorrectly": "قد لا يظهر هذا الموقع بشكل صحيح هنا."
+  },
+  "pagination": {
+    "ariaLabel": "التنقل بين الصفحات"
+  },
+  "roleChip": {
+    "superadmin": "مدير عام",
+    "admin": "مدير",
+    "secretary": "سكرتير",
+    "user": "مستخدم"
+  },
+  "statusBadge": {
+    "active": "نشط",
+    "revoked": "ملغى",
+    "enabled": "مفعّل",
+    "disabled": "معطّل",
+    "internal": "داخلي",
+    "external": "خارجي",
+    "warning": "يحتاج تحديث"
+  },
+  "welcome": {
+    "signIn": "تسجيل الدخول",
+    "eyebrow": "إدارة الهوية والوصول",
+    "heroTitle": "هوية واحدة لكل تطبيقات Avarewase",
+    "heroDescription": "Avarewase Auth هو مزود تسجيل الدخول المركزي لمؤسستك — حساب آمن واحد يتصل بكل التطبيقات التي تستخدمها، محمي بالتحقق بخطوتين ومُدار من لوحة تحكم واحدة.",
+    "signInToYourAccount": "سجّل الدخول إلى حسابك",
+    "learnMore": "اعرف المزيد",
+    "footer": "© {{year}} Avarewase Auth. جميع الحقوق محفوظة.",
+    "features": {
+      "sso": {
+        "title": "تسجيل الدخول الموحد",
+        "description": "مجموعة واحدة من بيانات الاعتماد لكل تطبيق متصل، مبنية على OAuth2 و OpenID Connect."
+      },
+      "mfa": {
+        "title": "التحقق بخطوتين",
+        "description": "احمِ كل حساب بالتحقق بخطوتين القائم على TOTP ورموز استرداد لمرة واحدة."
+      },
+      "directory": {
+        "title": "دليل مركزي",
+        "description": "أدر كل عضو ومرحلته ودوره من لوحة تحكم إدارية واحدة."
+      },
+      "accessControl": {
+        "title": "التحكم بوصول التطبيقات",
+        "description": "امنح التطبيقات المتصلة وصولاً للجميع، أو لمرحلة معينة، أو لأفراد مختارين."
+      },
+      "recovery": {
+        "title": "استرداد ذاتي الخدمة",
+        "description": "روابط لمرة واحدة ومحدودة المدة لإعادة تعيين كلمة المرور وتحديث صورة الملف الشخصي — دون الحاجة لتذكرة دعم."
+      },
+      "integrations": {
+        "title": "مصمم للتكامل",
+        "description": "مزود هوية قائم على المعايير يمكن لأي تطبيق OAuth2/OIDC الاتصال به خلال دقائق."
+      }
+    }
+  },
+  "avatarUpload": {
+    "linkExpired": "انتهت صلاحية هذا الرابط أو تم استخدامه بالفعل. اطلب رابطًا جديدًا من أحد المسؤولين.",
+    "successMessage": "تم تحديث صورة الملف الشخصي لـ {{userName}}. يمكنك إغلاق هذه الصفحة الآن.",
+    "updateProfilePicture": "تحديث صورة الملف الشخصي لـ {{userName}}",
+    "choosePhoto": "اختر صورة",
+    "uploadPhoto": "رفع الصورة",
+    "poweredBy": "بدعم من Avarewase Auth"
+  }
+}

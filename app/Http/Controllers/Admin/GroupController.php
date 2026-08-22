@@ -54,20 +54,20 @@ class GroupController extends BaseController
     {
         $this->groupService->create(GroupDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.groups.index', 'Group created successfully.');
+        return $this->redirectRoute('admin.groups.index', __('messages.group_created'));
     }
 
     public function update(Group $group, GroupRequest $request): RedirectResponse
     {
         $this->groupService->update($group, GroupDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.groups.index', 'Group updated successfully.');
+        return $this->redirectRoute('admin.groups.index', __('messages.group_updated'));
     }
 
     public function destroy(Group $group): RedirectResponse
     {
         $this->groupService->delete($group);
 
-        return $this->redirectBack('Group deleted.', 'success');
+        return $this->redirectBack(__('messages.group_deleted'), 'success');
     }
 }

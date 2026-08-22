@@ -1,0 +1,13 @@
+{
+  "home": {
+    "welcome": "Welcome, {{name}}",
+    "copticDate": "Coptic Date",
+    "copticDateUnavailable": "Not available right now.",
+    "synaxariumToday": "Today's Commemoration from the Synaxarium",
+    "noCommemorationToday": "No commemoration available today.",
+    "latestCmcPosts": "Latest CMC Posts",
+    "seeAll": "See all",
+    "postedBy": "Posted by {{name}}",
+    "noPostsYet": "No posts yet."
+  }
+}

@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import type { PaginatedData } from '@/types'
 
 interface PaginationProps {
@@ -6,6 +7,8 @@ interface PaginationProps {
 }
 
 export default function Pagination({ links }: PaginationProps) {
+    const { t } = useTranslation('common')
+
     if (links.length <= 3) {
         return null
     }
@@ -19,7 +22,7 @@ export default function Pagination({ links }: PaginationProps) {
     }
 
     return (
-        <nav aria-label="Pagination">
+        <nav aria-label={t('pagination.ariaLabel')}>
             <ul className="pagination">
                 {links.map((link, index) => (
                     <li key={index} className={`page-item ${link.active ? 'active' : ''} ${!link.url ? 'disabled' : ''}`}>

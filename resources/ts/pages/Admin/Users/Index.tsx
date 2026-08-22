@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { router, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
@@ -15,6 +16,7 @@ interface IndexProps {
 }
 
 export default function Index({ users, stages, filters }: IndexProps) {
+    const { t } = useTranslation('admin')
     const [search, setSearch] = useState(filters.search ?? '')
     const [role, setRole] = useState(filters.role ?? '')
     const [stageId, setStageId] = useState(filters.stage_id ?? '')
@@ -35,9 +37,11 @@ export default function Index({ users, stages, filters }: IndexProps) {
     }
 
     const toggleAdminAccess = async (user: User) => {
-        const action = user.is_admin ? 'revoke' : 'grant'
+        const message = user.is_admin
+            ? t('users.confirmRevokeAdminAccess', { name: user.name })
+            : t('users.confirmGrantAdminAccess', { name: user.name })
 
-        if (await confirm(`Are you sure you want to ${action} SSO admin access for ${user.name}?`, { confirmLabel: action === 'revoke' ? 'Revoke' : 'Grant' })) {
+        if (await confirm(message, { confirmLabel: user.is_admin ? t('actions.revoke') : t('actions.grant') })) {
             router.patch(`/admin/users/${user.id}/toggle-admin-access`, {}, { preserveScroll: true })
         }
     }
@@ -48,36 +52,36 @@ export default function Index({ users, stages, filters }: IndexProps) {
 
     return (
         <AdminLayout
-            title="Users"
+            title={t('users.indexTitle')}
             action={
                 <button type="button" className="btn btn-primary btn-sm" onClick={() => router.visit('/admin/users/create')}>
                     <i className="bi bi-plus-lg" />
-                    <span className="d-none d-sm-inline ms-1">Create User</span>
+                    <span className="d-none d-sm-inline ms-1">{t('users.createUser')}</span>
                 </button>
             }
         >
             <div className="row g-3 mb-4">
                 <div className="col-6 col-md-3">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Total Users</p>
+                        <p className="stat-tile-label mb-2">{t('users.stats.totalUsers')}</p>
                         <p className="stat-tile-value mb-0">{users.total}</p>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Active (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('users.stats.activePage')}</p>
                         <p className="stat-tile-value mb-0">{activeCount}</p>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Super Admins (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('users.stats.superAdminsPage')}</p>
                         <p className="stat-tile-value mb-0">{superAdminCount}</p>
                     </div>
                 </div>
                 <div className="col-6 col-md-3">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Admins (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('users.stats.adminsPage')}</p>
                         <p className="stat-tile-value mb-0">{adminCount}</p>
                     </div>
                 </div>
@@ -86,19 +90,19 @@ export default function Index({ users, stages, filters }: IndexProps) {
             <div className="d-flex flex-column flex-sm-row gap-2 mb-3">
                 <input
                     className="form-control"
-                    placeholder="Search by name, email, or membership code"
+                    placeholder={t('search.byNameEmailMembership')}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <select className="form-select max-w-200-sm" value={role} onChange={(e) => setRole(e.target.value)}>
-                    <option value="">All roles</option>
-                    <option value="superadmin">Super Admin</option>
-                    <option value="admin">Admin</option>
-                    <option value="secretary">Secretary</option>
-                    <option value="user">User</option>
+                    <option value="">{t('users.allRoles')}</option>
+                    <option value="superadmin">{t('roles.superadmin')}</option>
+                    <option value="admin">{t('roles.admin')}</option>
+                    <option value="secretary">{t('roles.secretary')}</option>
+                    <option value="user">{t('roles.user')}</option>
                 </select>
                 <select className="form-select max-w-200-sm" value={stageId} onChange={(e) => setStageId(e.target.value)}>
-                    <option value="">All stages</option>
+                    <option value="">{t('users.allStages')}</option>
                     {stages.map((stage) => (
                         <option key={stage.id} value={stage.id}>
                             {stage.name}
@@ -114,13 +118,13 @@ export default function Index({ users, stages, filters }: IndexProps) {
                         <thead>
                             <tr>
                                 <th />
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Membership</th>
-                                <th>Stage</th>
-                                <th>Role</th>
-                                <th>Status</th>
-                                <th>Admin Access</th>
+                                <th>{t('table.name')}</th>
+                                <th>{t('table.email')}</th>
+                                <th>{t('table.membership')}</th>
+                                <th>{t('table.stage')}</th>
+                                <th>{t('table.role')}</th>
+                                <th>{t('table.status')}</th>
+                                <th>{t('users.table.adminAccess')}</th>
                                 <th />
                             </tr>
                         </thead>
@@ -164,23 +168,23 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                         <button
                                             type="button"
                                             className="btn btn-sm btn-outline-primary me-2"
-                                            title="Edit user"
+                                            title={t('actions.editUser')}
                                             onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
                                         >
                                             <i className="bi bi-pencil" />
                                         </button>
                                         <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
-                                            Toggle Active
+                                            {t('actions.toggleActive')}
                                         </button>
                                         {auth.user?.can_manage_admin_access && (
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-outline-primary"
                                                 disabled={user.id === auth.user?.id}
-                                                title={user.id === auth.user?.id ? "You can't change your own admin access" : undefined}
+                                                title={user.id === auth.user?.id ? t('users.cantChangeOwnAdminAccess') : undefined}
                                                 onClick={() => toggleAdminAccess(user)}
                                             >
-                                                {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
+                                                {user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin')}
                                             </button>
                                         )}
                                     </td>
@@ -213,23 +217,23 @@ export default function Index({ users, stages, filters }: IndexProps) {
                         </div>
 
                         <div className="record-card-row">
-                            <span className="record-card-label">Membership</span>
+                            <span className="record-card-label">{t('table.membership')}</span>
                             <span className="code-chip text-uppercase">{user.membership_code}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Stage</span>
+                            <span className="record-card-label">{t('table.stage')}</span>
                             <span>{user.stage.name}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Role</span>
+                            <span className="record-card-label">{t('table.role')}</span>
                             <RoleChip role={user.role} />
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Status</span>
+                            <span className="record-card-label">{t('table.status')}</span>
                             <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Admin Access</span>
+                            <span className="record-card-label">{t('users.table.adminAccess')}</span>
                             <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
                         </div>
 
@@ -237,13 +241,13 @@ export default function Index({ users, stages, filters }: IndexProps) {
                             <button
                                 type="button"
                                 className="btn btn-sm btn-outline-primary"
-                                title="Edit user"
+                                title={t('actions.editUser')}
                                 onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
                             >
                                 <i className="bi bi-pencil" />
                             </button>
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => toggle(user)}>
-                                Toggle Active
+                                {t('actions.toggleActive')}
                             </button>
                             {auth.user?.can_manage_admin_access && (
                                 <button
@@ -252,7 +256,7 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                     disabled={user.id === auth.user?.id}
                                     onClick={() => toggleAdminAccess(user)}
                                 >
-                                    {user.is_admin ? 'Revoke Admin' : 'Grant Admin'}
+                                    {user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin')}
                                 </button>
                             )}
                         </div>

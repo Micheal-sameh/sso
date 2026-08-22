@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface ConfirmOptions {
     title?: string
@@ -25,6 +26,7 @@ export function useConfirm(): ConfirmFn {
 }
 
 export function ConfirmProvider({ children }: { children: ReactNode }) {
+    const { t } = useTranslation('common')
     const [state, setState] = useState<ConfirmState | null>(null)
     const resolver = useRef<((value: boolean) => void) | null>(null)
 
@@ -56,21 +58,21 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
                                         <i className={`bi ${state.variant === 'primary' ? 'bi-question-circle' : 'bi-exclamation-triangle'}`} />
                                     </div>
                                     <div>
-                                        <h5 className="mb-1">{state.title ?? 'Are you sure?'}</h5>
+                                        <h5 className="mb-1">{state.title ?? t('confirmDialog.defaultTitle')}</h5>
                                         <p className="text-ava-muted mb-0">{state.message}</p>
                                     </div>
                                 </div>
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-outline-primary" onClick={() => settle(false)}>
-                                    {state.cancelLabel ?? 'Cancel'}
+                                    {state.cancelLabel ?? t('actions.cancel')}
                                 </button>
                                 <button
                                     type="button"
                                     className={`btn ${state.variant === 'primary' ? 'btn-primary' : 'btn-danger'}`}
                                     onClick={() => settle(true)}
                                 >
-                                    {state.confirmLabel ?? 'Confirm'}
+                                    {state.confirmLabel ?? t('actions.confirm')}
                                 </button>
                             </div>
                         </div>

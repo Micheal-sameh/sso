@@ -1,6 +1,7 @@
 import { useForm } from '@inertiajs/react'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 
@@ -15,6 +16,7 @@ interface LoginForm {
 }
 
 export default function Login({ client }: LoginProps) {
+    const { t } = useTranslation('auth')
     const [showPassword, setShowPassword] = useState(false)
     const form = useForm<LoginForm>({
         membership_code: '',
@@ -31,18 +33,18 @@ export default function Login({ client }: LoginProps) {
         <AuthLayout>
             <div className="text-center mb-4">
                 <AvaLogo size={56} showText />
-                <p className="text-ava-muted small mt-2 mb-0">Sign in to your account</p>
+                <p className="text-ava-muted small mt-2 mb-0">{t('login.signInToAccount')}</p>
             </div>
 
             {client && (
                 <div className="app-requesting-banner mb-4">
-                    <strong>{client.name}</strong> uses Avarewase to sign you in.
+                    <Trans t={t} i18nKey="login.appRequestingBanner" values={{ clientName: client.name }} components={{ strong: <strong /> }} />
                 </div>
             )}
 
             <form onSubmit={submit}>
                 <div className="mb-3">
-                    <label className="form-label" htmlFor="membership_code">Membership Code</label>
+                    <label className="form-label" htmlFor="membership_code">{t('login.membershipCode')}</label>
                     <input
                         id="membership_code"
                         type="text"
@@ -57,7 +59,7 @@ export default function Login({ client }: LoginProps) {
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label" htmlFor="password">Password</label>
+                    <label className="form-label" htmlFor="password">{t('login.password')}</label>
                     <div className="input-group">
                         <input
                             id="password"
@@ -69,7 +71,7 @@ export default function Login({ client }: LoginProps) {
                         <button
                             type="button"
                             className="btn btn-outline-primary"
-                            aria-label="Toggle password visibility"
+                            aria-label={t('login.togglePasswordVisibility')}
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
@@ -86,20 +88,20 @@ export default function Login({ client }: LoginProps) {
                         checked={form.data.remember}
                         onChange={(e) => form.setData('remember', e.target.checked)}
                     />
-                    <label className="form-check-label" htmlFor="remember">Remember me</label>
+                    <label className="form-check-label" htmlFor="remember">{t('login.rememberMe')}</label>
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
-                    Sign In
+                    {t('login.signIn')}
                 </button>
 
                 <div className="text-center mt-3">
-                    <a href="/forgot-password" className="text-ava-secondary text-decoration-none small">Forgot password?</a>
+                    <a href="/forgot-password" className="text-ava-secondary text-decoration-none small">{t('login.forgotPassword')}</a>
                 </div>
             </form>
 
             <p className="text-center text-ava-muted text-tiny mt-4 mb-0">
-                Powered by Avarewase Auth
+                {t('login.poweredBy')}
             </p>
         </AuthLayout>
     )

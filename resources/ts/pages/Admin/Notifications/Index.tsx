@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
@@ -22,13 +23,6 @@ interface NotificationForm {
     group_ids: number[]
 }
 
-const TARGET_TYPE_LABELS: Record<AppNotification['target_type'], string> = {
-    all: 'All Users',
-    stage: 'Specific Stage(s)',
-    specific: 'Specific Users',
-    group: 'Specific Group(s)',
-}
-
 const emptyForm: NotificationForm = {
     message: '',
     image: null,
@@ -39,6 +33,13 @@ const emptyForm: NotificationForm = {
 }
 
 export default function Index({ notifications, stages, groups, users }: IndexProps) {
+    const { t } = useTranslation(['admin', 'common'])
+    const TARGET_TYPE_LABELS: Record<AppNotification['target_type'], string> = {
+        all: t('targeting.all'),
+        stage: t('targeting.stage'),
+        specific: t('targeting.specific'),
+        group: t('targeting.group'),
+    }
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [userSearch, setUserSearch] = useState('')
     const form = useForm<NotificationForm>(emptyForm)
@@ -97,7 +98,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
     }
 
     const remove = async (notification: AppNotification) => {
-        if (await confirm('Delete this notification? Recipients will no longer see it.', { confirmLabel: 'Delete' })) {
+        if (await confirm(t('notifications.confirmDelete'), { confirmLabel: t('common:actions.delete') })) {
             router.delete(`/admin/notifications/${notification.id}`)
         }
     }
@@ -105,13 +106,13 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
     const targetSummary = (notification: AppNotification): string => {
         switch (notification.target_type) {
             case 'all':
-                return 'All Users'
+                return t('targeting.all')
             case 'stage':
-                return (notification.stages ?? []).map((s) => s.name).join(', ') || 'No stages'
+                return (notification.stages ?? []).map((s) => s.name).join(', ') || t('notifications.noStages')
             case 'group':
-                return (notification.groups ?? []).map((g) => g.name).join(', ') || 'No groups'
+                return (notification.groups ?? []).map((g) => g.name).join(', ') || t('notifications.noGroups')
             case 'specific':
-                return (notification.target_users ?? []).map((u) => u.name).join(', ') || 'No users'
+                return (notification.target_users ?? []).map((u) => u.name).join(', ') || t('notifications.noUsers')
             default:
                 return ''
         }
@@ -124,14 +125,14 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
     )
 
     return (
-        <AdminLayout title="Notification Center">
+        <AdminLayout title={t('notifications.title')}>
             <div className="row g-4">
                 <div className="col-lg-5">
-                    <h5 className="mb-3">Send Notification</h5>
+                    <h5 className="mb-3">{t('notifications.sendNotification')}</h5>
                     <div className="ava-card p-4">
                         <form onSubmit={submit}>
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="message">Message</label>
+                                <label className="form-label" htmlFor="message">{t('notifications.message')}</label>
                                 <textarea
                                     id="message"
                                     className="form-control"
@@ -144,7 +145,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="image">Picture (optional)</label>
+                                <label className="form-label" htmlFor="image">{t('notifications.pictureOptional')}</label>
                                 <div className="d-flex align-items-center gap-3">
                                     {imagePreview && (
                                         <img
@@ -167,17 +168,17 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="target_type">Send To</label>
+                                <label className="form-label" htmlFor="target_type">{t('notifications.sendTo')}</label>
                                 <select
                                     id="target_type"
                                     className="form-select"
                                     value={form.data.target_type}
                                     onChange={(e) => form.setData('target_type', e.target.value as NotificationForm['target_type'])}
                                 >
-                                    <option value="all">All Users</option>
-                                    <option value="stage">Specific Stage(s)</option>
-                                    <option value="specific">Specific Users</option>
-                                    <option value="group">Specific Group(s)</option>
+                                    <option value="all">{t('targeting.all')}</option>
+                                    <option value="stage">{t('targeting.stage')}</option>
+                                    <option value="specific">{t('targeting.specific')}</option>
+                                    <option value="group">{t('targeting.group')}</option>
                                 </select>
                                 {form.errors.target_type && (
                                     <div className="text-danger small mt-1">{form.errors.target_type}</div>
@@ -186,7 +187,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
 
                             {form.data.target_type === 'stage' && (
                                 <div className="mb-3">
-                                    <label className="form-label">Stages</label>
+                                    <label className="form-label">{t('notifications.stagesLabel')}</label>
                                     <div className="permission-list">
                                         {stages.map((stage) => (
                                             <div key={stage.id} className="form-check">
@@ -211,7 +212,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
 
                             {form.data.target_type === 'group' && (
                                 <div className="mb-3">
-                                    <label className="form-label">Groups</label>
+                                    <label className="form-label">{t('notifications.groupsLabel')}</label>
                                     <div className="permission-list">
                                         {groups.map((group) => (
                                             <div key={group.id} className="form-check">
@@ -228,7 +229,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                                             </div>
                                         ))}
                                         {groups.length === 0 && (
-                                            <p className="text-ava-muted text-tiny mb-0">No groups exist yet.</p>
+                                            <p className="text-ava-muted text-tiny mb-0">{t('search.noGroupsYet')}</p>
                                         )}
                                     </div>
                                     {form.errors.group_ids && (
@@ -239,11 +240,11 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
 
                             {form.data.target_type === 'specific' && (
                                 <div className="mb-3">
-                                    <label className="form-label">Users</label>
+                                    <label className="form-label">{t('notifications.usersLabel')}</label>
                                     <input
                                         type="text"
                                         className="form-control mb-2"
-                                        placeholder="Search users..."
+                                        placeholder={t('search.users')}
                                         value={userSearch}
                                         onChange={(e) => setUserSearch(e.target.value)}
                                     />
@@ -264,7 +265,7 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                                             </div>
                                         ))}
                                         {filteredUsers.length === 0 && (
-                                            <p className="text-ava-muted text-tiny mb-0">No users match your search.</p>
+                                            <p className="text-ava-muted text-tiny mb-0">{t('search.noUsersMatch')}</p>
                                         )}
                                     </div>
                                     {form.errors.user_ids && (
@@ -275,14 +276,14 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
 
                             <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
                                 <i className="bi bi-send me-1" />
-                                Send Notification
+                                {t('notifications.send')}
                             </button>
                         </form>
                     </div>
                 </div>
 
                 <div className="col-lg-7">
-                    <h5 className="mb-3">Sent Notifications</h5>
+                    <h5 className="mb-3">{t('notifications.sentNotifications')}</h5>
                     <div className="ava-card">
                         <ul className="list-group list-group-flush">
                             {notifications.data.map((notification) => (
@@ -304,8 +305,9 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                                                 <span className="text-ava-muted text-tiny">{targetSummary(notification)}</span>
                                             </div>
                                             <div className="text-ava-muted text-tiny mt-1">
-                                                Sent {notification.created_at}
-                                                {notification.creator && ` by ${notification.creator.name}`}
+                                                {notification.creator
+                                                    ? t('notifications.sentBy', { date: notification.created_at, name: notification.creator.name })
+                                                    : t('notifications.sent', { date: notification.created_at })}
                                             </div>
                                         </div>
                                         <button
@@ -313,14 +315,14 @@ export default function Index({ notifications, stages, groups, users }: IndexPro
                                             className="btn btn-sm btn-outline-primary text-nowrap align-self-start"
                                             onClick={() => remove(notification)}
                                         >
-                                            Delete
+                                            {t('common:actions.delete')}
                                         </button>
                                     </div>
                                 </li>
                             ))}
                             {notifications.data.length === 0 && (
                                 <li className="list-group-item text-center text-ava-muted py-4">
-                                    No notifications sent yet.
+                                    {t('notifications.empty')}
                                 </li>
                             )}
                         </ul>

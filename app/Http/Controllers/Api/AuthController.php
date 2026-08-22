@@ -134,7 +134,7 @@ class AuthController extends BaseController
     {
         $request->user()?->token()?->revoke();
 
-        return response()->json(['message' => 'Logged out.']);
+        return response()->json(['message' => __('messages.logged_out')]);
     }
 
     private function tokenResponse(User $user): JsonResponse

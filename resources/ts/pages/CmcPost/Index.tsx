@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
@@ -11,10 +12,11 @@ interface IndexProps {
 }
 
 export default function Index({ posts }: IndexProps) {
+    const { t } = useTranslation('cmcPost')
     const [openUrl, setOpenUrl] = useState<string | null>(null)
 
     return (
-        <AppLayout title="CMC Posts">
+        <AppLayout title={t('index.title')}>
             <div className="ava-card">
                 <ul className="list-group list-group-flush">
                     {posts.data.map((post) => (
@@ -50,7 +52,7 @@ export default function Index({ posts }: IndexProps) {
                                     )}
                                     <div className="text-ava-muted text-tiny mt-2">
                                         {post.created_at}
-                                        {post.creator && ` · Posted by ${post.creator.name}`}
+                                        {post.creator && ` · ${t('index.postedBy', { name: post.creator.name })}`}
                                     </div>
                                 </div>
                             </div>
@@ -59,7 +61,7 @@ export default function Index({ posts }: IndexProps) {
                     {posts.data.length === 0 && (
                         <li className="list-group-item text-center py-5">
                             <i className="bi bi-newspaper text-ava-muted icon-fs-48 d-block mb-3" />
-                            <p className="text-ava-muted mb-0">No posts yet.</p>
+                            <p className="text-ava-muted mb-0">{t('index.empty')}</p>
                         </li>
                     )}
                 </ul>

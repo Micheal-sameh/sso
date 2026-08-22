@@ -102,13 +102,13 @@ class SecurityController extends BaseController
         try {
             $secret = Crypt::decryptString($request->string('setup_token')->toString());
         } catch (DecryptException) {
-            throw new InvalidMfaCodeException('This setup session has expired. Start MFA setup again.');
+            throw new InvalidMfaCodeException(__('messages.mfa_setup_session_expired'));
         }
 
         $this->mfaService->enableMfa($request->user(), $secret, $request->string('code')->toString());
 
         return response()->json([
-            'message' => '2FA enabled successfully.',
+            'message' => __('messages.mfa_enabled'),
             'recovery_codes' => $request->user()->fresh()->mfa->recovery_codes,
         ]);
     }
@@ -134,7 +134,7 @@ class SecurityController extends BaseController
     {
         $this->mfaService->disableMfa($request->user(), $request->string('code')->toString());
 
-        return response()->json(['message' => '2FA has been disabled.']);
+        return response()->json(['message' => __('messages.mfa_disabled')]);
     }
 
     /**
@@ -167,6 +167,6 @@ class SecurityController extends BaseController
 
         $this->userService->updateOwnPassword($request->user(), $request->string('password')->toString());
 
-        return response()->json(['message' => 'Password updated.']);
+        return response()->json(['message' => __('messages.password_updated')]);
     }
 }

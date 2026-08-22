@@ -6,9 +6,9 @@ class MfaNotEnabledException extends \RuntimeException
 {
     protected int $statusCode = 400;
 
-    public function __construct(string $message = 'Two-factor authentication is not enabled for this account.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('messages.mfa_not_enabled'));
     }
 
     public function getStatusCode(): int

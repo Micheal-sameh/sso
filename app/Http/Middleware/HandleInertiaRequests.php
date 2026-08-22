@@ -26,6 +26,8 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user ? UserDTO::fromModel($user)->toArray() : null,
             ],
+            'locale' => app()->getLocale(),
+            'direction' => app()->getLocale() === 'ar' ? 'rtl' : 'ltr',
             'unread_notifications_count' => $user ? $notificationService->unreadCount($user) : 0,
             'recent_notifications' => $user
                 ? $notificationService->recentForUser($user)->map(

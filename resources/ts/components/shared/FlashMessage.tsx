@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import type { SharedProps } from '@/types'
 
 const VARIANT_MAP: Record<string, string> = {
@@ -10,6 +11,7 @@ const VARIANT_MAP: Record<string, string> = {
 }
 
 export default function FlashMessage() {
+    const { t } = useTranslation('common')
     const { flash } = usePage<SharedProps>().props
     const [visible, setVisible] = useState(true)
 
@@ -30,7 +32,7 @@ export default function FlashMessage() {
         <div className="toast-popup-wrapper">
             <div className={`alert alert-${variant} alert-dismissible fade show toast-popup shadow`} role="alert">
                 {flash.message}
-                <button type="button" className="btn-close" aria-label="Close" onClick={() => setVisible(false)} />
+                <button type="button" className="btn-close" aria-label={t('actions.close')} onClick={() => setVisible(false)} />
             </div>
         </div>
     )

@@ -1,0 +1,281 @@
+{
+  "actions": {
+    "view": "View",
+    "add": "Add",
+    "remove": "Remove",
+    "revoke": "Revoke",
+    "grant": "Grant",
+    "activate": "Activate",
+    "deactivate": "Deactivate",
+    "toggleActive": "Toggle Active",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "whatsapp": "WhatsApp",
+    "saveChanges": "Save Changes",
+    "register": "Register",
+    "revokeAdmin": "Revoke Admin",
+    "grantAdmin": "Grant Admin",
+    "editUser": "Edit user"
+  },
+  "table": {
+    "name": "Name",
+    "email": "Email",
+    "membership": "Membership",
+    "stage": "Stage",
+    "role": "Role",
+    "status": "Status",
+    "description": "Description",
+    "users": "Users",
+    "code": "Code"
+  },
+  "roles": {
+    "user": "User",
+    "secretary": "Secretary",
+    "admin": "Admin",
+    "superadmin": "Super Admin"
+  },
+  "targeting": {
+    "all": "All Users",
+    "stage": "Specific Stage(s)",
+    "specific": "Specific Users",
+    "group": "Specific Group(s)"
+  },
+  "search": {
+    "byNameEmailMembership": "Search by name, email, or membership code",
+    "users": "Search users...",
+    "noUsersMatch": "No users match your search.",
+    "noGroupsYet": "No groups exist yet.",
+    "noGroupsCreateFirst": "No groups exist yet. Create one on the Groups page first."
+  },
+  "admins": {
+    "title": "SSO Admins",
+    "description": "Everyone currently granted Super Admin or Admin access to this panel.",
+    "stats": {
+      "total": "Total Admins",
+      "superAdminsPage": "Super Admins (this page)",
+      "adminsPage": "Admins (this page)"
+    },
+    "empty": "No SSO admins found.",
+    "table": {
+      "granted": "Granted"
+    },
+    "confirmRevoke": "Revoke SSO admin access for {{name}}?"
+  },
+  "clients": {
+    "title": "OAuth Clients",
+    "registerNew": "Register New Client",
+    "stats": {
+      "total": "Total Clients",
+      "internalPage": "Internal (this page)",
+      "externalPage": "External (this page)"
+    },
+    "table": {
+      "appName": "App Name",
+      "clientId": "Client ID",
+      "type": "Type",
+      "access": "Access",
+      "redirectUri": "Redirect URI"
+    },
+    "secretModal": {
+      "title": "Client Secret",
+      "body": "Copy this secret now and store it securely — it will not be shown again. If you lose it, you'll need to revoke this client and register a new one.",
+      "saved": "I've saved it"
+    },
+    "modal": {
+      "editTitle": "Edit {{name}}",
+      "createTitle": "Register New Client",
+      "appName": "App Name",
+      "redirectUri": "Redirect URI",
+      "homepageUrl": "Homepage URL",
+      "logo": "Logo",
+      "internalApp": "Internal application",
+      "grantType": "Grant Type",
+      "grantTypeAuthCode": "Authorization Code (PKCE)",
+      "grantTypeImplicit": "Implicit (legacy, e.g. Odoo)",
+      "grantTypeHelp": "Use Implicit only for legacy consumers that require it (e.g. Odoo's built-in OAuth login). It always issues tokens without a client secret. This cannot be changed after the client is created.",
+      "publicClient": "Public client (mobile / native app)",
+      "publicClientHelp": "No client secret is issued — the app must use PKCE. Leave unchecked for server-side apps (web dashboards, backends), which get a secret to keep confidential. This cannot be changed after the client is created.",
+      "whoCanAuthenticate": "Who can authenticate",
+      "allowedStages": "Allowed Stages",
+      "allowedUsers": "Allowed Users",
+      "allowedGroups": "Allowed Groups"
+    },
+    "confirmRevoke": "Revoke client {{name}}?"
+  },
+  "cmcPosts": {
+    "title": "CMC Posts",
+    "editPost": "Edit Post",
+    "newPost": "New Post",
+    "text": "Text",
+    "linkOptional": "Link (optional)",
+    "pictureOptional": "Picture (optional)",
+    "keepCurrentPicture": "Leave empty to keep the current picture.",
+    "notifyEveryone": "This will be sent as a notification to every user.",
+    "publishPost": "Publish Post",
+    "publishedPosts": "Published Posts",
+    "viewAllPosts": "View All Posts",
+    "postedBy": "Posted {{date}} by {{name}}",
+    "posted": "Posted {{date}}",
+    "empty": "No posts yet.",
+    "confirmDelete": "Delete this post? It will disappear for everyone."
+  },
+  "groups": {
+    "title": "Groups",
+    "addGroup": "Add Group",
+    "description": "Users can belong to any number of groups. Groups can also be used to restrict which users are allowed to authenticate with a given OAuth client.",
+    "manageUsers": "Manage Users",
+    "empty": "No groups yet.",
+    "modal": {
+      "editTitle": "Edit {{name}}",
+      "createTitle": "Add Group",
+      "name": "Name",
+      "namePlaceholder": "e.g. Volunteers",
+      "description": "Description"
+    },
+    "confirmDelete": "Delete the \"{{name}}\" group?"
+  },
+  "groupShow": {
+    "backToGroups": "Back to Groups",
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members",
+    "searchPlaceholder": "Search users by name, email, or membership code..."
+  },
+  "notifications": {
+    "title": "Notification Center",
+    "sendNotification": "Send Notification",
+    "message": "Message",
+    "pictureOptional": "Picture (optional)",
+    "sendTo": "Send To",
+    "stagesLabel": "Stages",
+    "groupsLabel": "Groups",
+    "usersLabel": "Users",
+    "send": "Send Notification",
+    "sentNotifications": "Sent Notifications",
+    "sentBy": "Sent {{date}} by {{name}}",
+    "sent": "Sent {{date}}",
+    "empty": "No notifications sent yet.",
+    "confirmDelete": "Delete this notification? Recipients will no longer see it.",
+    "noStages": "No stages",
+    "noGroups": "No groups",
+    "noUsers": "No users"
+  },
+  "stages": {
+    "title": "Stages",
+    "addStage": "Add Stage",
+    "description": "Every user must belong to a stage (e.g. Primary, Preparatory, Secondary, Youth, Adult).",
+    "reassignBeforeDelete": "Reassign these users to another stage before deleting",
+    "empty": "No stages yet.",
+    "modal": {
+      "editTitle": "Edit {{name}}",
+      "createTitle": "Add Stage",
+      "name": "Name",
+      "namePlaceholder": "e.g. Primary",
+      "code": "Code",
+      "codePlaceholder": "e.g. pri"
+    },
+    "confirmDelete": "Delete the \"{{name}}\" stage?"
+  },
+  "tokens": {
+    "title": "Tokens",
+    "table": {
+      "user": "User",
+      "client": "Client",
+      "scopes": "Scopes",
+      "created": "Created",
+      "expires": "Expires"
+    },
+    "confirmRevoke": "Revoke this token?"
+  },
+  "users": {
+    "createTitle": "Create User",
+    "editTitle": "Edit User",
+    "indexTitle": "Users",
+    "showTitle": "User Detail",
+    "createUser": "Create User",
+    "backToUsers": "Back to Users",
+    "happyBirthday": "🎉 Happy Birthday, {{name}}!",
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "dob": "Date of Birth",
+      "membershipCode": "Membership Code",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "stage": "Stage",
+      "role": "Role"
+    },
+    "membershipCodeHelp": "The membership code is permanent and cannot be changed once a user is created.",
+    "roleHelpCanManage": "Admin and Super Admin roles are granted SSO admin panel access immediately.",
+    "roleHelpCannotManageCreate": "Only a super admin can assign the Admin or Super Admin role.",
+    "roleHelpCannotManageEdit": "Only a super admin can change the Admin or Super Admin role.",
+    "stats": {
+      "totalUsers": "Total Users",
+      "activePage": "Active (this page)",
+      "superAdminsPage": "Super Admins (this page)",
+      "adminsPage": "Admins (this page)"
+    },
+    "allRoles": "All roles",
+    "allStages": "All stages",
+    "table": {
+      "adminAccess": "Admin Access"
+    },
+    "cantChangeOwnAdminAccess": "You can't change your own admin access",
+    "confirmGrantAdminAccess": "Are you sure you want to grant SSO admin access for {{name}}?",
+    "confirmRevokeAdminAccess": "Are you sure you want to revoke SSO admin access for {{name}}?",
+    "accountInformation": "Account Information",
+    "info": {
+      "membershipCode": "Membership Code",
+      "stage": "Stage",
+      "emailVerified": "Email Verified",
+      "adminAccess": "Admin Access",
+      "accountCreated": "Account Created",
+      "lastUpdated": "Last Updated",
+      "groups": "Groups"
+    },
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "granted": "Granted",
+    "none": "None",
+    "dobNotSet": "Date of birth not set",
+    "adminActions": "Admin Actions",
+    "dataUpdateRequirement": "Data Update Requirement",
+    "dataUpdateBlocked": "Blocked from signing in to any app other than this admin panel until you clear this.",
+    "dataUpdateHelp": "Force this user to update their data before they can sign in to any other app. They'll still be able to use this admin panel.",
+    "clearRequirement": "Clear Requirement",
+    "requireUpdate": "Require Update",
+    "confirmClearDataUpdate": "Clear the data-update requirement for {{name}}? They'll be able to sign in to other apps again.",
+    "confirmRequireDataUpdate": "Require {{name}} to update their data? They'll be blocked from signing in to any app other than the SSO admin panel until you clear this.",
+    "passwordReset": "Password Reset",
+    "passwordResetHelp": "Link works once and expires in 5 minutes.",
+    "twoFactorAuth": "Two-Factor Authentication",
+    "mfaEnrolledOn": "Enrolled on {{date}}.",
+    "mfaRecoveryCodesRemaining": "{{remaining}} of {{total}} recovery codes remaining.",
+    "mfaResetHelp": "Resetting clears their enrollment, e.g. if they lost their device — they must set it up again to sign in.",
+    "mfaNotEnrolled": "Not enrolled yet — they'll be prompted to set it up on next sign-in.",
+    "resetMfa": "Reset 2FA",
+    "confirmResetMfa": "Reset 2FA for {{name}}? They'll be locked out until they set it up again.",
+    "profilePicture": "Profile Picture",
+    "profilePictureHelp": "One-time upload link, no login required.",
+    "emailUser": "Email {{name}}",
+    "whatsappUser": "WhatsApp {{name}}",
+    "loggedInApps": "Logged-In Apps",
+    "forceLogoutAll": "Force Logout All",
+    "notLoggedIntoApps": "Not logged into any apps right now.",
+    "signedInExpires": "Signed in {{created}} · Expires {{expires}}",
+    "forceLogout": "Force Logout",
+    "confirmForceLogout": "Force {{name}} to log out of {{client}}?",
+    "confirmForceLogoutAll": "Force {{name}} to log out of all {{count}} apps?",
+    "logOut": "Log out",
+    "logOutAll": "Log out all",
+    "specificUserAppAccess": "Specific-User App Access",
+    "noSpecificClients": "No clients are restricted to specific users yet. Set a client's access to \"Specific Users\" on the Clients page to manage access here.",
+    "revokeAccess": "Revoke Access",
+    "grantAccess": "Grant Access",
+    "confirmActivateUser": "Are you sure you want to activate {{name}}?",
+    "confirmDeactivateUser": "Are you sure you want to deactivate {{name}}?",
+    "resetLinkWhatsAppMessage": "Hi {{name}}, use this link to reset your Avarewase password: {{link}}",
+    "avatarLinkWhatsAppMessage": "Hi {{name}}, use this link to update your Avarewase profile picture: {{link}}",
+    "ageYears": "({{age}} yrs)"
+  }
+}

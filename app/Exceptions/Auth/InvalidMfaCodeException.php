@@ -6,9 +6,9 @@ class InvalidMfaCodeException extends \RuntimeException
 {
     protected int $statusCode = 422;
 
-    public function __construct(string $message = 'The verification code is invalid.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('messages.invalid_mfa_code'));
     }
 
     public function getStatusCode(): int

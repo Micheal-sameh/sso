@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
@@ -22,6 +23,7 @@ interface PostForm {
 const emptyForm: PostForm = { text: '', url: '', image: null }
 
 export default function Index({ posts }: IndexProps) {
+    const { t } = useTranslation(['admin', 'common'])
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [openUrl, setOpenUrl] = useState<string | null>(null)
     const [editingPost, setEditingPost] = useState<CmcPost | null>(null)
@@ -93,20 +95,20 @@ export default function Index({ posts }: IndexProps) {
     }
 
     const remove = async (post: CmcPost) => {
-        if (await confirm('Delete this post? It will disappear for everyone.', { confirmLabel: 'Delete' })) {
+        if (await confirm(t('cmcPosts.confirmDelete'), { confirmLabel: t('common:actions.delete') })) {
             router.delete(`/admin/cmc-posts/${post.id}`)
         }
     }
 
     return (
-        <AdminLayout title="CMC Posts">
+        <AdminLayout title={t('cmcPosts.title')}>
             <div className="row g-4">
                 <div className="col-lg-5">
-                    <h5 className="mb-3">{editingPost ? 'Edit Post' : 'New Post'}</h5>
+                    <h5 className="mb-3">{editingPost ? t('cmcPosts.editPost') : t('cmcPosts.newPost')}</h5>
                     <div className="ava-card p-4">
                         <form onSubmit={submit}>
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="text">Text</label>
+                                <label className="form-label" htmlFor="text">{t('cmcPosts.text')}</label>
                                 <textarea
                                     id="text"
                                     className="form-control"
@@ -119,7 +121,7 @@ export default function Index({ posts }: IndexProps) {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="url">Link (optional)</label>
+                                <label className="form-label" htmlFor="url">{t('cmcPosts.linkOptional')}</label>
                                 <input
                                     id="url"
                                     type="url"
@@ -132,7 +134,7 @@ export default function Index({ posts }: IndexProps) {
                             </div>
 
                             <div className="mb-3">
-                                <label className="form-label" htmlFor="image">Picture (optional)</label>
+                                <label className="form-label" htmlFor="image">{t('cmcPosts.pictureOptional')}</label>
                                 <div className="d-flex align-items-center gap-3">
                                     {imagePreview && (
                                         <img
@@ -153,24 +155,24 @@ export default function Index({ posts }: IndexProps) {
                                 </div>
                                 {editingPost && (
                                     <p className="text-ava-muted text-tiny mt-1 mb-0">
-                                        Leave empty to keep the current picture.
+                                        {t('cmcPosts.keepCurrentPicture')}
                                     </p>
                                 )}
                                 {form.errors.image && <div className="text-danger small mt-1">{form.errors.image}</div>}
                             </div>
 
                             {!editingPost && (
-                                <p className="text-ava-muted text-tiny">This will be sent as a notification to every user.</p>
+                                <p className="text-ava-muted text-tiny">{t('cmcPosts.notifyEveryone')}</p>
                             )}
 
                             <div className="d-flex gap-2">
                                 <button type="submit" className="btn btn-primary flex-grow-1" disabled={form.processing}>
                                     <i className={`bi ${editingPost ? 'bi-check-lg' : 'bi-send'} me-1`} />
-                                    {editingPost ? 'Save Changes' : 'Publish Post'}
+                                    {editingPost ? t('actions.saveChanges') : t('cmcPosts.publishPost')}
                                 </button>
                                 {editingPost && (
                                     <button type="button" className="btn btn-outline-primary" onClick={resetForm}>
-                                        Cancel
+                                        {t('common:actions.cancel')}
                                     </button>
                                 )}
                             </div>
@@ -180,10 +182,10 @@ export default function Index({ posts }: IndexProps) {
 
                 <div className="col-lg-7">
                     <div className="d-flex align-items-center justify-content-between mb-3">
-                        <h5 className="mb-0">Published Posts</h5>
+                        <h5 className="mb-0">{t('cmcPosts.publishedPosts')}</h5>
                         <a href="/cmc" target="_blank" rel="noopener noreferrer" className="btn btn-sm btn-outline-primary">
                             <i className="bi bi-box-arrow-up-right me-1" />
-                            View All Posts
+                            {t('cmcPosts.viewAllPosts')}
                         </a>
                     </div>
                     <div className="ava-card">
@@ -214,8 +216,9 @@ export default function Index({ posts }: IndexProps) {
                                                 </div>
                                             )}
                                             <div className="text-ava-muted text-tiny mt-2">
-                                                Posted {post.created_at}
-                                                {post.creator && ` by ${post.creator.name}`}
+                                                {post.creator
+                                                    ? t('cmcPosts.postedBy', { date: post.created_at, name: post.creator.name })
+                                                    : t('cmcPosts.posted', { date: post.created_at })}
                                             </div>
                                         </div>
                                         <div className="d-flex flex-column gap-2 align-items-stretch">
@@ -224,21 +227,21 @@ export default function Index({ posts }: IndexProps) {
                                                 className="btn btn-sm btn-outline-primary text-nowrap"
                                                 onClick={() => startEdit(post)}
                                             >
-                                                Edit
+                                                {t('common:actions.edit')}
                                             </button>
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-outline-primary text-nowrap"
                                                 onClick={() => remove(post)}
                                             >
-                                                Delete
+                                                {t('common:actions.delete')}
                                             </button>
                                         </div>
                                     </div>
                                 </li>
                             ))}
                             {livePosts.length === 0 && (
-                                <li className="list-group-item text-center text-ava-muted py-4">No posts yet.</li>
+                                <li className="list-group-item text-center text-ava-muted py-4">{t('cmcPosts.empty')}</li>
                             )}
                         </ul>
                     </div>

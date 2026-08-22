@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
@@ -10,28 +11,29 @@ interface IndexProps {
 }
 
 export default function Index({ tokens }: IndexProps) {
+    const { t } = useTranslation('admin')
     const confirm = useConfirm()
 
     const revoke = async (token: Token) => {
-        if (await confirm('Revoke this token?', { confirmLabel: 'Revoke' })) {
+        if (await confirm(t('tokens.confirmRevoke'), { confirmLabel: t('actions.revoke') })) {
             router.delete(`/admin/tokens/${token.id}`)
         }
     }
 
     return (
-        <AdminLayout title="Tokens">
+        <AdminLayout title={t('tokens.title')}>
             {/* Table view (md and up) */}
             <div className="ava-card d-none d-md-block">
                 <div className="table-responsive">
                     <table className="table mb-0">
                         <thead>
                             <tr>
-                                <th>User</th>
-                                <th>Client</th>
-                                <th>Scopes</th>
-                                <th>Created</th>
-                                <th>Expires</th>
-                                <th>Status</th>
+                                <th>{t('tokens.table.user')}</th>
+                                <th>{t('tokens.table.client')}</th>
+                                <th>{t('tokens.table.scopes')}</th>
+                                <th>{t('tokens.table.created')}</th>
+                                <th>{t('tokens.table.expires')}</th>
+                                <th>{t('table.status')}</th>
                                 <th />
                             </tr>
                         </thead>
@@ -57,7 +59,7 @@ export default function Index({ tokens }: IndexProps) {
                                     </td>
                                     <td>
                                         <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(token)}>
-                                            Revoke
+                                            {t('actions.revoke')}
                                         </button>
                                     </td>
                                 </tr>
@@ -77,11 +79,11 @@ export default function Index({ tokens }: IndexProps) {
                         </div>
 
                         <div className="record-card-row">
-                            <span className="record-card-label">Client</span>
+                            <span className="record-card-label">{t('tokens.table.client')}</span>
                             <span>{token.client.name}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Scopes</span>
+                            <span className="record-card-label">{t('tokens.table.scopes')}</span>
                             <span>
                                 {token.scopes.map((scope) => (
                                     <span key={scope} className="scope-chip ms-1">
@@ -91,21 +93,21 @@ export default function Index({ tokens }: IndexProps) {
                             </span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Created</span>
+                            <span className="record-card-label">{t('tokens.table.created')}</span>
                             <span className="text-ava-muted text-tiny">{token.created_at}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Expires</span>
+                            <span className="record-card-label">{t('tokens.table.expires')}</span>
                             <span className="text-ava-muted text-tiny">{token.expires_at}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Status</span>
+                            <span className="record-card-label">{t('table.status')}</span>
                             <StatusBadge status={token.revoked ? 'revoked' : 'active'} />
                         </div>
 
                         <div className="record-card-actions">
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(token)}>
-                                Revoke
+                                {t('actions.revoke')}
                             </button>
                         </div>
                     </div>

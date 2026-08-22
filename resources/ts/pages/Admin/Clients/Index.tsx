@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
@@ -29,13 +30,6 @@ interface ClientForm {
     group_ids: number[]
 }
 
-const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
-    all: 'All Users',
-    stage: 'Specific Stage(s)',
-    specific: 'Specific Users',
-    group: 'Specific Group(s)',
-}
-
 const emptyForm: ClientForm = {
     name: '',
     redirect: '',
@@ -51,6 +45,13 @@ const emptyForm: ClientForm = {
 }
 
 export default function Index({ clients, stages, users, groups, newClientSecret }: IndexProps) {
+    const { t } = useTranslation(['admin', 'common'])
+    const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
+        all: t('targeting.all'),
+        stage: t('targeting.stage'),
+        specific: t('targeting.specific'),
+        group: t('targeting.group'),
+    }
     const [showModal, setShowModal] = useState(false)
     const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
     const [userSearch, setUserSearch] = useState('')
@@ -136,7 +137,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
     }
 
     const revoke = async (client: ClientMeta) => {
-        if (await confirm(`Revoke client ${client.app_name}?`, { confirmLabel: 'Revoke' })) {
+        if (await confirm(t('clients.confirmRevoke', { name: client.app_name }), { confirmLabel: t('actions.revoke') })) {
             router.delete(`/admin/clients/${client.oauth_client_id}`)
         }
     }
@@ -179,30 +180,30 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
 
     return (
         <AdminLayout
-            title="OAuth Clients"
+            title={t('clients.title')}
             action={
                 <button type="button" className="btn btn-primary btn-sm" onClick={openCreateModal}>
                     <i className="bi bi-plus-lg" />
-                    <span className="d-none d-sm-inline ms-1">Register New Client</span>
+                    <span className="d-none d-sm-inline ms-1">{t('clients.registerNew')}</span>
                 </button>
             }
         >
             <div className="row g-3 mb-4">
                 <div className="col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Total Clients</p>
+                        <p className="stat-tile-label mb-2">{t('clients.stats.total')}</p>
                         <p className="stat-tile-value mb-0">{clients.total}</p>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">Internal (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('clients.stats.internalPage')}</p>
                         <p className="stat-tile-value mb-0">{internalCount}</p>
                     </div>
                 </div>
                 <div className="col-md-4">
                     <div className="stat-tile">
-                        <p className="stat-tile-label mb-2">External (this page)</p>
+                        <p className="stat-tile-label mb-2">{t('clients.stats.externalPage')}</p>
                         <p className="stat-tile-value mb-0">{externalCount}</p>
                     </div>
                 </div>
@@ -214,12 +215,12 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                     <table className="table mb-0">
                         <thead>
                             <tr>
-                                <th>App Name</th>
-                                <th>Client ID</th>
-                                <th>Type</th>
-                                <th>Access</th>
-                                <th>Status</th>
-                                <th>Redirect URI</th>
+                                <th>{t('clients.table.appName')}</th>
+                                <th>{t('clients.table.clientId')}</th>
+                                <th>{t('clients.table.type')}</th>
+                                <th>{t('clients.table.access')}</th>
+                                <th>{t('table.status')}</th>
+                                <th>{t('clients.table.redirectUri')}</th>
                                 <th />
                             </tr>
                         </thead>
@@ -281,10 +282,10 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                                 className="btn btn-sm btn-outline-primary"
                                                 onClick={() => openEditModal(client)}
                                             >
-                                                Edit
+                                                {t('common:actions.edit')}
                                             </button>
                                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
-                                                Revoke
+                                                {t('actions.revoke')}
                                             </button>
                                         </div>
                                     </td>
@@ -327,7 +328,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                         </div>
 
                         <div className="record-card-row">
-                            <span className="record-card-label">Client ID</span>
+                            <span className="record-card-label">{t('clients.table.clientId')}</span>
                             <span className="d-flex align-items-center gap-1">
                                 <code>{String(client.oauth_client.id).slice(0, 8)}...</code>
                                 <button
@@ -340,19 +341,19 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                             </span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Type</span>
+                            <span className="record-card-label">{t('clients.table.type')}</span>
                             <StatusBadge status={client.is_internal ? 'internal' : 'external'} />
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Access</span>
+                            <span className="record-card-label">{t('clients.table.access')}</span>
                             <span className="role-chip">{ACCESS_MODE_LABELS[client.access_mode]}</span>
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Status</span>
+                            <span className="record-card-label">{t('table.status')}</span>
                             <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
                         </div>
                         <div className="record-card-row">
-                            <span className="record-card-label">Redirect</span>
+                            <span className="record-card-label">{t('clients.table.redirectUri')}</span>
                             <span className="text-ava-muted text-tiny text-truncate cell-truncate-220">
                                 {client.oauth_client.redirect_uris[0]}
                             </span>
@@ -360,10 +361,10 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
 
                         <div className="record-card-actions">
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => openEditModal(client)}>
-                                Edit
+                                {t('common:actions.edit')}
                             </button>
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
-                                Revoke
+                                {t('actions.revoke')}
                             </button>
                         </div>
                     </div>
@@ -381,14 +382,11 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                             <div className="modal-header">
                                 <h5 className="modal-title">
                                     <i className="bi bi-key-fill text-ava-secondary me-2" />
-                                    Client Secret
+                                    {t('clients.secretModal.title')}
                                 </h5>
                             </div>
                             <div className="modal-body">
-                                <p className="text-ava-muted small">
-                                    Copy this secret now and store it securely &mdash; it will not be shown again. If
-                                    you lose it, you&apos;ll need to revoke this client and register a new one.
-                                </p>
+                                <p className="text-ava-muted small">{t('clients.secretModal.body')}</p>
                                 <div className="input-group">
                                     <input type="text" readOnly className="form-control font-monospace small" value={revealedSecret} />
                                     <button type="button" className="btn btn-outline-primary" onClick={copySecret}>
@@ -398,7 +396,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-primary" onClick={() => setRevealedSecret(null)}>
-                                    I&apos;ve saved it
+                                    {t('clients.secretModal.saved')}
                                 </button>
                             </div>
                         </div>
@@ -411,13 +409,15 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">{editingClient ? `Edit ${editingClient.app_name}` : 'Register New Client'}</h5>
+                                <h5 className="modal-title">
+                                    {editingClient ? t('clients.modal.editTitle', { name: editingClient.app_name }) : t('clients.modal.createTitle')}
+                                </h5>
                                 <button type="button" className="btn-close" onClick={closeModal} />
                             </div>
                             <form onSubmit={submit}>
                                 <div className="modal-body">
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="name">App Name</label>
+                                        <label className="form-label" htmlFor="name">{t('clients.modal.appName')}</label>
                                         <input
                                             id="name"
                                             className="form-control"
@@ -427,7 +427,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                         {form.errors.name && <div className="text-danger small mt-1">{form.errors.name}</div>}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="redirect">Redirect URI</label>
+                                        <label className="form-label" htmlFor="redirect">{t('clients.modal.redirectUri')}</label>
                                         <input
                                             id="redirect"
                                             className="form-control"
@@ -437,7 +437,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                         {form.errors.redirect && <div className="text-danger small mt-1">{form.errors.redirect}</div>}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="homepage_url">Homepage URL</label>
+                                        <label className="form-label" htmlFor="homepage_url">{t('clients.modal.homepageUrl')}</label>
                                         <input
                                             id="homepage_url"
                                             className="form-control"
@@ -449,7 +449,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                         )}
                                     </div>
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="app_logo">Logo</label>
+                                        <label className="form-label" htmlFor="app_logo">{t('clients.modal.logo')}</label>
                                         <div className="d-flex align-items-center gap-3">
                                             {logoPreview ? (
                                                 <img
@@ -484,26 +484,22 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                             checked={form.data.is_internal}
                                             onChange={(e) => form.setData('is_internal', e.target.checked)}
                                         />
-                                        <label className="form-check-label" htmlFor="is_internal">Internal application</label>
+                                        <label className="form-check-label" htmlFor="is_internal">{t('clients.modal.internalApp')}</label>
                                     </div>
 
                                     {!editingClient && (
                                         <div className="mb-3">
-                                            <label className="form-label" htmlFor="grant_type">Grant Type</label>
+                                            <label className="form-label" htmlFor="grant_type">{t('clients.modal.grantType')}</label>
                                             <select
                                                 id="grant_type"
                                                 className="form-select"
                                                 value={form.data.grant_type}
                                                 onChange={(e) => form.setData('grant_type', e.target.value as ClientForm['grant_type'])}
                                             >
-                                                <option value="authorization_code">Authorization Code (PKCE)</option>
-                                                <option value="implicit">Implicit (legacy, e.g. Odoo)</option>
+                                                <option value="authorization_code">{t('clients.modal.grantTypeAuthCode')}</option>
+                                                <option value="implicit">{t('clients.modal.grantTypeImplicit')}</option>
                                             </select>
-                                            <p className="text-ava-muted text-tiny mt-1 mb-0">
-                                                Use Implicit only for legacy consumers that require it (e.g. Odoo&apos;s
-                                                built-in OAuth login). It always issues tokens without a client secret.
-                                                This cannot be changed after the client is created.
-                                            </p>
+                                            <p className="text-ava-muted text-tiny mt-1 mb-0">{t('clients.modal.grantTypeHelp')}</p>
                                         </div>
                                     )}
 
@@ -517,28 +513,24 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                                 onChange={(e) => form.setData('is_public_client', e.target.checked)}
                                             />
                                             <label className="form-check-label" htmlFor="is_public_client">
-                                                Public client (mobile / native app)
+                                                {t('clients.modal.publicClient')}
                                             </label>
-                                            <p className="text-ava-muted text-tiny mt-1 mb-0">
-                                                No client secret is issued — the app must use PKCE. Leave unchecked for
-                                                server-side apps (web dashboards, backends), which get a secret to keep
-                                                confidential. This cannot be changed after the client is created.
-                                            </p>
+                                            <p className="text-ava-muted text-tiny mt-1 mb-0">{t('clients.modal.publicClientHelp')}</p>
                                         </div>
                                     )}
 
                                     <div className="mb-3">
-                                        <label className="form-label" htmlFor="access_mode">Who can authenticate</label>
+                                        <label className="form-label" htmlFor="access_mode">{t('clients.modal.whoCanAuthenticate')}</label>
                                         <select
                                             id="access_mode"
                                             className="form-select"
                                             value={form.data.access_mode}
                                             onChange={(e) => form.setData('access_mode', e.target.value as ClientForm['access_mode'])}
                                         >
-                                            <option value="all">All Users</option>
-                                            <option value="stage">Specific Stage(s)</option>
-                                            <option value="specific">Specific Users</option>
-                                            <option value="group">Specific Group(s)</option>
+                                            <option value="all">{t('targeting.all')}</option>
+                                            <option value="stage">{t('targeting.stage')}</option>
+                                            <option value="specific">{t('targeting.specific')}</option>
+                                            <option value="group">{t('targeting.group')}</option>
                                         </select>
                                         {form.errors.access_mode && (
                                             <div className="text-danger small mt-1">{form.errors.access_mode}</div>
@@ -547,7 +539,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
 
                                     {form.data.access_mode === 'stage' && (
                                         <div className="mb-3">
-                                            <label className="form-label">Allowed Stages</label>
+                                            <label className="form-label">{t('clients.modal.allowedStages')}</label>
                                             <div className="permission-list">
                                                 {stages.map((stage) => (
                                                     <div key={stage.id} className="form-check">
@@ -572,11 +564,11 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
 
                                     {form.data.access_mode === 'specific' && (
                                         <div className="mb-3">
-                                            <label className="form-label">Allowed Users</label>
+                                            <label className="form-label">{t('clients.modal.allowedUsers')}</label>
                                             <input
                                                 type="text"
                                                 className="form-control mb-2"
-                                                placeholder="Search users..."
+                                                placeholder={t('search.users')}
                                                 value={userSearch}
                                                 onChange={(e) => setUserSearch(e.target.value)}
                                             />
@@ -597,7 +589,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                                     </div>
                                                 ))}
                                                 {filteredUsers.length === 0 && (
-                                                    <p className="text-ava-muted text-tiny mb-0">No users match your search.</p>
+                                                    <p className="text-ava-muted text-tiny mb-0">{t('search.noUsersMatch')}</p>
                                                 )}
                                             </div>
                                             {form.errors.user_ids && (
@@ -608,7 +600,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
 
                                     {form.data.access_mode === 'group' && (
                                         <div className="mb-3">
-                                            <label className="form-label">Allowed Groups</label>
+                                            <label className="form-label">{t('clients.modal.allowedGroups')}</label>
                                             <div className="permission-list">
                                                 {groups.map((group) => (
                                                     <div key={group.id} className="form-check">
@@ -626,7 +618,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                                 ))}
                                                 {groups.length === 0 && (
                                                     <p className="text-ava-muted text-tiny mb-0">
-                                                        No groups exist yet. Create one on the Groups page first.
+                                                        {t('search.noGroupsCreateFirst')}
                                                     </p>
                                                 )}
                                             </div>
@@ -638,10 +630,10 @@ export default function Index({ clients, stages, users, groups, newClientSecret 
                                 </div>
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-outline-primary" onClick={closeModal}>
-                                        Cancel
+                                        {t('common:actions.cancel')}
                                     </button>
                                     <button type="submit" className="btn btn-primary" disabled={form.processing}>
-                                        {editingClient ? 'Save Changes' : 'Register'}
+                                        {editingClient ? t('actions.saveChanges') : t('actions.register')}
                                     </button>
                                 </div>
                             </form>

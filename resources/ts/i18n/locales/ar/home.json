@@ -1,0 +1,13 @@
+{
+  "home": {
+    "welcome": "أهلاً، {{name}}",
+    "copticDate": "التاريخ القبطي",
+    "copticDateUnavailable": "غير متاح حالياً.",
+    "synaxariumToday": "تذكار اليوم من السنكسار",
+    "noCommemorationToday": "لا يوجد تذكار متاح حالياً.",
+    "latestCmcPosts": "أحدث منشورات المركز الإعلامي",
+    "seeAll": "عرض الكل",
+    "postedBy": "بواسطة {{name}}",
+    "noPostsYet": "لا توجد منشورات بعد."
+  }
+}

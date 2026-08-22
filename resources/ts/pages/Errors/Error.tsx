@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 
@@ -8,60 +9,61 @@ interface ErrorProps {
     variant?: 'database'
 }
 
-const STATUS_CONTENT: Record<number, { icon: string; title: string; description: string }> = {
+const STATUS_KEYS: Record<number, { icon: string; titleKey: string; descriptionKey: string }> = {
     401: {
         icon: 'bi-shield-lock',
-        title: 'Authentication Required',
-        description: 'You need to sign in before you can access this page.',
+        titleKey: 'error.status401.title',
+        descriptionKey: 'error.status401.description',
     },
     403: {
         icon: 'bi-slash-circle',
-        title: 'Access Denied',
-        description: "You don't have permission to access this page.",
+        titleKey: 'error.status403.title',
+        descriptionKey: 'error.status403.description',
     },
     404: {
         icon: 'bi-signpost-split',
-        title: 'Page Not Found',
-        description: "The page you're looking for doesn't exist or may have been moved.",
+        titleKey: 'error.status404.title',
+        descriptionKey: 'error.status404.description',
     },
     419: {
         icon: 'bi-hourglass-split',
-        title: 'Page Expired',
-        description: 'Your session expired for security reasons. Please try again.',
+        titleKey: 'error.status419.title',
+        descriptionKey: 'error.status419.description',
     },
     500: {
         icon: 'bi-exclamation-octagon',
-        title: 'Server Error',
-        description: 'Something went wrong on our end. Please try again in a moment.',
+        titleKey: 'error.status500.title',
+        descriptionKey: 'error.status500.description',
     },
     502: {
         icon: 'bi-hdd-network',
-        title: 'Bad Gateway',
-        description: "We're having trouble reaching one of our services right now.",
+        titleKey: 'error.status502.title',
+        descriptionKey: 'error.status502.description',
     },
     503: {
         icon: 'bi-tools',
-        title: 'Service Unavailable',
-        description: "The service is temporarily unavailable. Please try again shortly.",
+        titleKey: 'error.status503.title',
+        descriptionKey: 'error.status503.description',
     },
 }
 
-const DEFAULT_CONTENT = {
+const DEFAULT_KEYS = {
     icon: 'bi-exclamation-triangle',
-    title: 'Unexpected Error',
-    description: 'Something went wrong. Please try again.',
+    titleKey: 'error.defaultTitle',
+    descriptionKey: 'error.defaultDescription',
 }
 
-const VARIANT_CONTENT: Record<string, { icon: string; title: string; description: string }> = {
+const VARIANT_KEYS: Record<string, { icon: string; titleKey: string; descriptionKey: string }> = {
     database: {
         icon: 'bi-hdd-network',
-        title: 'Temporarily Unavailable',
-        description: "We're unable to complete your request right now. Please try again in a few minutes.",
+        titleKey: 'error.databaseTitle',
+        descriptionKey: 'error.databaseDescription',
     },
 }
 
 export default function Error({ status, message, variant }: ErrorProps) {
-    const content = (variant && VARIANT_CONTENT[variant]) || STATUS_CONTENT[status] || DEFAULT_CONTENT
+    const { t } = useTranslation('errors')
+    const content = (variant && VARIANT_KEYS[variant]) || STATUS_KEYS[status] || DEFAULT_KEYS
 
     return (
         <AuthLayout>
@@ -74,18 +76,18 @@ export default function Error({ status, message, variant }: ErrorProps) {
                     <i className={`bi ${content.icon}`} style={{ fontSize: 32 }} />
                 </div>
 
-                <p className="text-ava-muted text-tiny fw-semibold mb-1 text-uppercase">Error {status}</p>
-                <h3 className="mb-2">{content.title}</h3>
-                <p className="text-ava-muted mb-4">{message || content.description}</p>
+                <p className="text-ava-muted text-tiny fw-semibold mb-1 text-uppercase">{t('error.errorLabel', { status })}</p>
+                <h3 className="mb-2">{t(content.titleKey)}</h3>
+                <p className="text-ava-muted mb-4">{message || t(content.descriptionKey)}</p>
 
                 <div className="d-flex justify-content-center gap-2">
                     <Link href="/" className="btn btn-primary">
                         <i className="bi bi-house me-1" />
-                        Go to Homepage
+                        {t('error.goToHomepage')}
                     </Link>
                     <button type="button" className="btn btn-outline-primary" onClick={() => window.history.back()}>
                         <i className="bi bi-arrow-left me-1" />
-                        Go Back
+                        {t('error.goBack')}
                     </button>
                 </div>
             </div>

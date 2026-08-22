@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
 import { useForm } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 import AvatarInitials from '@/components/shared/AvatarInitials'
@@ -17,6 +18,7 @@ interface AvatarUploadForm {
 }
 
 export default function AvatarUpload({ status, userName, avatar, token }: AvatarUploadProps) {
+    const { t } = useTranslation('common')
     const [preview, setPreview] = useState<string | null>(avatar ?? null)
     const form = useForm<AvatarUploadForm>({ avatar: null })
 
@@ -44,7 +46,7 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
                 </div>
                 <p className="text-center text-ava-muted mb-0">
                     <i className="bi bi-exclamation-circle text-danger me-1" />
-                    This link has expired or was already used. Ask an administrator for a new one.
+                    {t('avatarUpload.linkExpired')}
                 </p>
             </AuthLayout>
         )
@@ -58,7 +60,7 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
                 </div>
                 <p className="text-center text-ava-muted mb-0">
                     <i className="bi bi-check-circle text-success me-1" />
-                    Profile picture updated for {userName}. You can close this page now.
+                    {t('avatarUpload.successMessage', { userName })}
                 </p>
             </AuthLayout>
         )
@@ -68,7 +70,7 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
         <AuthLayout>
             <div className="text-center mb-4">
                 <AvaLogo size={56} showText />
-                <p className="text-ava-muted small mt-2 mb-0">Update {userName}&apos;s profile picture</p>
+                <p className="text-ava-muted small mt-2 mb-0">{t('avatarUpload.updateProfilePicture', { userName })}</p>
             </div>
 
             <div className="text-center mb-4">
@@ -89,7 +91,7 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
 
             <form onSubmit={submit}>
                 <div className="mb-4">
-                    <label className="form-label" htmlFor="avatar">Choose a photo</label>
+                    <label className="form-label" htmlFor="avatar">{t('avatarUpload.choosePhoto')}</label>
                     <input
                         id="avatar"
                         type="file"
@@ -101,12 +103,12 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100" disabled={form.processing || !form.data.avatar}>
-                    Upload Photo
+                    {t('avatarUpload.uploadPhoto')}
                 </button>
             </form>
 
             <p className="text-center text-ava-muted text-tiny mt-4 mb-0">
-                Powered by Avarewase Auth
+                {t('avatarUpload.poweredBy')}
             </p>
         </AuthLayout>
     )

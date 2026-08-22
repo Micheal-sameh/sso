@@ -19,6 +19,6 @@ class LogoutController extends BaseController
     {
         $this->authService->logout();
 
-        return $this->redirectRoute('login', 'You have been logged out.', 'info');
+        return $this->redirectRoute('login', __('messages.logged_out_flash'), 'info');
     }
 }

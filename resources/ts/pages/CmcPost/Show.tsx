@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
@@ -9,14 +10,15 @@ interface ShowProps {
 }
 
 export default function Show({ post }: ShowProps) {
+    const { t } = useTranslation('cmcPost')
     const [openUrl, setOpenUrl] = useState<string | null>(null)
 
     return (
-        <AppLayout title="Post">
+        <AppLayout title={t('show.title')}>
             <div className="ava-card p-4" style={{ maxWidth: 720, margin: '0 auto' }}>
                 <div className="d-flex align-items-center justify-content-between mb-3">
                     <span className="text-ava-muted text-tiny">
-                        {post.creator ? `Posted by ${post.creator.name}` : 'Posted'} · {post.created_at}
+                        {post.creator ? t('show.postedBy', { name: post.creator.name }) : t('show.posted')} · {post.created_at}
                     </span>
                 </div>
 

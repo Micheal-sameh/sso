@@ -103,7 +103,7 @@ class UserController extends BaseController
     {
         $this->userService->create(CreateUserDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.users.index', 'User created successfully.');
+        return $this->redirectRoute('admin.users.index', __('messages.user_created'));
     }
 
     public function edit(User $user): Response
@@ -118,56 +118,56 @@ class UserController extends BaseController
     {
         $this->userService->updateDetails($user, $request->validated());
 
-        return $this->redirectRoute('admin.users.show', 'User updated successfully.', params: ['user' => $user->id]);
+        return $this->redirectRoute('admin.users.show', __('messages.user_updated'), params: ['user' => $user->id]);
     }
 
     public function toggleActive(User $user): RedirectResponse
     {
         $this->userService->toggleActive($user);
 
-        return $this->redirectBack('User status updated.', 'success');
+        return $this->redirectBack(__('messages.user_status_updated'), 'success');
     }
 
     public function toggleRequiresDataUpdate(User $user): RedirectResponse
     {
         $this->userService->toggleRequiresDataUpdate($user);
 
-        return $this->redirectBack('User data-update requirement updated.', 'success');
+        return $this->redirectBack(__('messages.user_data_update_requirement_updated'), 'success');
     }
 
     public function toggleAdminAccess(User $user): RedirectResponse
     {
         $this->userService->toggleAdminAccess($user);
 
-        return $this->redirectBack('Admin access updated.', 'success');
+        return $this->redirectBack(__('messages.admin_access_updated'), 'success');
     }
 
     public function grantClientAccess(User $user, string $client): RedirectResponse
     {
         $this->oauthClientService->grantUserAccess($client, $user->id);
 
-        return $this->redirectBack('Access granted.', 'success');
+        return $this->redirectBack(__('messages.access_granted'), 'success');
     }
 
     public function revokeClientAccess(User $user, string $client): RedirectResponse
     {
         $this->oauthClientService->revokeUserAccess($client, $user->id);
 
-        return $this->redirectBack('Access revoked.', 'success');
+        return $this->redirectBack(__('messages.access_revoked'), 'success');
     }
 
     public function attachGroup(User $user, Group $group): RedirectResponse
     {
         $this->userService->addToGroup($user, $group->id);
 
-        return $this->redirectBack('Added to group.', 'success');
+        return $this->redirectBack(__('messages.added_to_group'), 'success');
     }
 
     public function detachGroup(User $user, Group $group): RedirectResponse
     {
         $this->userService->removeFromGroup($user, $group->id);
 
-        return $this->redirectBack('Removed from group.', 'success');
+        return $this->redirectBack(__('messages.removed_from_group'), 'success');
     }
 
     public function generateResetLink(User $user): JsonResponse
@@ -184,6 +184,6 @@ class UserController extends BaseController
     {
         $this->mfaService->resetMfa($user);
 
-        return $this->redirectBack("2FA reset for {$user->name}. They'll need to set it up again.", 'success');
+        return $this->redirectBack(__('messages.mfa_reset_for_user', ['name' => $user->name]), 'success');
     }
 }

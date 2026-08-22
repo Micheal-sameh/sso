@@ -1,0 +1,39 @@
+{
+  "error": {
+    "errorLabel": "Error {{status}}",
+    "goToHomepage": "Go to Homepage",
+    "goBack": "Go Back",
+    "status401": {
+      "title": "Authentication Required",
+      "description": "You need to sign in before you can access this page."
+    },
+    "status403": {
+      "title": "Access Denied",
+      "description": "You don't have permission to access this page."
+    },
+    "status404": {
+      "title": "Page Not Found",
+      "description": "The page you're looking for doesn't exist or may have been moved."
+    },
+    "status419": {
+      "title": "Page Expired",
+      "description": "Your session expired for security reasons. Please try again."
+    },
+    "status500": {
+      "title": "Server Error",
+      "description": "Something went wrong on our end. Please try again in a moment."
+    },
+    "status502": {
+      "title": "Bad Gateway",
+      "description": "We're having trouble reaching one of our services right now."
+    },
+    "status503": {
+      "title": "Service Unavailable",
+      "description": "The service is temporarily unavailable. Please try again shortly."
+    },
+    "defaultTitle": "Unexpected Error",
+    "defaultDescription": "Something went wrong. Please try again.",
+    "databaseTitle": "Temporarily Unavailable",
+    "databaseDescription": "We're unable to complete your request right now. Please try again in a few minutes."
+  }
+}

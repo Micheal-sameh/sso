@@ -70,7 +70,7 @@ class PasswordResetService
         $client = $this->clientRepository->find($clientId);
 
         if ($client === null || $client->revoked || ! Hash::check($clientSecret, $client->secret)) {
-            throw new OAuthClientException('Invalid client credentials.');
+            throw new OAuthClientException(__('messages.invalid_client_credentials'));
         }
 
         $user = $email !== null

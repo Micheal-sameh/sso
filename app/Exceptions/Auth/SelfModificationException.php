@@ -6,9 +6,9 @@ class SelfModificationException extends \RuntimeException
 {
     protected int $statusCode = 403;
 
-    public function __construct(string $message = 'You cannot change your own admin access.')
+    public function __construct(?string $message = null)
     {
-        parent::__construct($message);
+        parent::__construct($message ?? __('messages.cannot_change_own_admin_access'));
     }
 
     public function getStatusCode(): int

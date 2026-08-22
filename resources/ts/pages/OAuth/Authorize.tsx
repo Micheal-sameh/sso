@@ -1,4 +1,5 @@
 import { usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 import type { SharedProps } from '@/types'
@@ -11,6 +12,7 @@ interface AuthorizeProps {
 }
 
 export default function Authorize({ client, scopes, authRequest, state }: AuthorizeProps) {
+    const { t } = useTranslation('oauth')
     const { auth, csrf_token } = usePage<SharedProps>().props
 
     return (
@@ -28,12 +30,12 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
             </div>
 
             <div className="text-center mb-4">
-                <h4 className="mb-1">{client.name} wants to access your Avarewase account</h4>
+                <h4 className="mb-1">{t('authorize.wantsToAccess', { clientName: client.name })}</h4>
                 {auth.user && <p className="text-ava-muted small mb-0">{auth.user.email}</p>}
             </div>
 
             <div className="mb-4">
-                <p className="fw-semibold small mb-3">This will allow {client.name} to:</p>
+                <p className="fw-semibold small mb-3">{t('authorize.thisWillAllow', { clientName: client.name })}</p>
                 <div className="d-flex flex-column gap-2">
                     {scopes.map((scope) => (
                         <div key={scope.id} className="d-flex align-items-start gap-2 p-3 rounded border bg-light">
@@ -57,7 +59,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                     <input type="hidden" name="auth_token" value={authRequest} />
                     <input type="hidden" name="state" value={state} />
                     <button type="submit" className="btn btn-outline-primary w-100">
-                        Deny
+                        {t('authorize.deny')}
                     </button>
                 </form>
                 <form method="POST" action="/oauth/authorize" className="flex-grow-1">
@@ -65,13 +67,13 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                     <input type="hidden" name="auth_token" value={authRequest} />
                     <input type="hidden" name="state" value={state} />
                     <button type="submit" className="btn btn-primary w-100">
-                        Allow Access
+                        {t('authorize.allowAccess')}
                     </button>
                 </form>
             </div>
 
             <p className="text-ava-muted small text-center mt-4 mb-0 pt-3 border-top">
-                You can revoke access at any time in your Avarewase Security Settings.
+                {t('authorize.revokeNotice')}
             </p>
         </AuthLayout>
     )

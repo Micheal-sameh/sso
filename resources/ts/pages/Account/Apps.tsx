@@ -1,4 +1,5 @@
 import { router } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import type { Token } from '@/types'
@@ -8,27 +9,28 @@ interface AppsProps {
 }
 
 export default function Apps({ tokens }: AppsProps) {
+    const { t } = useTranslation('account')
     const confirm = useConfirm()
 
     const revoke = async (token: Token) => {
-        if (await confirm(`Revoke access for ${token.client.name}?`, { confirmLabel: 'Revoke' })) {
+        if (await confirm(t('apps.revokeConfirm', { name: token.client.name }), { confirmLabel: t('apps.revoke') })) {
             router.delete(`/account/apps/${token.id}`)
         }
     }
 
     if (tokens.length === 0) {
         return (
-            <AppLayout title="Connected Apps">
+            <AppLayout title={t('apps.title')}>
                 <div className="text-center py-5">
                     <i className="bi bi-plug text-ava-muted icon-fs-48" />
-                    <p className="text-ava-muted mt-3">No connected apps yet</p>
+                    <p className="text-ava-muted mt-3">{t('apps.noAppsYet')}</p>
                 </div>
             </AppLayout>
         )
     }
 
     return (
-        <AppLayout title="Connected Apps">
+        <AppLayout title={t('apps.title')}>
             <div className="ava-card">
                 <ul className="list-group list-group-flush">
                     {tokens.map((token) => (
@@ -42,10 +44,10 @@ export default function Apps({ tokens }: AppsProps) {
                                         </span>
                                     ))}
                                 </div>
-                                <div className="text-ava-muted small">Expires {token.expires_at}</div>
+                                <div className="text-ava-muted small">{t('apps.expires', { date: token.expires_at })}</div>
                             </div>
                             <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => revoke(token)}>
-                                Revoke
+                                {t('apps.revoke')}
                             </button>
                         </li>
                     ))}

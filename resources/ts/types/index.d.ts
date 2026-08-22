@@ -200,4 +200,6 @@ export interface SharedProps {
     errors: Record<string, string>
     unread_notifications_count: number
     recent_notifications: UserNotification[]
+    locale: string
+    direction: 'ltr' | 'rtl'
 }

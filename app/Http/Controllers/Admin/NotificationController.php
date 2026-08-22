@@ -53,13 +53,13 @@ class NotificationController extends BaseController
             imagePath: $dto->image instanceof UploadedFile ? $dto->image->store('notification-uploads') : null,
         );
 
-        return $this->redirectRoute('admin.notifications.index', 'Notification is being sent.');
+        return $this->redirectRoute('admin.notifications.index', __('messages.notification_being_sent'));
     }
 
     public function destroy(Notification $notification): RedirectResponse
     {
         $this->notificationService->delete($notification);
 
-        return $this->redirectBack('Notification deleted.', 'success');
+        return $this->redirectBack(__('messages.notification_deleted'), 'success');
     }
 }

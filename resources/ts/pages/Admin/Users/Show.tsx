@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { router, usePage } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
@@ -16,6 +17,7 @@ interface ShowProps {
 }
 
 export default function Show({ viewedUser, tokens, specificClients, groups }: ShowProps) {
+    const { t } = useTranslation(['admin', 'common'])
     const { csrf_token } = usePage<SharedProps>().props
     const confirm = useConfirm()
     const dobAge = calculateAge(viewedUser.date_of_birth)
@@ -67,7 +69,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             return
         }
 
-        const message = `Hi ${viewedUser.name}, use this link to reset your Avarewase password: ${link}`
+        const message = t('users.resetLinkWhatsAppMessage', { name: viewedUser.name, link })
         const phoneDigits = viewedUser.phone.replace(/\D/g, '')
         window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
     }
@@ -99,7 +101,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             return
         }
 
-        const message = `Hi ${viewedUser.name}, use this link to update your Avarewase profile picture: ${link}`
+        const message = t('users.avatarLinkWhatsAppMessage', { name: viewedUser.name, link })
         const phoneDigits = viewedUser.phone.replace(/\D/g, '')
         window.open(`https://wa.me/${phoneDigits}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer')
     }
@@ -121,7 +123,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
     }
 
     const forceLogout = async (token: Token) => {
-        if (await confirm(`Force ${viewedUser.name} to log out of ${token.client.name}?`, { confirmLabel: 'Log out' })) {
+        if (await confirm(t('users.confirmForceLogout', { name: viewedUser.name, client: token.client.name }), { confirmLabel: t('users.logOut') })) {
             router.delete(`/admin/tokens/${token.id}`, { preserveScroll: true })
         }
     }
@@ -131,27 +133,29 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             return
         }
 
-        if (await confirm(`Force ${viewedUser.name} to log out of all ${tokens.length} apps?`, { confirmLabel: 'Log out all' })) {
+        if (await confirm(t('users.confirmForceLogoutAll', { name: viewedUser.name, count: tokens.length }), { confirmLabel: t('users.logOutAll') })) {
             tokens.forEach((token) => router.delete(`/admin/tokens/${token.id}`, { preserveScroll: true }))
         }
     }
 
     const toggleActive = async () => {
-        const action = viewedUser.is_active ? 'deactivate' : 'activate'
+        const message = viewedUser.is_active
+            ? t('users.confirmDeactivateUser', { name: viewedUser.name })
+            : t('users.confirmActivateUser', { name: viewedUser.name })
 
-        if (await confirm(`Are you sure you want to ${action} ${viewedUser.name}?`, { confirmLabel: action === 'deactivate' ? 'Deactivate' : 'Activate' })) {
+        if (await confirm(message, { confirmLabel: viewedUser.is_active ? t('actions.deactivate') : t('actions.activate') })) {
             router.patch(`/admin/users/${viewedUser.id}/toggle`, {}, { preserveScroll: true })
         }
     }
 
     const toggleRequiresDataUpdate = async () => {
         const message = viewedUser.requires_data_update
-            ? `Clear the data-update requirement for ${viewedUser.name}? They'll be able to sign in to other apps again.`
-            : `Require ${viewedUser.name} to update their data? They'll be blocked from signing in to any app other than the SSO admin panel until you clear this.`
+            ? t('users.confirmClearDataUpdate', { name: viewedUser.name })
+            : t('users.confirmRequireDataUpdate', { name: viewedUser.name })
 
         if (
             await confirm(message, {
-                confirmLabel: viewedUser.requires_data_update ? 'Clear Requirement' : 'Require Update',
+                confirmLabel: viewedUser.requires_data_update ? t('users.clearRequirement') : t('users.requireUpdate'),
             })
         ) {
             router.patch(`/admin/users/${viewedUser.id}/toggle-requires-data-update`, {}, { preserveScroll: true })
@@ -160,8 +164,8 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
 
     const resetMfa = async () => {
         if (
-            await confirm(`Reset 2FA for ${viewedUser.name}? They'll be locked out until they set it up again.`, {
-                confirmLabel: 'Reset 2FA',
+            await confirm(t('users.confirmResetMfa', { name: viewedUser.name }), {
+                confirmLabel: t('users.resetMfa'),
             })
         ) {
             router.post(`/admin/users/${viewedUser.id}/mfa/reset`, {}, { preserveScroll: true })
@@ -170,7 +174,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
 
     return (
         <AdminLayout
-            title="User Detail"
+            title={t('users.showTitle')}
             action={
                 <div className="d-flex gap-2">
                     <button
@@ -179,7 +183,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         onClick={() => router.visit(`/admin/users/${viewedUser.id}/edit`)}
                     >
                         <i className="bi bi-pencil me-1" />
-                        Edit
+                        {t('common:actions.edit')}
                     </button>
                     <button
                         type="button"
@@ -187,11 +191,11 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         onClick={toggleActive}
                     >
                         <i className={`bi ${viewedUser.is_active ? 'bi-slash-circle' : 'bi-check-circle'} me-1`} />
-                        {viewedUser.is_active ? 'Deactivate' : 'Activate'}
+                        {viewedUser.is_active ? t('actions.deactivate') : t('actions.activate')}
                     </button>
                     <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => router.visit('/admin/users')}>
                         <i className="bi bi-arrow-left me-1" />
-                        Back to Users
+                        {t('users.backToUsers')}
                     </button>
                 </div>
             }
@@ -199,7 +203,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             {isBirthday && (
                 <div className="ava-card mb-4 p-3 d-flex align-items-center gap-2">
                     <i className="bi bi-balloon-heart-fill text-ava-primary fs-4" />
-                    <span className="fw-semibold">🎉 Happy Birthday, {viewedUser.name}!</span>
+                    <span className="fw-semibold">{t('users.happyBirthday', { name: viewedUser.name })}</span>
                 </div>
             )}
 
@@ -219,7 +223,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 <a
                                     href={`mailto:${viewedUser.email}`}
                                     className="text-ava-muted"
-                                    title={`Email ${viewedUser.name}`}
+                                    title={t('users.emailUser', { name: viewedUser.name })}
                                 >
                                     <i className="bi bi-envelope" />
                                 </a>
@@ -232,7 +236,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-success"
-                                        title={`WhatsApp ${viewedUser.name}`}
+                                        title={t('users.whatsappUser', { name: viewedUser.name })}
                                     >
                                         <i className="bi bi-whatsapp" />
                                     </a>
@@ -240,8 +244,8 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             )}
                             <span className="d-inline-flex align-items-center gap-1">
                                 <i className="bi bi-cake2" />
-                                {formatDateDMY(viewedUser.date_of_birth) ?? 'Date of birth not set'}
-                                {dobAge !== null && <span>&nbsp;({dobAge} yrs)</span>}
+                                {formatDateDMY(viewedUser.date_of_birth) ?? t('users.dobNotSet')}
+                                {dobAge !== null && <span>&nbsp;{t('users.ageYears', { age: dobAge })}</span>}
                             </span>
                         </div>
                         <div className="d-flex flex-wrap gap-2 chips-lg">
@@ -261,67 +265,67 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                 </div>
             </div>
 
-            <h5 className="mb-3">Account Information</h5>
+            <h5 className="mb-3">{t('users.accountInformation')}</h5>
             <div className="ava-card mb-4">
                 <div className="row g-0">
                     <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
-                        <div className="text-ava-muted text-tiny mb-1">Membership Code</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.membershipCode')}</div>
                         <div className="fw-semibold text-uppercase">{viewedUser.membership_code}</div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
-                        <div className="text-ava-muted text-tiny mb-1">Stage</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.stage')}</div>
                         <div className="fw-semibold">
                             {viewedUser.stage.name} <span className="text-ava-muted">({viewedUser.stage.code})</span>
                         </div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3 border-end border-bottom">
-                        <div className="text-ava-muted text-tiny mb-1">Email Verified</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.emailVerified')}</div>
                         <div className="fw-semibold">
                             {viewedUser.email_verified_at ? (
                                 <span className="text-success">
                                     <i className="bi bi-patch-check-fill me-1" />
-                                    Verified
+                                    {t('users.verified')}
                                 </span>
                             ) : (
                                 <span className="text-danger">
                                     <i className="bi bi-exclamation-circle me-1" />
-                                    Not verified
+                                    {t('users.notVerified')}
                                 </span>
                             )}
                         </div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3 border-bottom">
-                        <div className="text-ava-muted text-tiny mb-1">Admin Access</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.adminAccess')}</div>
                         <div className="fw-semibold">
                             {viewedUser.is_admin ? (
                                 <span className="text-success">
                                     <i className="bi bi-shield-check me-1" />
-                                    Granted
+                                    {t('users.granted')}
                                 </span>
                             ) : (
                                 <span className="text-ava-muted">
                                     <i className="bi bi-shield-slash me-1" />
-                                    None
+                                    {t('users.none')}
                                 </span>
                             )}
                         </div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3 border-end">
-                        <div className="text-ava-muted text-tiny mb-1">Account Created</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.accountCreated')}</div>
                         <div className="fw-semibold">{viewedUser.created_at ?? '—'}</div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3 border-end">
-                        <div className="text-ava-muted text-tiny mb-1">Last Updated</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.lastUpdated')}</div>
                         <div className="fw-semibold">{viewedUser.updated_at ?? '—'}</div>
                     </div>
                     <div className="col-sm-6 col-lg-3 p-3">
-                        <div className="text-ava-muted text-tiny mb-1">Groups</div>
-                        <div className="fw-semibold">{viewedUser.groups.length > 0 ? viewedUser.groups.length : 'None'}</div>
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.groups')}</div>
+                        <div className="fw-semibold">{viewedUser.groups.length > 0 ? viewedUser.groups.length : t('users.none')}</div>
                     </div>
                 </div>
             </div>
 
-            <h5 className="mb-3">Admin Actions</h5>
+            <h5 className="mb-3">{t('users.adminActions')}</h5>
             <div className="ava-card mb-4">
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
@@ -330,13 +334,13 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         </div>
                         <div className="min-w-0 flex-grow-1">
                             <div className="fw-semibold d-flex align-items-center gap-2">
-                                Data Update Requirement
+                                {t('users.dataUpdateRequirement')}
                                 {viewedUser.requires_data_update && <StatusBadge status="warning" />}
                             </div>
                             <div className="text-ava-muted text-tiny">
                                 {viewedUser.requires_data_update
-                                    ? 'Blocked from signing in to any app other than this admin panel until you clear this.'
-                                    : "Force this user to update their data before they can sign in to any other app. They'll still be able to use this admin panel."}
+                                    ? t('users.dataUpdateBlocked')
+                                    : t('users.dataUpdateHelp')}
                             </div>
                         </div>
                         <div className="d-flex flex-wrap gap-2">
@@ -346,7 +350,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 onClick={toggleRequiresDataUpdate}
                             >
                                 <i className={`bi ${viewedUser.requires_data_update ? 'bi-check-circle' : 'bi-exclamation-triangle'} me-1`} />
-                                {viewedUser.requires_data_update ? 'Clear Requirement' : 'Require Update'}
+                                {viewedUser.requires_data_update ? t('users.clearRequirement') : t('users.requireUpdate')}
                             </button>
                         </div>
                     </li>
@@ -355,8 +359,8 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             <i className="bi bi-key" />
                         </div>
                         <div className="min-w-0 flex-grow-1">
-                            <div className="fw-semibold">Password Reset</div>
-                            <div className="text-ava-muted text-tiny">Link works once and expires in 5 minutes.</div>
+                            <div className="fw-semibold">{t('users.passwordReset')}</div>
+                            <div className="text-ava-muted text-tiny">{t('users.passwordResetHelp')}</div>
                         </div>
                         <div className="d-flex flex-wrap gap-2">
                             <button
@@ -366,7 +370,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 onClick={copyResetLink}
                             >
                                 <i className="bi bi-link-45deg me-1" />
-                                {resetLinkCopied ? 'Copied!' : 'Copy Link'}
+                                {resetLinkCopied ? t('actions.copied') : t('actions.copyLink')}
                             </button>
                             {viewedUser.phone && (
                                 <button
@@ -376,7 +380,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                     onClick={sendResetLinkViaWhatsApp}
                                 >
                                     <i className="bi bi-whatsapp me-1" />
-                                    WhatsApp
+                                    {t('actions.whatsapp')}
                                 </button>
                             )}
                         </div>
@@ -387,24 +391,26 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         </div>
                         <div className="min-w-0 flex-grow-1">
                             <div className="fw-semibold d-flex align-items-center gap-2">
-                                Two-Factor Authentication
+                                {t('users.twoFactorAuth')}
                                 <StatusBadge status={viewedUser.mfa_enabled ? 'enabled' : 'disabled'} />
                             </div>
                             {viewedUser.mfa_enabled ? (
                                 <div className="text-ava-muted text-tiny">
-                                    <div>Enrolled on {viewedUser.mfa_enabled_at}.</div>
+                                    <div>{t('users.mfaEnrolledOn', { date: viewedUser.mfa_enabled_at })}</div>
                                     <div
                                         className={
                                             (viewedUser.mfa_recovery_codes_remaining ?? 0) <= 2 ? 'text-danger fw-semibold' : undefined
                                         }
                                     >
-                                        {viewedUser.mfa_recovery_codes_remaining ?? 0} of {viewedUser.mfa_recovery_codes_total} recovery
-                                        codes remaining.
+                                        {t('users.mfaRecoveryCodesRemaining', {
+                                            remaining: viewedUser.mfa_recovery_codes_remaining ?? 0,
+                                            total: viewedUser.mfa_recovery_codes_total,
+                                        })}
                                     </div>
-                                    <div>Resetting clears their enrollment, e.g. if they lost their device — they must set it up again to sign in.</div>
+                                    <div>{t('users.mfaResetHelp')}</div>
                                 </div>
                             ) : (
-                                <div className="text-ava-muted text-tiny">Not enrolled yet — they'll be prompted to set it up on next sign-in.</div>
+                                <div className="text-ava-muted text-tiny">{t('users.mfaNotEnrolled')}</div>
                             )}
                         </div>
                         <div className="d-flex flex-wrap gap-2">
@@ -415,7 +421,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 onClick={resetMfa}
                             >
                                 <i className="bi bi-shield-x me-1" />
-                                Reset 2FA
+                                {t('users.resetMfa')}
                             </button>
                         </div>
                     </li>
@@ -424,8 +430,8 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             <i className="bi bi-image" />
                         </div>
                         <div className="min-w-0 flex-grow-1">
-                            <div className="fw-semibold">Profile Picture</div>
-                            <div className="text-ava-muted text-tiny">One-time upload link, no login required.</div>
+                            <div className="fw-semibold">{t('users.profilePicture')}</div>
+                            <div className="text-ava-muted text-tiny">{t('users.profilePictureHelp')}</div>
                         </div>
                         <div className="d-flex flex-wrap gap-2">
                             <button
@@ -435,7 +441,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                 onClick={copyAvatarUploadLink}
                             >
                                 <i className="bi bi-link-45deg me-1" />
-                                {avatarLinkCopied ? 'Copied!' : 'Copy Link'}
+                                {avatarLinkCopied ? t('actions.copied') : t('actions.copyLink')}
                             </button>
                             {viewedUser.phone && (
                                 <button
@@ -445,7 +451,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                     onClick={sendAvatarUploadLinkViaWhatsApp}
                                 >
                                     <i className="bi bi-whatsapp me-1" />
-                                    WhatsApp
+                                    {t('actions.whatsapp')}
                                 </button>
                             )}
                         </div>
@@ -456,11 +462,11 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
             <div className="row g-4">
                 <div className="col-lg-6">
                     <div className="d-flex justify-content-between align-items-center mb-3">
-                        <h5 className="mb-0">Logged-In Apps</h5>
+                        <h5 className="mb-0">{t('users.loggedInApps')}</h5>
                         {tokens.length > 0 && (
                             <button type="button" className="btn btn-sm btn-outline-primary" onClick={forceLogoutAll}>
                                 <i className="bi bi-box-arrow-right me-1" />
-                                Force Logout All
+                                {t('users.forceLogoutAll')}
                             </button>
                         )}
                     </div>
@@ -469,7 +475,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         <div className="ava-card">
                             <div className="text-center py-5">
                                 <i className="bi bi-plug text-ava-muted icon-fs-48" />
-                                <p className="text-ava-muted mt-3 mb-0">Not logged into any apps right now.</p>
+                                <p className="text-ava-muted mt-3 mb-0">{t('users.notLoggedIntoApps')}</p>
                             </div>
                         </div>
                     ) : (
@@ -490,7 +496,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                                 ))}
                                             </div>
                                             <div className="text-ava-muted text-tiny">
-                                                Signed in {token.created_at} &middot; Expires {token.expires_at}
+                                                {t('users.signedInExpires', { created: token.created_at, expires: token.expires_at })}
                                             </div>
                                         </div>
                                         <button
@@ -499,7 +505,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                             onClick={() => forceLogout(token)}
                                         >
                                             <i className="bi bi-box-arrow-right me-1" />
-                                            Force Logout
+                                            {t('users.forceLogout')}
                                         </button>
                                     </li>
                                 ))}
@@ -509,15 +515,14 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                 </div>
 
                 <div className="col-lg-6">
-                    <h5 className="mb-3">Specific-User App Access</h5>
+                    <h5 className="mb-3">{t('users.specificUserAppAccess')}</h5>
 
                     {specificClients.length === 0 ? (
                         <div className="ava-card">
                             <div className="text-center py-5">
                                 <i className="bi bi-shield-lock text-ava-muted icon-fs-48" />
                                 <p className="text-ava-muted mt-3 mb-0 px-3">
-                                    No clients are restricted to specific users yet. Set a client's access to "Specific Users"
-                                    on the Clients page to manage access here.
+                                    {t('users.noSpecificClients')}
                                 </p>
                             </div>
                         </div>
@@ -538,7 +543,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                             className={`btn btn-sm text-nowrap ${client.has_access ? 'btn-outline-primary' : 'btn-primary'}`}
                                             onClick={() => toggleClientAccess(client)}
                                         >
-                                            {client.has_access ? 'Revoke Access' : 'Grant Access'}
+                                            {client.has_access ? t('users.revokeAccess') : t('users.grantAccess')}
                                         </button>
                                     </li>
                                 ))}
@@ -548,14 +553,14 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                 </div>
 
                 <div className="col-lg-6">
-                    <h5 className="mb-3">Groups</h5>
+                    <h5 className="mb-3">{t('users.info.groups')}</h5>
 
                     {groups.length === 0 ? (
                         <div className="ava-card">
                             <div className="text-center py-5">
                                 <i className="bi bi-collection text-ava-muted icon-fs-48" />
                                 <p className="text-ava-muted mt-3 mb-0 px-3">
-                                    No groups exist yet. Create one on the Groups page first.
+                                    {t('search.noGroupsCreateFirst')}
                                 </p>
                             </div>
                         </div>
@@ -576,7 +581,7 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                             className={`btn btn-sm text-nowrap ${group.is_member ? 'btn-outline-primary' : 'btn-primary'}`}
                                             onClick={() => toggleGroup(group)}
                                         >
-                                            {group.is_member ? 'Remove' : 'Add'}
+                                            {group.is_member ? t('actions.remove') : t('actions.add')}
                                         </button>
                                     </li>
                                 ))}

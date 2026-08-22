@@ -1,0 +1,281 @@
+{
+  "actions": {
+    "view": "عرض",
+    "add": "إضافة",
+    "remove": "إزالة",
+    "revoke": "إلغاء",
+    "grant": "منح",
+    "activate": "تفعيل",
+    "deactivate": "إيقاف",
+    "toggleActive": "تبديل التفعيل",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ!",
+    "whatsapp": "واتساب",
+    "saveChanges": "حفظ التغييرات",
+    "register": "تسجيل",
+    "revokeAdmin": "إلغاء صلاحية المشرف",
+    "grantAdmin": "منح صلاحية المشرف",
+    "editUser": "تعديل المستخدم"
+  },
+  "table": {
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "membership": "العضوية",
+    "stage": "المرحلة",
+    "role": "الدور",
+    "status": "الحالة",
+    "description": "الوصف",
+    "users": "المستخدمون",
+    "code": "الرمز"
+  },
+  "roles": {
+    "user": "مستخدم",
+    "secretary": "أمين سر",
+    "admin": "مشرف",
+    "superadmin": "مشرف عام"
+  },
+  "targeting": {
+    "all": "جميع المستخدمين",
+    "stage": "مرحلة (مراحل) محددة",
+    "specific": "مستخدمون محددون",
+    "group": "مجموعة (مجموعات) محددة"
+  },
+  "search": {
+    "byNameEmailMembership": "البحث بالاسم أو البريد الإلكتروني أو رمز العضوية",
+    "users": "البحث عن مستخدمين...",
+    "noUsersMatch": "لا يوجد مستخدمون مطابقون لبحثك.",
+    "noGroupsYet": "لا توجد مجموعات بعد.",
+    "noGroupsCreateFirst": "لا توجد مجموعات بعد. أنشئ واحدة من صفحة المجموعات أولاً."
+  },
+  "admins": {
+    "title": "مشرفو النظام الموحد",
+    "description": "كل من مُنح صلاحية مشرف عام أو مشرف في هذه اللوحة حاليًا.",
+    "stats": {
+      "total": "إجمالي المشرفين",
+      "superAdminsPage": "المشرفون العامون (هذه الصفحة)",
+      "adminsPage": "المشرفون (هذه الصفحة)"
+    },
+    "empty": "لا يوجد مشرفون في النظام الموحد.",
+    "table": {
+      "granted": "تاريخ المنح"
+    },
+    "confirmRevoke": "هل تريد إلغاء صلاحية مشرف النظام الموحد عن {{name}}؟"
+  },
+  "clients": {
+    "title": "تطبيقات OAuth",
+    "registerNew": "تسجيل تطبيق جديد",
+    "stats": {
+      "total": "إجمالي التطبيقات",
+      "internalPage": "داخلية (هذه الصفحة)",
+      "externalPage": "خارجية (هذه الصفحة)"
+    },
+    "table": {
+      "appName": "اسم التطبيق",
+      "clientId": "معرّف التطبيق",
+      "type": "النوع",
+      "access": "الوصول",
+      "redirectUri": "رابط إعادة التوجيه"
+    },
+    "secretModal": {
+      "title": "السر الخاص بالتطبيق",
+      "body": "انسخ هذا السر الآن واحفظه بأمان — لن يُعرض مرة أخرى. إذا فقدته، ستحتاج إلى إلغاء هذا التطبيق وتسجيل تطبيق جديد.",
+      "saved": "لقد حفظته"
+    },
+    "modal": {
+      "editTitle": "تعديل {{name}}",
+      "createTitle": "تسجيل تطبيق جديد",
+      "appName": "اسم التطبيق",
+      "redirectUri": "رابط إعادة التوجيه",
+      "homepageUrl": "رابط الصفحة الرئيسية",
+      "logo": "الشعار",
+      "internalApp": "تطبيق داخلي",
+      "grantType": "نوع المنح",
+      "grantTypeAuthCode": "رمز التفويض (PKCE)",
+      "grantTypeImplicit": "ضمني (قديم، مثل Odoo)",
+      "grantTypeHelp": "استخدم النوع الضمني فقط للتطبيقات القديمة التي تتطلبه (مثل تسجيل الدخول المدمج في Odoo عبر OAuth). يصدر دائمًا رموزًا دون سر خاص بالتطبيق. لا يمكن تغيير هذا بعد إنشاء التطبيق.",
+      "publicClient": "تطبيق عام (جوال / تطبيق أصلي)",
+      "publicClientHelp": "لا يُصدر أي سر للتطبيق — يجب أن يستخدم التطبيق PKCE. اتركه غير مُفعّل للتطبيقات التي تعمل من جانب الخادم (لوحات ويب، أنظمة خلفية)، والتي تحصل على سر للحفاظ على السرية. لا يمكن تغيير هذا بعد إنشاء التطبيق.",
+      "whoCanAuthenticate": "من يمكنه تسجيل الدخول",
+      "allowedStages": "المراحل المسموح بها",
+      "allowedUsers": "المستخدمون المسموح بهم",
+      "allowedGroups": "المجموعات المسموح بها"
+    },
+    "confirmRevoke": "هل تريد إلغاء التطبيق {{name}}؟"
+  },
+  "cmcPosts": {
+    "title": "منشورات CMC",
+    "editPost": "تعديل المنشور",
+    "newPost": "منشور جديد",
+    "text": "النص",
+    "linkOptional": "رابط (اختياري)",
+    "pictureOptional": "صورة (اختياري)",
+    "keepCurrentPicture": "اتركه فارغًا للاحتفاظ بالصورة الحالية.",
+    "notifyEveryone": "سيُرسل هذا كإشعار إلى جميع المستخدمين.",
+    "publishPost": "نشر المنشور",
+    "publishedPosts": "المنشورات المنشورة",
+    "viewAllPosts": "عرض جميع المنشورات",
+    "postedBy": "نُشر في {{date}} بواسطة {{name}}",
+    "posted": "نُشر في {{date}}",
+    "empty": "لا توجد منشورات بعد.",
+    "confirmDelete": "هل تريد حذف هذا المنشور؟ سيختفي من الجميع."
+  },
+  "groups": {
+    "title": "المجموعات",
+    "addGroup": "إضافة مجموعة",
+    "description": "يمكن للمستخدمين الانتماء إلى أي عدد من المجموعات. يمكن أيضًا استخدام المجموعات لتقييد المستخدمين المسموح لهم بتسجيل الدخول إلى تطبيق OAuth معيّن.",
+    "manageUsers": "إدارة المستخدمين",
+    "empty": "لا توجد مجموعات بعد.",
+    "modal": {
+      "editTitle": "تعديل {{name}}",
+      "createTitle": "إضافة مجموعة",
+      "name": "الاسم",
+      "namePlaceholder": "مثال: المتطوعون",
+      "description": "الوصف"
+    },
+    "confirmDelete": "هل تريد حذف مجموعة \"{{name}}\"؟"
+  },
+  "groupShow": {
+    "backToGroups": "الرجوع إلى المجموعات",
+    "memberCount_one": "{{count}} عضو",
+    "memberCount_other": "{{count}} أعضاء",
+    "searchPlaceholder": "البحث عن مستخدمين بالاسم أو البريد الإلكتروني أو رمز العضوية..."
+  },
+  "notifications": {
+    "title": "مركز الإشعارات",
+    "sendNotification": "إرسال إشعار",
+    "message": "الرسالة",
+    "pictureOptional": "صورة (اختياري)",
+    "sendTo": "إرسال إلى",
+    "stagesLabel": "المراحل",
+    "groupsLabel": "المجموعات",
+    "usersLabel": "المستخدمون",
+    "send": "إرسال الإشعار",
+    "sentNotifications": "الإشعارات المرسلة",
+    "sentBy": "أُرسل في {{date}} بواسطة {{name}}",
+    "sent": "أُرسل في {{date}}",
+    "empty": "لم يتم إرسال أي إشعارات بعد.",
+    "confirmDelete": "هل تريد حذف هذا الإشعار؟ لن يظهر للمستلمين بعد الآن.",
+    "noStages": "لا توجد مراحل",
+    "noGroups": "لا توجد مجموعات",
+    "noUsers": "لا يوجد مستخدمون"
+  },
+  "stages": {
+    "title": "المراحل",
+    "addStage": "إضافة مرحلة",
+    "description": "يجب أن ينتمي كل مستخدم إلى مرحلة (مثل الابتدائية، الإعدادية، الثانوية، الشباب، البالغين).",
+    "reassignBeforeDelete": "أعد تعيين هؤلاء المستخدمين إلى مرحلة أخرى قبل الحذف",
+    "empty": "لا توجد مراحل بعد.",
+    "modal": {
+      "editTitle": "تعديل {{name}}",
+      "createTitle": "إضافة مرحلة",
+      "name": "الاسم",
+      "namePlaceholder": "مثال: الابتدائية",
+      "code": "الرمز",
+      "codePlaceholder": "مثال: pri"
+    },
+    "confirmDelete": "هل تريد حذف مرحلة \"{{name}}\"؟"
+  },
+  "tokens": {
+    "title": "الرموز",
+    "table": {
+      "user": "المستخدم",
+      "client": "التطبيق",
+      "scopes": "الصلاحيات",
+      "created": "تاريخ الإنشاء",
+      "expires": "تاريخ الانتهاء"
+    },
+    "confirmRevoke": "هل تريد إلغاء هذا الرمز؟"
+  },
+  "users": {
+    "createTitle": "إنشاء مستخدم",
+    "editTitle": "تعديل المستخدم",
+    "indexTitle": "المستخدمون",
+    "showTitle": "تفاصيل المستخدم",
+    "createUser": "إنشاء مستخدم",
+    "backToUsers": "الرجوع إلى المستخدمين",
+    "happyBirthday": "🎉 عيد ميلاد سعيد، {{name}}!",
+    "fields": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "dob": "تاريخ الميلاد",
+      "membershipCode": "رمز العضوية",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "stage": "المرحلة",
+      "role": "الدور"
+    },
+    "membershipCodeHelp": "رمز العضوية دائم ولا يمكن تغييره بعد إنشاء المستخدم.",
+    "roleHelpCanManage": "يُمنح دورا المشرف والمشرف العام صلاحية الوصول إلى لوحة إدارة النظام الموحد فورًا.",
+    "roleHelpCannotManageCreate": "يمكن فقط للمشرف العام تعيين دور المشرف أو المشرف العام.",
+    "roleHelpCannotManageEdit": "يمكن فقط للمشرف العام تغيير دور المشرف أو المشرف العام.",
+    "stats": {
+      "totalUsers": "إجمالي المستخدمين",
+      "activePage": "نشط (هذه الصفحة)",
+      "superAdminsPage": "المشرفون العامون (هذه الصفحة)",
+      "adminsPage": "المشرفون (هذه الصفحة)"
+    },
+    "allRoles": "جميع الأدوار",
+    "allStages": "جميع المراحل",
+    "table": {
+      "adminAccess": "صلاحية الإشراف"
+    },
+    "cantChangeOwnAdminAccess": "لا يمكنك تغيير صلاحية الإشراف الخاصة بك",
+    "confirmGrantAdminAccess": "هل أنت متأكد من رغبتك في منح صلاحية مشرف النظام الموحد لـ {{name}}؟",
+    "confirmRevokeAdminAccess": "هل أنت متأكد من رغبتك في إلغاء صلاحية مشرف النظام الموحد عن {{name}}؟",
+    "accountInformation": "معلومات الحساب",
+    "info": {
+      "membershipCode": "رمز العضوية",
+      "stage": "المرحلة",
+      "emailVerified": "تم تأكيد البريد الإلكتروني",
+      "adminAccess": "صلاحية الإشراف",
+      "accountCreated": "تاريخ إنشاء الحساب",
+      "lastUpdated": "آخر تحديث",
+      "groups": "المجموعات"
+    },
+    "verified": "تم التأكيد",
+    "notVerified": "لم يتم التأكيد",
+    "granted": "ممنوحة",
+    "none": "لا يوجد",
+    "dobNotSet": "لم يتم تحديد تاريخ الميلاد",
+    "adminActions": "إجراءات الإشراف",
+    "dataUpdateRequirement": "متطلب تحديث البيانات",
+    "dataUpdateBlocked": "محظور من تسجيل الدخول إلى أي تطبيق غير لوحة الإدارة هذه حتى تزيل هذا المتطلب.",
+    "dataUpdateHelp": "أجبر هذا المستخدم على تحديث بياناته قبل أن يتمكن من تسجيل الدخول إلى أي تطبيق آخر. سيظل بإمكانه استخدام لوحة الإدارة هذه.",
+    "clearRequirement": "إزالة المتطلب",
+    "requireUpdate": "طلب التحديث",
+    "confirmClearDataUpdate": "هل تريد إزالة متطلب تحديث البيانات عن {{name}}؟ سيتمكن من تسجيل الدخول إلى التطبيقات الأخرى مرة أخرى.",
+    "confirmRequireDataUpdate": "هل تريد إلزام {{name}} بتحديث بياناته؟ سيُحظر من تسجيل الدخول إلى أي تطبيق غير لوحة إدارة النظام الموحد حتى تزيل هذا المتطلب.",
+    "passwordReset": "إعادة تعيين كلمة المرور",
+    "passwordResetHelp": "يعمل الرابط مرة واحدة وتنتهي صلاحيته خلال 5 دقائق.",
+    "twoFactorAuth": "المصادقة الثنائية",
+    "mfaEnrolledOn": "تم التسجيل في {{date}}.",
+    "mfaRecoveryCodesRemaining": "{{remaining}} من {{total}} رمز استرداد متبقٍ.",
+    "mfaResetHelp": "تؤدي إعادة التعيين إلى مسح تسجيله، مثلًا إذا فقد جهازه — يجب عليه إعداده من جديد لتسجيل الدخول.",
+    "mfaNotEnrolled": "لم يتم التسجيل بعد — سيُطلب منه إعداده عند تسجيل الدخول التالي.",
+    "resetMfa": "إعادة تعيين المصادقة الثنائية",
+    "confirmResetMfa": "هل تريد إعادة تعيين المصادقة الثنائية لـ {{name}}؟ سيُقفل حسابه حتى يعيد إعدادها.",
+    "profilePicture": "صورة الملف الشخصي",
+    "profilePictureHelp": "رابط رفع لمرة واحدة، لا يتطلب تسجيل دخول.",
+    "emailUser": "مراسلة {{name}} عبر البريد",
+    "whatsappUser": "مراسلة {{name}} عبر واتساب",
+    "loggedInApps": "التطبيقات المسجّل الدخول إليها",
+    "forceLogoutAll": "تسجيل الخروج من الكل",
+    "notLoggedIntoApps": "غير مسجّل الدخول إلى أي تطبيق حاليًا.",
+    "signedInExpires": "سُجّل الدخول {{created}} · تنتهي الصلاحية {{expires}}",
+    "forceLogout": "إجبار تسجيل الخروج",
+    "confirmForceLogout": "هل تريد إجبار {{name}} على تسجيل الخروج من {{client}}؟",
+    "confirmForceLogoutAll": "هل تريد إجبار {{name}} على تسجيل الخروج من جميع التطبيقات البالغ عددها {{count}}؟",
+    "logOut": "تسجيل الخروج",
+    "logOutAll": "تسجيل الخروج من الكل",
+    "specificUserAppAccess": "وصول التطبيقات لمستخدمين محددين",
+    "noSpecificClients": "لا توجد تطبيقات مقيّدة بمستخدمين محددين بعد. اضبط وصول أحد التطبيقات على \"مستخدمون محددون\" من صفحة التطبيقات لإدارة الوصول هنا.",
+    "revokeAccess": "إلغاء الوصول",
+    "grantAccess": "منح الوصول",
+    "confirmActivateUser": "هل أنت متأكد من رغبتك في تفعيل {{name}}؟",
+    "confirmDeactivateUser": "هل أنت متأكد من رغبتك في إيقاف {{name}}؟",
+    "resetLinkWhatsAppMessage": "مرحبًا {{name}}، استخدم هذا الرابط لإعادة تعيين كلمة مرور Avarewase الخاصة بك: {{link}}",
+    "avatarLinkWhatsAppMessage": "مرحبًا {{name}}، استخدم هذا الرابط لتحديث صورة ملفك الشخصي في Avarewase: {{link}}",
+    "ageYears": "({{age}} سنة)"
+  }
+}

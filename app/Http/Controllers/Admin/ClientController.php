@@ -40,8 +40,8 @@ class ClientController extends BaseController
         $result = $this->oauthClientService->registerClient(OAuthClientDTO::fromRequest($request));
 
         $message = $result['secret'] !== null
-            ? 'Client registered. Copy the secret now — it will not be shown again.'
-            : 'Client registered successfully.';
+            ? __('messages.client_registered_with_secret')
+            : __('messages.client_registered');
 
         return $this->redirectRoute('admin.clients.index', $message)
             ->with('newClientSecret', $result['secret']);
@@ -51,13 +51,13 @@ class ClientController extends BaseController
     {
         $this->oauthClientService->updateClient($client, OAuthClientDTO::fromRequest($request));
 
-        return $this->redirectRoute('admin.clients.index', 'Client updated successfully.');
+        return $this->redirectRoute('admin.clients.index', __('messages.client_updated'));
     }
 
     public function destroy(string $client): RedirectResponse
     {
         $this->oauthClientService->revokeClient($client);
 
-        return $this->redirectBack('Client revoked.', 'success');
+        return $this->redirectBack(__('messages.client_revoked'), 'success');
     }
 }

@@ -49,15 +49,15 @@ class AuthService
         $user = $this->userRepository->findByMembershipCode($membershipCode);
 
         if ($user === null) {
-            throw new AuthenticationException('Invalid credentials.');
+            throw new AuthenticationException(__('messages.invalid_credentials'));
         }
 
         if (! $user->is_active) {
-            throw new AuthenticationException('Account is inactive.');
+            throw new AuthenticationException(__('messages.account_inactive'));
         }
 
         if (! Hash::check($password, $user->password)) {
-            throw new AuthenticationException('Invalid credentials.');
+            throw new AuthenticationException(__('messages.invalid_credentials'));
         }
 
         return $user;
@@ -94,17 +94,17 @@ class AuthService
         try {
             $payload = json_decode(Crypt::decryptString($token), true);
         } catch (DecryptException) {
-            throw new AuthenticationException('Invalid or expired verification session.');
+            throw new AuthenticationException(__('messages.invalid_or_expired_verification_session'));
         }
 
         if (! is_array($payload) || ($payload['expires'] ?? 0) < now()->timestamp) {
-            throw new AuthenticationException('Invalid or expired verification session.');
+            throw new AuthenticationException(__('messages.invalid_or_expired_verification_session'));
         }
 
         try {
             return $this->userRepository->findById((int) ($payload['user_id'] ?? 0));
         } catch (ModelNotFoundException) {
-            throw new AuthenticationException('Invalid or expired verification session.');
+            throw new AuthenticationException(__('messages.invalid_or_expired_verification_session'));
         }
     }
 

@@ -346,6 +346,15 @@ small, .small {
     transition: width 0.2s var(--ease-out), transform 0.25s var(--ease-out);
 }
 
+[dir="rtl"] .sidebar-main {
+    left: auto;
+    right: 0;
+    border-right: none;
+    border-left: 1px solid var(--ava-border);
+    padding-left: 0;
+    padding-right: var(--safe-right);
+}
+
 .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -372,6 +381,11 @@ small, .small {
         margin-left: 64px;
     }
 
+    [dir="rtl"] .main-content-area {
+        margin-left: 0;
+        margin-right: 64px;
+    }
+
     .sidebar-main:hover {
         width: 240px;
     }
@@ -387,9 +401,15 @@ small, .small {
         width: 240px;
         transform: translateX(-100%);
     }
+    [dir="rtl"] .sidebar-main {
+        transform: translateX(100%);
+    }
     .sidebar-main.sidebar-open {
         transform: translateX(0);
         box-shadow: 8px 0 24px rgba(0, 0, 0, 0.2);
+    }
+    [dir="rtl"] .sidebar-main.sidebar-open {
+        box-shadow: -8px 0 24px rgba(0, 0, 0, 0.2);
     }
     .sidebar-link-label,
     .sidebar-logo-row span {
@@ -596,6 +616,11 @@ small, .small {
     padding: 10px 14px;
     border-radius: var(--bs-border-radius);
     font-size: 0.8125rem;
+}
+
+[dir="rtl"] .app-requesting-banner {
+    border-left: none;
+    border-right: 3px solid var(--ava-secondary);
 }
 .recovery-code-box {
     font-family: 'SF Mono', ui-monospace, monospace;

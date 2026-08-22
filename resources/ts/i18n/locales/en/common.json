@@ -1,0 +1,116 @@
+{
+  "nav": {
+    "home": "Home",
+    "identity": "Identity",
+    "security": "Security",
+    "connectedApps": "Connected Apps",
+    "notifications": "Notifications",
+    "cmcPosts": "CMC Posts",
+    "profile": "Profile",
+    "cmc": "CMC",
+    "apps": "Apps",
+    "manageSso": "Manage SSO",
+    "manageCmcPosts": "Manage CMC Posts",
+    "users": "Users",
+    "ssoAdmins": "SSO Admins",
+    "stages": "Stages",
+    "groups": "Groups",
+    "oauthClients": "OAuth Clients",
+    "tokens": "Tokens",
+    "backToAccount": "Back to Account"
+  },
+  "topbar": {
+    "openMenu": "Open menu",
+    "notifications": "Notifications",
+    "markAllAsRead": "Mark all as read",
+    "noNotificationsYet": "No notifications yet.",
+    "seeAllNotifications": "See all notifications",
+    "logOut": "Log out"
+  },
+  "locale": {
+    "english": "en",
+    "arabic": "عر",
+    "switchLanguage": "Switch language"
+  },
+  "actions": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back"
+  },
+  "sidebar": {
+    "closeMenu": "Close menu"
+  },
+  "confirmDialog": {
+    "defaultTitle": "Are you sure?"
+  },
+  "inAppLinkModal": {
+    "openInNewTab": "Open in new tab",
+    "loading": "Loading...",
+    "mayNotDisplayCorrectly": "This site may not display correctly here."
+  },
+  "pagination": {
+    "ariaLabel": "Pagination"
+  },
+  "roleChip": {
+    "superadmin": "Super Admin",
+    "admin": "Admin",
+    "secretary": "Secretary",
+    "user": "User"
+  },
+  "statusBadge": {
+    "active": "Active",
+    "revoked": "Revoked",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "internal": "Internal",
+    "external": "External",
+    "warning": "Needs Update"
+  },
+  "welcome": {
+    "signIn": "Sign In",
+    "eyebrow": "Identity & Access Management",
+    "heroTitle": "One identity for every Avarewase app",
+    "heroDescription": "Avarewase Auth is the central sign-on provider for your organization — a single secure account that connects to every app you use, protected by two-factor authentication and managed from one admin console.",
+    "signInToYourAccount": "Sign In to Your Account",
+    "learnMore": "Learn More",
+    "footer": "© {{year}} Avarewase Auth. All rights reserved.",
+    "features": {
+      "sso": {
+        "title": "Single Sign-On",
+        "description": "One set of credentials for every connected application, built on OAuth2 and OpenID Connect."
+      },
+      "mfa": {
+        "title": "Two-Factor Authentication",
+        "description": "Protect every account with TOTP-based two-factor authentication and one-time recovery codes."
+      },
+      "directory": {
+        "title": "Centralized Directory",
+        "description": "Manage every member, their stage, and their role from a single admin console."
+      },
+      "accessControl": {
+        "title": "Client Access Control",
+        "description": "Grant connected apps access to everyone, a specific stage, or hand-picked individuals."
+      },
+      "recovery": {
+        "title": "Self-Service Recovery",
+        "description": "One-time, time-limited links for password resets and profile photo updates — no support ticket required."
+      },
+      "integrations": {
+        "title": "Built for Integrations",
+        "description": "A standards-based identity provider that any OAuth2/OIDC client app can plug into in minutes."
+      }
+    }
+  },
+  "avatarUpload": {
+    "linkExpired": "This link has expired or was already used. Ask an administrator for a new one.",
+    "successMessage": "Profile picture updated for {{userName}}. You can close this page now.",
+    "updateProfilePicture": "Update {{userName}}'s profile picture",
+    "choosePhoto": "Choose a photo",
+    "uploadPhoto": "Upload Photo",
+    "poweredBy": "Powered by Avarewase Auth"
+  }
+}

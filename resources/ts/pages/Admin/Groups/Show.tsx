@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { router } from '@inertiajs/react'
+import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
 import type { Group, GroupMemberOption } from '@/types'
 
@@ -9,6 +10,7 @@ interface ShowProps {
 }
 
 export default function Show({ group, users }: ShowProps) {
+    const { t } = useTranslation(['admin', 'common'])
     const [search, setSearch] = useState('')
 
     const toggleMembership = (user: GroupMemberOption) => {
@@ -34,7 +36,7 @@ export default function Show({ group, users }: ShowProps) {
             action={
                 <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => router.visit('/admin/groups')}>
                     <i className="bi bi-arrow-left me-1" />
-                    Back to Groups
+                    {t('groupShow.backToGroups')}
                 </button>
             }
         >
@@ -43,18 +45,18 @@ export default function Show({ group, users }: ShowProps) {
                 <div className="p-4">
                     <h3 className="mb-1">{group.name}</h3>
                     {group.description && <p className="text-ava-muted mb-2">{group.description}</p>}
-                    <span className="role-chip">{memberCount} member{memberCount === 1 ? '' : 's'}</span>
+                    <span className="role-chip">{t('groupShow.memberCount', { count: memberCount })}</span>
                 </div>
             </div>
 
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">Users</h5>
+                <h5 className="mb-0">{t('table.users')}</h5>
             </div>
 
             <input
                 type="text"
                 className="form-control mb-3"
-                placeholder="Search users by name, email, or membership code..."
+                placeholder={t('groupShow.searchPlaceholder')}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
             />
@@ -77,12 +79,12 @@ export default function Show({ group, users }: ShowProps) {
                                 className={`btn btn-sm text-nowrap ${user.is_member ? 'btn-outline-primary' : 'btn-primary'}`}
                                 onClick={() => toggleMembership(user)}
                             >
-                                {user.is_member ? 'Remove' : 'Add'}
+                                {user.is_member ? t('actions.remove') : t('actions.add')}
                             </button>
                         </li>
                     ))}
                     {filteredUsers.length === 0 && (
-                        <li className="list-group-item text-center text-ava-muted py-4">No users match your search.</li>
+                        <li className="list-group-item text-center text-ava-muted py-4">{t('search.noUsersMatch')}</li>
                     )}
                 </ul>
             </div>

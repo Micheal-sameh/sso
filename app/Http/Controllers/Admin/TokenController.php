@@ -28,6 +28,6 @@ class TokenController extends BaseController
     {
         $this->tokenRepository->revoke($token);
 
-        return $this->redirectBack('Token revoked.', 'success');
+        return $this->redirectBack(__('messages.token_revoked'), 'success');
     }
 }

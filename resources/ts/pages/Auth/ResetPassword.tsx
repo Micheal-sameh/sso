@@ -1,5 +1,6 @@
 import { useForm } from '@inertiajs/react'
 import type { FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
 
@@ -16,6 +17,7 @@ interface ResetPasswordForm {
 }
 
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
+    const { t } = useTranslation('auth')
     const form = useForm<ResetPasswordForm>({
         token,
         email,
@@ -32,12 +34,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
         <AuthLayout>
             <div className="text-center mb-4">
                 <AvaLogo size={56} showText />
-                <p className="text-ava-muted small mt-2 mb-0">Choose a new password</p>
+                <p className="text-ava-muted small mt-2 mb-0">{t('resetPassword.chooseNewPassword')}</p>
             </div>
 
             <form onSubmit={submit}>
                 <div className="mb-3">
-                    <label className="form-label" htmlFor="email">Email</label>
+                    <label className="form-label" htmlFor="email">{t('resetPassword.email')}</label>
                     <input
                         id="email"
                         type="email"
@@ -49,7 +51,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label" htmlFor="password">New Password</label>
+                    <label className="form-label" htmlFor="password">{t('resetPassword.newPassword')}</label>
                     <input
                         id="password"
                         type="password"
@@ -62,7 +64,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 </div>
 
                 <div className="mb-4">
-                    <label className="form-label" htmlFor="password_confirmation">Confirm New Password</label>
+                    <label className="form-label" htmlFor="password_confirmation">{t('resetPassword.confirmNewPassword')}</label>
                     <input
                         id="password_confirmation"
                         type="password"
@@ -73,7 +75,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                 </div>
 
                 <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
-                    Reset Password
+                    {t('resetPassword.resetPassword')}
                 </button>
             </form>
         </AuthLayout>

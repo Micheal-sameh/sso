@@ -11,8 +11,10 @@
         "@popperjs/core": "^2.11",
         "bootstrap": "^5.3",
         "bootstrap-icons": "^1.11",
+        "i18next": "^26.4.0",
         "react": "^19.0",
-        "react-dom": "^19.0"
+        "react-dom": "^19.0",
+        "react-i18next": "^17.0.12"
     },
     "devDependencies": {
         "@types/react": "^19.0",

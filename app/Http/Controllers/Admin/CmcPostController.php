@@ -42,7 +42,7 @@ class CmcPostController extends BaseController
             imagePath: $dto->image instanceof UploadedFile ? $dto->image->store('cmc-post-uploads') : null,
         );
 
-        return $this->redirectRoute('admin.cmc-posts.index', 'Post is being published.');
+        return $this->redirectRoute('admin.cmc-posts.index', __('messages.post_being_published'));
     }
 
     public function update(CmcPost $cmcPost, CmcPostRequest $request): RedirectResponse
@@ -56,13 +56,13 @@ class CmcPostController extends BaseController
             imagePath: $dto->image instanceof UploadedFile ? $dto->image->store('cmc-post-uploads') : null,
         );
 
-        return $this->redirectRoute('admin.cmc-posts.index', 'Post is being updated.');
+        return $this->redirectRoute('admin.cmc-posts.index', __('messages.post_being_updated'));
     }
 
     public function destroy(CmcPost $cmcPost): RedirectResponse
     {
         $this->cmcPostService->delete($cmcPost);
 
-        return $this->redirectBack('Post deleted.', 'success');
+        return $this->redirectBack(__('messages.post_deleted'), 'success');
     }
 }
