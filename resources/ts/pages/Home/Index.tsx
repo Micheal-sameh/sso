@@ -3,6 +3,7 @@ import { Link, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
+import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
 import echo from '@/lib/echo'
 import { isBirthdayToday } from '@/lib/date'
 import type { CmcPost, CopticCalendar, SharedProps, YoutubeVideo } from '@/types'
@@ -206,6 +207,17 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                             <Link href={`/cmc/${post.id}`} className="text-reset text-decoration-none">
                                                 <div className="text-truncate-2 mb-2">{post.text}</div>
                                             </Link>
+                                        )}
+                                        {post.url && (
+                                            <div style={{ maxWidth: 360 }}>
+                                                <LinkPreviewCard
+                                                    url={post.url}
+                                                    title={post.url_title}
+                                                    description={post.url_description}
+                                                    image={post.url_image}
+                                                    onOpen={setOpenUrl}
+                                                />
+                                            </div>
                                         )}
                                         <div className="text-ava-muted text-tiny mt-2">
                                             {post.created_at}
