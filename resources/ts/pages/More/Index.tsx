@@ -12,7 +12,10 @@ export default function Index() {
     const { t, i18n } = useTranslation('more')
     const chevronIcon = i18n.language === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'
 
-    const links: MoreLink[] = [{ href: '/coptic', label: t('readings'), icon: 'bi-calendar-event' }]
+    const links: MoreLink[] = [
+        { href: '/coptic', label: t('readings'), icon: 'bi-calendar-event' },
+        { href: '/liturgy', label: t('liturgy'), icon: 'bi-book' },
+    ]
 
     return (
         <AppLayout title={t('title')}>
