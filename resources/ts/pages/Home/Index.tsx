@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
+import ScrollableRow from '@/components/shared/ScrollableRow'
 import echo from '@/lib/echo'
 import { isBirthdayToday } from '@/lib/date'
 import type { CmcPost, CopticCalendar, SharedProps, YoutubeVideo } from '@/types'
@@ -175,14 +176,15 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                         <i className="bi bi-pin-angle-fill me-2" />
                         {t('home.pinnedVideos')}
                     </h5>
-                    <div className="d-flex gap-3 overflow-auto pb-1">
-                        {pinnedVideos.map((video) => (
+                    <ScrollableRow
+                        items={pinnedVideos}
+                        itemKey={(video) => video.id}
+                        renderItem={(video) => (
                             <a
-                                key={video.id}
                                 href={video.watch_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-reset text-decoration-none flex-shrink-0"
+                                className="text-reset text-decoration-none d-block"
                                 style={{ width: 220 }}
                             >
                                 {video.thumbnail_url && (
@@ -196,8 +198,8 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                 )}
                                 <div className="text-truncate-2 text-tiny fw-semibold">{video.title}</div>
                             </a>
-                        ))}
-                    </div>
+                        )}
+                    />
                 </div>
             )}
 
@@ -207,13 +209,11 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                         <i className="bi bi-pin-angle-fill me-2" />
                         {t('home.pinnedPosts')}
                     </h5>
-                    <div className="d-flex gap-3 overflow-auto pb-1">
-                        {pinnedPosts.map((post) => (
-                            <div
-                                key={post.id}
-                                className="flex-shrink-0 border rounded p-3"
-                                style={{ width: 300 }}
-                            >
+                    <ScrollableRow
+                        items={pinnedPosts}
+                        itemKey={(post) => post.id}
+                        renderItem={(post) => (
+                            <div className="border rounded p-3" style={{ width: 300 }}>
                                 <div className="d-flex gap-3">
                                     {post.image_url && (
                                         <Link href={`/cmc/${post.id}`}>
@@ -250,8 +250,8 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                     </div>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    />
                 </div>
             )}
 
