@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\NotificationController as AdminNotificationContro
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\YoutubeVideoController as AdminYoutubeVideoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -21,10 +22,10 @@ use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\CmcPostController;
+use App\Http\Controllers\CopticCalendarController;
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
-use App\Http\Controllers\Admin\YoutubeVideoController as AdminYoutubeVideoController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\YoutubeLiveStatusController;
@@ -88,6 +89,7 @@ Route::middleware('auth')->group(function () {
             ->name('notifications.read');
 
         Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+        Route::get('/coptic', [CopticCalendarController::class, 'show'])->name('coptic.show');
         Route::middleware('throttle')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');

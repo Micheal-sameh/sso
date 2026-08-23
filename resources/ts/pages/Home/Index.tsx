@@ -75,13 +75,17 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
 
             <h3 className="mb-4">{t('home.welcome', { name: auth.user?.name })}</h3>
 
-            <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
+            <Link
+                href="/coptic"
+                className="ava-card p-3 mb-3 d-block text-decoration-none text-reset"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+            >
                 <h5 className="mb-2">
                     <i className="bi bi-calendar-event me-2" />
                     {t('home.copticDate')}
                 </h5>
                 <p className="mb-0">{coptic.date ?? t('home.copticDateUnavailable')}</p>
-            </div>
+            </Link>
 
             <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
                 <h5 className="mb-2">{t('home.synaxariumToday')}</h5>

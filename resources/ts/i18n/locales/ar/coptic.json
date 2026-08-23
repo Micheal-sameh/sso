@@ -1,0 +1,22 @@
+{
+  "coptic": {
+    "title": "التقويم القبطي",
+    "gregorianDate": "التاريخ الميلادي",
+    "copticDate": "التاريخ القبطي",
+    "selectDate": "اختر تاريخًا",
+    "today": "اليوم",
+    "readings": "قراءات اليوم",
+    "vespersPsalm": "مزمور عشية",
+    "vespersGospel": "إنجيل عشية",
+    "matinsPsalm": "مزمور باكر",
+    "matinsGospel": "إنجيل باكر",
+    "liturgyPsalm": "مزمور القداس",
+    "liturgyGospel": "إنجيل القداس",
+    "pauline": "البولس",
+    "catholic": "الكاثوليكون",
+    "acts": "الإبركسيس",
+    "synaxarium": "السنكسار",
+    "noCommemoration": "لا يوجد تذكار متاح لهذا اليوم.",
+    "unavailable": "غير متاح حاليًا."
+  }
+}

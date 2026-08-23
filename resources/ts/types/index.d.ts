@@ -191,9 +191,22 @@ export interface CopticCommemoration {
     url: string | null
 }
 
+export interface CopticReadings {
+    vespersPsalm: string | null
+    vespersGospel: string | null
+    matinsPsalm: string | null
+    matinsGospel: string | null
+    liturgyPsalm: string | null
+    liturgyGospel: string | null
+    pauline: string | null
+    catholic: string | null
+    acts: string | null
+}
+
 export interface CopticCalendar {
     date: string | null
     commemorations: CopticCommemoration[]
+    readings: CopticReadings
 }
 
 export interface Fund {
