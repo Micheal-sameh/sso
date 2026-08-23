@@ -528,7 +528,7 @@ small, .small {
     position: sticky;
     top: 0;
     z-index: 10;
-    padding-top: calc(0.75rem + var(--safe-top));
+    padding-top: calc(0.75rem + max(var(--safe-top), 24px));
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
@@ -578,7 +578,7 @@ small, .small {
 
 @media (max-width: 991.98px) {
     .main-content-area.has-bottom-nav {
-        padding-bottom: var(--bottom-nav-height);
+        padding-bottom: calc(var(--bottom-nav-height) + var(--safe-bottom));
     }
 
     /* Bigger touch targets so nothing needs a precise tap. */
