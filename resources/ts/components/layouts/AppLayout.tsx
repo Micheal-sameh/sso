@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import type { SharedProps } from '@/types'
 import BottomNav from '@/components/layouts/BottomNav'
 import FlashMessage from '@/components/shared/FlashMessage'
+import PullToRefresh from '@/components/shared/PullToRefresh'
 import Sidebar, { type SidebarLink } from '@/components/layouts/Sidebar'
 import TopBar from '@/components/layouts/TopBar'
 
@@ -50,6 +51,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
 
     return (
         <div className="d-flex">
+            <PullToRefresh />
             <Sidebar
                 groups={[{ id: 'main', label: '', links: navLinks }]}
                 footerLinks={footerLinks}

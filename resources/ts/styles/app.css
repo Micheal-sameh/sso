@@ -32,8 +32,37 @@
 html {
     /* Prevent the rubber-band/pull-to-refresh gesture browsers show on
        vertical overscroll — one of the biggest tells that a page is "just a
-       website" rather than an installed app. */
+       website" rather than an installed app. Replaced with a custom gesture,
+       see PullToRefresh.tsx. */
     overscroll-behavior-y: contain;
+}
+
+.pull-to-refresh-indicator {
+    position: fixed;
+    top: calc(var(--safe-top) + 8px);
+    left: 50%;
+    z-index: 1050;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ava-white);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ava-secondary);
+    transition: opacity 0.15s var(--ease-out), transform 0.15s var(--ease-out);
+    pointer-events: none;
+}
+
+.pull-to-refresh-spin {
+    animation: pull-to-refresh-spin 0.8s linear infinite;
+}
+
+@keyframes pull-to-refresh-spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 * {
