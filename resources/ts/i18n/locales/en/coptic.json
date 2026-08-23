@@ -6,9 +6,6 @@
     "selectDate": "Select a date",
     "today": "Today",
     "readings": "Daily Readings",
-    "fontSize": "Text size",
-    "decreaseFontSize": "Decrease text size",
-    "increaseFontSize": "Increase text size",
     "synaxarium": "Synaxarium",
     "noCommemoration": "No commemoration available for this day.",
     "unavailable": "Not available right now."

@@ -56,6 +56,11 @@
   "sidebar": {
     "closeMenu": "Close menu"
   },
+  "fontSize": {
+    "label": "Text size",
+    "decrease": "Decrease text size",
+    "increase": "Increase text size"
+  },
   "confirmDialog": {
     "defaultTitle": "Are you sure?"
   },

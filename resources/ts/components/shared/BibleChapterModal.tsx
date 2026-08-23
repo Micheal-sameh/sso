@@ -5,10 +5,11 @@ interface BibleChapterModalProps {
     title: string | null
     verses: BibleVerse[] | null
     loading: boolean
+    fontSize?: number
     onClose: () => void
 }
 
-export default function BibleChapterModal({ title, verses, loading, onClose }: BibleChapterModalProps) {
+export default function BibleChapterModal({ title, verses, loading, fontSize, onClose }: BibleChapterModalProps) {
     const { t } = useTranslation('common')
     const { t: tLiturgy } = useTranslation('liturgy')
 
@@ -30,7 +31,7 @@ export default function BibleChapterModal({ title, verses, loading, onClose }: B
                                 </div>
                             </div>
                         ) : verses && verses.length > 0 ? (
-                            <p className="mb-0">
+                            <p className="mb-0" style={{ fontSize }}>
                                 {verses.map((verse) => (
                                     <span key={verse.verse}>
                                         <sup className="text-ava-secondary fw-semibold me-1">{verse.verse}</sup>

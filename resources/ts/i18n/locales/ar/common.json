@@ -56,6 +56,11 @@
   "sidebar": {
     "closeMenu": "إغلاق القائمة"
   },
+  "fontSize": {
+    "label": "حجم النص",
+    "decrease": "تصغير حجم النص",
+    "increase": "تكبير حجم النص"
+  },
   "confirmDialog": {
     "defaultTitle": "هل أنت متأكد؟"
   },

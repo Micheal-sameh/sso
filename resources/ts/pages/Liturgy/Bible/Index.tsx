@@ -3,6 +3,8 @@ import { Link } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import BibleChapterModal from '@/components/shared/BibleChapterModal'
+import FontSizeControl from '@/components/shared/FontSizeControl'
+import { useReadingFontSize } from '@/lib/readingFontSize'
 import type { BibleBook, BibleVerse } from '@/types'
 
 interface IndexProps {
@@ -21,6 +23,7 @@ export default function Index({ books }: IndexProps) {
     const [selectedBook, setSelectedBook] = useState<BibleBook | null>(null)
     const [openChapter, setOpenChapter] = useState<OpenChapter | null>(null)
     const [loadingChapter, setLoadingChapter] = useState(false)
+    const { fontSize, increase, decrease, canIncrease, canDecrease } = useReadingFontSize()
 
     const openChapterText = async (book: BibleBook, chapter: number) => {
         const title = `${book.name} ${chapter}`
@@ -73,7 +76,10 @@ export default function Index({ books }: IndexProps) {
                 </div>
             ) : (
                 <div className="ava-card p-3" dir={dir}>
-                    <h5 className="mb-3">{selectedBook.name}</h5>
+                    <div className="d-flex align-items-center justify-content-between mb-3">
+                        <h5 className="mb-0">{selectedBook.name}</h5>
+                        <FontSizeControl canDecrease={canDecrease} canIncrease={canIncrease} onDecrease={decrease} onIncrease={increase} />
+                    </div>
                     <div className="d-flex flex-wrap gap-2">
                         {Array.from({ length: selectedBook.chapters }, (_, i) => i + 1).map((chapter) => (
                             <button
@@ -99,6 +105,7 @@ export default function Index({ books }: IndexProps) {
                 title={openChapter?.title ?? null}
                 verses={openChapter?.verses ?? null}
                 loading={loadingChapter}
+                fontSize={fontSize}
                 onClose={() => setOpenChapter(null)}
             />
         </AppLayout>
