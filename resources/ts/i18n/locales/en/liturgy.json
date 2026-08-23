@@ -1,5 +1,7 @@
 {
   "title": "Liturgy",
   "bible": "Bible",
-  "agpeya": "Agpeya"
+  "agpeya": "Agpeya",
+  "allBooks": "All Books",
+  "textUnavailable": "Not available right now."
 }

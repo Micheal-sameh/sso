@@ -21,6 +21,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
+use App\Http\Controllers\BibleController;
 use App\Http\Controllers\CmcPostController;
 use App\Http\Controllers\CopticCalendarController;
 use App\Http\Controllers\DonationController;
@@ -92,6 +93,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/coptic', [CopticCalendarController::class, 'show'])->name('coptic.show');
         Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
         Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
+        Route::get('/liturgy/bible', [BibleController::class, 'index'])->name('liturgy.bible.index');
+        Route::get('/liturgy/bible/chapter', [BibleController::class, 'chapter'])->name('liturgy.bible.chapter');
         Route::middleware('throttle')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');

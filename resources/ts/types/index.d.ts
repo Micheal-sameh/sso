@@ -213,6 +213,17 @@ export interface CopticCalendar {
     readings: CopticReadingSection[]
 }
 
+export interface BibleBook {
+    id: number
+    name: string
+    chapters: number
+}
+
+export interface BibleVerse {
+    verse: number
+    text: string | null
+}
+
 export interface Fund {
     id: number
     name: string
