@@ -4,9 +4,12 @@ namespace App\Providers;
 
 use App\Enums\OAuthScope;
 use App\Http\Controllers\OAuth\AuthorizationController;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Contracts\AuthorizationViewResponse;
@@ -42,8 +45,14 @@ class AppServiceProvider extends ServiceProvider
     {
         Model::preventLazyLoading(! app()->isProduction());
 
+        // 30 requests/second per authenticated user, falling back to per-IP
+        // for unauthenticated requests.
+        RateLimiter::for('per-second', function (Request $request) {
+            return Limit::perSecond(30)->by($request->user()?->getAuthIdentifier() ?: $request->ip());
+        });
+
         Route::post('/oauth/token', [AccessTokenController::class, 'issueToken'])
-            ->middleware('throttle')
+            ->middleware('throttle:per-second')
             ->name('passport.token');
 
         Passport::tokensExpireIn(now()->addDay());

@@ -20,7 +20,7 @@ Route::middleware(['auth:api', 'scopes:openid'])->get('/userinfo', [UserinfoCont
 // Odoo's auth_oauth module calls its "Validation Endpoint" with the access
 // token as a query parameter, not an Authorization header — see the
 // controller for details. Throttled since it's an unauthenticated GET.
-Route::middleware('throttle')->get('/oauth/odoo/validate', [OdooTokenValidationController::class, 'validate']);
+Route::middleware('throttle:per-second')->get('/oauth/odoo/validate', [OdooTokenValidationController::class, 'validate']);
 
 // Server-to-server: registered OAuth clients authenticate with client_id/client_secret
 // (no bearer token) to request a password reset email be sent to one of their users.
@@ -34,12 +34,12 @@ Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa']);
 // Server-to-server: bank gateway payment notifications. Not session/token
 // authenticated — DonationService verifies each request's signature against
 // the gateway's webhook secret before trusting it.
-Route::post('/donations/callback/{gateway}', [DonationCallbackController::class, 'handle'])->middleware('throttle');
+Route::post('/donations/callback/{gateway}', [DonationCallbackController::class, 'handle'])->middleware('throttle:per-second');
 
 // YouTube WebSub (PubSubHubbub) callback: the hub GETs this URL to verify a
 // subscription and POSTs an Atom feed here on every new upload.
-Route::middleware('throttle')->get('/webhooks/youtube', [YoutubeWebhookController::class, 'verify'])->name('webhooks.youtube');
-Route::middleware('throttle')->post('/webhooks/youtube', [YoutubeWebhookController::class, 'handle']);
+Route::middleware('throttle:per-second')->get('/webhooks/youtube', [YoutubeWebhookController::class, 'verify'])->name('webhooks.youtube');
+Route::middleware('throttle:per-second')->post('/webhooks/youtube', [YoutubeWebhookController::class, 'handle']);
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);

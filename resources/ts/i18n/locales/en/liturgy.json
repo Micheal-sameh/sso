@@ -3,5 +3,15 @@
   "bible": "Bible",
   "agpeya": "Agpeya",
   "allBooks": "All Books",
-  "textUnavailable": "Not available right now."
+  "textUnavailable": "Not available right now.",
+  "agpeyaHours": {
+    "prime": "Prime (1st Hour)",
+    "third": "Terce (3rd Hour)",
+    "sixth": "Sext (6th Hour)",
+    "ninth": "None (9th Hour)",
+    "vespers": "Vespers (11th Hour)",
+    "compline": "Compline (12th Hour)",
+    "midnight": "Midnight Prayer",
+    "veil": "Prayer of the Veil"
+  }
 }

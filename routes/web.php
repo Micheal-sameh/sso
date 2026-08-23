@@ -95,7 +95,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
         Route::get('/liturgy/bible', [BibleController::class, 'index'])->name('liturgy.bible.index');
         Route::get('/liturgy/bible/chapter', [BibleController::class, 'chapter'])->name('liturgy.bible.chapter');
-        Route::middleware('throttle')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
+        Route::get('/liturgy/agpeya', fn () => Inertia::render('Liturgy/Agpeya/Index'))->name('liturgy.agpeya.index');
+        Route::middleware('throttle:per-second')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
         Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
