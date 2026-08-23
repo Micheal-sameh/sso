@@ -31,7 +31,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
     ]
 
     const bottomNavLinks: SidebarLink[] = [
-        { href: '/account/apps', label: t('nav.apps'), icon: 'bi-grid' },
+        { href: '/more', label: t('nav.more'), icon: 'bi-grid' },
         { href: '/cmc', label: t('nav.cmc'), icon: 'bi-newspaper' },
         { href: '/home', label: t('nav.home'), icon: 'bi-house' },
         { href: '/donations', label: t('nav.donate'), icon: 'bi-heart' },

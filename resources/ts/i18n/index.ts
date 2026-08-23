@@ -9,6 +9,7 @@ import enAdmin from './locales/en/admin.json'
 import enCmcPost from './locales/en/cmcPost.json'
 import enCoptic from './locales/en/coptic.json'
 import enDonations from './locales/en/donations.json'
+import enMore from './locales/en/more.json'
 import enOauth from './locales/en/oauth.json'
 import enErrors from './locales/en/errors.json'
 import enVideos from './locales/en/videos.json'
@@ -21,6 +22,7 @@ import arAdmin from './locales/ar/admin.json'
 import arCmcPost from './locales/ar/cmcPost.json'
 import arCoptic from './locales/ar/coptic.json'
 import arDonations from './locales/ar/donations.json'
+import arMore from './locales/ar/more.json'
 import arOauth from './locales/ar/oauth.json'
 import arErrors from './locales/ar/errors.json'
 import arVideos from './locales/ar/videos.json'
@@ -31,7 +33,7 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'coptic', 'donations', 'oauth', 'errors', 'videos'],
+    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'coptic', 'donations', 'more', 'oauth', 'errors', 'videos'],
     resources: {
         en: {
             common: enCommon,
@@ -42,6 +44,7 @@ i18n.use(initReactI18next).init({
             cmcPost: enCmcPost,
             coptic: enCoptic,
             donations: enDonations,
+            more: enMore,
             oauth: enOauth,
             errors: enErrors,
             videos: enVideos,
@@ -55,6 +58,7 @@ i18n.use(initReactI18next).init({
             cmcPost: arCmcPost,
             coptic: arCoptic,
             donations: arDonations,
+            more: arMore,
             oauth: arOauth,
             errors: arErrors,
             videos: arVideos,

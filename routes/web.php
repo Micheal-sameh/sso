@@ -90,6 +90,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/home', [HomeController::class, 'index'])->name('home.index');
         Route::get('/coptic', [CopticCalendarController::class, 'show'])->name('coptic.show');
+        Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
         Route::middleware('throttle')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
 
         Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
