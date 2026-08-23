@@ -3,37 +3,25 @@ import { Link, router } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
-import type { CopticCalendar, CopticReadings } from '@/types'
+import ReadingTextModal from '@/components/shared/ReadingTextModal'
+import type { CopticCalendar, CopticReading } from '@/types'
 
 interface ShowProps {
     coptic: CopticCalendar
     date: string
 }
 
-const READING_KEYS: (keyof CopticReadings)[] = [
-    'vespersPsalm',
-    'vespersGospel',
-    'matinsPsalm',
-    'matinsGospel',
-    'liturgyPsalm',
-    'liturgyGospel',
-    'pauline',
-    'catholic',
-    'acts',
-]
-
 export default function Show({ coptic, date }: ShowProps) {
     const { t, i18n } = useTranslation('coptic')
     const { t: tCommon } = useTranslation('common')
     const [openUrl, setOpenUrl] = useState<string | null>(null)
+    const [openReading, setOpenReading] = useState<CopticReading | null>(null)
     const dir = i18n.language === 'ar' ? 'rtl' : 'ltr'
     const today = new Date().toISOString().slice(0, 10)
 
     const goToDate = (newDate: string) => {
         router.get('/coptic', newDate === today ? {} : { date: newDate }, { preserveState: true, preserveScroll: true })
     }
-
-    const readingsAvailable = READING_KEYS.some((key) => coptic.readings[key])
 
     return (
         <AppLayout title={t('coptic.title')}>
@@ -68,15 +56,34 @@ export default function Show({ coptic, date }: ShowProps) {
 
             <div className="ava-card p-3 mb-3" dir={dir}>
                 <h5 className="mb-3">{t('coptic.readings')}</h5>
-                {readingsAvailable ? (
-                    <dl className="mb-0 row">
-                        {READING_KEYS.filter((key) => coptic.readings[key]).map((key) => (
-                            <div key={key} className="col-12 col-md-6 mb-2">
-                                <dt className="text-ava-muted text-tiny fw-normal">{t(`coptic.${key}`)}</dt>
-                                <dd className="mb-0">{coptic.readings[key]}</dd>
-                            </div>
-                        ))}
-                    </dl>
+                {coptic.readings.length > 0 ? (
+                    coptic.readings.map((section, sectionIndex) => (
+                        <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4' : undefined}>
+                            {section.title && <h6 className="text-ava-primary mb-2">{section.title}</h6>}
+                            {section.subSections.map((subSection, subSectionIndex) => (
+                                <div key={subSectionIndex} className="mb-3">
+                                    {subSection.title && (
+                                        <div className="text-ava-muted text-tiny mb-1">{subSection.title}</div>
+                                    )}
+                                    {subSection.readings.map((reading, readingIndex) => (
+                                        <div key={readingIndex} className="mb-1">
+                                            {reading.reference && reading.text ? (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-link p-0 align-baseline text-start"
+                                                    onClick={() => setOpenReading(reading)}
+                                                >
+                                                    {reading.reference}
+                                                </button>
+                                            ) : (
+                                                reading.reference && <span>{reading.reference}</span>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
+                        </div>
+                    ))
                 ) : (
                     <p className="text-ava-muted mb-0">{t('coptic.unavailable')}</p>
                 )}
@@ -113,6 +120,7 @@ export default function Show({ coptic, date }: ShowProps) {
             </Link>
 
             <InAppLinkModal url={openUrl} onClose={() => setOpenUrl(null)} />
+            <ReadingTextModal reading={openReading} onClose={() => setOpenReading(null)} />
         </AppLayout>
     )
 }

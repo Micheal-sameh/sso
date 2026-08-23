@@ -191,22 +191,26 @@ export interface CopticCommemoration {
     url: string | null
 }
 
-export interface CopticReadings {
-    vespersPsalm: string | null
-    vespersGospel: string | null
-    matinsPsalm: string | null
-    matinsGospel: string | null
-    liturgyPsalm: string | null
-    liturgyGospel: string | null
-    pauline: string | null
-    catholic: string | null
-    acts: string | null
+export interface CopticReading {
+    title: string | null
+    reference: string | null
+    text: string | null
+}
+
+export interface CopticReadingSubSection {
+    title: string | null
+    readings: CopticReading[]
+}
+
+export interface CopticReadingSection {
+    title: string | null
+    subSections: CopticReadingSubSection[]
 }
 
 export interface CopticCalendar {
     date: string | null
     commemorations: CopticCommemoration[]
-    readings: CopticReadings
+    readings: CopticReadingSection[]
 }
 
 export interface Fund {
