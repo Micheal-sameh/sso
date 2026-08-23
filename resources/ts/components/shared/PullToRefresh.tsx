@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { router } from '@inertiajs/react'
 
 const PULL_THRESHOLD = 70
 const MAX_PULL = 100
@@ -8,8 +7,9 @@ const MAX_PULL = 100
  * Custom pull-to-refresh gesture for the installed PWA. The browser's native
  * overscroll/refresh gesture is disabled globally (see overscroll-behavior-y
  * in app.css) so an installed, chrome-less app has no other way to reload —
- * this replaces it with an Inertia `router.reload()`, which re-fetches the
- * current page's data without a full document reload.
+ * this replaces it with a real document reload (window.location.reload()),
+ * matching what a browser's own pull-to-refresh does: fresh HTML/JS/CSS, not
+ * just an Inertia data refetch.
  */
 export default function PullToRefresh() {
     const [pullDistance, setPullDistance] = useState(0)
@@ -37,7 +37,7 @@ export default function PullToRefresh() {
             setPullDistance((distance) => {
                 if (distance >= PULL_THRESHOLD) {
                     setRefreshing(true)
-                    router.reload({ onFinish: () => setRefreshing(false) })
+                    window.location.reload()
                 }
                 return 0
             })
