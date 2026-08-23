@@ -11,16 +11,51 @@ interface ShowProps {
     date: string
 }
 
+const READING_FONT_SIZE_MIN = 14
+const READING_FONT_SIZE_MAX = 28
+const READING_FONT_SIZE_STEP = 2
+const READING_FONT_SIZE_DEFAULT = 16
+const READING_FONT_SIZE_STORAGE_KEY = 'coptic-reading-font-size'
+
+function readStoredReadingFontSize(): number {
+    try {
+        const stored = Number(localStorage.getItem(READING_FONT_SIZE_STORAGE_KEY))
+
+        if (stored >= READING_FONT_SIZE_MIN && stored <= READING_FONT_SIZE_MAX) {
+            return stored
+        }
+    } catch {
+        // localStorage unavailable (private browsing, blocked storage, etc.)
+    }
+
+    return READING_FONT_SIZE_DEFAULT
+}
+
 export default function Show({ coptic, date }: ShowProps) {
     const { t, i18n } = useTranslation('coptic')
     const { t: tCommon } = useTranslation('common')
     const [openUrl, setOpenUrl] = useState<string | null>(null)
     const [openReading, setOpenReading] = useState<CopticReading | null>(null)
+    const [readingFontSize, setReadingFontSize] = useState(readStoredReadingFontSize)
     const dir = i18n.language === 'ar' ? 'rtl' : 'ltr'
     const today = new Date().toISOString().slice(0, 10)
 
     const goToDate = (newDate: string) => {
         router.get('/coptic', newDate === today ? {} : { date: newDate }, { preserveState: true, preserveScroll: true })
+    }
+
+    const adjustReadingFontSize = (delta: number) => {
+        setReadingFontSize((prev) => {
+            const next = Math.min(READING_FONT_SIZE_MAX, Math.max(READING_FONT_SIZE_MIN, prev + delta))
+
+            try {
+                localStorage.setItem(READING_FONT_SIZE_STORAGE_KEY, String(next))
+            } catch {
+                // localStorage unavailable
+            }
+
+            return next
+        })
     }
 
     return (
@@ -55,7 +90,30 @@ export default function Show({ coptic, date }: ShowProps) {
             </div>
 
             <div className="ava-card p-3 mb-3" dir={dir}>
-                <h5 className="mb-3">{t('coptic.readings')}</h5>
+                <div className="d-flex align-items-center justify-content-between mb-3">
+                    <h5 className="mb-0">{t('coptic.readings')}</h5>
+                    <div className="d-flex align-items-center gap-2">
+                        <span className="text-ava-muted text-tiny">{t('coptic.fontSize')}</span>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                            aria-label={t('coptic.decreaseFontSize')}
+                            disabled={readingFontSize <= READING_FONT_SIZE_MIN}
+                            onClick={() => adjustReadingFontSize(-READING_FONT_SIZE_STEP)}
+                        >
+                            A-
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                            aria-label={t('coptic.increaseFontSize')}
+                            disabled={readingFontSize >= READING_FONT_SIZE_MAX}
+                            onClick={() => adjustReadingFontSize(READING_FONT_SIZE_STEP)}
+                        >
+                            A+
+                        </button>
+                    </div>
+                </div>
                 {coptic.readings.length > 0 ? (
                     coptic.readings.map((section, sectionIndex) => (
                         <div key={sectionIndex} className={sectionIndex > 0 ? 'mt-4' : undefined}>
@@ -71,12 +129,13 @@ export default function Show({ coptic, date }: ShowProps) {
                                                 <button
                                                     type="button"
                                                     className="btn btn-link p-0 align-baseline text-start"
+                                                    style={{ fontSize: readingFontSize }}
                                                     onClick={() => setOpenReading(reading)}
                                                 >
                                                     {reading.reference}
                                                 </button>
                                             ) : (
-                                                reading.reference && <span>{reading.reference}</span>
+                                                reading.reference && <span style={{ fontSize: readingFontSize }}>{reading.reference}</span>
                                             )}
                                         </div>
                                     ))}
@@ -120,7 +179,7 @@ export default function Show({ coptic, date }: ShowProps) {
             </Link>
 
             <InAppLinkModal url={openUrl} onClose={() => setOpenUrl(null)} />
-            <ReadingTextModal reading={openReading} onClose={() => setOpenReading(null)} />
+            <ReadingTextModal reading={openReading} fontSize={readingFontSize} onClose={() => setOpenReading(null)} />
         </AppLayout>
     )
 }

@@ -3,10 +3,11 @@ import type { CopticReading } from '@/types'
 
 interface ReadingTextModalProps {
     reading: CopticReading | null
+    fontSize?: number
     onClose: () => void
 }
 
-export default function ReadingTextModal({ reading, onClose }: ReadingTextModalProps) {
+export default function ReadingTextModal({ reading, fontSize, onClose }: ReadingTextModalProps) {
     const { t } = useTranslation('common')
 
     if (!reading) return null
@@ -20,7 +21,7 @@ export default function ReadingTextModal({ reading, onClose }: ReadingTextModalP
                         <button type="button" className="btn-close" aria-label={t('actions.close')} onClick={onClose} />
                     </div>
                     <div className="modal-body">
-                        <p className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>
+                        <p className="mb-0" style={{ whiteSpace: 'pre-wrap', fontSize }}>
                             {reading.text}
                         </p>
                     </div>
