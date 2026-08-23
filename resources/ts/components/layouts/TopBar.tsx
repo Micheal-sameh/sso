@@ -3,6 +3,7 @@ import { Link, router, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import echo from '@/lib/echo'
 import LanguageSwitcher from '@/components/shared/LanguageSwitcher'
+import { useConfirm } from '@/components/shared/ConfirmDialog'
 import type { SharedProps, UserNotification } from '@/types'
 
 interface TopBarProps {
@@ -14,6 +15,7 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
     const { auth, unread_notifications_count, recent_notifications } = usePage<SharedProps>().props
     const [unreadCount, setUnreadCount] = useState(unread_notifications_count)
     const [notifications, setNotifications] = useState(recent_notifications)
+    const confirm = useConfirm()
 
     useEffect(() => {
         setUnreadCount(unread_notifications_count)
@@ -35,8 +37,10 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
         }
     }, [auth.user?.id])
 
-    const logout = () => {
-        router.post('/logout')
+    const logout = async () => {
+        if (await confirm(t('topbar.logOutConfirm'), { confirmLabel: t('topbar.logOut'), variant: 'danger' })) {
+            router.post('/logout')
+        }
     }
 
     const markRead = (notification: UserNotification) => {
@@ -137,7 +141,17 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                 </button>
                 <ul className="dropdown-menu dropdown-menu-end">
                     <li>
+                        <Link href="/account" className="dropdown-item">
+                            <i className="bi bi-person me-2" />
+                            {t('nav.profile')}
+                        </Link>
+                    </li>
+                    <li>
+                        <hr className="dropdown-divider" />
+                    </li>
+                    <li>
                         <button type="button" className="dropdown-item" onClick={logout}>
+                            <i className="bi bi-box-arrow-right me-2" />
                             {t('topbar.logOut')}
                         </button>
                     </li>

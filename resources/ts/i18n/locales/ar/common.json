@@ -35,7 +35,8 @@
     "markAllAsRead": "تعيين الكل كمقروء",
     "noNotificationsYet": "لا توجد إشعارات بعد.",
     "seeAllNotifications": "عرض كل الإشعارات",
-    "logOut": "تسجيل الخروج"
+    "logOut": "تسجيل الخروج",
+    "logOutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
   },
   "locale": {
     "english": "en",

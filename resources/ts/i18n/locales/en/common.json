@@ -35,7 +35,8 @@
     "markAllAsRead": "Mark all as read",
     "noNotificationsYet": "No notifications yet.",
     "seeAllNotifications": "See all notifications",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "logOutConfirm": "Are you sure you want to log out?"
   },
   "locale": {
     "english": "en",
