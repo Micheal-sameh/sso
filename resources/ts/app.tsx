@@ -9,6 +9,9 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@/styles/app.css'
 
+const MIN_SPLASH_MS = 2000
+const splashStartedAt = performance.now()
+
 if (document.documentElement.dir === 'rtl') {
     import('bootstrap/dist/css/bootstrap.rtl.min.css')
 } else {
@@ -30,6 +33,18 @@ createInertiaApp({
                 </ConfirmProvider>
             </I18nextProvider>,
         )
+
+        // Keep the splash up for at least MIN_SPLASH_MS regardless of how
+        // fast the app mounted, so it doesn't just flash on a fast load.
+        const elapsed = performance.now() - splashStartedAt
+        const remaining = Math.max(MIN_SPLASH_MS - elapsed, 0)
+
+        setTimeout(() => {
+            const splash = document.getElementById('app-splash')
+            if (!splash) return
+            splash.classList.add('app-splash-hide')
+            setTimeout(() => splash.remove(), 300)
+        }, remaining)
     },
 })
 
