@@ -202,16 +202,18 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
             )}
 
             {pinnedPosts.length > 0 && (
-                <div className="ava-card mb-3">
-                    <div className="p-3 pb-0">
-                        <h5 className="mb-0">
-                            <i className="bi bi-pin-angle-fill me-2" />
-                            {t('home.pinnedPosts')}
-                        </h5>
-                    </div>
-                    <ul className="list-group list-group-flush">
+                <div className="ava-card p-3 mb-3">
+                    <h5 className="mb-3">
+                        <i className="bi bi-pin-angle-fill me-2" />
+                        {t('home.pinnedPosts')}
+                    </h5>
+                    <div className="d-flex gap-3 overflow-auto pb-1">
                         {pinnedPosts.map((post) => (
-                            <li key={post.id} className="list-group-item p-3">
+                            <div
+                                key={post.id}
+                                className="flex-shrink-0 border rounded p-3"
+                                style={{ width: 300 }}
+                            >
                                 <div className="d-flex gap-3">
                                     {post.image_url && (
                                         <Link href={`/cmc/${post.id}`}>
@@ -231,7 +233,7 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                             </Link>
                                         )}
                                         {post.url && (
-                                            <div style={{ maxWidth: 360 }}>
+                                            <div>
                                                 <LinkPreviewCard
                                                     url={post.url}
                                                     title={post.url_title}
@@ -247,9 +249,9 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                                         </div>
                                     </div>
                                 </div>
-                            </li>
+                            </div>
                         ))}
-                    </ul>
+                    </div>
                 </div>
             )}
 
