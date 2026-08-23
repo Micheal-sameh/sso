@@ -84,7 +84,13 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                     <i className="bi bi-calendar-event me-2" />
                     {t('home.copticDate')}
                 </h5>
-                <p className="mb-0">{coptic.date ?? t('home.copticDateUnavailable')}</p>
+                <div className="d-flex align-items-center justify-content-between gap-2">
+                    <p className="mb-0">{coptic.date ?? t('home.copticDateUnavailable')}</p>
+                    <span className="text-ava-secondary text-nowrap">
+                        {t('home.readings')}
+                        <i className={`bi ${i18n.language === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'} ms-1`} />
+                    </span>
+                </div>
             </Link>
 
             <div className="ava-card p-3 mb-3" dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}>
