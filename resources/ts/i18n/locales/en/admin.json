@@ -155,6 +155,32 @@
     },
     "confirmDelete": "Delete the \"{{name}}\" group?"
   },
+  "spiritualNoteLabels": {
+    "title": "Spiritual Note Labels",
+    "addLabel": "Add Label",
+    "description": "These labels appear as a daily checklist to every user. Deactivating a label removes it from future days but keeps it in users' history.",
+    "empty": "No labels yet.",
+    "active": "Active",
+    "inactive": "Inactive",
+    "edit": "Edit",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "saveChanges": "Save Changes",
+    "confirmDelete": "Delete the \"{{name}}\" label?",
+    "table": {
+      "name": "Name",
+      "sortOrder": "Sort Order",
+      "status": "Status"
+    },
+    "modal": {
+      "editTitle": "Edit {{name}}",
+      "createTitle": "Add Label",
+      "name": "Name",
+      "namePlaceholder": "e.g. Prayed",
+      "sortOrder": "Sort Order",
+      "activeHelp": "Active (shown to users)"
+    }
+  },
   "groupShow": {
     "backToGroups": "Back to Groups",
     "memberCount_one": "{{count}} member",
@@ -186,7 +212,8 @@
       "cmc": "CMC Post",
       "youtube": "YouTube Video",
       "donation_reminder": "Donation Reminder",
-      "birthday": "Birthday"
+      "birthday": "Birthday",
+      "spiritual_note_reminder": "Spiritual Note Reminder"
     }
   },
   "stages": {

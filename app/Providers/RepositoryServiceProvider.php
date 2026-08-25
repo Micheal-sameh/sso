@@ -9,6 +9,8 @@ use App\Repositories\Contracts\DonationRepositoryContract;
 use App\Repositories\Contracts\FundRepositoryContract;
 use App\Repositories\Contracts\GroupRepositoryContract;
 use App\Repositories\Contracts\NotificationRepositoryContract;
+use App\Repositories\Contracts\SpiritualNoteLabelRepositoryContract;
+use App\Repositories\Contracts\SpiritualNoteRepositoryContract;
 use App\Repositories\Contracts\StageRepositoryContract;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
@@ -20,6 +22,8 @@ use App\Repositories\Eloquent\DonationRepository;
 use App\Repositories\Eloquent\FundRepository;
 use App\Repositories\Eloquent\GroupRepository;
 use App\Repositories\Eloquent\NotificationRepository;
+use App\Repositories\Eloquent\SpiritualNoteLabelRepository;
+use App\Repositories\Eloquent\SpiritualNoteRepository;
 use App\Repositories\Eloquent\StageRepository;
 use App\Repositories\Eloquent\TokenRepository;
 use App\Repositories\Eloquent\UserRepository;
@@ -41,5 +45,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(FundRepositoryContract::class, FundRepository::class);
         $this->app->bind(DonationRepositoryContract::class, DonationRepository::class);
         $this->app->bind(YoutubeVideoRepositoryContract::class, YoutubeVideoRepository::class);
+        $this->app->bind(SpiritualNoteLabelRepositoryContract::class, SpiritualNoteLabelRepository::class);
+        $this->app->bind(SpiritualNoteRepositoryContract::class, SpiritualNoteRepository::class);
     }
 }

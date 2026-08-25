@@ -9,7 +9,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@/styles/app.css'
 
-const MIN_SPLASH_MS = 2000
+const MIN_SPLASH_MS = 120
 const splashStartedAt = performance.now()
 
 if (document.documentElement.dir === 'rtl') {

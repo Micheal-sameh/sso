@@ -86,6 +86,9 @@ return [
     'all_notifications_marked_read' => 'All notifications marked as read.',
     'notifications_marked_read' => 'Notifications marked as read.',
 
+    // Spiritual notes
+    'spiritual_note_saved' => 'Saved.',
+
     // Infrastructure
     'database_error' => "We're unable to complete your request right now. Please try again in a few minutes.",
 

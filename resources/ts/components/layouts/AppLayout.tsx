@@ -21,6 +21,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
 
     const navLinks: SidebarLink[] = [
         { href: '/home', label: t('nav.home'), icon: 'bi-house' },
+        { href: '/spiritual-notes', label: t('nav.spiritualNotes'), icon: 'bi-journal-check' },
         { href: '/account', label: t('nav.identity'), icon: 'bi-person' },
         { href: '/account/mfa', label: t('nav.security'), icon: 'bi-shield-lock' },
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },

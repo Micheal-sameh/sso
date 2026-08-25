@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "Home",
+    "spiritualNotes": "Spiritual Note",
     "identity": "Identity",
     "security": "Security",
     "connectedApps": "Connected Apps",
@@ -23,6 +24,7 @@
     "backToAccount": "Back to Account",
     "donations": "Donations",
     "funds": "Funds",
+    "spiritualNoteLabels": "Spiritual Note Labels",
     "donate": "Donate",
     "myDonations": "My Donations",
     "groupPeople": "People",

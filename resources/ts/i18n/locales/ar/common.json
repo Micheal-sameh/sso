@@ -1,6 +1,7 @@
 {
   "nav": {
     "home": "الرئيسية",
+    "spiritualNotes": "النوته الروحية",
     "identity": "الهوية",
     "security": "الأمان",
     "connectedApps": "التطبيقات المرتبطة",
@@ -23,6 +24,7 @@
     "backToAccount": "العودة إلى الحساب",
     "donations": "التبرعات",
     "funds": "الصناديق",
+    "spiritualNoteLabels": "عناصر النوته الروحية",
     "donate": "تبرع",
     "myDonations": "تبرعاتي",
     "groupPeople": "الأعضاء",

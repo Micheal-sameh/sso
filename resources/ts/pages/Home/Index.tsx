@@ -5,6 +5,7 @@ import AppLayout from '@/components/layouts/AppLayout'
 import InAppLinkModal from '@/components/shared/InAppLinkModal'
 import LinkPreviewCard from '@/components/shared/LinkPreviewCard'
 import ScrollableRow from '@/components/shared/ScrollableRow'
+import SpiritualNoteProgressRing from '@/components/shared/SpiritualNoteProgressRing'
 import echo from '@/lib/echo'
 import { isBirthdayToday } from '@/lib/date'
 import type { CmcPost, CopticCalendar, SharedProps, YoutubeVideo } from '@/types'
@@ -17,12 +18,19 @@ interface YoutubeLive {
     scheduled_start_time: string | null
 }
 
+interface SpiritualNotesSummary {
+    total: number
+    checked: number
+    reminderDue: boolean
+}
+
 interface IndexProps {
     coptic: CopticCalendar
     recentPosts: CmcPost[]
     pinnedPosts: CmcPost[]
     youtubeLive: YoutubeLive | null
     pinnedVideos: YoutubeVideo[]
+    spiritualNotesToday: SpiritualNotesSummary
 }
 
 // The YouTube webhook pushes status changes over Reverb instantly (see
@@ -30,13 +38,21 @@ interface IndexProps {
 // webhook push is missed, so it can stay slow.
 const LIVE_STATUS_POLL_INTERVAL_MS = 5 * 60_000
 
-export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: initialYoutubeLive, pinnedVideos }: IndexProps) {
+export default function Index({
+    coptic,
+    recentPosts,
+    pinnedPosts,
+    youtubeLive: initialYoutubeLive,
+    pinnedVideos,
+    spiritualNotesToday,
+}: IndexProps) {
     const { t, i18n } = useTranslation('home')
     const { auth } = usePage<SharedProps>().props
     const [openUrl, setOpenUrl] = useState<string | null>(null)
     const [youtubeLive, setYoutubeLive] = useState(initialYoutubeLive)
     const [showAllCommemorations, setShowAllCommemorations] = useState(false)
     const isBirthday = isBirthdayToday(auth.user?.date_of_birth)
+    const spiritualNotesIsComplete = spiritualNotesToday.total > 0 && spiritualNotesToday.checked === spiritualNotesToday.total
 
     useEffect(() => {
         const channel = echo.channel('youtube-live')
@@ -91,6 +107,37 @@ export default function Index({ coptic, recentPosts, pinnedPosts, youtubeLive: i
                         {t('home.readings')}
                         <i className={`bi ${i18n.language === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'} ms-1`} />
                     </span>
+                </div>
+            </Link>
+
+            <Link
+                href="/spiritual-notes"
+                className="ava-card p-3 mb-3 d-flex align-items-center gap-3 text-decoration-none text-reset"
+                dir={i18n.language === 'ar' ? 'rtl' : 'ltr'}
+            >
+                <SpiritualNoteProgressRing checked={spiritualNotesToday.checked} total={spiritualNotesToday.total} />
+                <div className="flex-grow-1">
+                    <div className="d-flex align-items-center justify-content-between gap-2 mb-1">
+                        <h5 className="mb-0 d-flex align-items-center gap-2">
+                            <i className="bi bi-journal-check" />
+                            {t('home.spiritualNote')}
+                            {spiritualNotesToday.reminderDue && (
+                                <span className="badge rounded-pill bg-danger">
+                                    <i className="bi bi-bell-fill me-1" />
+                                    {t('home.spiritualNoteReminderBadge')}
+                                </span>
+                            )}
+                        </h5>
+                        <span className="text-ava-secondary text-nowrap">
+                            {t('home.spiritualNoteOpen')}
+                            <i className={`bi ${i18n.language === 'ar' ? 'bi-chevron-left' : 'bi-chevron-right'} ms-1`} />
+                        </span>
+                    </div>
+                    <p className="mb-0 text-ava-muted">
+                        {spiritualNotesIsComplete
+                            ? t('home.spiritualNoteComplete')
+                            : t('home.spiritualNoteProgress', { checked: spiritualNotesToday.checked, total: spiritualNotesToday.total })}
+                    </p>
                 </div>
             </Link>
 

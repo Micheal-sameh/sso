@@ -48,6 +48,7 @@ export default function Index({ notifications, stages, groups, users, filters, a
         youtube: t('notifications.types.youtube'),
         donation_reminder: t('notifications.types.donation_reminder'),
         birthday: t('notifications.types.birthday'),
+        spiritual_note_reminder: t('notifications.types.spiritual_note_reminder'),
     }
     const [imagePreview, setImagePreview] = useState<string | null>(null)
     const [userSearch, setUserSearch] = useState('')

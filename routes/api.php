@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SecurityController;
+use App\Http\Controllers\Api\SpiritualNoteController;
 use App\Http\Controllers\Api\VideoController;
 use App\Http\Controllers\Api\YoutubeWebhookController;
 use App\Http\Controllers\OAuth\OdooTokenValidationController;
@@ -56,6 +57,10 @@ Route::middleware('auth:api')->group(function () {
         Route::delete('/connected-apps/{tokenId}', [ConnectedAppsController::class, 'revoke']);
 
         Route::get('/home', [HomeController::class, 'index']);
+
+        Route::get('/spiritual-notes/today', [SpiritualNoteController::class, 'today']);
+        Route::post('/spiritual-notes/today', [SpiritualNoteController::class, 'saveToday']);
+        Route::get('/spiritual-notes/history', [SpiritualNoteController::class, 'history']);
 
         Route::get('/cmc-posts', [CmcPostController::class, 'index']);
         Route::get('/cmc-posts/{cmcPost}', [CmcPostController::class, 'show']);

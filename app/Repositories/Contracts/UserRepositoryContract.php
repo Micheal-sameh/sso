@@ -39,6 +39,11 @@ interface UserRepositoryContract
     public function allLite(): Collection;
 
     /**
+     * IDs of every active user.
+     */
+    public function activeUserIds(): Collection;
+
+    /**
      * Active users whose date of birth falls on today's month and day.
      */
     public function withBirthdayToday(): Collection;

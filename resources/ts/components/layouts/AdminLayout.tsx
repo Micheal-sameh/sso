@@ -44,6 +44,7 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
                 { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
                 { href: '/admin/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
                 { href: '/admin/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
+                { href: '/admin/spiritual-note-labels', label: t('nav.spiritualNoteLabels'), icon: 'bi-journal-check' },
             ],
         },
         {

@@ -8,4 +8,5 @@ enum AdminPermission: string
     case ManageAdminAccess = 'manage admin access';
     case ManageCmcPosts = 'manage cmc posts';
     case ManageDonations = 'manage donations';
+    case ManageSpiritualNotes = 'manage spiritual notes';
 }

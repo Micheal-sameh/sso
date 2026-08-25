@@ -175,6 +175,11 @@ class UserRepository implements UserRepositoryContract
             ->get(['id', 'name', 'email', 'membership_code', 'stage_id']);
     }
 
+    public function activeUserIds(): Collection
+    {
+        return User::where('is_active', true)->pluck('id');
+    }
+
     /**
      * Active users whose date of birth falls on today's month and day.
      */

@@ -14,6 +14,7 @@ import enMore from './locales/en/more.json'
 import enOauth from './locales/en/oauth.json'
 import enErrors from './locales/en/errors.json'
 import enVideos from './locales/en/videos.json'
+import enSpiritualNotes from './locales/en/spiritualNotes.json'
 
 import arCommon from './locales/ar/common.json'
 import arAuth from './locales/ar/auth.json'
@@ -28,6 +29,7 @@ import arMore from './locales/ar/more.json'
 import arOauth from './locales/ar/oauth.json'
 import arErrors from './locales/ar/errors.json'
 import arVideos from './locales/ar/videos.json'
+import arSpiritualNotes from './locales/ar/spiritualNotes.json'
 
 export const defaultNS = 'common'
 
@@ -35,7 +37,7 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'coptic', 'donations', 'liturgy', 'more', 'oauth', 'errors', 'videos'],
+    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'coptic', 'donations', 'liturgy', 'more', 'oauth', 'errors', 'videos', 'spiritualNotes'],
     resources: {
         en: {
             common: enCommon,
@@ -51,6 +53,7 @@ i18n.use(initReactI18next).init({
             oauth: enOauth,
             errors: enErrors,
             videos: enVideos,
+            spiritualNotes: enSpiritualNotes,
         },
         ar: {
             common: arCommon,
@@ -66,6 +69,7 @@ i18n.use(initReactI18next).init({
             oauth: arOauth,
             errors: arErrors,
             videos: arVideos,
+            spiritualNotes: arSpiritualNotes,
         },
     },
     interpolation: {

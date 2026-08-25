@@ -9,6 +9,7 @@ enum NotificationType: string
     case Youtube = 'youtube';
     case DonationReminder = 'donation_reminder';
     case Birthday = 'birthday';
+    case SpiritualNoteReminder = 'spiritual_note_reminder';
 
     public function label(): string
     {
@@ -18,6 +19,7 @@ enum NotificationType: string
             self::Youtube => 'YouTube Video',
             self::DonationReminder => 'Donation Reminder',
             self::Birthday => 'Birthday',
+            self::SpiritualNoteReminder => 'Spiritual Note Reminder',
         };
     }
 }

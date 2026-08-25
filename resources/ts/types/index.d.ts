@@ -133,7 +133,7 @@ export interface NotificationCreator {
     name: string
 }
 
-export type NotificationType = 'manual' | 'cmc' | 'youtube' | 'donation_reminder' | 'birthday'
+export type NotificationType = 'manual' | 'cmc' | 'youtube' | 'donation_reminder' | 'birthday' | 'spiritual_note_reminder'
 
 export interface AppNotification {
     id: number
@@ -230,6 +230,25 @@ export interface Fund {
     description: string | null
     is_active: boolean
     donations_count?: number
+}
+
+export interface SpiritualNoteLabel {
+    id: number
+    name: string
+    sort_order: number
+    is_active: boolean
+}
+
+export interface SpiritualNoteEntry {
+    label_id: number
+    label_name: string
+    is_checked: boolean
+    note: string | null
+}
+
+export interface SpiritualNoteDay {
+    date: string
+    entries: SpiritualNoteEntry[]
 }
 
 export type DonationGateway = 'nbe' | 'cib'

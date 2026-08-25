@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\FundController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
+use App\Http\Controllers\Admin\SpiritualNoteLabelController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
@@ -28,6 +29,7 @@ use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OAuth\AuthorizationController;
+use App\Http\Controllers\SpiritualNoteController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\YoutubeLiveStatusController;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +93,8 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/home', [HomeController::class, 'index'])->name('home.index');
         Route::get('/coptic', [CopticCalendarController::class, 'show'])->name('coptic.show');
+        Route::get('/spiritual-notes', [SpiritualNoteController::class, 'show'])->name('spiritual-notes.show');
+        Route::post('/spiritual-notes', [SpiritualNoteController::class, 'update'])->name('spiritual-notes.update');
         Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
         Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
         Route::get('/liturgy/bible', [BibleController::class, 'index'])->name('liturgy.bible.index');
@@ -192,6 +196,13 @@ Route::middleware('auth')->group(function () {
                     Route::put('/{fund}', [FundController::class, 'update'])->name('update');
                     Route::delete('/{fund}', [FundController::class, 'destroy'])->name('destroy');
                 });
+            });
+
+            Route::middleware('can:manage spiritual notes')->prefix('spiritual-note-labels')->name('spiritual-note-labels.')->group(function () {
+                Route::get('/', [SpiritualNoteLabelController::class, 'index'])->name('index');
+                Route::post('/', [SpiritualNoteLabelController::class, 'store'])->name('store');
+                Route::put('/{spiritualNoteLabel}', [SpiritualNoteLabelController::class, 'update'])->name('update');
+                Route::delete('/{spiritualNoteLabel}', [SpiritualNoteLabelController::class, 'destroy'])->name('destroy');
             });
         });
     });

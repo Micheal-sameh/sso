@@ -86,6 +86,9 @@ return [
     'all_notifications_marked_read' => 'تم تعليم جميع الإشعارات كمقروءة.',
     'notifications_marked_read' => 'تم تعليم الإشعارات كمقروءة.',
 
+    // Spiritual notes
+    'spiritual_note_saved' => 'تم الحفظ.',
+
     // Infrastructure
     'database_error' => 'يتعذر علينا إتمام طلبك في الوقت الحالي. يرجى المحاولة مرة أخرى بعد بضع دقائق.',
 

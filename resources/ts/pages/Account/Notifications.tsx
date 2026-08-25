@@ -21,6 +21,7 @@ export default function Notifications({ notifications, filters, availableTypes }
         youtube: t('notifications.types.youtube'),
         donation_reminder: t('notifications.types.donation_reminder'),
         birthday: t('notifications.types.birthday'),
+        spiritual_note_reminder: t('notifications.types.spiritual_note_reminder'),
     }
 
     const applyTypeFilter = (type: string) => {
