@@ -68,6 +68,15 @@ class DonationRepository implements DonationRepositoryContract
             ->exists();
     }
 
+    public function userIdsWithPaidDonationBetween(array $userIds, \DateTimeInterface $from, \DateTimeInterface $to): Collection
+    {
+        return Donation::whereIn('user_id', $userIds)
+            ->where('status', DonationStatus::Paid->value)
+            ->whereBetween('paid_at', [$from, $to])
+            ->pluck('user_id')
+            ->unique();
+    }
+
     public function createPlan(array $data): DonationPlan
     {
         return DonationPlan::create($data);

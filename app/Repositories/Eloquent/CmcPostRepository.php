@@ -21,17 +21,19 @@ class CmcPostRepository implements CmcPostRepositoryContract
         return $cmcPost->fresh('creator');
     }
 
-    public function paginateAll(int $perPage = 20): LengthAwarePaginator
+    public function paginateAll(int $perPage = 20, array $excludeIds = []): LengthAwarePaginator
     {
-        return CmcPost::with('creator')
+        return CmcPost::with(['creator', 'media'])
+            ->when($excludeIds !== [], fn ($query) => $query->whereNotIn('id', $excludeIds))
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
     }
 
-    public function recent(int $limit = 5): Collection
+    public function recent(int $limit = 5, array $excludeIds = []): Collection
     {
-        return CmcPost::with('creator')
+        return CmcPost::with(['creator', 'media'])
+            ->when($excludeIds !== [], fn ($query) => $query->whereNotIn('id', $excludeIds))
             ->latest()
             ->limit($limit)
             ->get();
@@ -39,7 +41,7 @@ class CmcPostRepository implements CmcPostRepositoryContract
 
     public function pinned(): Collection
     {
-        return CmcPost::with('creator')
+        return CmcPost::with(['creator', 'media'])
             ->where('is_pinned', true)
             ->orderBy('pin_order')
             ->get();

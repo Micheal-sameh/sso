@@ -30,6 +30,8 @@ class HomeController extends BaseController
         $spiritualNotesToday = $this->spiritualNoteService->today($request->user());
         $spiritualNotesChecked = count(array_filter($spiritualNotesToday, fn (array $entry) => $entry['is_checked']));
 
+        $pinnedPosts = $this->cmcPostService->listPinned();
+
         return $this->inertia('Home/Index', [
             'coptic' => $this->copticCalendarService->today(),
             'spiritualNotesToday' => [
@@ -39,10 +41,10 @@ class HomeController extends BaseController
                 // widget stays visibly flagged until the user checks something.
                 'reminderDue' => now()->hour >= 18 && $spiritualNotesChecked === 0,
             ],
-            'recentPosts' => $this->cmcPostService->listRecent(5)
+            'recentPosts' => $this->cmcPostService->listRecent(5, $pinnedPosts->pluck('id')->all())
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
-            'pinnedPosts' => $this->cmcPostService->listPinned()
+            'pinnedPosts' => $pinnedPosts
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
             'youtubeLive' => $this->youtubeLiveStatusService->current(),

@@ -52,7 +52,7 @@ class NotificationRepository implements NotificationRepositoryContract
      */
     public function paginateAll(array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
-        return $this->applyFilters(Notification::with(['creator', 'stages', 'groups', 'targetUsers']), $filters)
+        return $this->applyFilters(Notification::with(['creator', 'stages', 'groups', 'targetUsers', 'media']), $filters)
             ->latest()
             ->paginate($perPage)
             ->withQueryString();
@@ -68,6 +68,7 @@ class NotificationRepository implements NotificationRepositoryContract
     public function paginateForUser(User $user, array $filters = [], int $perPage = 20): LengthAwarePaginator
     {
         return $this->applyFilters($this->scopeForUser(Notification::query(), $user), $filters)
+            ->with('media')
             ->withCount(['readers as is_read' => fn (Builder $query) => $query->where('users.id', $user->id)])
             ->latest()
             ->paginate($perPage)
@@ -111,6 +112,7 @@ class NotificationRepository implements NotificationRepositoryContract
     public function recentForUser(User $user, int $limit = 5): Collection
     {
         return $this->scopeForUser(Notification::query(), $user)
+            ->with('media')
             ->withCount(['readers as is_read' => fn (Builder $query) => $query->where('users.id', $user->id)])
             ->latest()
             ->limit($limit)

@@ -18,7 +18,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByEmail(string $email): ?User
     {
-        return User::where('email', $email)->with(['mfa', 'roles', 'stage'])->first();
+        return User::where('email', $email)->with(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media'])->first();
     }
 
     /**
@@ -26,7 +26,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByMembershipCode(string $membershipCode): ?User
     {
-        return User::where('membership_code', $membershipCode)->with(['mfa', 'roles', 'stage'])->first();
+        return User::where('membership_code', $membershipCode)->with(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media'])->first();
     }
 
     /**
@@ -34,7 +34,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findByUuid(string $uuid): User
     {
-        return User::where('uuid', $uuid)->with(['mfa', 'roles', 'stage'])->firstOrFail();
+        return User::where('uuid', $uuid)->with(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media'])->firstOrFail();
     }
 
     /**
@@ -42,7 +42,7 @@ class UserRepository implements UserRepositoryContract
      */
     public function findById(int $id): User
     {
-        return User::with(['mfa', 'roles', 'stage'])->findOrFail($id);
+        return User::with(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media'])->findOrFail($id);
     }
 
     /**
@@ -51,7 +51,7 @@ class UserRepository implements UserRepositoryContract
     public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null, ?int $stageId = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles', 'stage'])
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
             ->when($search, fn ($query) => $query->where(
                 fn ($q) => $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
@@ -71,7 +71,7 @@ class UserRepository implements UserRepositoryContract
     public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles', 'stage'])
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
             ->whereHas('roles', fn ($query) => $query->whereIn('name', [
                 AdminRole::SuperAdmin->value,
                 AdminRole::Admin->value,
@@ -111,7 +111,7 @@ class UserRepository implements UserRepositoryContract
     {
         $user->update($data);
 
-        return $user->fresh(['mfa', 'stage']);
+        return $user->fresh(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media']);
     }
 
     /**
@@ -145,7 +145,7 @@ class UserRepository implements UserRepositoryContract
             $user->assignRole($roleName);
         }
 
-        return $user->fresh(['mfa', 'roles', 'stage']);
+        return $user->fresh(['mfa', 'roles.permissions', 'permissions', 'stage', 'groups', 'media']);
     }
 
     /**
@@ -194,6 +194,7 @@ class UserRepository implements UserRepositoryContract
     public function withBirthdayOnDate(int $month, int $day): Collection
     {
         return User::query()
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
             ->active()
             ->whereNotNull('date_of_birth')
             ->whereMonth('date_of_birth', $month)

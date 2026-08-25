@@ -32,6 +32,14 @@ interface DonationRepositoryContract
 
     public function hasPaidDonationBetween(int $userId, \DateTimeInterface $from, \DateTimeInterface $to): bool;
 
+    /**
+     * IDs, among the given user IDs, who have a paid donation in the given window.
+     *
+     * @param  array<int, int>  $userIds
+     * @return Collection<int, int>
+     */
+    public function userIdsWithPaidDonationBetween(array $userIds, \DateTimeInterface $from, \DateTimeInterface $to): Collection;
+
     public function createPlan(array $data): DonationPlan;
 
     public function updatePlan(DonationPlan $plan, array $data): DonationPlan;

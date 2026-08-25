@@ -104,14 +104,20 @@ class CmcPostService
         return $cmcPost;
     }
 
-    public function listAllPaginated(int $perPage = 20): LengthAwarePaginator
+    /**
+     * @param  array<int, int>  $excludeIds  post IDs to leave out (e.g. ones already shown as pinned)
+     */
+    public function listAllPaginated(int $perPage = 20, array $excludeIds = []): LengthAwarePaginator
     {
-        return $this->cmcPostRepository->paginateAll($perPage);
+        return $this->cmcPostRepository->paginateAll($perPage, $excludeIds);
     }
 
-    public function listRecent(int $limit = 5): Collection
+    /**
+     * @param  array<int, int>  $excludeIds  post IDs to leave out (e.g. ones already shown as pinned)
+     */
+    public function listRecent(int $limit = 5, array $excludeIds = []): Collection
     {
-        return $this->cmcPostRepository->recent($limit);
+        return $this->cmcPostRepository->recent($limit, $excludeIds);
     }
 
     public function listPinned(): Collection

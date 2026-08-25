@@ -12,9 +12,15 @@ interface CmcPostRepositoryContract
 
     public function update(CmcPost $cmcPost, array $data): CmcPost;
 
-    public function paginateAll(int $perPage = 20): LengthAwarePaginator;
+    /**
+     * @param  array<int, int>  $excludeIds  post IDs to leave out (e.g. ones already shown as pinned)
+     */
+    public function paginateAll(int $perPage = 20, array $excludeIds = []): LengthAwarePaginator;
 
-    public function recent(int $limit = 5): Collection;
+    /**
+     * @param  array<int, int>  $excludeIds  post IDs to leave out (e.g. ones already shown as pinned)
+     */
+    public function recent(int $limit = 5, array $excludeIds = []): Collection;
 
     public function pinned(): Collection;
 

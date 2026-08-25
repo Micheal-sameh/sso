@@ -38,12 +38,14 @@ class HomeController extends BaseController
     )]
     public function index(): JsonResponse
     {
+        $pinnedPosts = $this->cmcPostService->listPinned();
+
         return response()->json([
             'coptic' => $this->copticCalendarService->today(),
-            'recent_posts' => $this->cmcPostService->listRecent(5)
+            'recent_posts' => $this->cmcPostService->listRecent(5, $pinnedPosts->pluck('id')->all())
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
-            'pinned_posts' => $this->cmcPostService->listPinned()
+            'pinned_posts' => $pinnedPosts
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
             'youtube_live' => $this->youtubeLiveStatusService->current(),

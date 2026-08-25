@@ -17,6 +17,7 @@ use App\Services\Payments\DonationGatewayFactory;
 use App\Services\Payments\DTOs\GatewayCallbackResult;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -58,15 +59,36 @@ class DonationService
     }
 
     /**
+     * IDs, among the given user IDs, who have already donated this month.
+     *
+     * @param  array<int, int>  $userIds
+     * @return Collection<int, int>
+     */
+    private function donatedThisMonthUserIds(array $userIds): Collection
+    {
+        if ($userIds === []) {
+            return collect();
+        }
+
+        return $this->donationRepository->userIdsWithPaidDonationBetween(
+            $userIds,
+            now()->startOfMonth(),
+            now()->endOfMonth(),
+        );
+    }
+
+    /**
      * Notify every user whose reminder day is today, unless they've already
      * donated this month. Intended to run daily via the scheduler.
      */
     public function sendMonthlyDonationReminders(): int
     {
         $sent = 0;
+        $users = $this->userRepository->wantingMonthlyDonationReminderToday();
+        $donorIds = $this->donatedThisMonthUserIds($users->pluck('id')->all());
 
-        foreach ($this->userRepository->wantingMonthlyDonationReminderToday() as $user) {
-            if ($this->hasDonatedThisMonth($user)) {
+        foreach ($users as $user) {
+            if ($donorIds->contains($user->id)) {
                 continue;
             }
 
@@ -89,11 +111,13 @@ class DonationService
     {
         $today = now();
         $sent = 0;
+        $users = $this->userRepository->wantingDonationReminders();
+        $donorIds = $this->donatedThisMonthUserIds($users->pluck('id')->all());
 
-        foreach ($this->userRepository->wantingDonationReminders() as $user) {
+        foreach ($users as $user) {
             $cycleStartDay = min($user->donation_reminder_day, $today->daysInMonth);
 
-            if ($today->day < $cycleStartDay || $this->hasDonatedThisMonth($user)) {
+            if ($today->day < $cycleStartDay || $donorIds->contains($user->id)) {
                 continue;
             }
 

@@ -53,7 +53,7 @@ class ClientMetaRepository implements ClientMetaRepositoryContract
      */
     public function listAll(int $perPage = 20): LengthAwarePaginator
     {
-        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers', 'groups'])->latest()->paginate($perPage)->withQueryString();
+        return ClientMeta::with(['oauthClient', 'stages', 'allowedUsers', 'groups', 'media'])->latest()->paginate($perPage)->withQueryString();
     }
 
     /**

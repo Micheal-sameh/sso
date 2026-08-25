@@ -25,10 +25,12 @@ class CmcPostController extends BaseController
 
     public function index(): Response
     {
+        $pinnedPosts = $this->cmcPostService->listPinned();
+
         return $this->inertia('Admin/CmcPosts/Index', [
-            'posts' => $this->cmcPostService->listAllPaginated(20)
+            'posts' => $this->cmcPostService->listAllPaginated(20, $pinnedPosts->pluck('id')->all())
                 ->through(fn (CmcPost $post) => $this->cmcPostService->toArray($post)),
-            'pinnedPosts' => $this->cmcPostService->listPinned()
+            'pinnedPosts' => $pinnedPosts
                 ->map(fn (CmcPost $post) => $this->cmcPostService->toArray($post))
                 ->values(),
         ]);
