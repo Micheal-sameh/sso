@@ -22,9 +22,25 @@ services:
       - /var/www/html/node_modules
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    depends_on:
+      redis:
+        condition: service_healthy
     networks:
       - avarewase
       - phpmyadmin-hub
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - avarewase
 
 networks:
   avarewase:
@@ -32,3 +48,6 @@ networks:
   phpmyadmin-hub:
     name: phpmyadmin-hub_phpmyadmin-hub
     external: true
+
+volumes:
+  redis-data:

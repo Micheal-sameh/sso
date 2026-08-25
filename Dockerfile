@@ -75,6 +75,8 @@ RUN apk add --no-cache \
         gd \
         exif \
         pcntl \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
     && apk del .build-deps
 
 COPY --from=vendor /usr/bin/composer /usr/bin/composer
