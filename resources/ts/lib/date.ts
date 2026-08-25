@@ -29,9 +29,10 @@ export function parseDateDMY(value: string): string | null {
 }
 
 /**
- * Compute a whole-years-old age from an ISO "yyyy-mm-dd" date of birth.
+ * Compute a whole-years-old age from an ISO "yyyy-mm-dd" date of birth, as
+ * of the given reference date (defaults to today, also ISO "yyyy-mm-dd").
  */
-export function calculateAge(dateOfBirth: string | null | undefined): number | null {
+export function calculateAge(dateOfBirth: string | null | undefined, asOf?: string): number | null {
     if (!dateOfBirth) {
         return null
     }
@@ -42,11 +43,16 @@ export function calculateAge(dateOfBirth: string | null | undefined): number | n
         return null
     }
 
+    const [refYear, refMonth, refDay] = asOf ? asOf.split('-').map(Number) : [0, 0, 0]
     const today = new Date()
-    let age = today.getFullYear() - year
-    const hasHadBirthdayThisYear = today.getMonth() + 1 > month || (today.getMonth() + 1 === month && today.getDate() >= day)
+    const referenceYear = asOf ? refYear : today.getFullYear()
+    const referenceMonth = asOf ? refMonth : today.getMonth() + 1
+    const referenceDay = asOf ? refDay : today.getDate()
 
-    if (!hasHadBirthdayThisYear) {
+    let age = referenceYear - year
+    const hasHadBirthdayByReference = referenceMonth > month || (referenceMonth === month && referenceDay >= day)
+
+    if (!hasHadBirthdayByReference) {
         age -= 1
     }
 

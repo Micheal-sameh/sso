@@ -14,6 +14,7 @@ use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class UserService
@@ -118,6 +119,14 @@ class UserService
     public function paginate(int $perPage, ?string $search, ?UserRole $role, ?int $stageId = null): LengthAwarePaginator
     {
         return $this->userRepository->paginate($perPage, $search, $role, $stageId);
+    }
+
+    /**
+     * Active users whose date of birth falls on the given month/day, regardless of year.
+     */
+    public function birthdaysOnDate(int $month, int $day): Collection
+    {
+        return $this->userRepository->withBirthdayOnDate($month, $day);
     }
 
     /**

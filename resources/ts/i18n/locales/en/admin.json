@@ -155,6 +155,20 @@
     },
     "confirmDelete": "Delete the \"{{name}}\" group?"
   },
+  "birthdays": {
+    "title": "Birthdays",
+    "date": "Date",
+    "today": "Today",
+    "todayDescription": "Users celebrating their birthday today.",
+    "onDateDescription": "Users whose birthday falls on {{date}} (any year).",
+    "empty": "No birthdays on this day.",
+    "wish": "Wish",
+    "wishWhatsAppMessage": "Happy Birthday, {{name}}! 🎉 Wishing you a wonderful day.",
+    "table": {
+      "dob": "Date of Birth",
+      "age": "Age"
+    }
+  },
   "spiritualNoteLabels": {
     "title": "Spiritual Note Labels",
     "addLabel": "Add Label",

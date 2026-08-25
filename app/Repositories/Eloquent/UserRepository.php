@@ -185,11 +185,20 @@ class UserRepository implements UserRepositoryContract
      */
     public function withBirthdayToday(): Collection
     {
+        return $this->withBirthdayOnDate(now()->month, now()->day);
+    }
+
+    /**
+     * Active users whose date of birth falls on the given month/day, regardless of year.
+     */
+    public function withBirthdayOnDate(int $month, int $day): Collection
+    {
         return User::query()
             ->active()
             ->whereNotNull('date_of_birth')
-            ->whereMonth('date_of_birth', now()->month)
-            ->whereDay('date_of_birth', now()->day)
+            ->whereMonth('date_of_birth', $month)
+            ->whereDay('date_of_birth', $day)
+            ->orderBy('name')
             ->get();
     }
 

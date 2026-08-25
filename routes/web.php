@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\MfaSettingsController;
 use App\Http\Controllers\Account\NotificationController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
+use App\Http\Controllers\Admin\BirthdayController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\CmcPostController as AdminCmcPostController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
@@ -119,6 +120,8 @@ Route::middleware('auth')->group(function () {
         });
 
         Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
+            Route::get('/birthdays', [BirthdayController::class, 'index'])->name('birthdays.index');
+
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
             Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');

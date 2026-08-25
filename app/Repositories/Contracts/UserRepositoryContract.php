@@ -49,6 +49,11 @@ interface UserRepositoryContract
     public function withBirthdayToday(): Collection;
 
     /**
+     * Active users whose date of birth falls on the given month/day, regardless of year.
+     */
+    public function withBirthdayOnDate(int $month, int $day): Collection;
+
+    /**
      * Active users opted into donation reminders whose reminder day is today
      * (clamped to the current month's length).
      */

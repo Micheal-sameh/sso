@@ -24,6 +24,7 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
             label: t('nav.groupPeople'),
             links: [
                 { href: '/admin/users', label: t('nav.users'), icon: 'bi-people' },
+                { href: '/admin/birthdays', label: t('nav.birthdays'), icon: 'bi-cake2' },
                 { href: '/admin/admins', label: t('nav.ssoAdmins'), icon: 'bi-shield-check' },
                 { href: '/admin/groups', label: t('nav.groups'), icon: 'bi-collection' },
             ],
