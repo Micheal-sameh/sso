@@ -54,6 +54,8 @@ class OAuthClientService
             $this->clientMetaRepository->syncUserAccess($client->id, $dto->userIds);
         } elseif ($dto->accessMode === ClientAccessMode::Group) {
             $this->clientMetaRepository->syncGroupAccess($client->id, $dto->groupIds);
+        } elseif ($dto->accessMode === ClientAccessMode::AllExceptUsers) {
+            $this->clientMetaRepository->syncExcludedUserAccess($client->id, $dto->excludedUserIds);
         }
 
         return [
@@ -119,6 +121,11 @@ class OAuthClientService
         $this->clientMetaRepository->syncGroupAccess(
             $clientId,
             $dto->accessMode === ClientAccessMode::Group ? $dto->groupIds : [],
+        );
+
+        $this->clientMetaRepository->syncExcludedUserAccess(
+            $clientId,
+            $dto->accessMode === ClientAccessMode::AllExceptUsers ? $dto->excludedUserIds : [],
         );
 
         return ['meta' => $meta, 'logoutSecret' => $newLogoutSecret];

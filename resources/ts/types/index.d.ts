@@ -94,11 +94,12 @@ export interface ClientMeta {
     logout_uri: string | null
     is_internal: boolean
     is_verified: boolean
-    access_mode: 'all' | 'stage' | 'specific' | 'group'
+    access_mode: 'all' | 'stage' | 'specific' | 'group' | 'all_except_users'
     oauth_client: OAuthClient
     stages?: Stage[]
     allowed_users?: { id: number }[]
     groups?: Group[]
+    excluded_users?: { id: number }[]
 }
 
 export interface SpecificClientAccess {

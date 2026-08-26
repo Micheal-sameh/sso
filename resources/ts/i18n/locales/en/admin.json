@@ -38,7 +38,8 @@
     "all": "All Users",
     "stage": "Specific Stage(s)",
     "specific": "Specific Users",
-    "group": "Specific Group(s)"
+    "group": "Specific Group(s)",
+    "allExceptUsers": "All Except Specific Users"
   },
   "search": {
     "byNameEmailMembership": "Search by name, email, or membership code",
@@ -101,7 +102,8 @@
       "whoCanAuthenticate": "Who can authenticate",
       "allowedStages": "Allowed Stages",
       "allowedUsers": "Allowed Users",
-      "allowedGroups": "Allowed Groups"
+      "allowedGroups": "Allowed Groups",
+      "excludedUsers": "Excluded Users"
     },
     "confirmRevoke": "Revoke client {{name}}?"
   },

@@ -86,6 +86,20 @@ class ClientMeta extends Model implements HasMedia
     }
 
     /**
+     * Individual users excluded from authenticating with this client, when access_mode is 'all_except_users'.
+     */
+    public function excludedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'client_excluded_user_access',
+            'client_id',
+            'user_id',
+            'oauth_client_id',
+        );
+    }
+
+    /**
      * Groups allowed to authenticate with this client, when access_mode is 'group'.
      */
     public function groups(): BelongsToMany

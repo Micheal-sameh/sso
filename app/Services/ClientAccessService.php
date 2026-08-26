@@ -22,6 +22,7 @@ class ClientAccessService
                 ->pluck('id')
                 ->intersect($meta->groups->pluck('id'))
                 ->isNotEmpty(),
+            ClientAccessMode::AllExceptUsers => ! $meta->excludedUsers->contains('id', $user->id),
         };
     }
 }

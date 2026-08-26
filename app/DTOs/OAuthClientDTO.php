@@ -13,6 +13,7 @@ readonly class OAuthClientDTO
      * @param  int[]  $stageIds
      * @param  int[]  $userIds
      * @param  int[]  $groupIds
+     * @param  int[]  $excludedUserIds
      */
     public function __construct(
         public string $name,
@@ -27,6 +28,7 @@ readonly class OAuthClientDTO
         public array $stageIds,
         public array $userIds,
         public array $groupIds,
+        public array $excludedUserIds,
     ) {}
 
     public static function fromRequest(Request $request): self
@@ -46,6 +48,7 @@ readonly class OAuthClientDTO
             stageIds: array_map('intval', $request->array('stage_ids')),
             userIds: array_map('intval', $request->array('user_ids')),
             groupIds: array_map('intval', $request->array('group_ids')),
+            excludedUserIds: array_map('intval', $request->array('excluded_user_ids')),
         );
     }
 }

@@ -26,10 +26,11 @@ interface ClientForm {
     is_internal: boolean
     is_public_client: boolean
     grant_type: 'authorization_code' | 'implicit'
-    access_mode: 'all' | 'stage' | 'specific' | 'group'
+    access_mode: 'all' | 'stage' | 'specific' | 'group' | 'all_except_users'
     stage_ids: number[]
     user_ids: number[]
     group_ids: number[]
+    excluded_user_ids: number[]
 }
 
 const emptyForm: ClientForm = {
@@ -45,6 +46,7 @@ const emptyForm: ClientForm = {
     stage_ids: [],
     user_ids: [],
     group_ids: [],
+    excluded_user_ids: [],
 }
 
 export default function Index({ clients, stages, users, groups, newClientSecret, newLogoutSecret }: IndexProps) {
@@ -54,6 +56,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
         stage: t('targeting.stage'),
         specific: t('targeting.specific'),
         group: t('targeting.group'),
+        all_except_users: t('targeting.allExceptUsers'),
     }
     const [showModal, setShowModal] = useState(false)
     const [editingClient, setEditingClient] = useState<ClientMeta | null>(null)
@@ -111,6 +114,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
             stage_ids: (client.stages ?? []).map((s) => s.id),
             user_ids: (client.allowed_users ?? []).map((u) => u.id),
             group_ids: (client.groups ?? []).map((g) => g.id),
+            excluded_user_ids: (client.excluded_users ?? []).map((u) => u.id),
         })
         form.clearErrors()
         setUserSearch('')
@@ -183,6 +187,15 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
             form.data.group_ids.includes(groupId)
                 ? form.data.group_ids.filter((id) => id !== groupId)
                 : [...form.data.group_ids, groupId],
+        )
+    }
+
+    const toggleExcludedUser = (userId: number) => {
+        form.setData(
+            'excluded_user_ids',
+            form.data.excluded_user_ids.includes(userId)
+                ? form.data.excluded_user_ids.filter((id) => id !== userId)
+                : [...form.data.excluded_user_ids, userId],
         )
     }
 
@@ -588,6 +601,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
                                             <option value="stage">{t('targeting.stage')}</option>
                                             <option value="specific">{t('targeting.specific')}</option>
                                             <option value="group">{t('targeting.group')}</option>
+                                            <option value="all_except_users">{t('targeting.allExceptUsers')}</option>
                                         </select>
                                         {form.errors.access_mode && (
                                             <div className="text-danger small mt-1">{form.errors.access_mode}</div>
@@ -681,6 +695,42 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
                                             </div>
                                             {form.errors.group_ids && (
                                                 <div className="text-danger small mt-1">{form.errors.group_ids}</div>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {form.data.access_mode === 'all_except_users' && (
+                                        <div className="mb-3">
+                                            <label className="form-label">{t('clients.modal.excludedUsers')}</label>
+                                            <input
+                                                type="text"
+                                                className="form-control mb-2"
+                                                placeholder={t('search.users')}
+                                                value={userSearch}
+                                                onChange={(e) => setUserSearch(e.target.value)}
+                                            />
+                                            <div className="permission-list scroll-picker">
+                                                {filteredUsers.map((u) => (
+                                                    <div key={u.id} className="form-check">
+                                                        <input
+                                                            id={`excluded-user-${u.id}`}
+                                                            type="checkbox"
+                                                            className="form-check-input"
+                                                            checked={form.data.excluded_user_ids.includes(u.id)}
+                                                            onChange={() => toggleExcludedUser(u.id)}
+                                                        />
+                                                        <label className="form-check-label" htmlFor={`excluded-user-${u.id}`}>
+                                                            {u.name}
+                                                            <span className="text-ava-muted text-tiny ms-1">{u.email}</span>
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                                {filteredUsers.length === 0 && (
+                                                    <p className="text-ava-muted text-tiny mb-0">{t('search.noUsersMatch')}</p>
+                                                )}
+                                            </div>
+                                            {form.errors.excluded_user_ids && (
+                                                <div className="text-danger small mt-1">{form.errors.excluded_user_ids}</div>
                                             )}
                                         </div>
                                     )}
