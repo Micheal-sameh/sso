@@ -15,7 +15,7 @@ export interface UserStageSummary {
 export interface GroupMember {
     id: number
     name: string
-    email: string
+    email: string | null
     membership_code: string
 }
 
@@ -47,7 +47,7 @@ export interface User {
     uuid: string
     membership_code: string
     name: string
-    email: string
+    email: string | null
     phone: string | null
     date_of_birth: string | null
     avatar: string | null
@@ -110,7 +110,7 @@ export interface SpecificClientAccess {
 export interface LiteUser {
     id: number
     name: string
-    email: string
+    email: string | null
     membership_code: string
     stage_id: number
 }

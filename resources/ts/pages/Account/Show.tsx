@@ -72,7 +72,7 @@ export default function Show({ user }: ShowProps) {
     const detailRows: DetailRow[] = [
         { icon: 'bi-credit-card-2-front', label: t('profile.membershipCode'), value: user.membership_code, mono: true },
         { icon: 'bi-telephone', label: t('profile.phone'), value: user.phone ?? t('profile.notSet') },
-        { icon: 'bi-envelope', label: t('profile.email'), value: user.email },
+        { icon: 'bi-envelope', label: t('profile.email'), value: user.email ?? t('profile.notSet') },
         { icon: 'bi-cake2', label: t('profile.dateOfBirth'), value: formatDateDMY(user.date_of_birth) ?? t('profile.notSet') },
         ...(age !== null ? [{ icon: 'bi-hourglass-split', label: t('profile.age'), value: t('profile.ageYears', { count: age }) }] : []),
         { icon: 'bi-signpost-split', label: t('profile.stage'), value: user.stage.name },

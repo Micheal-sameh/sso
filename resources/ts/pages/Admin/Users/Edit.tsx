@@ -29,7 +29,7 @@ export default function Edit({ viewedUser, stages }: EditProps) {
     const [preview, setPreview] = useState<string | null>(viewedUser.avatar)
     const form = useForm<EditForm>({
         name: viewedUser.name,
-        email: viewedUser.email,
+        email: viewedUser.email ?? '',
         phone: viewedUser.phone ?? '',
         date_of_birth: viewedUser.date_of_birth ?? '',
         role: viewedUser.role,

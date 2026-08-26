@@ -137,7 +137,7 @@ export default function Index({ notifications, stages, groups, users, filters, a
     const filteredUsers = users.filter(
         (u) =>
             u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-            u.email.toLowerCase().includes(userSearch.toLowerCase()),
+            (u.email ?? '').toLowerCase().includes(userSearch.toLowerCase()),
     )
 
     return (

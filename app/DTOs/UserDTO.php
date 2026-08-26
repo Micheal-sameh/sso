@@ -16,7 +16,7 @@ readonly class UserDTO
         public string $uuid,
         public string $membershipCode,
         public string $name,
-        public string $email,
+        public ?string $email,
         public ?string $phone,
         public ?string $dateOfBirth,
         public ?string $avatar,

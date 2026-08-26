@@ -218,16 +218,18 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                     <div className="flex-grow-1 min-w-0">
                         <h3 className="mb-2">{viewedUser.name}</h3>
                         <div className="text-ava-muted fs-6 mb-3 d-flex flex-wrap align-items-center gap-3">
-                            <span className="d-inline-flex align-items-center gap-1">
-                                {viewedUser.email}
-                                <a
-                                    href={`mailto:${viewedUser.email}`}
-                                    className="text-ava-muted"
-                                    title={t('users.emailUser', { name: viewedUser.name })}
-                                >
-                                    <i className="bi bi-envelope" />
-                                </a>
-                            </span>
+                            {viewedUser.email && (
+                                <span className="d-inline-flex align-items-center gap-1">
+                                    {viewedUser.email}
+                                    <a
+                                        href={`mailto:${viewedUser.email}`}
+                                        className="text-ava-muted"
+                                        title={t('users.emailUser', { name: viewedUser.name })}
+                                    >
+                                        <i className="bi bi-envelope" />
+                                    </a>
+                                </span>
+                            )}
                             {viewedUser.phone && (
                                 <span className="d-inline-flex align-items-center gap-1">
                                     {viewedUser.phone}

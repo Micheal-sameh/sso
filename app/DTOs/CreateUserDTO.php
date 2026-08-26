@@ -9,7 +9,7 @@ readonly class CreateUserDTO
 {
     public function __construct(
         public string $name,
-        public string $email,
+        public ?string $email,
         public ?string $phone,
         public ?string $dateOfBirth,
         public string $membershipCode,
@@ -22,7 +22,7 @@ readonly class CreateUserDTO
     {
         return new self(
             name: $request->string('name')->toString(),
-            email: $request->string('email')->toString(),
+            email: $request->string('email')->toString() ?: null,
             phone: $request->string('phone')->toString() ?: null,
             dateOfBirth: $request->string('date_of_birth')->toString() ?: null,
             membershipCode: $request->string('membership_code')->toString(),

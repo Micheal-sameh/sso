@@ -16,7 +16,7 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'uuid', type: 'string', format: 'uuid'),
         new OA\Property(property: 'membership_code', type: 'string', example: 'AV-00123'),
         new OA\Property(property: 'name', type: 'string', example: 'Micheal Samir'),
-        new OA\Property(property: 'email', type: 'string', format: 'email'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', nullable: true),
         new OA\Property(property: 'phone', type: 'string', nullable: true),
         new OA\Property(property: 'date_of_birth', type: 'string', format: 'date', nullable: true),
         new OA\Property(property: 'avatar', type: 'string', nullable: true),

@@ -189,7 +189,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
     const filteredUsers = users.filter(
         (u) =>
             u.name.toLowerCase().includes(userSearch.toLowerCase()) ||
-            u.email.toLowerCase().includes(userSearch.toLowerCase()),
+            (u.email ?? '').toLowerCase().includes(userSearch.toLowerCase()),
     )
 
     const internalCount = clients.data.filter((c) => c.is_internal).length

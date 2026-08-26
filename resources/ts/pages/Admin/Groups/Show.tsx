@@ -24,7 +24,7 @@ export default function Show({ group, users }: ShowProps) {
     const filteredUsers = users.filter(
         (u) =>
             u.name.toLowerCase().includes(search.toLowerCase()) ||
-            u.email.toLowerCase().includes(search.toLowerCase()) ||
+            (u.email ?? '').toLowerCase().includes(search.toLowerCase()) ||
             u.membership_code.toLowerCase().includes(search.toLowerCase()),
     )
 
