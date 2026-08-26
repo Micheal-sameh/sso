@@ -71,6 +71,16 @@ return [
     'group_updated' => 'تم تحديث المجموعة بنجاح.',
     'group_deleted' => 'تم حذف المجموعة.',
 
+    // Families
+    'family_created' => 'تم إنشاء العائلة. أضف الأعضاء أدناه.',
+    'family_deleted' => 'تم حذف العائلة.',
+    'family_member_added' => 'تمت إضافة فرد العائلة.',
+    'family_member_removed' => 'تمت إزالة فرد العائلة.',
+    'family_require_data_update_all' => 'تم تحديد :count مستخدم عبر جميع العائلات لطلب تحديث البيانات.',
+    'family_require_data_update_one' => 'تم تحديد :count فرد من هذه العائلة لطلب تحديث البيانات.',
+    'family_role_taken' => 'هذه العائلة لديها بالفعل شخص مسند لهذا الدور.',
+    'family_no_members' => 'عائلة بلا أفراد',
+
     // CMC posts
     'post_being_published' => 'جارٍ نشر المنشور.',
     'post_being_updated' => 'جارٍ تحديث المنشور.',

@@ -40,11 +40,13 @@ readonly class UserDTO
         public ?string $updatedAt,
         /** @var array<int, array{id: int, name: string}> */
         public array $groups,
+        /** @var array{id: int, role: ?string, father: ?array{id: int, name: string}, mother: ?array{id: int, name: string}, children: array<int, array{id: int, name: string}>}|null */
+        public ?array $family,
     ) {}
 
     public static function fromModel(User $user): self
     {
-        $user->loadMissing('roles', 'stage', 'groups', 'mfa');
+        $user->loadMissing('roles', 'stage', 'groups', 'mfa', 'family.father', 'family.mother', 'family.children');
 
         return new self(
             id: $user->id,
@@ -79,6 +81,13 @@ readonly class UserDTO
             createdAt: $user->created_at?->format('d M Y, H:i'),
             updatedAt: $user->updated_at?->format('d M Y, H:i'),
             groups: $user->groups->map(fn ($group) => ['id' => $group->id, 'name' => $group->name])->all(),
+            family: $user->family === null ? null : [
+                'id' => $user->family->id,
+                'role' => $user->family_role?->value,
+                'father' => $user->family->father === null ? null : ['id' => $user->family->father->id, 'name' => $user->family->father->name],
+                'mother' => $user->family->mother === null ? null : ['id' => $user->family->mother->id, 'name' => $user->family->mother->name],
+                'children' => $user->family->children->map(fn ($child) => ['id' => $child->id, 'name' => $child->name])->all(),
+            ],
         );
     }
 
@@ -117,6 +126,7 @@ readonly class UserDTO
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
             'groups' => $this->groups,
+            'family' => $this->family,
         ];
     }
 

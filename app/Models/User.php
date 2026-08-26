@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\FamilyRole;
 use App\Enums\UserRole;
 use App\Notifications\ResetPasswordNotification;
 use App\Traits\HasAuditLog;
@@ -36,6 +37,8 @@ class User extends Authenticatable implements HasMedia
         'password',
         'role',
         'stage_id',
+        'family_id',
+        'family_role',
         'is_active',
         'requires_data_update',
         'wants_donation_reminders',
@@ -52,6 +55,7 @@ class User extends Authenticatable implements HasMedia
     {
         return [
             'role' => UserRole::class,
+            'family_role' => FamilyRole::class,
             'is_active' => 'boolean',
             'requires_data_update' => 'boolean',
             'wants_donation_reminders' => 'boolean',
@@ -76,6 +80,11 @@ class User extends Authenticatable implements HasMedia
     public function stage(): BelongsTo
     {
         return $this->belongsTo(Stage::class);
+    }
+
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(Family::class);
     }
 
     public function tokens(): HasMany

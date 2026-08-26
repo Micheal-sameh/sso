@@ -157,6 +157,41 @@
     },
     "confirmDelete": "Delete the \"{{name}}\" group?"
   },
+  "families": {
+    "title": "Families",
+    "description": "Group registered users into families so you can see who a student's father or mother is at a glance.",
+    "addFamily": "New Family",
+    "manageMembers": "Manage Members",
+    "empty": "No families yet.",
+    "stats": {
+      "total": "Total Families"
+    },
+    "table": {
+      "father": "Father",
+      "mother": "Mother",
+      "children": "Children"
+    },
+    "notSet": "Not set",
+    "confirmDelete": "Delete this family? Members will not be deleted, only unlinked.",
+    "requireDataUpdateAll": "Require Data Update (All Families)",
+    "confirmRequireDataUpdateAll": "Require every user in every family to update their data before they can sign in to any other app?"
+  },
+  "familyShow": {
+    "backToFamilies": "Back to Families",
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members",
+    "father": "Father",
+    "mother": "Mother",
+    "child": "Child",
+    "children": "Children",
+    "notAssigned": "Not assigned",
+    "change": "Change",
+    "searchPlaceholder": "Search users by name, email, or membership code...",
+    "noChildren": "No children added yet.",
+    "restrictedToCode": "Showing only users sharing this family's membership code ({{base}}).",
+    "requireDataUpdate": "Require Data Update (This Family)",
+    "confirmRequireDataUpdate": "Require every member of this family to update their data before they can sign in to any other app?"
+  },
   "birthdays": {
     "title": "Birthdays",
     "date": "Date",
@@ -304,7 +339,12 @@
       "adminAccess": "Admin Access",
       "accountCreated": "Account Created",
       "lastUpdated": "Last Updated",
-      "groups": "Groups"
+      "groups": "Groups",
+      "family": "Family",
+      "father": "Father",
+      "mother": "Mother",
+      "noFamily": "Not linked to a family yet",
+      "noOtherFamilyMembers": "No other family members yet."
     },
     "verified": "Verified",
     "notVerified": "Not verified",

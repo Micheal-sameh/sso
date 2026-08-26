@@ -51,7 +51,7 @@ class UserRepository implements UserRepositoryContract
     public function paginate(int $perPage = 20, ?string $search = null, ?UserRole $role = null, ?int $stageId = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media', 'family.father', 'family.mother', 'family.children'])
             ->when($search, fn ($query) => $query->where(
                 fn ($q) => $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%")
@@ -71,7 +71,7 @@ class UserRepository implements UserRepositoryContract
     public function paginateAdmins(int $perPage = 20, ?string $search = null): LengthAwarePaginator
     {
         return User::query()
-            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media', 'family.father', 'family.mother', 'family.children'])
             ->whereHas('roles', fn ($query) => $query->whereIn('name', [
                 AdminRole::SuperAdmin->value,
                 AdminRole::Admin->value,
@@ -194,7 +194,7 @@ class UserRepository implements UserRepositoryContract
     public function withBirthdayOnDate(int $month, int $day): Collection
     {
         return User::query()
-            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media'])
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media', 'family.father', 'family.mother', 'family.children'])
             ->active()
             ->whereNotNull('date_of_birth')
             ->whereMonth('date_of_birth', $month)

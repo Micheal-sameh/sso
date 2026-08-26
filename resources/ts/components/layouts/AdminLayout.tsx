@@ -27,6 +27,7 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
                 { href: '/admin/birthdays', label: t('nav.birthdays'), icon: 'bi-cake2' },
                 { href: '/admin/admins', label: t('nav.ssoAdmins'), icon: 'bi-shield-check' },
                 { href: '/admin/groups', label: t('nav.groups'), icon: 'bi-collection' },
+                { href: '/admin/families', label: t('nav.families'), icon: 'bi-house-heart' },
             ],
         },
         {

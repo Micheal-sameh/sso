@@ -71,6 +71,16 @@ return [
     'group_updated' => 'Group updated successfully.',
     'group_deleted' => 'Group deleted.',
 
+    // Families
+    'family_created' => 'Family created. Add members below.',
+    'family_deleted' => 'Family deleted.',
+    'family_member_added' => 'Family member added.',
+    'family_member_removed' => 'Family member removed.',
+    'family_require_data_update_all' => 'Marked :count user(s) across all families as requiring a data update.',
+    'family_require_data_update_one' => 'Marked :count member(s) of this family as requiring a data update.',
+    'family_role_taken' => 'This family already has someone assigned to that role.',
+    'family_no_members' => 'Empty family',
+
     // CMC posts
     'post_being_published' => 'Post is being published.',
     'post_being_updated' => 'Post is being updated.',

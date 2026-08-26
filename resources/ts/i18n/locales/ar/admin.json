@@ -157,6 +157,41 @@
     },
     "confirmDelete": "هل تريد حذف مجموعة \"{{name}}\"؟"
   },
+  "families": {
+    "title": "العائلات",
+    "description": "قم بتجميع المستخدمين المسجلين في عائلات حتى تتمكن من معرفة والد أو والدة أي طالب بسهولة.",
+    "addFamily": "عائلة جديدة",
+    "manageMembers": "إدارة الأعضاء",
+    "empty": "لا توجد عائلات بعد.",
+    "stats": {
+      "total": "إجمالي العائلات"
+    },
+    "table": {
+      "father": "الأب",
+      "mother": "الأم",
+      "children": "الأبناء"
+    },
+    "notSet": "غير محدد",
+    "confirmDelete": "هل تريد حذف هذه العائلة؟ لن يتم حذف الأعضاء، فقط فك ارتباطهم بها.",
+    "requireDataUpdateAll": "طلب تحديث البيانات (كل العائلات)",
+    "confirmRequireDataUpdateAll": "هل تريد مطالبة كل مستخدم في كل عائلة بتحديث بياناته قبل تسجيل الدخول إلى أي تطبيق آخر؟"
+  },
+  "familyShow": {
+    "backToFamilies": "الرجوع إلى العائلات",
+    "memberCount_one": "{{count}} فرد",
+    "memberCount_other": "{{count}} أفراد",
+    "father": "الأب",
+    "mother": "الأم",
+    "child": "ابن",
+    "children": "الأبناء",
+    "notAssigned": "غير محدد",
+    "change": "تغيير",
+    "searchPlaceholder": "البحث عن مستخدمين بالاسم أو البريد الإلكتروني أو رمز العضوية...",
+    "noChildren": "لم تتم إضافة أبناء بعد.",
+    "restrictedToCode": "يتم عرض المستخدمين الذين يشتركون في رمز عضوية هذه العائلة ({{base}}) فقط.",
+    "requireDataUpdate": "طلب تحديث البيانات (هذه العائلة)",
+    "confirmRequireDataUpdate": "هل تريد مطالبة كل فرد في هذه العائلة بتحديث بياناته قبل تسجيل الدخول إلى أي تطبيق آخر؟"
+  },
   "birthdays": {
     "title": "أعياد الميلاد",
     "date": "التاريخ",
@@ -304,7 +339,12 @@
       "adminAccess": "صلاحية الإشراف",
       "accountCreated": "تاريخ إنشاء الحساب",
       "lastUpdated": "آخر تحديث",
-      "groups": "المجموعات"
+      "groups": "المجموعات",
+      "family": "العائلة",
+      "father": "الأب",
+      "mother": "الأم",
+      "noFamily": "غير مرتبط بعائلة بعد",
+      "noOtherFamilyMembers": "لا يوجد أفراد آخرون في العائلة بعد."
     },
     "verified": "تم التأكيد",
     "notVerified": "لم يتم التأكيد",

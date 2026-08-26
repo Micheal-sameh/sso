@@ -36,6 +36,38 @@ export interface UserGroupSummary {
     name: string
 }
 
+export interface FamilyMemberSummary {
+    id: number
+    name: string
+    membership_code: string
+}
+
+export interface Family {
+    id: number
+    display_name: string
+    users_count?: number
+    father: FamilyMemberSummary | null
+    mother: FamilyMemberSummary | null
+    children?: FamilyMemberSummary[]
+}
+
+export interface FamilyMemberOption {
+    id: number
+    name: string
+    email: string | null
+    membership_code: string
+    current_role: 'father' | 'mother' | 'child' | null
+    current_family_name: string | null
+}
+
+export interface UserFamilyRef {
+    id: number
+    role: 'father' | 'mother' | 'child' | null
+    father: { id: number; name: string } | null
+    mother: { id: number; name: string } | null
+    children: { id: number; name: string }[]
+}
+
 export interface UserGroupOption {
     id: number
     name: string
@@ -68,6 +100,7 @@ export interface User {
     created_at: string | null
     updated_at: string | null
     groups: UserGroupSummary[]
+    family: UserFamilyRef | null
 }
 
 export interface UserMfa {

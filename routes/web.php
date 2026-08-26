@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\BirthdayController;
 use App\Http\Controllers\Admin\ClientController;
 use App\Http\Controllers\Admin\CmcPostController as AdminCmcPostController;
 use App\Http\Controllers\Admin\DonationController as AdminDonationController;
+use App\Http\Controllers\Admin\FamilyController;
 use App\Http\Controllers\Admin\FundController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
@@ -164,6 +165,15 @@ Route::middleware('auth')->group(function () {
             Route::post('/groups', [GroupController::class, 'store'])->name('groups.store');
             Route::put('/groups/{group}', [GroupController::class, 'update'])->name('groups.update');
             Route::delete('/groups/{group}', [GroupController::class, 'destroy'])->name('groups.destroy');
+
+            Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
+            Route::get('/families/{family}', [FamilyController::class, 'show'])->name('families.show');
+            Route::post('/families', [FamilyController::class, 'store'])->name('families.store');
+            Route::delete('/families/{family}', [FamilyController::class, 'destroy'])->name('families.destroy');
+            Route::post('/families/{family}/members', [FamilyController::class, 'addMember'])->name('families.members.add');
+            Route::delete('/families/{family}/members/{user}', [FamilyController::class, 'removeMember'])->name('families.members.remove');
+            Route::post('/families/require-data-update', [FamilyController::class, 'requireDataUpdateAll'])->name('families.require-data-update.all');
+            Route::post('/families/{family}/require-data-update', [FamilyController::class, 'requireDataUpdateForFamily'])->name('families.require-data-update.one');
 
             Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
             Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');

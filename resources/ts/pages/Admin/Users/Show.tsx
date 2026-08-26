@@ -22,6 +22,13 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
     const confirm = useConfirm()
     const dobAge = calculateAge(viewedUser.date_of_birth)
     const isBirthday = isBirthdayToday(viewedUser.date_of_birth)
+    const familyMembers = viewedUser.family
+        ? [
+              viewedUser.family.father && { ...viewedUser.family.father, role: 'father' as const },
+              viewedUser.family.mother && { ...viewedUser.family.mother, role: 'mother' as const },
+              ...viewedUser.family.children.map((child) => ({ ...child, role: 'child' as const })),
+          ].filter((member): member is { id: number; name: string; role: 'father' | 'mother' | 'child' } => member !== null && member !== undefined && member.id !== viewedUser.id)
+        : []
     const [resetLinkBusy, setResetLinkBusy] = useState(false)
     const [resetLinkCopied, setResetLinkCopied] = useState(false)
     const [avatarLinkBusy, setAvatarLinkBusy] = useState(false)
@@ -320,9 +327,19 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                         <div className="text-ava-muted text-tiny mb-1">{t('users.info.lastUpdated')}</div>
                         <div className="fw-semibold">{viewedUser.updated_at ?? '—'}</div>
                     </div>
-                    <div className="col-sm-6 col-lg-3 p-3">
+                    <div className="col-sm-6 col-lg-3 p-3 border-end">
                         <div className="text-ava-muted text-tiny mb-1">{t('users.info.groups')}</div>
                         <div className="fw-semibold">{viewedUser.groups.length > 0 ? viewedUser.groups.length : t('users.none')}</div>
+                    </div>
+                    <div className="col-sm-6 col-lg-3 p-3">
+                        <div className="text-ava-muted text-tiny mb-1">{t('users.info.family')}</div>
+                        {viewedUser.family ? (
+                            <a href={`/admin/families/${viewedUser.family.id}`} className="fw-semibold">
+                                {t('families.manageMembers')}
+                            </a>
+                        ) : (
+                            <span className="text-ava-muted">{t('users.info.noFamily')}</span>
+                        )}
                     </div>
                 </div>
             </div>
@@ -588,6 +605,48 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                                     </li>
                                 ))}
                             </ul>
+                        </div>
+                    )}
+                </div>
+            </div>
+
+            <div className="row g-4 mt-0">
+                <div className="col-12">
+                    <div className="d-flex justify-content-between align-items-center mb-3">
+                        <h5 className="mb-0">{t('users.info.family')}</h5>
+                        {viewedUser.family && (
+                            <a href={`/admin/families/${viewedUser.family.id}`} className="btn btn-sm btn-outline-primary">
+                                <i className="bi bi-people me-1" />
+                                {t('families.manageMembers')}
+                            </a>
+                        )}
+                    </div>
+
+                    {viewedUser.family && familyMembers.length > 0 ? (
+                        <div className="ava-card">
+                            <ul className="list-group list-group-flush">
+                                {familyMembers.map((member) => (
+                                    <li key={member.id} className="list-group-item d-flex justify-content-between align-items-center p-3 gap-3">
+                                        <a href={`/admin/users/${member.id}`} className="fw-semibold">
+                                            {member.name}
+                                        </a>
+                                        <span className="role-chip">{t(`familyShow.${member.role}`)}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : viewedUser.family ? (
+                        <div className="ava-card">
+                            <div className="text-center py-5">
+                                <p className="text-ava-muted mb-0 px-3">{t('users.info.noOtherFamilyMembers')}</p>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="ava-card">
+                            <div className="text-center py-5">
+                                <i className="bi bi-house-heart text-ava-muted icon-fs-48" />
+                                <p className="text-ava-muted mt-3 mb-0 px-3">{t('users.info.noFamily')}</p>
+                            </div>
                         </div>
                     )}
                 </div>

@@ -20,6 +20,7 @@
     "ssoAdmins": "SSO Admins",
     "stages": "Stages",
     "groups": "Groups",
+    "families": "Families",
     "oauthClients": "OAuth Clients",
     "tokens": "Tokens",
     "backToAccount": "Back to Account",
