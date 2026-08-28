@@ -2,6 +2,31 @@ import { useEffect, useRef, useState } from 'react'
 
 const PULL_THRESHOLD = 70
 const MAX_PULL = 100
+// Gesture must start within this many px of the top of the viewport — not
+// just anywhere on an unscrolled page — so it can't be triggered by a
+// downward drag started lower on the screen (e.g. over a card or carousel).
+const TOP_ZONE_PX = 80
+
+/**
+ * Finds how far the content under `target` is scrolled from its top. The
+ * window itself doesn't always do the scrolling — on mobile, .main-content-area
+ * is the actual scroll container (see .app-shell in app.css) while the window
+ * stays fixed at scrollY 0 — so we have to walk up to whichever ancestor is
+ * actually scrollable rather than assume it's the window.
+ */
+function getScrollTop(target: EventTarget | null): number {
+    let node = target instanceof Element ? target : null
+
+    while (node && node !== document.body && node !== document.documentElement) {
+        const style = getComputedStyle(node)
+        if ((style.overflowY === 'auto' || style.overflowY === 'scroll') && node.scrollHeight > node.clientHeight) {
+            return node.scrollTop
+        }
+        node = node.parentElement
+    }
+
+    return window.scrollY || document.documentElement.scrollTop
+}
 
 /**
  * Custom pull-to-refresh gesture for the installed PWA. The browser's native
@@ -19,7 +44,9 @@ export default function PullToRefresh() {
 
     useEffect(() => {
         const onTouchStart = (event: TouchEvent) => {
-            if (window.scrollY > 0 || refreshing) return
+            if (refreshing) return
+            if (getScrollTop(event.target) > 0) return
+            if (event.touches[0].clientY > TOP_ZONE_PX) return
             startY.current = event.touches[0].clientY
             pulling.current = true
         }

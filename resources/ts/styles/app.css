@@ -402,7 +402,12 @@ small, .small {
 
 .sidebar-main {
     width: 64px;
+    /* 100vh alone is taller than the real visible area on mobile browsers
+       (it includes space the address bar can reclaim), which left the
+       overflow-y:auto scroll region extending into blank space past the
+       last link. 100dvh tracks the actual visible viewport. */
     height: 100vh;
+    height: 100dvh;
     background: #fff;
     border-right: 1px solid var(--ava-border);
     position: fixed;
