@@ -139,10 +139,26 @@ class YoutubeLiveStatusService
             return null;
         }
 
+        // search.list's eventType filter is index-driven and can lag well
+        // behind the real broadcast lifecycle (e.g. a finished stream can
+        // still surface under eventType=upcoming for a while). Trust
+        // liveStreamingDetails, not the query we searched with, for the
+        // actual status.
         $details = $this->liveStreamingDetails($videoId, $apiKey);
 
+        $status = match (true) {
+            isset($details['actualStartTime']) && ! isset($details['actualEndTime']) => 'live',
+            isset($details['actualEndTime']) => 'ended',
+            isset($details['scheduledStartTime']) => 'upcoming',
+            default => null,
+        };
+
+        if ($status === null || $status === 'ended') {
+            return null;
+        }
+
         return [
-            'status' => $eventType,
+            'status' => $status,
             'video_id' => $videoId,
             'title' => $item['snippet']['title'] ?? null,
             'thumbnail_url' => $item['snippet']['thumbnails']['high']['url']
