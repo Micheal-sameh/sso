@@ -402,7 +402,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
             </div>
 
             <div className="mt-3">
-                <Pagination links={clients.links} />
+                <Pagination pagination={clients} />
             </div>
 
             {(revealedSecret || revealedLogoutSecret) && (

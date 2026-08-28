@@ -360,7 +360,7 @@ export default function Index({ notifications, stages, groups, users, filters, a
                         </ul>
                     </div>
                     <div className="mt-3">
-                        <Pagination links={notifications.links} />
+                        <Pagination pagination={notifications} />
                     </div>
                 </div>
             </div>

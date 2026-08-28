@@ -265,7 +265,7 @@ export default function Index({ users, stages, filters }: IndexProps) {
             </div>
 
             <div className="mt-3">
-                <Pagination links={users.links} />
+                <Pagination pagination={users} />
             </div>
         </AdminLayout>
     )

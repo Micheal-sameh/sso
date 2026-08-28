@@ -153,7 +153,7 @@ export default function Index({ videos, pinnedVideos }: IndexProps) {
                 </ul>
             </div>
             <div className="mt-3">
-                <Pagination links={videos.links} />
+                <Pagination pagination={videos} />
             </div>
         </AdminLayout>
     )

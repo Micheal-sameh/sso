@@ -45,7 +45,7 @@ export default function Index({ videos }: IndexProps) {
                 )}
             </div>
             <div className="mt-3">
-                <Pagination links={videos.links} />
+                <Pagination pagination={videos} />
             </div>
         </AppLayout>
     )

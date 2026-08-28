@@ -35,6 +35,16 @@ html {
        website" rather than an installed app. Replaced with a custom gesture,
        see PullToRefresh.tsx. */
     overscroll-behavior-y: contain;
+    /* Hard safety net: the page itself must never scroll sideways. Any
+       content that's genuinely wider than the screen (e.g. the pagination
+       bar) has to scroll within its own bounded container instead — see
+       .pagination-scroll — rather than stretching the whole page. */
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 
 .app-splash {
@@ -158,6 +168,20 @@ a:hover {
 
 .page-content {
     animation: fadeInUp 0.35s var(--ease-out);
+}
+
+/* Bootstrap's .pagination is a non-wrapping flex row; with enough page
+   links (e.g. the videos list) it overflows past the viewport edge on
+   mobile with no way to reach the hidden links. Scope the overflow to this
+   wrapper instead so it scrolls in place rather than pushing the page wide. */
+.pagination-scroll {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pagination-scroll .pagination {
+    width: max-content;
+    margin-inline: auto;
 }
 
 /* ---------- Typography ---------- */

@@ -152,7 +152,7 @@ export default function Index({ donations, totals, funds, filters }: IndexProps)
                 </div>
             </div>
             <div className="mt-3">
-                <Pagination links={donations.links} />
+                <Pagination pagination={donations} />
             </div>
         </AdminLayout>
     )

@@ -115,7 +115,7 @@ export default function Index({ tokens }: IndexProps) {
             </div>
 
             <div className="mt-3">
-                <Pagination links={tokens.links} />
+                <Pagination pagination={tokens} />
             </div>
         </AdminLayout>
     )

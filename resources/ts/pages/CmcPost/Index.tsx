@@ -67,7 +67,7 @@ export default function Index({ posts }: IndexProps) {
                 </ul>
             </div>
             <div className="mt-3">
-                <Pagination links={posts.links} />
+                <Pagination pagination={posts} />
             </div>
 
             <InAppLinkModal url={openUrl} onClose={() => setOpenUrl(null)} />

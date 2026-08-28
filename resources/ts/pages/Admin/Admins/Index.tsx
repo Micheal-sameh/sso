@@ -226,7 +226,7 @@ export default function Index({ admins, filters }: IndexProps) {
             )}
 
             <div className="mt-3">
-                <Pagination links={admins.links} />
+                <Pagination pagination={admins} />
             </div>
         </AdminLayout>
     )

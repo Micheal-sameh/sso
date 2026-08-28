@@ -178,7 +178,7 @@ export default function Notifications({ notifications, filters, availableTypes }
                 </ul>
             </div>
             <div className="mt-3">
-                <Pagination links={notifications.links} />
+                <Pagination pagination={notifications} />
             </div>
         </AppLayout>
     )

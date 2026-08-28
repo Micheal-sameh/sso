@@ -57,7 +57,7 @@ export default function History({ donations }: HistoryProps) {
                 </div>
             </div>
             <div className="mt-3">
-                <Pagination links={donations.links} />
+                <Pagination pagination={donations} />
             </div>
         </AppLayout>
     )
