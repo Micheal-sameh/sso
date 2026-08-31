@@ -22,6 +22,7 @@ class UserService
     public function __construct(
         protected UserRepositoryContract $userRepository,
         protected AvatarUploadTokenRepositoryContract $avatarUploadTokenRepository,
+        protected OAuthClientService $oauthClientService,
     ) {}
 
     /**
@@ -78,6 +79,8 @@ class UserService
         }
 
         $user->syncRoles($newRole === UserRole::User ? [] : [$newRole->value]);
+
+        $this->oauthClientService->notifyClientsUserUpdated($user);
 
         return $user->fresh(['mfa', 'stage', 'roles']);
     }

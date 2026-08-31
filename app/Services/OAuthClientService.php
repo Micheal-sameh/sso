@@ -3,9 +3,11 @@
 namespace App\Services;
 
 use App\DTOs\OAuthClientDTO;
+use App\DTOs\UserDTO;
 use App\Enums\ClientAccessMode;
 use App\Enums\ClientGrantType;
 use App\Jobs\NotifyClientLogoutJob;
+use App\Jobs\NotifyClientUserUpdatedJob;
 use App\Models\ClientMeta;
 use App\Models\Token;
 use App\Models\User;
@@ -213,6 +215,35 @@ class OAuthClientService
 
         if ($sub !== null) {
             NotifyClientLogoutJob::dispatch($clientId, $sub, $meta->logout_uri, $meta->logout_secret);
+        }
+    }
+
+    /**
+     * Push a back-channel "user updated" notification to every client the user
+     * has an active token with, so each client can refresh its locally-cached
+     * copy of that user immediately instead of waiting for their next login.
+     * Called after an admin edits a user's details (UserService::updateDetails).
+     */
+    public function notifyClientsUserUpdated(User $user): void
+    {
+        $clientIds = $this->tokenRepository->listForUser($user->id)
+            ->pluck('client_id')
+            ->unique();
+
+        if ($clientIds->isEmpty()) {
+            return;
+        }
+
+        $userInfo = UserDTO::fromModel($user)->toOidcArray();
+
+        foreach ($clientIds as $clientId) {
+            $meta = $this->clientMetaRepository->findByClientId($clientId);
+
+            if ($meta === null || $meta->logout_uri === null || $meta->logout_secret === null) {
+                continue;
+            }
+
+            NotifyClientUserUpdatedJob::dispatch($clientId, $userInfo, $meta->logout_uri, $meta->logout_secret);
         }
     }
 }
