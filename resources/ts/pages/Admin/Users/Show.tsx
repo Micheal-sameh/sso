@@ -385,7 +385,8 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             <button
                                 type="button"
                                 className="btn btn-outline-primary btn-sm text-nowrap"
-                                disabled={resetLinkBusy}
+                                disabled={resetLinkBusy || !viewedUser.email}
+                                title={viewedUser.email ? undefined : t('users.resetLinkRequiresEmail')}
                                 onClick={copyResetLink}
                             >
                                 <i className="bi bi-link-45deg me-1" />

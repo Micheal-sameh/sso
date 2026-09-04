@@ -53,6 +53,10 @@ class PasswordResetService
      */
     public function generateResetLink(User $user): string
     {
+        if ($user->email === null) {
+            throw new PasswordResetException(__('messages.password_reset_requires_email'));
+        }
+
         $token = Password::broker()->createToken($user);
 
         return route('password.reset', ['token' => $token]).'?email='.urlencode($user->email);

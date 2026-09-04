@@ -299,6 +299,7 @@
     "confirmActivateUser": "هل أنت متأكد من رغبتك في تفعيل {{name}}؟",
     "confirmDeactivateUser": "هل أنت متأكد من رغبتك في إيقاف {{name}}؟",
     "resetLinkWhatsAppMessage": "مرحبًا {{name}}، استخدم هذا الرابط لإعادة تعيين كلمة مرور Avarewase الخاصة بك: {{link}}",
+    "resetLinkRequiresEmail": "لا يوجد بريد إلكتروني مسجل لهذا المستخدم، لذا لا يمكن إنشاء رابط إعادة تعيين كلمة المرور.",
     "avatarLinkWhatsAppMessage": "مرحبًا {{name}}، استخدم هذا الرابط لتحديث صورة ملفك الشخصي في Avarewase: {{link}}",
     "ageYears": "({{age}} سنة)"
   }
