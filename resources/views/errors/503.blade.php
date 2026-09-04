@@ -26,8 +26,7 @@
             width: calc(100% - 32px);
             text-align: center;
         }
-        .logo { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 28px; }
-        .logo span { font-weight: 800; font-size: 20px; letter-spacing: -0.02em; color: #1B2A4A; }
+        .logo { display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
         .icon-tile {
             width: 72px;
             height: 72px;
@@ -45,12 +44,7 @@
 <body>
     <div class="card">
         <div class="logo">
-            <svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="48" fill="#1B2A4A" />
-                <rect x="44" y="20" width="12" height="60" fill="#3B82F6" />
-                <rect x="20" y="44" width="60" height="12" fill="#3B82F6" />
-            </svg>
-            <span>Avarewase</span>
+            <img src="/images/logo.png" alt="Avarewase" width="44" height="36" style="object-fit: contain;">
         </div>
 
         <div class="icon-tile">

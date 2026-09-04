@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
+import AvaLogo from '@/components/shared/AvaLogo'
 import OtpInput from '@/components/shared/OtpInput'
 
 interface MfaForm {
@@ -22,7 +23,8 @@ export default function Mfa() {
     return (
         <AuthLayout>
             <div className="text-center mb-4">
-                <div className="icon-circle text-ava-secondary mx-auto mb-3">
+                <AvaLogo size={56} />
+                <div className="icon-circle text-ava-secondary mx-auto mb-3 mt-3">
                     <i className="bi bi-shield-lock-fill" />
                 </div>
                 <h4>{t('mfa.title')}</h4>

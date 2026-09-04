@@ -61,7 +61,7 @@ export default function Sidebar({ groups, footerLinks, open, onClose }: SidebarP
             <aside className={`sidebar-main d-flex flex-column py-4 ${open ? 'sidebar-open' : ''}`}>
                 <div className="sidebar-logo-row px-3 mb-4 d-flex align-items-center justify-content-between">
                     <Link href="/" className="text-decoration-none">
-                        <AvaLogo size={36} showText />
+                        <AvaLogo size={36} />
                     </Link>
                     <button
                         type="button"

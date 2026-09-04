@@ -69,7 +69,7 @@ export default function Error({ status, message, variant }: ErrorProps) {
         <AuthLayout>
             <div className="text-center py-3">
                 <div className="d-flex justify-content-center mb-4">
-                    <AvaLogo size={40} showText />
+                    <AvaLogo size={40} />
                 </div>
 
                 <div className="icon-tile text-ava-secondary mx-auto mb-4" style={{ width: 72, height: 72 }}>

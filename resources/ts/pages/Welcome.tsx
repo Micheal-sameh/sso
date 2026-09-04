@@ -19,7 +19,7 @@ export default function Welcome() {
     return (
         <div className="welcome-page">
             <header className="welcome-header d-flex align-items-center justify-content-between px-4 py-3">
-                <AvaLogo size={36} showText />
+                <AvaLogo size={36} />
                 <Link href="/login" className="btn btn-primary btn-sm">
                     {t('welcome.signIn')}
                 </Link>

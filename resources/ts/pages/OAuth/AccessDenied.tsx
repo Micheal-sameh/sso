@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react'
 import { Trans, useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
+import AvaLogo from '@/components/shared/AvaLogo'
 
 interface AccessDeniedProps {
     client: { name: string }
@@ -11,6 +12,9 @@ export default function AccessDenied({ client }: AccessDeniedProps) {
 
     return (
         <AuthLayout>
+            <div className="text-center mb-4">
+                <AvaLogo size={56} />
+            </div>
             <div className="text-center">
                 <div className="icon-circle text-ava-primary mx-auto mb-3">
                     <i className="bi bi-shield-lock" />

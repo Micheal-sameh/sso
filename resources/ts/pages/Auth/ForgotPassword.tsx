@@ -20,7 +20,7 @@ export default function ForgotPassword() {
     return (
         <AuthLayout>
             <div className="text-center mb-4">
-                <AvaLogo size={56} showText />
+                <AvaLogo size={56} />
                 <p className="text-ava-muted small mt-2 mb-0">{t('forgotPassword.resetYourPassword')}</p>
             </div>
 

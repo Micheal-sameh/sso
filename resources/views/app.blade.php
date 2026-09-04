@@ -31,11 +31,7 @@
 </head>
 <body>
     <div id="app-splash" class="app-splash">
-        <svg width="72" height="72" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="48" fill="#1B2A4A" />
-            <rect x="44" y="20" width="12" height="60" fill="#3B82F6" />
-            <rect x="20" y="44" width="60" height="12" fill="#3B82F6" />
-        </svg>
+        <img src="/images/logo.png" alt="" width="120" height="97" style="object-fit: contain;">
         <div class="app-splash-spinner"></div>
     </div>
 

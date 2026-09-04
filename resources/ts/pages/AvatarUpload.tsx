@@ -47,7 +47,7 @@ export default function AvatarUpload({ status, userName, avatar, token, action }
         return (
             <AuthLayout>
                 <div className="text-center mb-4">
-                    <AvaLogo size={56} showText />
+                    <AvaLogo size={56} />
                 </div>
                 <p className="text-center text-ava-muted mb-0">
                     <i className="bi bi-exclamation-circle text-danger me-1" />
@@ -61,7 +61,7 @@ export default function AvatarUpload({ status, userName, avatar, token, action }
         return (
             <AuthLayout>
                 <div className="text-center mb-4">
-                    <AvaLogo size={56} showText />
+                    <AvaLogo size={56} />
                 </div>
                 <p className="text-center text-ava-muted mb-0">
                     <i className="bi bi-check-circle text-success me-1" />
@@ -74,7 +74,7 @@ export default function AvatarUpload({ status, userName, avatar, token, action }
     return (
         <AuthLayout>
             <div className="text-center mb-4">
-                <AvaLogo size={56} showText />
+                <AvaLogo size={56} />
                 <p className="text-ava-muted small mt-2 mb-0">{t('avatarUpload.updateProfilePicture', { userName })}</p>
             </div>
 

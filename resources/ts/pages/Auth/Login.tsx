@@ -32,7 +32,7 @@ export default function Login({ client }: LoginProps) {
     return (
         <AuthLayout>
             <div className="text-center mb-4">
-                <AvaLogo size={56} showText />
+                <AvaLogo size={56} />
                 <p className="text-ava-muted small mt-2 mb-0">{t('login.signInToAccount')}</p>
             </div>
 
