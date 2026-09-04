@@ -105,6 +105,7 @@ Route::middleware('auth')->group(function () {
             Route::post('/users/{user}/mfa/reset', [UserController::class, 'resetMfa'])->name('users.mfa.reset');
             Route::post('/users/{user}/avatar-upload-link', [UserController::class, 'generateAvatarUploadLink'])
                 ->name('users.avatar-upload-link');
+            Route::delete('/users/{user}/avatar', [UserController::class, 'removeAvatar'])->name('users.avatar.destroy');
             Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');
             Route::delete('/users/{user}/groups/{group}', [UserController::class, 'detachGroup'])->name('users.groups.detach');
 

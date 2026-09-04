@@ -212,6 +212,7 @@
     "createUser": "إنشاء مستخدم",
     "backToUsers": "الرجوع إلى المستخدمين",
     "happyBirthday": "🎉 عيد ميلاد سعيد، {{name}}!",
+    "removePhoto": "حذف الصورة",
     "fields": {
       "name": "الاسم",
       "email": "البريد الإلكتروني",

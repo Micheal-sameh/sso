@@ -180,6 +180,13 @@ class UserController extends BaseController
         return response()->json(['link' => $this->userService->generateAvatarUploadLink($user)]);
     }
 
+    public function removeAvatar(User $user): RedirectResponse
+    {
+        $this->userService->removeAvatar($user);
+
+        return $this->redirectBack(__('messages.avatar_removed'), 'success');
+    }
+
     public function resetMfa(User $user): RedirectResponse
     {
         $this->mfaService->resetMfa($user);

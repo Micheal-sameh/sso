@@ -58,6 +58,12 @@ export default function Edit({ viewedUser, stages }: EditProps) {
         form.post(`/admin/users/${viewedUser.id}`, { forceFormData: true })
     }
 
+    const removeAvatar = () => {
+        router.delete(`/admin/users/${viewedUser.id}/avatar`, {
+            onSuccess: () => setPreview(null),
+        })
+    }
+
     return (
         <AdminLayout title={t('users.editTitle')}>
             <div className="ava-card p-4 max-w-560">
@@ -76,6 +82,15 @@ export default function Edit({ viewedUser, stages }: EditProps) {
                     <div>
                         <input type="file" accept="image/*" className="form-control" onChange={onAvatarChange} />
                         {form.errors.avatar && <div className="text-danger small mt-1">{form.errors.avatar}</div>}
+                        {preview && (
+                            <button
+                                type="button"
+                                className="btn btn-link btn-sm text-danger px-0 mt-1"
+                                onClick={removeAvatar}
+                            >
+                                {t('users.removePhoto')}
+                            </button>
+                        )}
                     </div>
                 </div>
 

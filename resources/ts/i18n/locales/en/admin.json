@@ -212,6 +212,7 @@
     "createUser": "Create User",
     "backToUsers": "Back to Users",
     "happyBirthday": "🎉 Happy Birthday, {{name}}!",
+    "removePhoto": "Remove photo",
     "fields": {
       "name": "Name",
       "email": "Email",

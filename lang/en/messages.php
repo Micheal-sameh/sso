@@ -50,6 +50,7 @@ return [
     'access_revoked' => 'Access revoked.',
     'added_to_group' => 'Added to group.',
     'removed_from_group' => 'Removed from group.',
+    'avatar_removed' => 'Profile picture removed.',
 
     // OAuth clients / apps
     'invalid_client_credentials' => 'Invalid client credentials.',

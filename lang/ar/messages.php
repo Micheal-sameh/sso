@@ -50,6 +50,7 @@ return [
     'access_revoked' => 'تم إلغاء الوصول.',
     'added_to_group' => 'تمت الإضافة إلى المجموعة.',
     'removed_from_group' => 'تمت الإزالة من المجموعة.',
+    'avatar_removed' => 'تم حذف صورة الملف الشخصي.',
 
     // OAuth clients / apps
     'invalid_client_credentials' => 'بيانات اعتماد العميل غير صحيحة.',
