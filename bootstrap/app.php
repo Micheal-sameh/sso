@@ -9,9 +9,8 @@ use App\Exceptions\Auth\SelfModificationException;
 use App\Exceptions\Auth\StageInUseException;
 use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Exceptions\Auth\UserNotFoundException;
-use App\Exceptions\Donations\FundInUseException;
-use App\Exceptions\Donations\GatewayNotConfiguredException;
 use App\Exceptions\Family\DuplicateFamilyRoleException;
+use App\Http\Middleware\EnsureCanAccessDashboard;
 use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HideServerFingerprint;
@@ -34,7 +33,6 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
-        channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -48,6 +46,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'mfa.pending' => MfaPending::class,
             'mfa.required' => EnsureMfaEnabled::class,
+            'dashboard' => EnsureCanAccessDashboard::class,
             'superadmin' => SuperAdmin::class,
             'scopes' => CheckToken::class,
             'scope' => CheckTokenForAnyScope::class,
@@ -123,22 +122,6 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         $exceptions->render(function (UserNotFoundException $e, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
-            }
-
-            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
-        });
-
-        $exceptions->render(function (FundInUseException $e, Request $request) {
-            if ($request->expectsJson()) {
-                return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
-            }
-
-            return back()->with('flash', ['type' => 'error', 'message' => $e->getMessage()]);
-        });
-
-        $exceptions->render(function (GatewayNotConfiguredException $e, Request $request) {
             if ($request->expectsJson()) {
                 return response()->json(['message' => $e->getMessage()], $e->getStatusCode());
             }

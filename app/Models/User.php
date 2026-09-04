@@ -41,8 +41,6 @@ class User extends Authenticatable implements HasMedia
         'family_role',
         'is_active',
         'requires_data_update',
-        'wants_donation_reminders',
-        'donation_reminder_day',
         'email_verified_at',
     ];
 
@@ -58,7 +56,6 @@ class User extends Authenticatable implements HasMedia
             'family_role' => FamilyRole::class,
             'is_active' => 'boolean',
             'requires_data_update' => 'boolean',
-            'wants_donation_reminders' => 'boolean',
             'email_verified_at' => 'datetime',
             'date_of_birth' => 'date',
             'password' => 'hashed',
@@ -95,16 +92,6 @@ class User extends Authenticatable implements HasMedia
     public function groups(): BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'user_group');
-    }
-
-    public function donations(): HasMany
-    {
-        return $this->hasMany(Donation::class);
-    }
-
-    public function donationPlans(): HasMany
-    {
-        return $this->hasMany(DonationPlan::class);
     }
 
     public function scopeActive(Builder $query): Builder

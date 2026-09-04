@@ -39,11 +39,6 @@ interface UserRepositoryContract
     public function allLite(): Collection;
 
     /**
-     * IDs of every active user.
-     */
-    public function activeUserIds(): Collection;
-
-    /**
      * Active users whose date of birth falls on today's month and day.
      */
     public function withBirthdayToday(): Collection;
@@ -52,15 +47,4 @@ interface UserRepositoryContract
      * Active users whose date of birth falls on the given month/day, regardless of year.
      */
     public function withBirthdayOnDate(int $month, int $day): Collection;
-
-    /**
-     * Active users opted into donation reminders whose reminder day is today
-     * (clamped to the current month's length).
-     */
-    public function wantingMonthlyDonationReminderToday(): Collection;
-
-    /**
-     * Every active user currently opted into donation reminders, regardless of day.
-     */
-    public function wantingDonationReminders(): Collection;
 }

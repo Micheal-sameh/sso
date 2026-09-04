@@ -107,41 +107,6 @@
     },
     "confirmRevoke": "هل تريد إلغاء التطبيق {{name}}؟"
   },
-  "cmcPosts": {
-    "title": "منشورات CMC",
-    "editPost": "تعديل المنشور",
-    "newPost": "منشور جديد",
-    "text": "النص",
-    "linkOptional": "رابط (اختياري)",
-    "pictureOptional": "صورة (اختياري)",
-    "keepCurrentPicture": "اتركه فارغًا للاحتفاظ بالصورة الحالية.",
-    "notifyEveryone": "سيُرسل هذا كإشعار إلى جميع المستخدمين.",
-    "publishPost": "نشر المنشور",
-    "publishedPosts": "المنشورات المنشورة",
-    "viewAllPosts": "عرض جميع المنشورات",
-    "postedBy": "نُشر في {{date}} بواسطة {{name}}",
-    "posted": "نُشر في {{date}}",
-    "empty": "لا توجد منشورات بعد.",
-    "confirmDelete": "هل تريد حذف هذا المنشور؟ سيختفي من الجميع.",
-    "pin": "تثبيت",
-    "unpin": "إلغاء التثبيت",
-    "pinnedPosts": "المنشورات المثبّتة (الترتيب المعروض في الرئيسية)",
-    "moveUp": "تحريك لأعلى",
-    "moveDown": "تحريك لأسفل"
-  },
-  "videos": {
-    "title": "الفيديوهات",
-    "syncNow": "مزامنة الآن",
-    "syncing": "جارٍ المزامنة...",
-    "pin": "تثبيت",
-    "unpin": "إلغاء التثبيت",
-    "pinned": "مثبّت",
-    "pinnedVideos": "الفيديوهات المثبّتة (الترتيب المعروض في الرئيسية)",
-    "moveUp": "تحريك لأعلى",
-    "moveDown": "تحريك لأسفل",
-    "published": "نُشر {{date}}",
-    "empty": "لا توجد فيديوهات مُزامَنة بعد. اضغط \"مزامنة الآن\" لجلب فيديوهات القناة."
-  },
   "groups": {
     "title": "المجموعات",
     "addGroup": "إضافة مجموعة",
@@ -206,66 +171,11 @@
       "age": "العمر"
     }
   },
-  "spiritualNoteLabels": {
-    "title": "عناصر النوته الروحية",
-    "addLabel": "إضافة عنصر",
-    "description": "تظهر هذه العناصر كقائمة يومية لكل مستخدم. تعطيل عنصر يزيله من الأيام القادمة مع بقائه في سجل المستخدمين.",
-    "empty": "لا توجد عناصر بعد.",
-    "active": "مفعّل",
-    "inactive": "غير مفعّل",
-    "edit": "تعديل",
-    "delete": "حذف",
-    "cancel": "إلغاء",
-    "saveChanges": "حفظ التغييرات",
-    "confirmDelete": "هل تريد حذف عنصر \"{{name}}\"؟",
-    "table": {
-      "name": "الاسم",
-      "sortOrder": "الترتيب",
-      "status": "الحالة"
-    },
-    "modal": {
-      "editTitle": "تعديل {{name}}",
-      "createTitle": "إضافة عنصر",
-      "name": "الاسم",
-      "namePlaceholder": "مثال: الصلاة",
-      "sortOrder": "الترتيب",
-      "activeHelp": "مفعّل (يظهر للمستخدمين)"
-    }
-  },
   "groupShow": {
     "backToGroups": "الرجوع إلى المجموعات",
     "memberCount_one": "{{count}} عضو",
     "memberCount_other": "{{count}} أعضاء",
     "searchPlaceholder": "البحث عن مستخدمين بالاسم أو البريد الإلكتروني أو رمز العضوية..."
-  },
-  "notifications": {
-    "title": "مركز الإشعارات",
-    "sendNotification": "إرسال إشعار",
-    "message": "الرسالة",
-    "pictureOptional": "صورة (اختياري)",
-    "sendTo": "إرسال إلى",
-    "stagesLabel": "المراحل",
-    "groupsLabel": "المجموعات",
-    "usersLabel": "المستخدمون",
-    "send": "إرسال الإشعار",
-    "sentNotifications": "الإشعارات المرسلة",
-    "sentBy": "أُرسل في {{date}} بواسطة {{name}}",
-    "sent": "أُرسل في {{date}}",
-    "empty": "لم يتم إرسال أي إشعارات بعد.",
-    "confirmDelete": "هل تريد حذف هذا الإشعار؟ لن يظهر للمستلمين بعد الآن.",
-    "noStages": "لا توجد مراحل",
-    "noGroups": "لا توجد مجموعات",
-    "noUsers": "لا يوجد مستخدمون",
-    "filterByType": "تصفية حسب النوع",
-    "types": {
-      "all": "كل الأنواع",
-      "manual": "يدوي",
-      "cmc": "منشور المركز الإعلامي",
-      "youtube": "فيديو يوتيوب",
-      "donation_reminder": "تذكير بالتبرع",
-      "birthday": "عيد ميلاد",
-      "spiritual_note_reminder": "تذكير بالنوته الروحية"
-    }
   },
   "stages": {
     "title": "المراحل",

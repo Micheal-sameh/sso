@@ -16,6 +16,7 @@ return [
     // Auth / credentials
     'invalid_credentials' => 'Invalid credentials.',
     'account_inactive' => 'Account is inactive.',
+    'dashboard_access_denied' => 'Your account does not have access to this dashboard.',
     'invalid_or_expired_verification_session' => 'Invalid or expired verification session.',
     'logged_out' => 'Logged out.',
     'logged_out_flash' => 'You have been logged out.',

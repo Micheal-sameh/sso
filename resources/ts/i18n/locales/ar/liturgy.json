@@ -1,10 +1,6 @@
 {
   "title": "القراءات",
-  "katamaros": "القطمارس",
-  "bible": "الكتاب المقدس",
   "agpeya": "الأجبية",
-  "allBooks": "كل الأسفار",
-  "textUnavailable": "غير متاح حالياً.",
   "agpeyaHours": {
     "prime": "باكر",
     "third": "الساعة الثالثة",

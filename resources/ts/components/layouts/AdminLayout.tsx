@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
-import type { SharedProps } from '@/types'
 import FlashMessage from '@/components/shared/FlashMessage'
 import Sidebar, { type SidebarGroup, type SidebarLink } from '@/components/layouts/Sidebar'
 import TopBar from '@/components/layouts/TopBar'
@@ -16,9 +14,8 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children, title, action }: AdminLayoutProps) {
     const { t } = useTranslation('common')
     const [sidebarOpen, setSidebarOpen] = useState(false)
-    const { auth } = usePage<SharedProps>().props
 
-    const fullNavGroups: SidebarGroup[] = [
+    const navGroups: SidebarGroup[] = [
         {
             id: 'people',
             label: t('nav.groupPeople'),
@@ -39,40 +36,9 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
                 { href: '/admin/stages', label: t('nav.stages'), icon: 'bi-signpost-split' },
             ],
         },
-        {
-            id: 'content',
-            label: t('nav.groupContent'),
-            links: [
-                { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
-                { href: '/admin/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
-                { href: '/admin/notifications', label: t('nav.notifications'), icon: 'bi-bell' },
-                { href: '/admin/spiritual-note-labels', label: t('nav.spiritualNoteLabels'), icon: 'bi-journal-check' },
-            ],
-        },
-        {
-            id: 'finance',
-            label: t('nav.groupFinance'),
-            links: [
-                { href: '/admin/donations', label: t('nav.donations'), icon: 'bi-heart' },
-                { href: '/admin/funds', label: t('nav.funds'), icon: 'bi-piggy-bank' },
-            ],
-        },
-    ]
-
-    const cmcOnlyNavGroups: SidebarGroup[] = [
-        {
-            id: 'content',
-            label: t('nav.groupContent'),
-            links: [
-                { href: '/admin/cmc-posts', label: t('nav.cmcPosts'), icon: 'bi-newspaper' },
-                { href: '/admin/videos', label: t('nav.videos'), icon: 'bi-play-btn' },
-            ],
-        },
     ]
 
     const accountLink: SidebarLink = { href: '/account', label: t('nav.backToAccount'), icon: 'bi-arrow-left' }
-
-    const navGroups = auth.user?.is_admin ? fullNavGroups : cmcOnlyNavGroups
 
     return (
         <div className="d-flex">

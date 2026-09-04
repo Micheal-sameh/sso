@@ -18,9 +18,9 @@ class SuperAdminSeeder extends Seeder
         $user = User::create([
             'uuid' => Str::uuid()->toString(),
             'membership_code' => env('ADMIN_MEMBERSHIP_CODE', 'e1c1f1nr1'),
-            'name' => 'Super Admin',
-            'email' => env('ADMIN_EMAIL', 'admin@avarewase.com'),
-            'password' => env('ADMIN_PASSWORD', 'changeme'),
+            'name' => env('ADMIN_NAME', 'admin'),
+            'email' => env('ADMIN_EMAIL'),
+            'password' => env('ADMIN_PASSWORD', 'Misho$1234'),
             'role' => UserRole::SuperAdmin,
             'stage_id' => $adultStage->id,
             'is_active' => true,

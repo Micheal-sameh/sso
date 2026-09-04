@@ -175,11 +175,6 @@ class UserRepository implements UserRepositoryContract
             ->get(['id', 'name', 'email', 'membership_code', 'stage_id']);
     }
 
-    public function activeUserIds(): Collection
-    {
-        return User::where('is_active', true)->pluck('id');
-    }
-
     /**
      * Active users whose date of birth falls on today's month and day.
      */
@@ -200,27 +195,6 @@ class UserRepository implements UserRepositoryContract
             ->whereMonth('date_of_birth', $month)
             ->whereDay('date_of_birth', $day)
             ->orderBy('name')
-            ->get();
-    }
-
-    public function wantingMonthlyDonationReminderToday(): Collection
-    {
-        $today = now();
-        $day = min($today->day, $today->daysInMonth);
-
-        return User::query()
-            ->active()
-            ->where('wants_donation_reminders', true)
-            ->where('donation_reminder_day', $day)
-            ->get();
-    }
-
-    public function wantingDonationReminders(): Collection
-    {
-        return User::query()
-            ->active()
-            ->where('wants_donation_reminders', true)
-            ->whereNotNull('donation_reminder_day')
             ->get();
     }
 }

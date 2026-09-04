@@ -2,38 +2,24 @@
 
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
-use App\Http\Controllers\Account\NotificationController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\BirthdayController;
 use App\Http\Controllers\Admin\ClientController;
-use App\Http\Controllers\Admin\CmcPostController as AdminCmcPostController;
-use App\Http\Controllers\Admin\DonationController as AdminDonationController;
 use App\Http\Controllers\Admin\FamilyController;
-use App\Http\Controllers\Admin\FundController;
 use App\Http\Controllers\Admin\GroupController;
-use App\Http\Controllers\Admin\NotificationController as AdminNotificationController;
-use App\Http\Controllers\Admin\SpiritualNoteLabelController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\YoutubeVideoController as AdminYoutubeVideoController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
-use App\Http\Controllers\BibleController;
-use App\Http\Controllers\CmcPostController;
-use App\Http\Controllers\CopticCalendarController;
-use App\Http\Controllers\DonationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OAuth\AuthorizationController;
-use App\Http\Controllers\SpiritualNoteController;
-use App\Http\Controllers\VideoController;
-use App\Http\Controllers\YoutubeLiveStatusController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -71,56 +57,32 @@ Route::middleware('mfa.pending')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-    Route::prefix('account')->name('account.')->group(function () {
-        Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
-        Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
-        Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
-        Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
-    });
-
-    Route::middleware('mfa.required')->group(function () {
+    // Plain "user" accounts exist only to authenticate into other apps via
+    // OAuth (oauth/authorize sits in its own middleware group below) — they
+    // have no business in this app's own dashboard, so everything past this
+    // point requires an admin/secretary/superadmin role.
+    Route::middleware('dashboard')->group(function () {
         Route::prefix('account')->name('account.')->group(function () {
-            Route::get('/', [ProfileController::class, 'show'])->name('show');
-            Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
-            Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
-            Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
+            Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
+            Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
+            Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
+            Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
         });
 
-        Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
-        Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
-        Route::post('/notifications/read-many', [NotificationController::class, 'markManyRead'])->name('notifications.read-many');
-        Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])
-            ->middleware('can:view,notification')
-            ->name('notifications.read');
+        Route::middleware('mfa.required')->group(function () {
+            Route::prefix('account')->name('account.')->group(function () {
+                Route::get('/', [ProfileController::class, 'show'])->name('show');
+                Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
+                Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
+                Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
+            });
 
-        Route::get('/home', [HomeController::class, 'index'])->name('home.index');
-        Route::get('/coptic', [CopticCalendarController::class, 'show'])->name('coptic.show');
-        Route::get('/spiritual-notes', [SpiritualNoteController::class, 'show'])->name('spiritual-notes.show');
-        Route::post('/spiritual-notes', [SpiritualNoteController::class, 'update'])->name('spiritual-notes.update');
-        Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
-        Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
-        Route::get('/liturgy/bible', [BibleController::class, 'index'])->name('liturgy.bible.index');
-        Route::get('/liturgy/bible/chapter', [BibleController::class, 'chapter'])->name('liturgy.bible.chapter');
-        Route::get('/liturgy/agpeya', fn () => Inertia::render('Liturgy/Agpeya/Index'))->name('liturgy.agpeya.index');
-        Route::middleware('throttle:per-second')->get('/youtube/live-status', [YoutubeLiveStatusController::class, 'show'])->name('youtube.live-status');
+            Route::get('/home', [HomeController::class, 'index'])->name('home.index');
+            Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
+            Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
+            Route::get('/liturgy/agpeya', fn () => Inertia::render('Liturgy/Agpeya/Index'))->name('liturgy.agpeya.index');
 
-        Route::get('/cmc', [CmcPostController::class, 'index'])->name('cmc.index');
-        Route::get('/cmc/{cmcPost}', [CmcPostController::class, 'show'])->name('cmc.show');
-
-        Route::get('/videos', [VideoController::class, 'index'])->name('videos.index');
-
-        Route::prefix('donations')->name('donations.')->group(function () {
-            Route::get('/', [DonationController::class, 'create'])->name('create');
-            Route::post('/', [DonationController::class, 'store'])->name('store');
-            Route::get('/history', [DonationController::class, 'history'])->name('history');
-            Route::get('/return', [DonationController::class, 'returnPage'])->name('return');
-            Route::get('/sandbox/{donation:uuid}', [DonationController::class, 'sandbox'])->name('sandbox');
-            Route::post('/sandbox/{donation:uuid}/pay', [DonationController::class, 'sandboxPay'])->name('sandbox.pay');
-            Route::post('/reminders/enable', [DonationController::class, 'enableReminders'])->name('reminders.enable');
-            Route::post('/reminders/disable', [DonationController::class, 'disableReminders'])->name('reminders.disable');
-        });
-
-        Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
+            Route::middleware('superadmin')->prefix('admin')->name('admin.')->group(function () {
             Route::get('/birthdays', [BirthdayController::class, 'index'])->name('birthdays.index');
 
             Route::get('/users', [UserController::class, 'index'])->name('users.index');
@@ -174,48 +136,6 @@ Route::middleware('auth')->group(function () {
             Route::delete('/families/{family}/members/{user}', [FamilyController::class, 'removeMember'])->name('families.members.remove');
             Route::post('/families/require-data-update', [FamilyController::class, 'requireDataUpdateAll'])->name('families.require-data-update.all');
             Route::post('/families/{family}/require-data-update', [FamilyController::class, 'requireDataUpdateForFamily'])->name('families.require-data-update.one');
-
-            Route::get('/notifications', [AdminNotificationController::class, 'index'])->name('notifications.index');
-            Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
-            Route::delete('/notifications/{notification}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
-
-            Route::middleware('can:manage cmc posts')->prefix('cmc-posts')->name('cmc-posts.')->group(function () {
-                Route::get('/', [AdminCmcPostController::class, 'index'])->name('index');
-                Route::post('/', [AdminCmcPostController::class, 'store'])->name('store');
-                Route::put('/{cmcPost}', [AdminCmcPostController::class, 'update'])->name('update');
-                Route::delete('/{cmcPost}', [AdminCmcPostController::class, 'destroy'])->name('destroy');
-                Route::patch('/{cmcPost}/toggle-pin', [AdminCmcPostController::class, 'togglePin'])->name('toggle-pin');
-                Route::patch('/{cmcPost}/move-up', [AdminCmcPostController::class, 'moveUp'])->name('move-up');
-                Route::patch('/{cmcPost}/move-down', [AdminCmcPostController::class, 'moveDown'])->name('move-down');
-            });
-
-            Route::middleware('can:manage cmc posts')->prefix('videos')->name('videos.')->group(function () {
-                Route::get('/', [AdminYoutubeVideoController::class, 'index'])->name('index');
-                Route::post('/sync', [AdminYoutubeVideoController::class, 'sync'])->name('sync');
-                Route::patch('/{youtubeVideo}/toggle-pin', [AdminYoutubeVideoController::class, 'togglePin'])->name('toggle-pin');
-                Route::patch('/{youtubeVideo}/move-up', [AdminYoutubeVideoController::class, 'moveUp'])->name('move-up');
-                Route::patch('/{youtubeVideo}/move-down', [AdminYoutubeVideoController::class, 'moveDown'])->name('move-down');
-            });
-
-            Route::middleware('can:manage donations')->group(function () {
-                Route::prefix('donations')->name('donations.')->group(function () {
-                    Route::get('/', [AdminDonationController::class, 'index'])->name('index');
-                    Route::get('/export', [AdminDonationController::class, 'export'])->name('export');
-                });
-
-                Route::prefix('funds')->name('funds.')->group(function () {
-                    Route::get('/', [FundController::class, 'index'])->name('index');
-                    Route::post('/', [FundController::class, 'store'])->name('store');
-                    Route::put('/{fund}', [FundController::class, 'update'])->name('update');
-                    Route::delete('/{fund}', [FundController::class, 'destroy'])->name('destroy');
-                });
-            });
-
-            Route::middleware('can:manage spiritual notes')->prefix('spiritual-note-labels')->name('spiritual-note-labels.')->group(function () {
-                Route::get('/', [SpiritualNoteLabelController::class, 'index'])->name('index');
-                Route::post('/', [SpiritualNoteLabelController::class, 'store'])->name('store');
-                Route::put('/{spiritualNoteLabel}', [SpiritualNoteLabelController::class, 'update'])->name('update');
-                Route::delete('/{spiritualNoteLabel}', [SpiritualNoteLabelController::class, 'destroy'])->name('destroy');
             });
         });
     });

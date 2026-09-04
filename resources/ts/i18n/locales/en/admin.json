@@ -107,41 +107,6 @@
     },
     "confirmRevoke": "Revoke client {{name}}?"
   },
-  "cmcPosts": {
-    "title": "CMC Posts",
-    "editPost": "Edit Post",
-    "newPost": "New Post",
-    "text": "Text",
-    "linkOptional": "Link (optional)",
-    "pictureOptional": "Picture (optional)",
-    "keepCurrentPicture": "Leave empty to keep the current picture.",
-    "notifyEveryone": "This will be sent as a notification to every user.",
-    "publishPost": "Publish Post",
-    "publishedPosts": "Published Posts",
-    "viewAllPosts": "View All Posts",
-    "postedBy": "Posted {{date}} by {{name}}",
-    "posted": "Posted {{date}}",
-    "empty": "No posts yet.",
-    "confirmDelete": "Delete this post? It will disappear for everyone.",
-    "pin": "Pin",
-    "unpin": "Unpin",
-    "pinnedPosts": "Pinned Posts (order shown on Home)",
-    "moveUp": "Move up",
-    "moveDown": "Move down"
-  },
-  "videos": {
-    "title": "Videos",
-    "syncNow": "Sync Now",
-    "syncing": "Syncing...",
-    "pin": "Pin",
-    "unpin": "Unpin",
-    "pinned": "Pinned",
-    "pinnedVideos": "Pinned Videos (order shown on Home)",
-    "moveUp": "Move up",
-    "moveDown": "Move down",
-    "published": "Published {{date}}",
-    "empty": "No videos synced yet. Click \"Sync Now\" to pull the channel's uploads."
-  },
   "groups": {
     "title": "Groups",
     "addGroup": "Add Group",
@@ -206,66 +171,11 @@
       "age": "Age"
     }
   },
-  "spiritualNoteLabels": {
-    "title": "Spiritual Note Labels",
-    "addLabel": "Add Label",
-    "description": "These labels appear as a daily checklist to every user. Deactivating a label removes it from future days but keeps it in users' history.",
-    "empty": "No labels yet.",
-    "active": "Active",
-    "inactive": "Inactive",
-    "edit": "Edit",
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "saveChanges": "Save Changes",
-    "confirmDelete": "Delete the \"{{name}}\" label?",
-    "table": {
-      "name": "Name",
-      "sortOrder": "Sort Order",
-      "status": "Status"
-    },
-    "modal": {
-      "editTitle": "Edit {{name}}",
-      "createTitle": "Add Label",
-      "name": "Name",
-      "namePlaceholder": "e.g. Prayed",
-      "sortOrder": "Sort Order",
-      "activeHelp": "Active (shown to users)"
-    }
-  },
   "groupShow": {
     "backToGroups": "Back to Groups",
     "memberCount_one": "{{count}} member",
     "memberCount_other": "{{count}} members",
     "searchPlaceholder": "Search users by name, email, or membership code..."
-  },
-  "notifications": {
-    "title": "Notification Center",
-    "sendNotification": "Send Notification",
-    "message": "Message",
-    "pictureOptional": "Picture (optional)",
-    "sendTo": "Send To",
-    "stagesLabel": "Stages",
-    "groupsLabel": "Groups",
-    "usersLabel": "Users",
-    "send": "Send Notification",
-    "sentNotifications": "Sent Notifications",
-    "sentBy": "Sent {{date}} by {{name}}",
-    "sent": "Sent {{date}}",
-    "empty": "No notifications sent yet.",
-    "confirmDelete": "Delete this notification? Recipients will no longer see it.",
-    "noStages": "No stages",
-    "noGroups": "No groups",
-    "noUsers": "No users",
-    "filterByType": "Filter by type",
-    "types": {
-      "all": "All Types",
-      "manual": "Manual",
-      "cmc": "CMC Post",
-      "youtube": "YouTube Video",
-      "donation_reminder": "Donation Reminder",
-      "birthday": "Birthday",
-      "spiritual_note_reminder": "Spiritual Note Reminder"
-    }
   },
   "stages": {
     "title": "Stages",

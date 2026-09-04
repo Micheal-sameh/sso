@@ -12,20 +12,6 @@ export default function Index() {
             <div className="ava-card" dir={dir}>
                 <ul className="list-group list-group-flush">
                     <li className="list-group-item p-0">
-                        <Link href="/coptic" className="d-flex align-items-center gap-3 p-3 text-decoration-none text-reset">
-                            <i className="bi bi-calendar-event fs-5 text-ava-secondary" />
-                            <span className="flex-grow-1">{t('katamaros')}</span>
-                            <i className={`bi ${chevronIcon} text-ava-muted`} />
-                        </Link>
-                    </li>
-                    <li className="list-group-item p-0">
-                        <Link href="/liturgy/bible" className="d-flex align-items-center gap-3 p-3 text-decoration-none text-reset">
-                            <i className="bi bi-book fs-5 text-ava-secondary" />
-                            <span className="flex-grow-1">{t('bible')}</span>
-                            <i className={`bi ${chevronIcon} text-ava-muted`} />
-                        </Link>
-                    </li>
-                    <li className="list-group-item p-0">
                         <Link href="/liturgy/agpeya" className="d-flex align-items-center gap-3 p-3 text-decoration-none text-reset">
                             <i className="bi bi-clock-history fs-5 text-ava-secondary" />
                             <span className="flex-grow-1">{t('agpeya')}</span>

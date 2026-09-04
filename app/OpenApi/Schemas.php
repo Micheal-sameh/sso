@@ -29,7 +29,6 @@ use OpenApi\Attributes as OA;
         new OA\Property(property: 'mfa_recovery_codes_remaining', type: 'integer', nullable: true),
         new OA\Property(property: 'mfa_recovery_codes_total', type: 'integer'),
         new OA\Property(property: 'can_manage_admin_access', type: 'boolean'),
-        new OA\Property(property: 'can_manage_cmc_posts', type: 'boolean'),
         new OA\Property(
             property: 'stage',
             type: 'object',
@@ -52,67 +51,6 @@ use OpenApi\Attributes as OA;
                     new OA\Property(property: 'name', type: 'string'),
                 ],
             ),
-        ),
-    ],
-)]
-#[OA\Schema(
-    schema: 'CmcPost',
-    type: 'object',
-    properties: [
-        new OA\Property(property: 'id', type: 'integer'),
-        new OA\Property(property: 'text', type: 'string', nullable: true),
-        new OA\Property(property: 'image_url', type: 'string', nullable: true),
-        new OA\Property(property: 'url', type: 'string', nullable: true),
-        new OA\Property(property: 'url_title', type: 'string', nullable: true),
-        new OA\Property(property: 'url_description', type: 'string', nullable: true),
-        new OA\Property(property: 'url_image', type: 'string', nullable: true),
-        new OA\Property(
-            property: 'creator',
-            type: 'object',
-            nullable: true,
-            properties: [
-                new OA\Property(property: 'id', type: 'integer'),
-                new OA\Property(property: 'name', type: 'string'),
-            ],
-        ),
-        new OA\Property(property: 'created_at', type: 'string', example: '21 Aug 2026, 14:05'),
-        new OA\Property(property: 'is_pinned', type: 'boolean'),
-    ],
-)]
-#[OA\Schema(
-    schema: 'YoutubeVideo',
-    type: 'object',
-    properties: [
-        new OA\Property(property: 'id', type: 'integer'),
-        new OA\Property(property: 'video_id', type: 'string'),
-        new OA\Property(property: 'title', type: 'string'),
-        new OA\Property(property: 'thumbnail_url', type: 'string', nullable: true),
-        new OA\Property(property: 'published_at', type: 'string', nullable: true, example: '21 Aug 2026'),
-        new OA\Property(property: 'is_pinned', type: 'boolean'),
-        new OA\Property(property: 'watch_url', type: 'string'),
-    ],
-)]
-#[OA\Schema(
-    schema: 'Notification',
-    type: 'object',
-    properties: [
-        new OA\Property(property: 'id', type: 'integer'),
-        new OA\Property(property: 'message', type: 'string'),
-        new OA\Property(property: 'image_url', type: 'string', nullable: true),
-        new OA\Property(property: 'is_read', type: 'boolean'),
-        new OA\Property(property: 'created_at', type: 'string', example: '2 hours ago'),
-        new OA\Property(property: 'cmc_post_id', type: 'integer', nullable: true),
-    ],
-)]
-#[OA\Schema(
-    schema: 'CopticDate',
-    type: 'object',
-    properties: [
-        new OA\Property(property: 'date', type: 'string', nullable: true, example: '14 Mesori 1742'),
-        new OA\Property(
-            property: 'commemorations',
-            type: 'array',
-            items: new OA\Items(type: 'string'),
         ),
     ],
 )]

@@ -6,30 +6,20 @@ import enAuth from './locales/en/auth.json'
 import enHome from './locales/en/home.json'
 import enAccount from './locales/en/account.json'
 import enAdmin from './locales/en/admin.json'
-import enCmcPost from './locales/en/cmcPost.json'
-import enCoptic from './locales/en/coptic.json'
-import enDonations from './locales/en/donations.json'
 import enLiturgy from './locales/en/liturgy.json'
 import enMore from './locales/en/more.json'
 import enOauth from './locales/en/oauth.json'
 import enErrors from './locales/en/errors.json'
-import enVideos from './locales/en/videos.json'
-import enSpiritualNotes from './locales/en/spiritualNotes.json'
 
 import arCommon from './locales/ar/common.json'
 import arAuth from './locales/ar/auth.json'
 import arHome from './locales/ar/home.json'
 import arAccount from './locales/ar/account.json'
 import arAdmin from './locales/ar/admin.json'
-import arCmcPost from './locales/ar/cmcPost.json'
-import arCoptic from './locales/ar/coptic.json'
-import arDonations from './locales/ar/donations.json'
 import arLiturgy from './locales/ar/liturgy.json'
 import arMore from './locales/ar/more.json'
 import arOauth from './locales/ar/oauth.json'
 import arErrors from './locales/ar/errors.json'
-import arVideos from './locales/ar/videos.json'
-import arSpiritualNotes from './locales/ar/spiritualNotes.json'
 
 export const defaultNS = 'common'
 
@@ -37,7 +27,7 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'cmcPost', 'coptic', 'donations', 'liturgy', 'more', 'oauth', 'errors', 'videos', 'spiritualNotes'],
+    ns: ['common', 'auth', 'home', 'account', 'admin', 'liturgy', 'more', 'oauth', 'errors'],
     resources: {
         en: {
             common: enCommon,
@@ -45,15 +35,10 @@ i18n.use(initReactI18next).init({
             home: enHome,
             account: enAccount,
             admin: enAdmin,
-            cmcPost: enCmcPost,
-            coptic: enCoptic,
-            donations: enDonations,
             liturgy: enLiturgy,
             more: enMore,
             oauth: enOauth,
             errors: enErrors,
-            videos: enVideos,
-            spiritualNotes: enSpiritualNotes,
         },
         ar: {
             common: arCommon,
@@ -61,15 +46,10 @@ i18n.use(initReactI18next).init({
             home: arHome,
             account: arAccount,
             admin: arAdmin,
-            cmcPost: arCmcPost,
-            coptic: arCoptic,
-            donations: arDonations,
             liturgy: arLiturgy,
             more: arMore,
             oauth: arOauth,
             errors: arErrors,
-            videos: arVideos,
-            spiritualNotes: arSpiritualNotes,
         },
     },
     interpolation: {

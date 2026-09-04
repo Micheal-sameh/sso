@@ -86,15 +86,12 @@ export interface User {
     role: 'superadmin' | 'admin' | 'secretary' | 'user'
     is_active: boolean
     requires_data_update: boolean
-    wants_donation_reminders: boolean
     is_admin: boolean
     mfa_enabled: boolean
     mfa_enabled_at: string | null
     mfa_recovery_codes_remaining: number | null
     mfa_recovery_codes_total: number
     can_manage_admin_access: boolean
-    can_manage_cmc_posts: boolean
-    can_manage_donations: boolean
     stage: UserStageSummary
     email_verified_at: string | null
     created_at: string | null
@@ -162,152 +159,6 @@ export interface Token {
     user?: User
 }
 
-export interface NotificationCreator {
-    id: number
-    name: string
-}
-
-export type NotificationType = 'manual' | 'cmc' | 'youtube' | 'donation_reminder' | 'birthday' | 'spiritual_note_reminder'
-
-export interface AppNotification {
-    id: number
-    message: string
-    image_url: string | null
-    target_type: 'all' | 'stage' | 'specific' | 'group'
-    type: NotificationType
-    creator: NotificationCreator | null
-    stages?: Stage[]
-    groups?: Group[]
-    target_users?: { id: number; name: string }[]
-    created_at: string
-}
-
-export interface UserNotification {
-    id: number
-    message: string
-    image_url: string | null
-    is_read: boolean
-    created_at: string
-    cmc_post_id: number | null
-    type: NotificationType
-}
-
-export interface CmcPostCreator {
-    id: number
-    name: string
-}
-
-export interface CmcPost {
-    id: number
-    text: string | null
-    image_url: string | null
-    url: string | null
-    url_title: string | null
-    url_description: string | null
-    url_image: string | null
-    creator: CmcPostCreator | null
-    created_at: string
-    is_pinned: boolean
-}
-
-export interface YoutubeVideo {
-    id: number
-    video_id: string
-    title: string
-    thumbnail_url: string | null
-    published_at: string | null
-    is_pinned: boolean
-    watch_url: string
-}
-
-export interface CopticCommemoration {
-    name: string
-    url: string | null
-}
-
-export interface CopticReading {
-    title: string | null
-    reference: string | null
-    text: string | null
-}
-
-export interface CopticReadingSubSection {
-    title: string | null
-    readings: CopticReading[]
-}
-
-export interface CopticReadingSection {
-    title: string | null
-    subSections: CopticReadingSubSection[]
-}
-
-export interface CopticCalendar {
-    date: string | null
-    commemorations: CopticCommemoration[]
-    readings: CopticReadingSection[]
-}
-
-export interface BibleBook {
-    id: number
-    name: string
-    chapters: number
-}
-
-export interface BibleVerse {
-    verse: number
-    text: string | null
-}
-
-export interface Fund {
-    id: number
-    name: string
-    description: string | null
-    is_active: boolean
-    donations_count?: number
-}
-
-export interface SpiritualNoteLabel {
-    id: number
-    name: string
-    sort_order: number
-    is_active: boolean
-}
-
-export interface SpiritualNoteEntry {
-    label_id: number
-    label_name: string
-    is_checked: boolean
-    note: string | null
-}
-
-export interface SpiritualNoteDay {
-    date: string
-    entries: SpiritualNoteEntry[]
-}
-
-export type DonationGateway = 'nbe' | 'cib'
-export type DonationStatus = 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded'
-
-export interface Donation {
-    id: number
-    uuid: string
-    amount: number
-    currency: string
-    gateway: DonationGateway
-    status: DonationStatus
-    is_recurring: boolean
-    fund: { id: number; name: string } | null
-    donor: { id: number; name: string } | null
-    paid_at: string | null
-    created_at: string
-}
-
-export interface DonationTotals {
-    total_paid: number
-    this_month: number
-    this_year: number
-}
-
 export interface PaginatedData<T> {
     data: T[]
     current_page: number
@@ -328,8 +179,6 @@ export interface SharedProps {
     flash: FlashMessage
     csrf_token: string
     errors: Record<string, string>
-    unread_notifications_count: number
-    recent_notifications: UserNotification[]
     locale: string
     direction: 'ltr' | 'rtl'
 }
