@@ -1,6 +1,0 @@
-{
-  "home": {
-    "welcome": "Welcome, {{name}}",
-    "happyBirthday": "Happy Birthday, {{name}}!"
-  }
-}

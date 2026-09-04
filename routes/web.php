@@ -17,7 +17,6 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LocaleController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +27,7 @@ use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('home.index');
+        return redirect()->route('account.show');
     }
 
     return Inertia::render('Welcome');
@@ -77,7 +76,6 @@ Route::middleware('auth')->group(function () {
                 Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
             });
 
-            Route::get('/home', [HomeController::class, 'index'])->name('home.index');
             Route::get('/more', fn () => Inertia::render('More/Index'))->name('more.index');
             Route::get('/liturgy', fn () => Inertia::render('Liturgy/Index'))->name('liturgy.index');
             Route::get('/liturgy/agpeya', fn () => Inertia::render('Liturgy/Agpeya/Index'))->name('liturgy.agpeya.index');

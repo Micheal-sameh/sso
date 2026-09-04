@@ -3,7 +3,6 @@ import { initReactI18next } from 'react-i18next'
 
 import enCommon from './locales/en/common.json'
 import enAuth from './locales/en/auth.json'
-import enHome from './locales/en/home.json'
 import enAccount from './locales/en/account.json'
 import enAdmin from './locales/en/admin.json'
 import enLiturgy from './locales/en/liturgy.json'
@@ -13,7 +12,6 @@ import enErrors from './locales/en/errors.json'
 
 import arCommon from './locales/ar/common.json'
 import arAuth from './locales/ar/auth.json'
-import arHome from './locales/ar/home.json'
 import arAccount from './locales/ar/account.json'
 import arAdmin from './locales/ar/admin.json'
 import arLiturgy from './locales/ar/liturgy.json'
@@ -27,12 +25,11 @@ i18n.use(initReactI18next).init({
     lng: 'en',
     fallbackLng: 'en',
     defaultNS,
-    ns: ['common', 'auth', 'home', 'account', 'admin', 'liturgy', 'more', 'oauth', 'errors'],
+    ns: ['common', 'auth', 'account', 'admin', 'liturgy', 'more', 'oauth', 'errors'],
     resources: {
         en: {
             common: enCommon,
             auth: enAuth,
-            home: enHome,
             account: enAccount,
             admin: enAdmin,
             liturgy: enLiturgy,
@@ -43,7 +40,6 @@ i18n.use(initReactI18next).init({
         ar: {
             common: arCommon,
             auth: arAuth,
-            home: arHome,
             account: arAccount,
             admin: arAdmin,
             liturgy: arLiturgy,

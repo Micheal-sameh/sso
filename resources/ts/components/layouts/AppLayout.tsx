@@ -20,7 +20,6 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
     const [sidebarOpen, setSidebarOpen] = useState(false)
 
     const navLinks: SidebarLink[] = [
-        { href: '/home', label: t('nav.home'), icon: 'bi-house' },
         { href: '/account', label: t('nav.identity'), icon: 'bi-person' },
         { href: '/account/mfa', label: t('nav.security'), icon: 'bi-shield-lock' },
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },
@@ -28,7 +27,6 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
 
     const bottomNavLinks: SidebarLink[] = [
         { href: '/more', label: t('nav.more'), icon: 'bi-grid' },
-        { href: '/home', label: t('nav.home'), icon: 'bi-house' },
     ]
 
     const adminLink: SidebarLink = { href: '/admin/users', label: t('nav.manageSso'), icon: 'bi-speedometer2' }
