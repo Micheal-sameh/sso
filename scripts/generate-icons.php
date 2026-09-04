@@ -1,53 +1,59 @@
 <?php
 
-// One-off generator for PWA app icons, drawn programmatically with GD to
-// match the AvaLogo component (navy circle + blue plus) since there's no
-// source raster/vector asset to rasterize from.
+// Regenerates the PWA/app icons in public/icons from the source logo mark at
+// public/images/logo.png (a transparent PNG cropped to just the icon glyph).
+// Run with: php scripts/generate-icons.php
+$logoPath = __DIR__.'/../public/images/logo.png';
 $outDir = __DIR__.'/../public/icons';
 
-function drawLogo(int $size, bool $transparent, string $path): void
+$navy = [0x1B, 0x2A, 0x4A]; // brand navy, matches AvaLogo's default textColor / theme-color
+
+$icon = imagecreatefrompng($logoPath);
+imagealphablending($icon, true);
+imagesavealpha($icon, true);
+
+function resizedTransparent($src, int $size)
 {
-    $im = imagecreatetruecolor($size, $size);
-    imagesavealpha($im, true);
-    imagealphablending($im, true);
+    $out = imagecreatetruecolor($size, $size);
+    imagealphablending($out, false);
+    imagesavealpha($out, true);
+    $transparent = imagecolorallocatealpha($out, 0, 0, 0, 127);
+    imagefilledrectangle($out, 0, 0, $size, $size, $transparent);
+    imagealphablending($out, true);
+    imagecopyresampled($out, $src, 0, 0, 0, 0, $size, $size, imagesx($src), imagesy($src));
 
-    $navy = imagecolorallocate($im, 0x1B, 0x2A, 0x4A);
-    $blue = imagecolorallocate($im, 0x3B, 0x82, 0xF6);
-
-    if ($transparent) {
-        $bg = imagecolorallocatealpha($im, 0, 0, 0, 127);
-        imagefill($im, 0, 0, $bg);
-        $r = $size * 0.48;
-        imagefilledellipse($im, (int) ($size / 2), (int) ($size / 2), (int) ($r * 2), (int) ($r * 2), $navy);
-    } else {
-        imagefilledrectangle($im, 0, 0, $size, $size, $navy);
-    }
-
-    // Plus/cross bars, scaled from the AvaLogo SVG's 100x100 viewBox.
-    // Maskable (opaque) variant shrinks the cross inward so it survives the
-    // OS's circular/rounded-square safe-zone crop.
-    $scale = $size / 100;
-    $inset = $transparent ? 0 : $size * 0.08;
-
-    $vx1 = 44 * $scale + $inset * 0.4;
-    $vx2 = 56 * $scale - $inset * 0.4;
-    $vy1 = 20 * $scale + $inset;
-    $vy2 = 80 * $scale - $inset;
-    imagefilledrectangle($im, (int) $vx1, (int) $vy1, (int) $vx2, (int) $vy2, $blue);
-
-    $hx1 = 20 * $scale + $inset;
-    $hx2 = 80 * $scale - $inset;
-    $hy1 = 44 * $scale + $inset * 0.4;
-    $hy2 = 56 * $scale - $inset * 0.4;
-    imagefilledrectangle($im, (int) $hx1, (int) $hy1, (int) $hx2, (int) $hy2, $blue);
-
-    imagepng($im, $path);
-    imagedestroy($im);
+    return $out;
 }
 
-drawLogo(192, true, "$outDir/icon-192.png");
-drawLogo(512, true, "$outDir/icon-512.png");
-drawLogo(512, false, "$outDir/icon-maskable-512.png");
-drawLogo(180, false, "$outDir/apple-touch-icon.png");
+function onOpaqueBackground($src, int $size, array $bg, float $iconScale)
+{
+    $out = imagecreatetruecolor($size, $size);
+    $fill = imagecolorallocate($out, $bg[0], $bg[1], $bg[2]);
+    imagefilledrectangle($out, 0, 0, $size, $size, $fill);
 
-echo "Icons generated in $outDir\n";
+    $iconSize = (int) round($size * $iconScale);
+    $offset = (int) round(($size - $iconSize) / 2);
+    imagealphablending($out, true);
+    imagecopyresampled($out, $src, $offset, $offset, 0, 0, $iconSize, $iconSize, imagesx($src), imagesy($src));
+
+    return $out;
+}
+
+imagepng(resizedTransparent($icon, 192), "$outDir/icon-192.png");
+imagepng(resizedTransparent($icon, 512), "$outDir/icon-512.png");
+// maskable: opaque bg, icon shrunk to fit the OS's circular/rounded-square safe zone
+imagepng(onOpaqueBackground($icon, 512, $navy, 0.62), "$outDir/icon-maskable-512.png");
+// apple touch icon: iOS ignores alpha (renders black), so an opaque bg is required
+imagepng(onOpaqueBackground($icon, 180, $navy, 0.78), "$outDir/apple-touch-icon.png");
+
+// favicon.ico: single embedded 48x48 PNG, supported by all modern browsers/OSes
+$fav = resizedTransparent($icon, 48);
+ob_start();
+imagepng($fav);
+$pngData = ob_get_clean();
+
+$header = pack('vvv', 0, 1, 1); // reserved, type=1 (icon), count=1
+$entry = pack('CCCCvvVV', 48, 48, 0, 0, 1, 32, strlen($pngData), 6 + 16);
+file_put_contents(__DIR__.'/../public/favicon.ico', $header.$entry.$pngData);
+
+echo "Icons generated in $outDir and public/favicon.ico\n";

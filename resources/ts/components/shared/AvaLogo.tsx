@@ -8,11 +8,11 @@ export default function AvaLogo({ size = 40, showText = false, textColor = '#1B2
     return (
         <div className="d-flex align-items-center gap-2">
             <img
-                src="/images/logo.jpg"
+                src="/images/logo.png"
                 alt="Avarewase"
                 width={size}
                 height={size}
-                style={{ objectFit: 'contain', borderRadius: '50%' }}
+                style={{ objectFit: 'contain' }}
             />
             {showText && (
                 <span
