@@ -110,9 +110,11 @@
   "avatarUpload": {
     "linkExpired": "This link has expired or was already used. Ask an administrator for a new one.",
     "successMessage": "Profile picture updated for {{userName}}. You can close this page now.",
+    "removeSuccessMessage": "Profile picture removed for {{userName}}. You can close this page now.",
     "updateProfilePicture": "Update {{userName}}'s profile picture",
     "choosePhoto": "Choose a photo",
     "uploadPhoto": "Upload Photo",
+    "removePhoto": "Remove photo",
     "poweredBy": "Powered by Avarewase Auth"
   }
 }

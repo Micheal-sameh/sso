@@ -51,6 +51,25 @@ class AvatarUploadController extends BaseController
         return $this->inertia('AvatarUpload', [
             'status' => 'success',
             'userName' => $record->user->name,
+            'action' => 'uploaded',
+        ]);
+    }
+
+    public function destroy(string $token): Response
+    {
+        $record = $this->avatarUploadTokenRepository->findValid($token);
+
+        if ($record === null) {
+            return $this->inertia('AvatarUpload', ['status' => 'invalid']);
+        }
+
+        $this->userService->removeAvatar($record->user);
+        $this->avatarUploadTokenRepository->markUsed($record);
+
+        return $this->inertia('AvatarUpload', [
+            'status' => 'success',
+            'userName' => $record->user->name,
+            'action' => 'removed',
         ]);
     }
 }

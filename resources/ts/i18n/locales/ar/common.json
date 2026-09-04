@@ -110,9 +110,11 @@
   "avatarUpload": {
     "linkExpired": "انتهت صلاحية هذا الرابط أو تم استخدامه بالفعل. اطلب رابطًا جديدًا من أحد المسؤولين.",
     "successMessage": "تم تحديث صورة الملف الشخصي لـ {{userName}}. يمكنك إغلاق هذه الصفحة الآن.",
+    "removeSuccessMessage": "تم حذف صورة الملف الشخصي لـ {{userName}}. يمكنك إغلاق هذه الصفحة الآن.",
     "updateProfilePicture": "تحديث صورة الملف الشخصي لـ {{userName}}",
     "choosePhoto": "اختر صورة",
     "uploadPhoto": "رفع الصورة",
+    "removePhoto": "حذف الصورة",
     "poweredBy": "بدعم من Avarewase Auth"
   }
 }

@@ -95,6 +95,14 @@ class UserService
     }
 
     /**
+     * Remove a user's profile picture, if one is set.
+     */
+    public function removeAvatar(User $user): void
+    {
+        $user->clearMediaCollection('avatar');
+    }
+
+    /**
      * Issue a one-time, 3-minute upload link a user can visit, without logging
      * in, to upload their own profile picture. Intended for an admin to copy
      * and relay via another channel (e.g. WhatsApp). Generating a new link

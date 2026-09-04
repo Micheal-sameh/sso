@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ChangeEvent, FormEvent } from 'react'
-import { useForm } from '@inertiajs/react'
+import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
@@ -11,13 +11,14 @@ interface AvatarUploadProps {
     userName?: string
     avatar?: string | null
     token?: string
+    action?: 'uploaded' | 'removed'
 }
 
 interface AvatarUploadForm {
     avatar: File | null
 }
 
-export default function AvatarUpload({ status, userName, avatar, token }: AvatarUploadProps) {
+export default function AvatarUpload({ status, userName, avatar, token, action }: AvatarUploadProps) {
     const { t } = useTranslation('common')
     const [preview, setPreview] = useState<string | null>(avatar ?? null)
     const form = useForm<AvatarUploadForm>({ avatar: null })
@@ -36,6 +37,10 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
     const submit = (e: FormEvent) => {
         e.preventDefault()
         form.post(`/avatar-upload/${token}`, { forceFormData: true })
+    }
+
+    const removePhoto = () => {
+        router.delete(`/avatar-upload/${token}`)
     }
 
     if (status === 'invalid') {
@@ -60,7 +65,7 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
                 </div>
                 <p className="text-center text-ava-muted mb-0">
                     <i className="bi bi-check-circle text-success me-1" />
-                    {t('avatarUpload.successMessage', { userName })}
+                    {t(action === 'removed' ? 'avatarUpload.removeSuccessMessage' : 'avatarUpload.successMessage', { userName })}
                 </p>
             </AuthLayout>
         )
@@ -106,6 +111,17 @@ export default function AvatarUpload({ status, userName, avatar, token }: Avatar
                     {t('avatarUpload.uploadPhoto')}
                 </button>
             </form>
+
+            {avatar && (
+                <button
+                    type="button"
+                    className="btn btn-link text-danger w-100 mt-2"
+                    onClick={removePhoto}
+                    disabled={form.processing}
+                >
+                    {t('avatarUpload.removePhoto')}
+                </button>
+            )}
 
             <p className="text-center text-ava-muted text-tiny mt-4 mb-0">
                 {t('avatarUpload.poweredBy')}

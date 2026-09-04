@@ -47,6 +47,7 @@ Route::post('/locale/{locale}', [LocaleController::class, 'update'])->name('loca
 
 Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
 Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
+Route::delete('/avatar-upload/{token}', [AvatarUploadController::class, 'destroy'])->name('avatar-upload.destroy');
 
 Route::middleware('mfa.pending')->group(function () {
     Route::get('/mfa', [MfaController::class, 'showMfa'])->name('mfa.show');
