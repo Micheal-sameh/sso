@@ -5,17 +5,12 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_APP_NAME: ${APP_NAME}
-        VITE_REVERB_APP_KEY: ${VITE_REVERB_APP_KEY}
-        VITE_REVERB_HOST: ${VITE_REVERB_HOST}
-        VITE_REVERB_PORT: ${VITE_REVERB_PORT}
-        VITE_REVERB_SCHEME: ${VITE_REVERB_SCHEME}
     image: avarewase-auth:latest
     restart: unless-stopped
     env_file:
       - .env
     ports:
       - "127.0.0.1:6500:9000"
-      - "127.0.0.1:6501:8080"
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
