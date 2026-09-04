@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Contracts\AuthorizationViewResponse;
 use Laravel\Passport\Http\Controllers\AccessTokenController;
@@ -43,6 +44,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // nginx/Cloudflare terminate TLS and proxy plain HTTP to this app,
+        // so without this, route()/url()/asset() generate http:// links
+        // that the browser blocks as mixed content on the https:// page.
+        if ($this->app->isProduction()) {
+            URL::forceScheme('https');
+        }
+
         Model::preventLazyLoading(! app()->isProduction());
 
         // 30 requests/second per authenticated user, falling back to per-IP
