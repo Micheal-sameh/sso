@@ -299,7 +299,6 @@
     "confirmActivateUser": "Are you sure you want to activate {{name}}?",
     "confirmDeactivateUser": "Are you sure you want to deactivate {{name}}?",
     "resetLinkWhatsAppMessage": "Hi {{name}}, use this link to reset your Avarewase password: {{link}}",
-    "resetLinkRequiresEmail": "This user has no email address on file, so a password reset link cannot be generated.",
     "avatarLinkWhatsAppMessage": "Hi {{name}}, use this link to update your Avarewase profile picture: {{link}}",
     "ageYears": "({{age}} yrs)"
   }

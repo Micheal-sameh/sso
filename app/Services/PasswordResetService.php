@@ -6,6 +6,7 @@ use App\Exceptions\Auth\OAuthClientException;
 use App\Exceptions\Auth\PasswordResetException;
 use App\Exceptions\Auth\UserNotFoundException;
 use App\Models\User;
+use App\Repositories\Contracts\PasswordResetLinkTokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
@@ -16,6 +17,7 @@ class PasswordResetService
     public function __construct(
         protected UserRepositoryContract $userRepository,
         protected ClientRepository $clientRepository,
+        protected PasswordResetLinkTokenRepositoryContract $passwordResetLinkTokenRepository,
     ) {}
 
     /**
@@ -48,18 +50,33 @@ class PasswordResetService
     }
 
     /**
-     * Issue a reset token for the given user and build the reset URL, without
-     * emailing it, for the admin to relay via another channel (e.g. WhatsApp).
+     * Issue a one-time reset link for the given user, without emailing it, for
+     * the admin to relay via another channel (e.g. WhatsApp). Unlike
+     * sendResetLink(), this isn't keyed by email, so it works for users who
+     * have none on file.
      */
     public function generateResetLink(User $user): string
     {
-        if ($user->email === null) {
-            throw new PasswordResetException(__('messages.password_reset_requires_email'));
+        $token = $this->passwordResetLinkTokenRepository->create($user);
+
+        return route('password.reset.link', ['token' => $token->token]);
+    }
+
+    /**
+     * Complete a password reset using a token issued via generateResetLink().
+     *
+     * @throws PasswordResetException
+     */
+    public function resetViaLink(string $token, string $password): void
+    {
+        $record = $this->passwordResetLinkTokenRepository->findValid($token);
+
+        if ($record === null) {
+            throw new PasswordResetException(__('messages.reset_link_invalid'));
         }
 
-        $token = Password::broker()->createToken($user);
-
-        return route('password.reset', ['token' => $token]).'?email='.urlencode($user->email);
+        $record->user->forceFill(['password' => $password])->save();
+        $this->passwordResetLinkTokenRepository->markUsed($record);
     }
 
     /**

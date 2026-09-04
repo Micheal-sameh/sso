@@ -6,6 +6,7 @@ use App\Repositories\Contracts\AvatarUploadTokenRepositoryContract;
 use App\Repositories\Contracts\ClientMetaRepositoryContract;
 use App\Repositories\Contracts\FamilyRepositoryContract;
 use App\Repositories\Contracts\GroupRepositoryContract;
+use App\Repositories\Contracts\PasswordResetLinkTokenRepositoryContract;
 use App\Repositories\Contracts\StageRepositoryContract;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
@@ -13,6 +14,7 @@ use App\Repositories\Eloquent\AvatarUploadTokenRepository;
 use App\Repositories\Eloquent\ClientMetaRepository;
 use App\Repositories\Eloquent\FamilyRepository;
 use App\Repositories\Eloquent\GroupRepository;
+use App\Repositories\Eloquent\PasswordResetLinkTokenRepository;
 use App\Repositories\Eloquent\StageRepository;
 use App\Repositories\Eloquent\TokenRepository;
 use App\Repositories\Eloquent\UserRepository;
@@ -27,6 +29,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(TokenRepositoryContract::class, TokenRepository::class);
         $this->app->bind(StageRepositoryContract::class, StageRepository::class);
         $this->app->bind(AvatarUploadTokenRepositoryContract::class, AvatarUploadTokenRepository::class);
+        $this->app->bind(PasswordResetLinkTokenRepositoryContract::class, PasswordResetLinkTokenRepository::class);
         $this->app->bind(GroupRepositoryContract::class, GroupRepository::class);
         $this->app->bind(FamilyRepositoryContract::class, FamilyRepository::class);
     }

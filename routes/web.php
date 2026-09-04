@@ -49,6 +49,9 @@ Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->n
 Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
 Route::delete('/avatar-upload/{token}', [AvatarUploadController::class, 'destroy'])->name('avatar-upload.destroy');
 
+Route::get('/reset-password/link/{token}', [ResetPasswordController::class, 'showLink'])->name('password.reset.link');
+Route::post('/reset-password/link/{token}', [ResetPasswordController::class, 'resetLink'])->name('password.reset.link.update');
+
 Route::middleware('mfa.pending')->group(function () {
     Route::get('/mfa', [MfaController::class, 'showMfa'])->name('mfa.show');
     Route::post('/mfa', [MfaController::class, 'verify'])->name('mfa.verify');

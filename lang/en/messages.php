@@ -35,7 +35,7 @@ return [
     'password_updated' => 'Password updated.',
     'password_reset_success' => 'Your password has been reset. Please sign in.',
     'password_reset_email_sent' => 'Password reset email sent.',
-    'password_reset_requires_email' => 'This user has no email address on file, so a password reset link cannot be generated.',
+    'reset_link_invalid' => 'This reset link has expired or was already used. Ask an administrator for a new one.',
 
     // Users / roles
     'user_not_found' => 'No matching user found.',
