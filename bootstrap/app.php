@@ -36,6 +36,16 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // nginx (and Cloudflare in front of it) terminates TLS and proxies
+        // plain HTTP to this app on localhost, so Laravel must trust the
+        // X-Forwarded-* headers or it thinks every request is insecure —
+        // generating http:// URLs (route()/url()/Ziggy) that the browser
+        // then blocks as mixed content on an https:// page.
+        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR
+            | Request::HEADER_X_FORWARDED_HOST
+            | Request::HEADER_X_FORWARDED_PORT
+            | Request::HEADER_X_FORWARDED_PROTO);
+
         $middleware->append(HideServerFingerprint::class);
 
         $middleware->web(append: [
