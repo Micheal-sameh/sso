@@ -1,8 +1,12 @@
-import { useForm } from '@inertiajs/react'
+import { useForm, usePage } from '@inertiajs/react'
+import { useRef } from 'react'
 import type { FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
+import Turnstile from '@/components/shared/Turnstile'
+import type { TurnstileHandle } from '@/components/shared/Turnstile'
+import type { SharedProps } from '@/types'
 
 interface ResetPasswordProps {
     token: string
@@ -14,20 +18,32 @@ interface ResetPasswordForm {
     email: string
     password: string
     password_confirmation: string
+    'cf-turnstile-response': string
 }
 
 export default function ResetPassword({ token, email }: ResetPasswordProps) {
     const { t } = useTranslation('auth')
+    const { turnstile_site_key: turnstileSiteKey } = usePage<SharedProps>().props
+    const turnstileRef = useRef<TurnstileHandle>(null)
     const form = useForm<ResetPasswordForm>({
         token,
         email,
         password: '',
         password_confirmation: '',
+        'cf-turnstile-response': '',
     })
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
-        form.post('/reset-password')
+        form.post('/reset-password', {
+            onFinish: () => {
+                // A Turnstile token is single-use: the server already consumed
+                // it on this attempt (even one that failed for another reason,
+                // like an expired reset link), so a retry needs a fresh one.
+                turnstileRef.current?.reset()
+                form.setData('cf-turnstile-response', '')
+            },
+        })
     }
 
     return (
@@ -74,7 +90,25 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
+                {turnstileSiteKey && (
+                    <div className="mb-3">
+                        <Turnstile
+                            ref={turnstileRef}
+                            siteKey={turnstileSiteKey}
+                            onVerify={(token) => form.setData('cf-turnstile-response', token)}
+                            onExpire={() => form.setData('cf-turnstile-response', '')}
+                        />
+                        {form.errors['cf-turnstile-response'] && (
+                            <div className="text-danger small mt-1">{form.errors['cf-turnstile-response']}</div>
+                        )}
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className="btn btn-primary w-100"
+                    disabled={form.processing || (!!turnstileSiteKey && !form.data['cf-turnstile-response'])}
+                >
                     {t('resetPassword.resetPassword')}
                 </button>
             </form>

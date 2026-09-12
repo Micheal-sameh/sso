@@ -180,6 +180,8 @@ return [
     |
     */
 
+    'captcha' => 'The human verification challenge failed. Please try again.',
+
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

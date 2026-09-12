@@ -180,6 +180,8 @@ return [
     |
     */
 
+    'captcha' => 'فشل التحقق من أنك لست روبوتًا. يرجى المحاولة مرة أخرى.',
+
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',

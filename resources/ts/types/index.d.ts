@@ -181,4 +181,5 @@ export interface SharedProps {
     errors: Record<string, string>
     locale: string
     direction: 'ltr' | 'rtl'
+    turnstile_site_key: string | null
 }

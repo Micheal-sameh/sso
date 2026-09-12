@@ -31,6 +31,7 @@ class HandleInertiaRequests extends Middleware
                 'message' => $request->session()->get('flash.message'),
             ],
             'csrf_token' => csrf_token(),
+            'turnstile_site_key' => config('services.turnstile.site_key'),
             'errors' => $request->session()->get('errors')
                 ? $request->session()->get('errors')->getBag('default')->getMessages()
                 : [],

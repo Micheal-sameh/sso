@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\Turnstile;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -17,6 +18,7 @@ class LoginRequest extends FormRequest
             'membership_code' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
             'remember' => ['sometimes', 'boolean'],
+            'cf-turnstile-response' => ['required', 'string', new Turnstile($this->ip())],
         ];
     }
 }

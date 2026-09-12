@@ -1,9 +1,12 @@
-import { useForm } from '@inertiajs/react'
-import { useState } from 'react'
+import { useForm, usePage } from '@inertiajs/react'
+import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
+import Turnstile from '@/components/shared/Turnstile'
+import type { TurnstileHandle } from '@/components/shared/Turnstile'
+import type { SharedProps } from '@/types'
 
 interface LoginProps {
     client?: { name: string; logo: string | null }
@@ -13,20 +16,32 @@ interface LoginForm {
     membership_code: string
     password: string
     remember: boolean
+    'cf-turnstile-response': string
 }
 
 export default function Login({ client }: LoginProps) {
     const { t } = useTranslation('auth')
+    const { turnstile_site_key: turnstileSiteKey } = usePage<SharedProps>().props
     const [showPassword, setShowPassword] = useState(false)
+    const turnstileRef = useRef<TurnstileHandle>(null)
     const form = useForm<LoginForm>({
         membership_code: '',
         password: '',
         remember: false,
+        'cf-turnstile-response': '',
     })
 
     const submit = (e: FormEvent) => {
         e.preventDefault()
-        form.post('/login')
+        form.post('/login', {
+            onFinish: () => {
+                // A Turnstile token is single-use: the server already consumed
+                // it on this attempt (even one that failed for another reason,
+                // like wrong credentials), so a retry needs a fresh one.
+                turnstileRef.current?.reset()
+                form.setData('cf-turnstile-response', '')
+            },
+        })
     }
 
     return (
@@ -91,7 +106,25 @@ export default function Login({ client }: LoginProps) {
                     <label className="form-check-label" htmlFor="remember">{t('login.rememberMe')}</label>
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
+                {turnstileSiteKey && (
+                    <div className="mb-3">
+                        <Turnstile
+                            ref={turnstileRef}
+                            siteKey={turnstileSiteKey}
+                            onVerify={(token) => form.setData('cf-turnstile-response', token)}
+                            onExpire={() => form.setData('cf-turnstile-response', '')}
+                        />
+                        {form.errors['cf-turnstile-response'] && (
+                            <div className="text-danger small mt-1">{form.errors['cf-turnstile-response']}</div>
+                        )}
+                    </div>
+                )}
+
+                <button
+                    type="submit"
+                    className="btn btn-primary w-100"
+                    disabled={form.processing || (!!turnstileSiteKey && !form.data['cf-turnstile-response'])}
+                >
                     {t('login.signIn')}
                 </button>
 
