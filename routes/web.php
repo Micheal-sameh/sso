@@ -64,14 +64,18 @@ Route::middleware('auth')->group(function () {
     // OAuth (oauth/authorize sits in its own middleware group below) — they
     // have no business in this app's own dashboard, so everything past this
     // point requires an admin/secretary/superadmin role.
-    Route::middleware('dashboard')->group(function () {
-        Route::prefix('account')->name('account.')->group(function () {
-            Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
-            Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
-            Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
-            Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
-        });
+    //
+    // MFA setup is the exception: when MFA is required, a plain user coming
+    // from another app's OAuth flow is sent here to enrol, so it must stay
+    // reachable without the dashboard role (and then send them back).
+    Route::prefix('account')->name('account.')->group(function () {
+        Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
+        Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
+        Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
+        Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
+    });
 
+    Route::middleware('dashboard')->group(function () {
         Route::middleware('mfa.required')->group(function () {
             Route::prefix('account')->name('account.')->group(function () {
                 Route::get('/', [ProfileController::class, 'show'])->name('show');

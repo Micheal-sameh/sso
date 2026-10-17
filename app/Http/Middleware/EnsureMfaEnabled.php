@@ -27,6 +27,12 @@ class EnsureMfaEnabled
             ], 403);
         }
 
+        // Remember where they were headed (e.g. an OAuth authorize request from
+        // another app) so they can be sent back once MFA is enabled.
+        if ($request->isMethod('GET')) {
+            $request->session()->put('url.intended', $request->fullUrl());
+        }
+
         return redirect()->route('account.mfa')
             ->with('flash', ['type' => 'warning', 'message' => 'You must enable two-factor authentication to continue.']);
     }

@@ -36,7 +36,7 @@ class MfaSettingsController extends BaseController
 
         session()->forget('mfa_setup_secret');
 
-        return $this->redirectRoute('account.mfa', __('messages.mfa_enabled'));
+        return $this->redirectIntended('account.mfa', __('messages.mfa_enabled'));
     }
 
     public function disable(MfaVerifyRequest $request): RedirectResponse
