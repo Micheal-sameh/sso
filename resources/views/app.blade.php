@@ -15,6 +15,7 @@
     <meta name="theme-color" content="#1B2A4A">
 
     {{-- iOS: Safari ignores the web manifest's own install/standalone hints --}}
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Avarewase">
