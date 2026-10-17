@@ -1,6 +1,7 @@
-import { Link } from '@inertiajs/react'
+import { Link, router, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AvaLogo from '@/components/shared/AvaLogo'
+import type { SharedProps } from '@/types'
 
 const FEATURE_KEYS = ['sso', 'mfa', 'directory', 'accessControl', 'recovery', 'integrations'] as const
 
@@ -15,14 +16,22 @@ const FEATURE_ICONS: Record<(typeof FEATURE_KEYS)[number], string> = {
 
 export default function Welcome() {
     const { t } = useTranslation('common')
+    const user = usePage<SharedProps>().props.auth.user
+    const signOut = () => router.post('/logout')
 
     return (
         <div className="welcome-page">
             <header className="welcome-header d-flex align-items-center justify-content-between px-4 py-3">
                 <AvaLogo size={36} />
-                <Link href="/login" className="btn btn-primary btn-sm">
-                    {t('welcome.signIn')}
-                </Link>
+                {user ? (
+                    <button type="button" className="btn btn-outline-primary btn-sm" onClick={signOut}>
+                        {t('welcome.signOut')}
+                    </button>
+                ) : (
+                    <Link href="/login" className="btn btn-primary btn-sm">
+                        {t('welcome.signIn')}
+                    </Link>
+                )}
             </header>
 
             <section className="welcome-hero text-center py-5 px-3">
@@ -31,10 +40,19 @@ export default function Welcome() {
                 <p className="text-ava-muted mx-auto mb-4 max-w-560">
                     {t('welcome.heroDescription')}
                 </p>
+                {user && (
+                    <p className="mx-auto mb-4 max-w-560">
+                        <strong>{t('welcome.signedInAs', { name: user.name })}</strong>
+                        <br />
+                        <span className="text-ava-muted">{t('welcome.signedInHint')}</span>
+                    </p>
+                )}
                 <div className="d-flex gap-2 justify-content-center flex-wrap">
-                    <Link href="/login" className="btn btn-primary">
-                        {t('welcome.signInToYourAccount')}
-                    </Link>
+                    {!user && (
+                        <Link href="/login" className="btn btn-primary">
+                            {t('welcome.signInToYourAccount')}
+                        </Link>
+                    )}
                     <a href="#features" className="btn btn-outline-primary">
                         {t('welcome.learnMore')}
                     </a>

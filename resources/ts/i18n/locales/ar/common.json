@@ -78,6 +78,9 @@
     "heroTitle": "هوية واحدة لكل تطبيقات Avarewase",
     "heroDescription": "Avarewase Auth هو مزود تسجيل الدخول المركزي لمؤسستك — حساب آمن واحد يتصل بكل التطبيقات التي تستخدمها، محمي بالتحقق بخطوتين ومُدار من لوحة تحكم واحدة.",
     "signInToYourAccount": "سجّل الدخول إلى حسابك",
+    "signedInAs": "تم تسجيل الدخول باسم {{name}}",
+    "signedInHint": "أنت مسجّل الدخول. ارجع إلى تطبيقك للمتابعة.",
+    "signOut": "تسجيل الخروج",
     "learnMore": "اعرف المزيد",
     "footer": "© {{year}} Avarewase Auth. جميع الحقوق محفوظة.",
     "features": {

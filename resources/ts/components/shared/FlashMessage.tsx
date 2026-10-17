@@ -20,7 +20,7 @@ export default function FlashMessage() {
         const timer = setTimeout(() => setVisible(false), 4000)
 
         return () => clearTimeout(timer)
-    }, [flash.message])
+    }, [flash])
 
     if (!flash.message || !visible) {
         return null

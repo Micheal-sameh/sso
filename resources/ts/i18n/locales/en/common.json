@@ -78,6 +78,9 @@
     "heroTitle": "One identity for every Avarewase app",
     "heroDescription": "Avarewase Auth is the central sign-on provider for your organization — a single secure account that connects to every app you use, protected by two-factor authentication and managed from one admin console.",
     "signInToYourAccount": "Sign In to Your Account",
+    "signedInAs": "Signed in as {{name}}",
+    "signedInHint": "You are signed in. Return to your app to continue.",
+    "signOut": "Sign Out",
     "learnMore": "Learn More",
     "footer": "© {{year}} Avarewase Auth. All rights reserved.",
     "features": {
