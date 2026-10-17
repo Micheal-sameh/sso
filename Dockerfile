@@ -9,7 +9,7 @@ ARG BASE_IMAGE=avarewase-auth-base:8.3
 FROM node:22-alpine AS frontend
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 COPY vite.config.ts tsconfig.json ./
 COPY resources ./resources
 

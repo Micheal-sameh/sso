@@ -1,8 +1,12 @@
 # syntax=docker/dockerfile:1
-# PHP base with all extensions compiled. Rebuild only when extensions change:
+# PHP base with all extensions. Debian (not Alpine) so install-php-extensions
+# downloads prebuilt binaries instead of installing gcc and compiling.
+# Rebuild only when extensions change:
 #   docker build -f Dockerfile.base -t avarewase-auth-base:8.3 .
-FROM php:8.3-fpm-alpine
+FROM php:8.3-fpm
 
 COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
-RUN apk add --no-cache supervisor unzip \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends supervisor unzip \
+    && rm -rf /var/lib/apt/lists/* \
     && install-php-extensions pdo_mysql mbstring bcmath zip intl gd exif pcntl opcache redis
