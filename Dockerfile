@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# Prebuilt PHP+extensions image (see Dockerfile.base)
+ARG BASE_IMAGE=avarewase-auth-base:8.3
+
 ########################################
 # 1) Build frontend assets (Vite/React)
 ########################################
@@ -35,42 +38,7 @@ RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 # 3) Runtime image: php-fpm + the Laravel scheduler, managed by supervisor
 #    (nginx/webserver and MySQL are expected to already run on the host)
 ########################################
-FROM php:8.3-fpm-alpine AS runtime
-
-RUN apk add --no-cache \
-        bash \
-        curl \
-        git \
-        unzip \
-        icu-libs \
-        libzip \
-        oniguruma \
-        libpng \
-        libjpeg-turbo \
-        freetype \
-        supervisor \
-    && apk add --no-cache --virtual .build-deps \
-        $PHPIZE_DEPS \
-        icu-dev \
-        libzip-dev \
-        oniguruma-dev \
-        libpng-dev \
-        libjpeg-turbo-dev \
-        freetype-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" \
-        pdo_mysql \
-        mbstring \
-        bcmath \
-        zip \
-        intl \
-        gd \
-        exif \
-        pcntl \
-        opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del .build-deps
+FROM $BASE_IMAGE AS runtime
 
 COPY --from=vendor /usr/bin/composer /usr/bin/composer
 
