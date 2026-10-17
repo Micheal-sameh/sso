@@ -14,7 +14,14 @@ const FEATURE_ICONS: Record<(typeof FEATURE_KEYS)[number], string> = {
     integrations: 'bi-diagram-3',
 }
 
-export default function Welcome() {
+interface AccessibleApp {
+    id: string
+    name: string
+    logo: string | null
+    url: string
+}
+
+export default function Welcome({ apps = [] }: { apps?: AccessibleApp[] }) {
     const { t } = useTranslation('common')
     const user = usePage<SharedProps>().props.auth.user
     const signOut = () => router.post('/logout')
@@ -58,6 +65,35 @@ export default function Welcome() {
                     </a>
                 </div>
             </section>
+
+            {user && (
+                <section className="container pb-4">
+                    <h5 className="mb-3">{t('welcome.yourApps')}</h5>
+                    {apps.length === 0 ? (
+                        <p className="text-ava-muted">{t('welcome.noApps')}</p>
+                    ) : (
+                        <div className="row g-3">
+                            {apps.map((app) => (
+                                <div key={app.id} className="col-sm-6 col-lg-4">
+                                    <div className="ava-card p-3 h-100 d-flex align-items-center gap-3">
+                                        {app.logo ? (
+                                            <img src={app.logo} alt="" width={40} height={40} className="rounded" />
+                                        ) : (
+                                            <div className="icon-tile text-ava-secondary">
+                                                <i className="bi bi-grid" />
+                                            </div>
+                                        )}
+                                        <span className="fw-semibold flex-grow-1">{app.name}</span>
+                                        <a href={app.url} className="btn btn-primary btn-sm">
+                                            {t('welcome.openApp')}
+                                        </a>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </section>
+            )}
 
             <section id="features" className="container py-5">
                 <div className="row g-4">

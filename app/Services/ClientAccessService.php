@@ -5,9 +5,28 @@ namespace App\Services;
 use App\Enums\ClientAccessMode;
 use App\Models\ClientMeta;
 use App\Models\User;
+use Illuminate\Support\Collection;
 
 class ClientAccessService
 {
+    /**
+     * Active clients the user may authenticate with and that have a
+     * homepage_url to send them to.
+     *
+     * @return Collection<int, ClientMeta>
+     */
+    public function accessibleClients(User $user): Collection
+    {
+        return ClientMeta::query()
+            ->whereNotNull('homepage_url')
+            ->whereHas('oauthClient', fn ($query) => $query->where('revoked', false))
+            ->with(['stages', 'allowedUsers', 'groups', 'excludedUsers'])
+            ->orderBy('app_name')
+            ->get()
+            ->filter(fn (ClientMeta $meta): bool => $this->userCanAccess($user, $meta))
+            ->values();
+    }
+
     /**
      * Determine whether the given user is allowed to authenticate with the
      * OAuth client described by the given metadata.

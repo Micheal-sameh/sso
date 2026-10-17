@@ -81,6 +81,9 @@
     "signedInAs": "تم تسجيل الدخول باسم {{name}}",
     "signedInHint": "أنت مسجّل الدخول. ارجع إلى تطبيقك للمتابعة.",
     "signOut": "تسجيل الخروج",
+    "yourApps": "تطبيقاتك",
+    "noApps": "لم تتم مشاركة أي تطبيق مع حسابك بعد.",
+    "openApp": "فتح",
     "learnMore": "اعرف المزيد",
     "footer": "© {{year}} Avarewase Auth. جميع الحقوق محفوظة.",
     "features": {

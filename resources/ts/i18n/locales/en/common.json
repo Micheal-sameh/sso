@@ -81,6 +81,9 @@
     "signedInAs": "Signed in as {{name}}",
     "signedInHint": "You are signed in. Return to your app to continue.",
     "signOut": "Sign Out",
+    "yourApps": "Your apps",
+    "noApps": "No apps have been shared with your account yet.",
+    "openApp": "Open",
     "learnMore": "Learn More",
     "footer": "© {{year}} Avarewase Auth. All rights reserved.",
     "features": {

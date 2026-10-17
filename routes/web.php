@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\UserRole;
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
 use App\Http\Controllers\Account\PasswordController;
@@ -19,6 +18,7 @@ use App\Http\Controllers\Auth\MfaController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\AvatarUploadController;
 use App\Http\Controllers\LocaleController;
+use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\OAuth\ApproveAuthorizationController;
 use App\Http\Controllers\OAuth\AuthorizationController;
 use App\Http\Controllers\OAuth\DenyAuthorizationController;
@@ -26,13 +26,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    if (Auth::check() && Auth::user()->role !== UserRole::User) {
-        return redirect()->route('account.show');
-    }
-
-    return Inertia::render('Welcome');
-})->name('welcome');
+Route::get('/', WelcomeController::class)->name('welcome');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
