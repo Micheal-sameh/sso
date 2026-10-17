@@ -37,28 +37,12 @@ RUN composer dump-autoload --optimize --no-dev --classmap-authoritative
 ########################################
 FROM php:8.3-fpm-alpine AS runtime
 
-RUN apk add --no-cache \
-        bash \
-        curl \
-        git \
-        unzip \
-        icu-libs \
-        libzip \
-        oniguruma \
-        libpng \
-        libjpeg-turbo \
-        freetype \
-        supervisor \
-    && apk add --no-cache --virtual .build-deps \
-        $PHPIZE_DEPS \
-        icu-dev \
-        libzip-dev \
-        oniguruma-dev \
-        libpng-dev \
-        libjpeg-turbo-dev \
-        freetype-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j"$(nproc)" \
+# Handles build deps, parallel compile, runtime libs and cleanup in one step
+COPY --from=mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
+
+# Extensions first (slowest, rarely changes) so this layer stays cached
+RUN --mount=type=cache,target=/var/cache/apk \
+    install-php-extensions \
         pdo_mysql \
         mbstring \
         bcmath \
@@ -68,9 +52,15 @@ RUN apk add --no-cache \
         exif \
         pcntl \
         opcache \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del .build-deps
+        redis
+
+RUN --mount=type=cache,target=/var/cache/apk \
+    apk add \
+        bash \
+        curl \
+        git \
+        unzip \
+        supervisor
 
 COPY --from=vendor /usr/bin/composer /usr/bin/composer
 

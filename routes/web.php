@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\UserRole;
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
 use App\Http\Controllers\Account\PasswordController;
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
-    if (Auth::check()) {
+    if (Auth::check() && Auth::user()->role !== UserRole::User) {
         return redirect()->route('account.show');
     }
 
