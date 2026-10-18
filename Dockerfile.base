@@ -1,6 +1,12 @@
 # syntax=docker/dockerfile:1
-# PHP base with all extensions. Debian (not Alpine) so install-php-extensions
-# downloads prebuilt binaries instead of installing gcc and compiling.
+# PHP base with only the extensions the app uses. Debian (not Alpine) so
+# install-php-extensions downloads prebuilt binaries instead of installing gcc
+# and compiling.
+#   pdo_mysql  database          gd      media-library image driver
+#   exif       spatie/image      pcntl   queue worker signals
+#   opcache    performance       redis   phpredis (REDIS_CLIENT=phpredis)
+# Not installed: mbstring (already built into php:8.3-fpm), intl, zip, bcmath
+# (nothing requires them; composer extracts archives with unzip).
 # Rebuild only when extensions change:
 #   docker build -f Dockerfile.base -t avarewase-auth-base:8.3 .
 FROM php:8.3-fpm
@@ -9,4 +15,4 @@ COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends supervisor unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions pdo_mysql mbstring bcmath zip intl gd exif pcntl opcache redis
+    && install-php-extensions pdo_mysql gd exif pcntl opcache redis
