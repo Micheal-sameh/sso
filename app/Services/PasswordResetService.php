@@ -18,6 +18,7 @@ class PasswordResetService
         protected UserRepositoryContract $userRepository,
         protected ClientRepository $clientRepository,
         protected PasswordResetLinkTokenRepositoryContract $passwordResetLinkTokenRepository,
+        protected CredentialRevocationService $credentialRevocationService,
     ) {}
 
     /**
@@ -41,6 +42,7 @@ class PasswordResetService
             ['token' => $token, 'email' => $email, 'password' => $password, 'password_confirmation' => $password],
             function (User $user, string $password): void {
                 $user->forceFill(['password' => $password])->save();
+                $this->credentialRevocationService->revokeAll($user);
             }
         );
 
@@ -76,6 +78,7 @@ class PasswordResetService
         }
 
         $record->user->forceFill(['password' => $password])->save();
+        $this->credentialRevocationService->revokeAll($record->user);
         $this->passwordResetLinkTokenRepository->markUsed($record);
     }
 

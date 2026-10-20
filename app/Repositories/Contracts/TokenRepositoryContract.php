@@ -23,4 +23,9 @@ interface TokenRepositoryContract
      * Revoke all active tokens (and their refresh tokens) issued to a user for a given client.
      */
     public function revokeAllForUserAndClient(int $userId, string $clientId): void;
+
+    /**
+     * Revoke every active token (and refresh token) a user holds, for any client.
+     */
+    public function revokeAllForUser(int $userId, ?string $exceptTokenId = null): void;
 }

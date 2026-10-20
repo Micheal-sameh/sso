@@ -23,6 +23,7 @@ class UserService
         protected UserRepositoryContract $userRepository,
         protected AvatarUploadTokenRepositoryContract $avatarUploadTokenRepository,
         protected OAuthClientService $oauthClientService,
+        protected CredentialRevocationService $credentialRevocationService,
     ) {}
 
     /**
@@ -119,9 +120,11 @@ class UserService
      * Change the authenticated user's own password after current-password verification
      * (enforced by UpdateOwnPasswordRequest's `current_password` rule).
      */
-    public function updateOwnPassword(User $user, string $password): void
+    public function updateOwnPassword(User $user, string $password, ?string $keepSessionId = null, ?string $keepTokenId = null): void
     {
         $user->forceFill(['password' => $password])->save();
+
+        $this->credentialRevocationService->revokeAll($user, $keepSessionId, $keepTokenId);
     }
 
     /**

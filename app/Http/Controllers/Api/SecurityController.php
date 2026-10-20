@@ -165,7 +165,11 @@ class SecurityController extends BaseController
             throw new InvalidMfaCodeException;
         }
 
-        $this->userService->updateOwnPassword($request->user(), $request->string('password')->toString());
+        $this->userService->updateOwnPassword(
+            $request->user(),
+            $request->string('password')->toString(),
+            keepTokenId: $request->user()->token()?->id,
+        );
 
         return response()->json(['message' => __('messages.password_updated')]);
     }

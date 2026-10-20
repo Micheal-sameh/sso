@@ -75,4 +75,23 @@ class TokenRepository implements TokenRepositoryContract
 
         RefreshToken::whereIn('access_token_id', $tokenIds)->update(['revoked' => true]);
     }
+
+    /**
+     * Revoke every active token (and refresh token) a user holds, for any client.
+     */
+    public function revokeAllForUser(int $userId, ?string $exceptTokenId = null): void
+    {
+        $tokenIds = Token::where('user_id', $userId)
+            ->where('revoked', false)
+            ->when($exceptTokenId !== null, fn ($q) => $q->where('id', '!=', $exceptTokenId))
+            ->pluck('id');
+
+        if ($tokenIds->isEmpty()) {
+            return;
+        }
+
+        Token::whereIn('id', $tokenIds)->update(['revoked' => true]);
+
+        RefreshToken::whereIn('access_token_id', $tokenIds)->update(['revoked' => true]);
+    }
 }

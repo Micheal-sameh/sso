@@ -31,7 +31,7 @@ class PasswordController extends BaseController
             throw new InvalidMfaCodeException;
         }
 
-        $this->userService->updateOwnPassword($user, $request->string('password')->toString());
+        $this->userService->updateOwnPassword($user, $request->string('password')->toString(), $request->session()->getId());
 
         return $this->redirectRoute('account.show', __('messages.password_updated'), 'success');
     }
