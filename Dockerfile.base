@@ -7,6 +7,7 @@
 #   opcache    performance       redis   phpredis (REDIS_CLIENT=phpredis)
 # Not installed: mbstring (already built into php:8.3-fpm), intl, zip, bcmath
 # (nothing requires them; composer extracts archives with unzip).
+# www-data is uid/gid 82 (as on Alpine) so bind-mounted storage/ keeps its host ownership.
 # Rebuild only when extensions change:
 #   docker build -f Dockerfile.base -t avarewase-auth-base:8.3 .
 FROM php:8.3-fpm
@@ -15,4 +16,5 @@ COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-
 RUN apt-get update \
     && apt-get install -y --no-install-recommends supervisor unzip \
     && rm -rf /var/lib/apt/lists/* \
-    && install-php-extensions pdo_mysql gd exif pcntl opcache redis
+    && install-php-extensions pdo_mysql gd exif pcntl opcache redis \
+    && groupmod -g 82 www-data && usermod -u 82 www-data
