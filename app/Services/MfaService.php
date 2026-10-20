@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Exceptions\Auth\InvalidMfaCodeException;
 use App\Models\User;
 use App\Models\UserMfa;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
