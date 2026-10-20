@@ -65,6 +65,21 @@ class LoginAttemptLimiterTest extends TestCase
         $this->assertLockedFor(300);
     }
 
+    public function test_fifty_failures_lock_for_one_hour(): void
+    {
+        $this->failAttempts(49);
+        $this->travel(1)->hours(); // clear any short lock from the earlier tiers
+        $this->limiter->ensureNotLocked('AB-1');
+
+        $this->failAttempts(1); // 50th failure
+        $this->assertLockedFor(3600);
+
+        $this->travel(3601)->seconds();
+        $this->limiter->ensureNotLocked('AB-1');
+        $this->failAttempts(1); // 51st: still an hour
+        $this->assertLockedFor(3600);
+    }
+
     public function test_success_resets_the_counter(): void
     {
         $this->failAttempts(3);

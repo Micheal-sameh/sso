@@ -9,7 +9,9 @@ use Illuminate\Support\Str;
 /**
  * Progressive lockout for failed password logins, keyed on the membership
  * code: after 4 wrong attempts the account must wait 30s, after 5 more 2min,
- * and after every further 5 wrong attempts 5min. A successful login clears it.
+ * and after every further 5 wrong attempts 5min. From 50 failures on, every
+ * further wrong attempt locks the account for 1 hour. A successful login
+ * clears it.
  *
  * Blocked attempts are rejected without being checked or counted, so the
  * next tier only starts once the wait is over and the user fails again.
@@ -23,6 +25,11 @@ class LoginAttemptLimiter
 
     /** Lock lengths in seconds per tier; the last one repeats. */
     private const LOCK_SECONDS = [30, 120, 300];
+
+    /** From this many failures on, every further failure locks for LONG_LOCK_SECONDS. */
+    private const LONG_LOCK_AFTER = 50;
+
+    private const LONG_LOCK_SECONDS = 3600;
 
     /** Forget failures after a day of no activity. */
     private const COUNTER_TTL_SECONDS = 86400;
@@ -47,12 +54,14 @@ class LoginAttemptLimiter
         Cache::add($key, 0, self::COUNTER_TTL_SECONDS);
         $failures = (int) Cache::increment($key);
 
-        if ($failures < self::THRESHOLD || ($failures - self::THRESHOLD) % self::STEP !== 0) {
+        if ($failures >= self::LONG_LOCK_AFTER) {
+            $seconds = self::LONG_LOCK_SECONDS;
+        } elseif ($failures < self::THRESHOLD || ($failures - self::THRESHOLD) % self::STEP !== 0) {
             return;
+        } else {
+            $tier = intdiv($failures - self::THRESHOLD, self::STEP);
+            $seconds = self::LOCK_SECONDS[min($tier, count(self::LOCK_SECONDS) - 1)];
         }
-
-        $tier = intdiv($failures - self::THRESHOLD, self::STEP);
-        $seconds = self::LOCK_SECONDS[min($tier, count(self::LOCK_SECONDS) - 1)];
 
         Cache::put($this->lockKey($membershipCode), now()->timestamp + $seconds, $seconds);
     }
