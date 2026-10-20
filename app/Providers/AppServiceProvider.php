@@ -59,6 +59,36 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perSecond(30)->by($request->user()?->getAuthIdentifier() ?: $request->ip());
         });
 
+        // Brute-force protection: keyed on the targeted account as well as the
+        // client IP, so neither rotating IPs nor a shared NAT defeats it.
+        RateLimiter::for('login', function (Request $request) {
+            $code = Str::lower((string) $request->input('membership_code'));
+
+            return [
+                Limit::perMinute(5)->by('login:'.$code.'|'.$request->ip()),
+                Limit::perMinute(10)->by('login-account:'.$code),
+                Limit::perMinute(30)->by('login-ip:'.$request->ip()),
+            ];
+        });
+
+        RateLimiter::for('mfa', function (Request $request) {
+            $subject = match (true) {
+                $request->hasSession() && $request->session()->has('mfa_user_id') => 'u'.$request->session()->get('mfa_user_id'),
+                $request->user() !== null => 'a'.$request->user()->getAuthIdentifier(),
+                $request->filled('mfa_token') => 't'.sha1((string) $request->input('mfa_token')),
+                default => 'ip'.$request->ip(),
+            };
+
+            return [
+                Limit::perMinute(5)->by('mfa:'.$subject),
+                Limit::perMinute(20)->by('mfa-ip:'.$request->ip()),
+            ];
+        });
+
+        RateLimiter::for('sensitive', function (Request $request) {
+            return Limit::perMinute(5)->by('sensitive:'.$request->ip());
+        });
+
         Route::post('/oauth/token', [AccessTokenController::class, 'issueToken'])
             ->middleware('throttle:per-second')
             ->name('passport.token');

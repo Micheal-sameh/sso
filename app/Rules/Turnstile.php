@@ -21,7 +21,13 @@ class Turnstile implements ValidationRule
         $secret = config('services.turnstile.secret_key');
 
         if (! $secret) {
-            Log::warning('Turnstile secret key is not configured; skipping verification.');
+            Log::warning('Turnstile secret key is not configured.');
+
+            // Fail closed in production so a missing key can't silently
+            // disable the bot check; local/testing environments skip it.
+            if (app()->isProduction()) {
+                $fail('validation.captcha')->translate();
+            }
 
             return;
         }

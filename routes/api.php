@@ -18,12 +18,12 @@ Route::middleware('throttle:per-second')->get('/oauth/odoo/validate', [OdooToken
 
 // Server-to-server: registered OAuth clients authenticate with client_id/client_secret
 // (no bearer token) to request a password reset email be sent to one of their users.
-Route::post('/password/forgot', [PasswordResetController::class, 'forgot']);
+Route::post('/password/forgot', [PasswordResetController::class, 'forgot'])->middleware('throttle:sensitive');
 
 // First-party mobile app ("Avarewase Passport"): direct membership_code/password
 // login against this SSO's own API, no OAuth consent screen involved.
-Route::post('/auth/login', [AuthController::class, 'login']);
-Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa']);
+Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
+Route::post('/auth/mfa/verify', [AuthController::class, 'verifyMfa'])->middleware('throttle:mfa');
 
 Route::middleware('auth:api')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);

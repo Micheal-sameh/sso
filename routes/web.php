@@ -31,26 +31,26 @@ Route::get('/', WelcomeController::class)->name('welcome');
 
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
-    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:login');
 
     Route::get('/forgot-password', [ForgotPasswordController::class, 'show'])->name('password.request');
-    Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])->name('password.email');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'send'])->middleware('throttle:sensitive')->name('password.email');
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'show'])->name('password.reset');
-    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->middleware('throttle:sensitive')->name('password.update');
 });
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])->name('locale.update');
 
 Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
-Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->name('avatar-upload.update');
-Route::delete('/avatar-upload/{token}', [AvatarUploadController::class, 'destroy'])->name('avatar-upload.destroy');
+Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->middleware('throttle:sensitive')->name('avatar-upload.update');
+Route::delete('/avatar-upload/{token}', [AvatarUploadController::class, 'destroy'])->middleware('throttle:sensitive')->name('avatar-upload.destroy');
 
 Route::get('/reset-password/link/{token}', [ResetPasswordController::class, 'showLink'])->name('password.reset.link');
-Route::post('/reset-password/link/{token}', [ResetPasswordController::class, 'resetLink'])->name('password.reset.link.update');
+Route::post('/reset-password/link/{token}', [ResetPasswordController::class, 'resetLink'])->middleware('throttle:sensitive')->name('password.reset.link.update');
 
 Route::middleware('mfa.pending')->group(function () {
     Route::get('/mfa', [MfaController::class, 'showMfa'])->name('mfa.show');
-    Route::post('/mfa', [MfaController::class, 'verify'])->name('mfa.verify');
+    Route::post('/mfa', [MfaController::class, 'verify'])->middleware('throttle:mfa')->name('mfa.verify');
 });
 
 Route::middleware('auth')->group(function () {
@@ -67,15 +67,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('account')->name('account.')->group(function () {
         Route::get('/mfa', [MfaSettingsController::class, 'show'])->name('mfa');
         Route::post('/mfa/enable', [MfaSettingsController::class, 'enable'])->name('mfa.enable');
-        Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->name('mfa.confirm');
-        Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->name('mfa.disable');
+        Route::post('/mfa/confirm', [MfaSettingsController::class, 'confirmEnable'])->middleware('throttle:mfa')->name('mfa.confirm');
+        Route::post('/mfa/disable', [MfaSettingsController::class, 'disable'])->middleware('throttle:mfa')->name('mfa.disable');
     });
 
     Route::middleware('dashboard')->group(function () {
         Route::middleware('mfa.required')->group(function () {
             Route::prefix('account')->name('account.')->group(function () {
                 Route::get('/', [ProfileController::class, 'show'])->name('show');
-                Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
+                Route::post('/password', [PasswordController::class, 'update'])->middleware('throttle:mfa')->name('password.update');
                 Route::get('/my-apps', [MyAppsController::class, 'index'])->name('my-apps');
                 Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
                 Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
