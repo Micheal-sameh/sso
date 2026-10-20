@@ -49,7 +49,7 @@ class ClientMeta extends Model implements HasMedia
     {
         $this->addMediaCollection('logo')
             ->singleFile()
-            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']);
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/webp']);
     }
 
     public function oauthClient(): BelongsTo

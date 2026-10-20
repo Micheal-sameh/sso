@@ -33,7 +33,7 @@ class OAuthClientRequest extends FormRequest
                     $fail('The logout webhook URL must use https://.');
                 }
             }],
-            'app_logo' => ['nullable', 'image:allow_svg', 'max:2048'],
+            'app_logo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'is_internal' => ['boolean'],
             'is_public_client' => ['boolean'],
             'grant_type' => ['nullable', 'in:'.(config('passport.implicit_grant') ? 'authorization_code,implicit' : 'authorization_code')],
