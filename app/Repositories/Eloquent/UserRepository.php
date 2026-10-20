@@ -53,9 +53,9 @@ class UserRepository implements UserRepositoryContract
         return User::query()
             ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media', 'family.father', 'family.mother', 'family.children'])
             ->when($search, fn ($query) => $query->where(
-                fn ($q) => $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('membership_code', 'like', "%{$search}%")
+                fn ($q) => $q->where('name', 'like', $this->likeTerm($search))
+                    ->orWhere('email', 'like', $this->likeTerm($search))
+                    ->orWhere('membership_code', 'like', $this->likeTerm($search))
             ))
             ->when($role, fn ($query) => $query->where('role', $role))
             ->when($stageId, fn ($query) => $query->where('stage_id', $stageId))
@@ -77,9 +77,9 @@ class UserRepository implements UserRepositoryContract
                 AdminRole::Admin->value,
             ]))
             ->when($search, fn ($query) => $query->where(
-                fn ($q) => $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('membership_code', 'like', "%{$search}%")
+                fn ($q) => $q->where('name', 'like', $this->likeTerm($search))
+                    ->orWhere('email', 'like', $this->likeTerm($search))
+                    ->orWhere('membership_code', 'like', $this->likeTerm($search))
             ))
             ->orderByDesc('created_at')
             ->paginate($perPage)
@@ -196,5 +196,14 @@ class UserRepository implements UserRepositoryContract
             ->whereDay('date_of_birth', $day)
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * Turn a search box value into a LIKE pattern that matches it literally:
+     * %, _ and backslashes typed by the user are escaped instead of acting as wildcards.
+     */
+    private function likeTerm(string $search): string
+    {
+        return '%'.addcslashes($search, '%_\\').'%';
     }
 }
