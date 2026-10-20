@@ -73,7 +73,6 @@ class AuthController extends BaseController
             return response()->json([
                 'mfa_required' => true,
                 'mfa_token' => $this->authService->issueMfaChallenge($user),
-                'device_token' => $this->trustedDeviceService->issue($user, $request->header(TrustedDeviceService::HEADER)),
             ]);
         }
 
@@ -114,9 +113,16 @@ class AuthController extends BaseController
     {
         $user = $this->authService->resolveMfaChallenge($request->string('mfa_token')->toString());
 
+        $deviceToken = $request->header(TrustedDeviceService::HEADER);
+        $this->authService->ensureMfaAllowed($user, $deviceToken);
+
         if (! $this->mfaService->verify($user, $request->string('code')->toString())) {
+            $this->authService->recordMfaFailure($user, $deviceToken);
+
             throw new InvalidMfaCodeException;
         }
+
+        $this->authService->recordMfaSuccess($user, $deviceToken);
 
         return $this->tokenResponse($user, $request);
     }

@@ -7,7 +7,10 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\MfaVerifyRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
+use App\Services\AuthService;
 use App\Services\MfaService;
+use App\Services\TrustedDeviceService;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response;
@@ -22,6 +25,8 @@ class MfaController extends BaseController
 
     public function __construct(
         protected MfaService $mfaService,
+        protected AuthService $authService,
+        protected TrustedDeviceService $trustedDeviceService,
     ) {}
 
     public function showMfa(): Response
@@ -44,12 +49,20 @@ class MfaController extends BaseController
         }
 
         $user = User::findOrFail($session->get('mfa_user_id'));
+        $deviceToken = $request->cookie(TrustedDeviceService::COOKIE);
+
+        // Same progressive lockout as the password step.
+        $this->authService->ensureMfaAllowed($user, $deviceToken);
 
         if (! $this->mfaService->verify($user, $request->string('code')->toString())) {
             $session->increment('mfa_attempts');
+            $this->authService->recordMfaFailure($user, $deviceToken);
 
             throw new InvalidMfaCodeException;
         }
+
+        $this->authService->recordMfaSuccess($user, $deviceToken);
+        Cookie::queue($this->trustedDeviceService->cookie($user, $request));
 
         Auth::login($user, (bool) $session->get('mfa_remember', false));
 

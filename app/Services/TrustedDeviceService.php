@@ -4,8 +4,11 @@ namespace App\Services;
 
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Cookie as SymfonyCookie;
 
 /**
  * "Trusted device" tokens: issued after a successful password login and
@@ -35,6 +38,21 @@ class TrustedDeviceService
             'uid' => $user->id,
             'did' => Str::random(32),
         ]));
+    }
+
+    public function cookie(User $user, Request $request): SymfonyCookie
+    {
+        return Cookie::make(
+            self::COOKIE,
+            $this->issue($user, $request->cookie(self::COOKIE)),
+            self::LIFETIME_MINUTES,
+            '/',
+            null,
+            $request->isSecure(),
+            true,
+            false,
+            'lax',
+        );
     }
 
     /**

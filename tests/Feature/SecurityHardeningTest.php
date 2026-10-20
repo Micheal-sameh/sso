@@ -74,6 +74,32 @@ class SecurityHardeningTest extends TestCase
             ->assertStatus(429);
     }
 
+    public function test_mfa_failures_feed_the_progressive_lockout_and_survive_password_relogin(): void
+    {
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $this->artisan('passport:client', ['--personal' => true, '--name' => 'test', '--provider' => 'users']);
+        $user = $this->makeUser(['membership_code' => 'AV-2', 'password' => 'correct-horse-battery']);
+        $mfa = app(MfaService::class);
+        $secret = $mfa->generateSecret();
+        UserMfa::create(['user_id' => $user->id, 'secret' => $secret, 'is_enabled' => true, 'recovery_codes' => []]);
+
+        $login = fn () => $this->postJson('/api/auth/login', ['membership_code' => 'AV-2', 'password' => 'correct-horse-battery']);
+        $verify = fn (string $token, string $code) => $this->postJson('/api/auth/mfa/verify', ['mfa_token' => $token, 'code' => $code]);
+
+        $token = $login()->assertOk()->json('mfa_token');
+        $verify($token, '000000')->assertStatus(422);
+        $verify($token, '000001')->assertStatus(422);
+
+        // Re-entering the password must not wipe the MFA failure count.
+        $token = $login()->assertOk()->json('mfa_token');
+        $verify($token, '000002')->assertStatus(422);
+        $verify($token, '000003')->assertStatus(422);
+
+        // Four wrong codes: locked, even for the correct code and a fresh password login.
+        $verify($token, (new \PragmaRX\Google2FA\Google2FA)->getCurrentOtp($secret))->assertStatus(429);
+        $login()->assertStatus(429);
+    }
+
     public function test_totp_code_cannot_be_replayed(): void
     {
         $service = app(MfaService::class);

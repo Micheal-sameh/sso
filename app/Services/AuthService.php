@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\DTOs\LoginDTO;
 use App\Exceptions\Auth\AuthenticationException;
+use App\Exceptions\Auth\TooManyLoginAttemptsException;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
 use Illuminate\Contracts\Encryption\DecryptException;
@@ -52,8 +53,7 @@ class AuthService
 
         // A device already trusted for this account is counted separately from
         // strangers guessing the code, so they can't lock the real user out.
-        $deviceId = $user !== null ? $this->trustedDeviceService->deviceId($deviceToken, $user) : null;
-        $bucket = $deviceId !== null ? 'device:'.$deviceId : LoginAttemptLimiter::UNKNOWN_BUCKET;
+        $bucket = $user !== null ? $this->bucketFor($user, $deviceToken) : LoginAttemptLimiter::UNKNOWN_BUCKET;
 
         $this->loginAttemptLimiter->ensureNotLocked($membershipCode, $bucket);
 
@@ -74,9 +74,41 @@ class AuthService
             throw new AuthenticationException(__('messages.invalid_credentials'));
         }
 
-        $this->loginAttemptLimiter->clear($membershipCode, $bucket);
+        // With MFA enabled the login isn't finished yet: keep the failure count
+        // until the second factor succeeds, or someone who knows the password
+        // could reset it at will and guess MFA codes forever.
+        if (! $this->requiresMfa($user)) {
+            $this->loginAttemptLimiter->clear($membershipCode, $bucket);
+        }
 
         return $user;
+    }
+
+    /**
+     * The MFA step shares the progressive lockout with the password step.
+     *
+     * @throws TooManyLoginAttemptsException
+     */
+    public function ensureMfaAllowed(User $user, ?string $deviceToken = null): void
+    {
+        $this->loginAttemptLimiter->ensureNotLocked($user->membership_code, $this->bucketFor($user, $deviceToken));
+    }
+
+    public function recordMfaFailure(User $user, ?string $deviceToken = null): void
+    {
+        $this->loginAttemptLimiter->recordFailure($user->membership_code, $this->bucketFor($user, $deviceToken));
+    }
+
+    public function recordMfaSuccess(User $user, ?string $deviceToken = null): void
+    {
+        $this->loginAttemptLimiter->clear($user->membership_code, $this->bucketFor($user, $deviceToken));
+    }
+
+    private function bucketFor(User $user, ?string $deviceToken): string
+    {
+        $deviceId = $this->trustedDeviceService->deviceId($deviceToken, $user);
+
+        return $deviceId !== null ? 'device:'.$deviceId : LoginAttemptLimiter::UNKNOWN_BUCKET;
     }
 
     /**
