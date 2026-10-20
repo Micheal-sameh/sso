@@ -87,7 +87,6 @@ class PasswordResetService
      * the client via its id/secret rather than a user session or bearer token.
      *
      * @throws OAuthClientException
-     * @throws UserNotFoundException
      */
     public function sendResetLinkForClient(string $clientId, string $clientSecret, ?string $email, ?string $membershipCode): void
     {
@@ -101,8 +100,10 @@ class PasswordResetService
             ? $this->userRepository->findByEmail($email)
             : $this->userRepository->findByMembershipCode($membershipCode);
 
-        if ($user === null) {
-            throw new UserNotFoundException;
+        // Silently succeed for unknown users / users without an email so a
+        // client can't enumerate accounts through this endpoint.
+        if ($user === null || $user->email === null) {
+            return;
         }
 
         $this->sendResetLink($user->email);

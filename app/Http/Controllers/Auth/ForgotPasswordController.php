@@ -25,12 +25,10 @@ class ForgotPasswordController extends BaseController
 
     public function send(ForgotPasswordRequest $request): RedirectResponse
     {
-        $status = $this->passwordResetService->sendResetLink($request->string('email')->toString());
+        // Same answer whether or not the address exists (or is throttled), so
+        // this form can't be used to discover which emails have accounts.
+        $this->passwordResetService->sendResetLink($request->string('email')->toString());
 
-        return $this->redirectRoute(
-            'password.request',
-            __($status),
-            $status === Password::RESET_LINK_SENT ? 'success' : 'error',
-        );
+        return $this->redirectRoute('password.request', __('messages.password_reset_if_exists'));
     }
 }

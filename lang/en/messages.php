@@ -35,6 +35,7 @@ return [
     'password_updated' => 'Password updated.',
     'password_reset_success' => 'Your password has been reset. Please sign in.',
     'password_reset_email_sent' => 'Password reset email sent.',
+    'password_reset_if_exists' => 'If an account with that email exists, a password reset link has been sent.',
     'reset_link_invalid' => 'This reset link has expired or was already used. Ask an administrator for a new one.',
 
     // Users / roles
