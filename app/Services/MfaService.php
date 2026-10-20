@@ -110,6 +110,10 @@ class MfaService
 
     /**
      * Verify a TOTP or recovery code for the given user.
+     *
+     * A TOTP code is accepted once only (replays inside its validity window
+     * are rejected), and a recovery code is consumed under a row lock so two
+     * concurrent requests can't both redeem it.
      */
     public function verify(User $user, string $code): bool
     {
@@ -120,20 +124,26 @@ class MfaService
         }
 
         if ($this->google2fa->verifyKey($mfa->secret, $code)) {
-            return true;
+            // Cache::add is atomic: only the first use of this code succeeds.
+            // TTL covers the full +/- window (3 x 30s steps) with margin.
+            return Cache::add('mfa:used:'.$user->id.':'.$code, true, now()->addSeconds(120));
         }
 
-        $recoveryCodes = $mfa->recovery_codes ?? [];
+        return DB::transaction(function () use ($user, $code): bool {
+            $locked = UserMfa::where('user_id', $user->id)->lockForUpdate()->first();
+            $recoveryCodes = $locked?->recovery_codes ?? [];
 
-        if (in_array(strtoupper($code), $recoveryCodes, true)) {
-            $mfa->update([
-                'recovery_codes' => array_values(array_diff($recoveryCodes, [strtoupper($code)])),
-            ]);
+            foreach ($recoveryCodes as $i => $candidate) {
+                if (hash_equals((string) $candidate, strtoupper($code))) {
+                    unset($recoveryCodes[$i]);
+                    $locked->update(['recovery_codes' => array_values($recoveryCodes)]);
 
-            return true;
-        }
+                    return true;
+                }
+            }
 
-        return false;
+            return false;
+        });
     }
 
     /**
@@ -142,7 +152,19 @@ class MfaService
     public function generateRecoveryCodes(): array
     {
         return collect(range(1, self::RECOVERY_CODE_COUNT))
-            ->map(fn () => Str::upper(Str::random(4).'-'.Str::random(4)))
+            ->map(fn () => $this->randomChunk(4).'-'.$this->randomChunk(4))
             ->all();
+    }
+
+    private function randomChunk(int $length): string
+    {
+        $alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $chunk = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $chunk .= $alphabet[random_int(0, strlen($alphabet) - 1)];
+        }
+
+        return $chunk;
     }
 }
