@@ -45,4 +45,10 @@ return [
 
     'connection' => env('PASSPORT_CONNECTION'),
 
+    // The implicit grant returns tokens in the URL fragment (browser history,
+    // no PKCE). Off unless a legacy client such as Odoo's auth_oauth needs it.
+    'implicit_grant' => (bool) env('OAUTH_IMPLICIT_GRANT', false),
+
+    'access_token_ttl_minutes' => (int) env('OAUTH_ACCESS_TOKEN_TTL_MINUTES', 60),
+
 ];

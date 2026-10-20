@@ -93,7 +93,7 @@ class AppServiceProvider extends ServiceProvider
             ->middleware('throttle:per-second')
             ->name('passport.token');
 
-        Passport::tokensExpireIn(now()->addDay());
+        Passport::tokensExpireIn(now()->addMinutes(config('passport.access_token_ttl_minutes')));
         Passport::refreshTokensExpireIn(now()->addDays(30));
         Passport::personalAccessTokensExpireIn(now()->addMonths(6));
 
@@ -109,9 +109,11 @@ class AppServiceProvider extends ServiceProvider
             OAuthScope::Email->value,
         ]);
 
-        // Disabled by default; needed for legacy OAuth consumers (e.g. Odoo's
-        // built-in auth_oauth module) that only support the implicit grant.
-        Passport::enableImplicitGrant();
+        // Opt-in (OAUTH_IMPLICIT_GRANT=true); needed only for legacy OAuth
+        // consumers (e.g. Odoo's built-in auth_oauth module).
+        if (config('passport.implicit_grant')) {
+            Passport::enableImplicitGrant();
+        }
 
         // Passport's own Token::user() throws when eager-loaded (see
         // App\Models\Token for why); use our override everywhere.
