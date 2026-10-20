@@ -46,10 +46,16 @@ class OdooTokenValidationController extends BaseController
 
         abort_if($user === null, 401, 'Invalid or expired access token.');
 
+        // The token arrives in the query string, so keep it (and the response)
+        // out of caches and out of any Referer header. Also make sure the
+        // reverse proxy's access log drops the access_token parameter.
         return response()->json([
             'user_id' => $user->uuid,
             'email' => $user->email,
             'name' => $user->name,
+        ])->withHeaders([
+            'Cache-Control' => 'no-store, private',
+            'Referrer-Policy' => 'no-referrer',
         ]);
     }
 }
