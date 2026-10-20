@@ -47,7 +47,17 @@ class NotifyClientLogoutJob implements ShouldQueue
 
         $signature = hash_hmac('sha256', json_encode($payload), $this->logoutSecret);
 
-        $response = Http::timeout(5)
+        try {
+            $options = WebhookGuard::options($this->logoutUri);
+        } catch (InvalidArgumentException $e) {
+            // Unsafe target: retrying won't help, so fail the job outright.
+            $this->fail($e);
+
+            return;
+        }
+
+        $response = Http::withOptions($options)
+            ->timeout(5)
             ->withHeaders(['X-SSO-Signature' => 'sha256='.$signature])
             ->post($this->logoutUri, $payload);
 
