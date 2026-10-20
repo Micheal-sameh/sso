@@ -15,6 +15,7 @@ return [
 
     // Auth / credentials
     'invalid_credentials' => 'بيانات الدخول غير صحيحة.',
+    'login_locked' => 'محاولات فاشلة كثيرة. يرجى المحاولة مرة أخرى بعد :seconds ثانية.',
     'account_inactive' => 'الحساب غير مفعّل.',
     'dashboard_access_denied' => 'حسابك لا يملك صلاحية الوصول إلى هذه اللوحة.',
     'invalid_or_expired_verification_session' => 'جلسة التحقق غير صالحة أو منتهية الصلاحية.',

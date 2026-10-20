@@ -16,6 +16,7 @@ class AuthService
 {
     public function __construct(
         protected UserRepositoryContract $userRepository,
+        protected LoginAttemptLimiter $loginAttemptLimiter,
     ) {}
 
     /**
@@ -46,9 +47,14 @@ class AuthService
      */
     public function verifyCredentials(string $membershipCode, string $password): User
     {
+        $this->loginAttemptLimiter->ensureNotLocked($membershipCode);
+
         $user = $this->userRepository->findByMembershipCode($membershipCode);
 
+        // Unknown codes are counted too, so lockouts don't reveal which exist.
         if ($user === null) {
+            $this->loginAttemptLimiter->recordFailure($membershipCode);
+
             throw new AuthenticationException(__('messages.invalid_credentials'));
         }
 
@@ -57,8 +63,12 @@ class AuthService
         }
 
         if (! Hash::check($password, $user->password)) {
+            $this->loginAttemptLimiter->recordFailure($membershipCode);
+
             throw new AuthenticationException(__('messages.invalid_credentials'));
         }
+
+        $this->loginAttemptLimiter->clear($membershipCode);
 
         return $user;
     }

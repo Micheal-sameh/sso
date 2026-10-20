@@ -60,16 +60,10 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perSecond(30)->by($request->user()?->getAuthIdentifier() ?: $request->ip());
         });
 
-        // Brute-force protection: keyed on the targeted account as well as the
-        // client IP, so neither rotating IPs nor a shared NAT defeats it.
+        // Per-account brute-force protection is the progressive lockout in
+        // LoginAttemptLimiter; this is only a coarse per-IP flood guard.
         RateLimiter::for('login', function (Request $request) {
-            $code = Str::lower((string) $request->input('membership_code'));
-
-            return [
-                Limit::perMinute(5)->by('login:'.$code.'|'.$request->ip()),
-                Limit::perMinute(10)->by('login-account:'.$code),
-                Limit::perMinute(30)->by('login-ip:'.$request->ip()),
-            ];
+            return Limit::perMinute(30)->by('login-ip:'.$request->ip());
         });
 
         RateLimiter::for('mfa', function (Request $request) {

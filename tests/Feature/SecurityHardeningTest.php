@@ -38,9 +38,9 @@ class SecurityHardeningTest extends TestCase
         return User::factory()->create(['stage_id' => $stage->id] + $attrs);
     }
 
-    public function test_api_login_is_rate_limited_per_account(): void
+    public function test_api_login_locks_out_after_four_failures(): void
     {
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 4; $i++) {
             $this->postJson('/api/auth/login', ['membership_code' => 'NOPE', 'password' => 'wrongpass'])
                 ->assertStatus(401);
         }
