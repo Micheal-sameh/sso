@@ -211,7 +211,7 @@ Set in the production `.env` (see `.env.example`):
 - `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` (login fails closed in production without them).
 - `TRUSTED_PROXIES` = the address(es) of your reverse proxy if it is not on a private range.
 - `OAUTH_IMPLICIT_GRANT=true` **only** if a legacy client (e.g. Odoo `auth_oauth`) needs the implicit grant.
-- `CSP_MODE=report-only`, then `enforce` once the browser console shows no violations.
+- `CSP_MODE=enforce` is the default. If a page breaks, set `report-only` temporarily and check the browser console for the blocked source, then extend the policy in `app/Http/Middleware/SecurityHeaders.php`.
 
 Docker: the source tree is mounted read-only; only `storage/`, `bootstrap/cache/` and `public/build/` are writable.
 Create them on the host first (`mkdir -p storage bootstrap/cache public/build`) and run `php artisan storage:link` there once.

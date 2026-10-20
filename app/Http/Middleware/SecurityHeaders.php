@@ -9,9 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Baseline browser hardening headers plus a Content-Security-Policy.
  *
- * CSP_MODE=report-only (default) lets you watch the browser console for
- * violations without breaking anything; switch to 'enforce' once clean, or
- * 'off' to disable. Skipped outside production so the Vite dev server works.
+ * CSP_MODE=enforce (default) blocks violations; use 'report-only' to just
+ * log them in the browser console while debugging, or 'off' to disable. Skipped outside production so the Vite dev server works.
  */
 class SecurityHeaders
 {
@@ -35,7 +34,7 @@ class SecurityHeaders
 
     private function applyContentSecurityPolicy(Response $response): void
     {
-        $mode = config('app.csp_mode', 'report-only');
+        $mode = config('app.csp_mode', 'enforce');
 
         if ($mode === 'off' || ! app()->isProduction()) {
             return;

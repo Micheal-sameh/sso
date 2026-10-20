@@ -37,8 +37,9 @@ done
 echo "Database is up."
 
 if [ -z "$APP_KEY" ]; then
-    echo "No APP_KEY set, generating one..."
-    php artisan key:generate --force
+    # The source tree is mounted read-only, so the key can't be written to .env here.
+    echo "ERROR: APP_KEY is not set. Run 'php artisan key:generate' on the host and restart." >&2
+    exit 1
 fi
 
 if [ ! -f storage/oauth-private.key ] || [ ! -f storage/oauth-public.key ]; then
