@@ -29,7 +29,7 @@ class LoginController extends BaseController
         $user = $this->authService->attempt($dto);
 
         if ($this->authService->requiresMfa($user)) {
-            session(['mfa_pending' => true, 'mfa_user_id' => $user->id, 'mfa_remember' => $dto->remember]);
+            session(['mfa_pending' => true, 'mfa_user_id' => $user->id, 'mfa_remember' => $dto->remember, 'mfa_started_at' => now()->timestamp, 'mfa_attempts' => 0]);
 
             return $this->redirectRoute('mfa.show');
         }
