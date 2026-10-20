@@ -40,7 +40,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // X-Forwarded-* headers or it thinks every request is insecure —
         // generating http:// URLs (route()/url()/Ziggy) that the browser
         // then blocks as mixed content on an https:// page.
-        $middleware->trustProxies(at: '*', headers: Request::HEADER_X_FORWARDED_FOR
+        // Only honour X-Forwarded-* from the reverse proxy (private/loopback
+        // ranges by default; override with TRUSTED_PROXIES, comma-separated, or
+        // '*' if you must), so a client reaching the app directly can't spoof
+        // its IP and dodge the IP-based rate limits.
+        $middleware->trustProxies(at: in_array('*', $trusted = array_filter(array_map('trim', explode(',', (string) env('TRUSTED_PROXIES', '127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16')))), true) ? '*' : $trusted, headers: Request::HEADER_X_FORWARDED_FOR
             | Request::HEADER_X_FORWARDED_HOST
             | Request::HEADER_X_FORWARDED_PORT
             | Request::HEADER_X_FORWARDED_PROTO);
