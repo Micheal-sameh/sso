@@ -20,13 +20,24 @@ class OAuthClientRequest extends FormRequest
             // app schemes (e.g. "com.avarewase.passport://callback") used by
             // native OAuth clients (RFC 8252). Accept any syntactically valid
             // "scheme://..." URI instead, in addition to normal http(s) URLs.
-            'redirect' => ['required', 'string', 'max:2048', 'regex:/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/'],
-            'homepage_url' => ['nullable', 'url'],
+            'redirect' => ['required', 'string', 'max:2048', 'regex:/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\/\S+$/', function ($attribute, $value, $fail) {
+                $scheme = strtolower((string) parse_url($value, PHP_URL_SCHEME));
+                $host = parse_url($value, PHP_URL_HOST);
+
+                if (in_array($scheme, ['javascript', 'data', 'vbscript', 'file', 'blob', 'about'], true)) {
+                    $fail('This redirect URI scheme is not allowed.');
+                } elseif ($scheme === 'http' && ! in_array($host, ['localhost', '127.0.0.1'], true)) {
+                    $fail('Redirect URIs must use https:// (http is only allowed for localhost).');
+                } elseif (str_contains($value, '#')) {
+                    $fail('Redirect URIs must not contain a fragment.');
+                }
+            }],
+            'homepage_url' => ['nullable', 'url:http,https'],
             // https-only: this URL receives a signed webhook carrying a
             // user's OIDC sub over plain HTTP would let it be tampered
             // with in transit. localhost/127.0.0.1 are exempted so local
             // development against a client app running without TLS still works.
-            'logout_uri' => ['nullable', 'url', function ($attribute, $value, $fail) {
+            'logout_uri' => ['nullable', 'url:http,https', function ($attribute, $value, $fail) {
                 $host = parse_url($value, PHP_URL_HOST);
 
                 if (! str_starts_with($value, 'https://') && ! in_array($host, ['localhost', '127.0.0.1'], true)) {

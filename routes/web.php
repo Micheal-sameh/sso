@@ -113,13 +113,13 @@ Route::middleware('auth')->group(function () {
             Route::post('/users/{user}/groups/{group}', [UserController::class, 'attachGroup'])->name('users.groups.attach');
             Route::delete('/users/{user}/groups/{group}', [UserController::class, 'detachGroup'])->name('users.groups.detach');
 
-            Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
-            Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
-            Route::put('/clients/{client}', [ClientController::class, 'update'])->name('clients.update');
-            Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->name('clients.destroy');
+            Route::get('/clients', [ClientController::class, 'index'])->middleware('can:manage admin access')->name('clients.index');
+            Route::post('/clients', [ClientController::class, 'store'])->middleware('can:manage admin access')->name('clients.store');
+            Route::put('/clients/{client}', [ClientController::class, 'update'])->middleware('can:manage admin access')->name('clients.update');
+            Route::delete('/clients/{client}', [ClientController::class, 'destroy'])->middleware('can:manage admin access')->name('clients.destroy');
 
-            Route::get('/tokens', [TokenController::class, 'index'])->name('tokens.index');
-            Route::delete('/tokens/{token}', [TokenController::class, 'revoke'])->name('tokens.revoke');
+            Route::get('/tokens', [TokenController::class, 'index'])->middleware('can:manage admin access')->name('tokens.index');
+            Route::delete('/tokens/{token}', [TokenController::class, 'revoke'])->middleware('can:manage admin access')->name('tokens.revoke');
 
             Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
             Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
