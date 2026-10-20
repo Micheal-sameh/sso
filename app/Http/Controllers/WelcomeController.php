@@ -29,15 +29,7 @@ class WelcomeController extends BaseController
         }
 
         return Inertia::render('Welcome', [
-            'apps' => $user === null ? [] : $this->clientAccessService
-                ->accessibleClients($user)
-                ->map(fn ($meta) => [
-                    'id' => $meta->oauth_client_id,
-                    'name' => $meta->app_name,
-                    'logo' => $meta->app_logo_url,
-                    'url' => $meta->homepage_url,
-                ])
-                ->values(),
+            'apps' => $user === null ? [] : $this->clientAccessService->accessibleApps($user),
         ]);
     }
 }

@@ -28,6 +28,24 @@ class ClientAccessService
     }
 
     /**
+     * Accessible clients shaped for the "your apps" lists (welcome page and
+     * My Apps).
+     *
+     * @return Collection<int, array{id: string, name: string, logo: ?string, url: string}>
+     */
+    public function accessibleApps(User $user): Collection
+    {
+        return $this->accessibleClients($user)
+            ->map(fn (ClientMeta $meta): array => [
+                'id' => $meta->oauth_client_id,
+                'name' => $meta->app_name,
+                'logo' => $meta->app_logo_url,
+                'url' => $meta->homepage_url,
+            ])
+            ->values();
+    }
+
+    /**
      * Determine whether the given user is allowed to authenticate with the
      * OAuth client described by the given metadata.
      */

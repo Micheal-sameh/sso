@@ -22,6 +22,7 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
     const navLinks: SidebarLink[] = [
         { href: '/account', label: t('nav.identity'), icon: 'bi-person' },
         { href: '/account/mfa', label: t('nav.security'), icon: 'bi-shield-lock' },
+        { href: '/account/my-apps', label: t('nav.myApps'), icon: 'bi-box-arrow-up-right' },
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },
     ]
 

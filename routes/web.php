@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Account\ConnectedAppsController;
 use App\Http\Controllers\Account\MfaSettingsController;
+use App\Http\Controllers\Account\MyAppsController;
 use App\Http\Controllers\Account\PasswordController;
 use App\Http\Controllers\Account\ProfileController;
 use App\Http\Controllers\Admin\BirthdayController;
@@ -75,6 +76,7 @@ Route::middleware('auth')->group(function () {
             Route::prefix('account')->name('account.')->group(function () {
                 Route::get('/', [ProfileController::class, 'show'])->name('show');
                 Route::post('/password', [PasswordController::class, 'update'])->name('password.update');
+                Route::get('/my-apps', [MyAppsController::class, 'index'])->name('my-apps');
                 Route::get('/apps', [ConnectedAppsController::class, 'index'])->name('apps');
                 Route::delete('/apps/{tokenId}', [ConnectedAppsController::class, 'revoke'])->name('apps.revoke');
             });
