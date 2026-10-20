@@ -15,6 +15,7 @@ use App\Http\Middleware\EnsureMfaEnabled;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Http\Middleware\HideServerFingerprint;
 use App\Http\Middleware\MfaPending;
+use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\SuperAdmin;
 use Illuminate\Database\QueryException;
@@ -50,6 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
             | Request::HEADER_X_FORWARDED_PROTO);
 
         $middleware->append(HideServerFingerprint::class);
+        $middleware->append(SecurityHeaders::class);
 
         $middleware->web(append: [
             SetLocale::class,
