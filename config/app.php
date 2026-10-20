@@ -65,6 +65,9 @@ return [
     |
     */
 
+    // Content-Security-Policy mode: off | report-only | enforce
+    'csp_mode' => env('CSP_MODE', 'report-only'),
+
     'timezone' => 'Africa/cairo',
 
     /*
