@@ -169,6 +169,16 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
         }
     }
 
+    const unlockLogin = async () => {
+        if (
+            await confirm(t('users.confirmUnlockLogin', { name: viewedUser.name }), {
+                confirmLabel: t('users.unlockLogin'),
+            })
+        ) {
+            router.post(`/admin/users/${viewedUser.id}/unlock-login`, {}, { preserveScroll: true })
+        }
+    }
+
     const resetMfa = async () => {
         if (
             await confirm(t('users.confirmResetMfa', { name: viewedUser.name }), {
@@ -441,6 +451,21 @@ export default function Show({ viewedUser, tokens, specificClients, groups }: Sh
                             >
                                 <i className="bi bi-shield-x me-1" />
                                 {t('users.resetMfa')}
+                            </button>
+                        </div>
+                    </li>
+                    <li className="list-group-item d-flex flex-wrap align-items-center gap-3 p-3">
+                        <div className="icon-tile text-ava-primary flex-shrink-0">
+                            <i className="bi bi-unlock" />
+                        </div>
+                        <div className="min-w-0 flex-grow-1">
+                            <div className="fw-semibold">{t('users.unlockLogin')}</div>
+                            <div className="text-ava-muted text-tiny">{t('users.unlockLoginHelp')}</div>
+                        </div>
+                        <div className="d-flex flex-wrap gap-2">
+                            <button type="button" className="btn btn-outline-primary btn-sm text-nowrap" onClick={unlockLogin}>
+                                <i className="bi bi-unlock me-1" />
+                                {t('users.unlockLogin')}
                             </button>
                         </div>
                     </li>

@@ -14,6 +14,7 @@ use App\Models\Group;
 use App\Models\User;
 use App\Repositories\Contracts\TokenRepositoryContract;
 use App\Services\GroupService;
+use App\Services\LoginAttemptLimiter;
 use App\Services\MfaService;
 use App\Services\OAuthClientService;
 use App\Services\PasswordResetService;
@@ -36,6 +37,7 @@ class UserController extends BaseController
         protected PasswordResetService $passwordResetService,
         protected GroupService $groupService,
         protected MfaService $mfaService,
+        protected LoginAttemptLimiter $loginAttemptLimiter,
     ) {}
 
     public function index(Request $request): Response
@@ -192,6 +194,14 @@ class UserController extends BaseController
         $this->userService->removeAvatar($user);
 
         return $this->redirectBack(__('messages.avatar_removed'), 'success');
+    }
+
+    public function unlockLogin(User $user): RedirectResponse
+    {
+        $this->userService->assertCanManage($user);
+        $this->loginAttemptLimiter->clearAll($user->membership_code);
+
+        return $this->redirectBack(__('messages.login_unlocked', ['name' => $user->name]), 'success');
     }
 
     public function resetMfa(User $user): RedirectResponse

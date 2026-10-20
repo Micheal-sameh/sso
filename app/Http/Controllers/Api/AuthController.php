@@ -10,6 +10,7 @@ use App\Http\Requests\Api\MfaLoginVerifyRequest;
 use App\Models\User;
 use App\Services\AuthService;
 use App\Services\MfaService;
+use App\Services\TrustedDeviceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -20,6 +21,7 @@ class AuthController extends BaseController
     public function __construct(
         protected AuthService $authService,
         protected MfaService $mfaService,
+        protected TrustedDeviceService $trustedDeviceService,
     ) {}
 
     /**
@@ -64,16 +66,18 @@ class AuthController extends BaseController
         $user = $this->authService->verifyCredentials(
             $request->string('membership_code')->toString(),
             $request->string('password')->toString(),
+            $request->header(TrustedDeviceService::HEADER),
         );
 
         if ($this->authService->requiresMfa($user)) {
             return response()->json([
                 'mfa_required' => true,
                 'mfa_token' => $this->authService->issueMfaChallenge($user),
+                'device_token' => $this->trustedDeviceService->issue($user, $request->header(TrustedDeviceService::HEADER)),
             ]);
         }
 
-        return $this->tokenResponse($user);
+        return $this->tokenResponse($user, $request);
     }
 
     /**
@@ -114,7 +118,7 @@ class AuthController extends BaseController
             throw new InvalidMfaCodeException;
         }
 
-        return $this->tokenResponse($user);
+        return $this->tokenResponse($user, $request);
     }
 
     /**
@@ -137,13 +141,16 @@ class AuthController extends BaseController
         return response()->json(['message' => __('messages.logged_out')]);
     }
 
-    private function tokenResponse(User $user): JsonResponse
+    private function tokenResponse(User $user, Request $request): JsonResponse
     {
         $token = $user->createToken('mobile')->accessToken;
 
         return response()->json([
             'token' => $token,
             'token_type' => 'Bearer',
+            // Store securely and send back as the X-Device-Token header on
+            // later logins so wrong guesses from elsewhere can't lock this device out.
+            'device_token' => $this->trustedDeviceService->issue($user, $request->header(TrustedDeviceService::HEADER)),
             'user' => UserDTO::fromModel($user)->toArray(),
         ]);
     }

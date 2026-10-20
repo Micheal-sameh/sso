@@ -15,6 +15,7 @@ return [
 
     // Auth / credentials
     'invalid_credentials' => 'Invalid credentials.',
+    'login_unlocked' => 'Login attempts reset for :name. They can try again now.',
     'login_locked' => 'Too many failed attempts. Please try again in :seconds seconds.',
     'account_inactive' => 'Account is inactive.',
     'dashboard_access_denied' => 'Your account does not have access to this dashboard.',

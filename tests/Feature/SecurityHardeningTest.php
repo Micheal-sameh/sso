@@ -11,6 +11,7 @@ use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Tests\TestCase;
 
 class SecurityHardeningTest extends TestCase
@@ -46,6 +47,30 @@ class SecurityHardeningTest extends TestCase
         }
 
         $this->postJson('/api/auth/login', ['membership_code' => 'NOPE', 'password' => 'wrongpass'])
+            ->assertStatus(429);
+    }
+
+    public function test_strangers_cannot_lock_out_a_trusted_device(): void
+    {
+        $this->seed(RolesAndPermissionsSeeder::class);
+        $this->artisan('passport:client', ['--personal' => true, '--name' => 'test', '--provider' => 'users']);
+        $user = $this->makeUser(['membership_code' => 'AV-1', 'password' => 'correct-horse-battery']);
+        $deviceToken = app(\App\Services\TrustedDeviceService::class)->issue($user);
+
+        for ($i = 0; $i < 4; $i++) {
+            $this->postJson('/api/auth/login', ['membership_code' => 'AV-1', 'password' => 'wrong-guess-1'])->assertStatus(401);
+        }
+        // Strangers are now locked, even with the right password...
+        $this->postJson('/api/auth/login', ['membership_code' => 'AV-1', 'password' => 'correct-horse-battery'])->assertStatus(429);
+
+        // ...but the user's own device still gets in, and receives its token back.
+        $this->postJson('/api/auth/login', ['membership_code' => 'AV-1', 'password' => 'correct-horse-battery'], ['X-Device-Token' => $deviceToken])
+            ->assertOk()
+            ->assertJsonPath('device_token', $deviceToken);
+
+        // A token minted for someone else doesn't help.
+        $other = $this->makeUser();
+        $this->postJson('/api/auth/login', ['membership_code' => 'AV-1', 'password' => 'correct-horse-battery'], ['X-Device-Token' => app(\App\Services\TrustedDeviceService::class)->issue($other)])
             ->assertStatus(429);
     }
 

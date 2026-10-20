@@ -17,6 +17,7 @@ class AuthService
     public function __construct(
         protected UserRepositoryContract $userRepository,
         protected LoginAttemptLimiter $loginAttemptLimiter,
+        protected TrustedDeviceService $trustedDeviceService,
     ) {}
 
     /**
@@ -28,9 +29,9 @@ class AuthService
      *
      * @throws AuthenticationException
      */
-    public function attempt(LoginDTO $dto): User
+    public function attempt(LoginDTO $dto, ?string $deviceToken = null): User
     {
-        $user = $this->verifyCredentials($dto->membershipCode, $dto->password);
+        $user = $this->verifyCredentials($dto->membershipCode, $dto->password, $deviceToken);
 
         if (! $this->requiresMfa($user)) {
             Auth::login($user, $dto->remember);
@@ -45,15 +46,20 @@ class AuthService
      *
      * @throws AuthenticationException
      */
-    public function verifyCredentials(string $membershipCode, string $password): User
+    public function verifyCredentials(string $membershipCode, string $password, ?string $deviceToken = null): User
     {
-        $this->loginAttemptLimiter->ensureNotLocked($membershipCode);
-
         $user = $this->userRepository->findByMembershipCode($membershipCode);
+
+        // A device already trusted for this account is counted separately from
+        // strangers guessing the code, so they can't lock the real user out.
+        $deviceId = $user !== null ? $this->trustedDeviceService->deviceId($deviceToken, $user) : null;
+        $bucket = $deviceId !== null ? 'device:'.$deviceId : LoginAttemptLimiter::UNKNOWN_BUCKET;
+
+        $this->loginAttemptLimiter->ensureNotLocked($membershipCode, $bucket);
 
         // Unknown codes are counted too, so lockouts don't reveal which exist.
         if ($user === null) {
-            $this->loginAttemptLimiter->recordFailure($membershipCode);
+            $this->loginAttemptLimiter->recordFailure($membershipCode, $bucket);
 
             throw new AuthenticationException(__('messages.invalid_credentials'));
         }
@@ -63,12 +69,12 @@ class AuthService
         }
 
         if (! Hash::check($password, $user->password)) {
-            $this->loginAttemptLimiter->recordFailure($membershipCode);
+            $this->loginAttemptLimiter->recordFailure($membershipCode, $bucket);
 
             throw new AuthenticationException(__('messages.invalid_credentials'));
         }
 
-        $this->loginAttemptLimiter->clear($membershipCode);
+        $this->loginAttemptLimiter->clear($membershipCode, $bucket);
 
         return $user;
     }

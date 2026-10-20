@@ -104,4 +104,37 @@ class LoginAttemptLimiterTest extends TestCase
         $this->limiter->ensureNotLocked('OTHER');
         $this->addToAssertionCount(1);
     }
+
+    public function test_a_trusted_device_is_not_locked_by_strangers_failures(): void
+    {
+        $this->failAttempts(4); // strangers guess the code
+        $this->assertLockedFor(30);
+
+        // The real user's device has its own bucket and is unaffected.
+        $this->limiter->ensureNotLocked('AB-1', 'device:abc');
+        $this->addToAssertionCount(1);
+
+        // ...but its own failures still lock it.
+        for ($i = 0; $i < 4; $i++) {
+            $this->limiter->recordFailure('AB-1', 'device:abc');
+        }
+        $this->expectException(TooManyLoginAttemptsException::class);
+        $this->limiter->ensureNotLocked('AB-1', 'device:abc');
+    }
+
+    public function test_admin_clear_all_lifts_every_bucket(): void
+    {
+        $this->failAttempts(4);
+        for ($i = 0; $i < 4; $i++) {
+            $this->limiter->recordFailure('AB-1', 'device:abc');
+        }
+
+        $this->limiter->clearAll('AB-1');
+
+        $this->limiter->ensureNotLocked('AB-1');
+        $this->limiter->ensureNotLocked('AB-1', 'device:abc');
+        $this->failAttempts(3); // counters restarted from zero
+        $this->limiter->ensureNotLocked('AB-1');
+        $this->addToAssertionCount(1);
+    }
 }
