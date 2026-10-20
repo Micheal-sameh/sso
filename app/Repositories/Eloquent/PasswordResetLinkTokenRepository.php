@@ -13,17 +13,26 @@ class PasswordResetLinkTokenRepository implements PasswordResetLinkTokenReposito
     {
         PasswordResetLinkToken::where('user_id', $user->id)->delete();
 
-        return PasswordResetLinkToken::create([
+        $plain = Str::random(64);
+
+        // Only a hash is stored, so a leaked database cannot be replayed as
+        // live links; the plaintext lives solely on the returned instance
+        // (never saved) for building the link handed to the user.
+        $record = PasswordResetLinkToken::create([
             'user_id' => $user->id,
-            'token' => Str::random(64),
+            'token' => hash('sha256', $plain),
             'expires_at' => now()->addMinutes(5),
         ]);
+        $record->setAttribute('token', $plain);
+        $record->syncOriginal();
+
+        return $record;
     }
 
     public function findValid(string $token): ?PasswordResetLinkToken
     {
         return PasswordResetLinkToken::with('user')
-            ->where('token', $token)
+            ->where('token', hash('sha256', $token))
             ->whereNull('used_at')
             ->where('expires_at', '>', now())
             ->first();
