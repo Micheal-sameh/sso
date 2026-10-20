@@ -201,3 +201,28 @@ Then: `Socialite::driver('avarewase')->redirect()` / `Socialite::driver('avarewa
 | `openid`  | Know that you have an Avarewase account          |
 | `profile` | View your name and profile picture               |
 | `email`   | View your email address                          |
+
+## 8. Production security checklist
+
+Set in the production `.env` (see `.env.example`):
+
+- `APP_ENV=production`, `APP_DEBUG=false`, `SESSION_SECURE_COOKIE=true`, `SESSION_ENCRYPT=true`.
+- `ADMIN_MEMBERSHIP_CODE` and an `ADMIN_PASSWORD` of at least 12 characters (the seeder refuses to create a super admin without them). Rotate any password that was ever committed.
+- `TURNSTILE_SITE_KEY` / `TURNSTILE_SECRET_KEY` (login fails closed in production without them).
+- `TRUSTED_PROXIES` = the address(es) of your reverse proxy if it is not on a private range.
+- `OAUTH_IMPLICIT_GRANT=true` **only** if a legacy client (e.g. Odoo `auth_oauth`) needs the implicit grant.
+- `CSP_MODE=report-only`, then `enforce` once the browser console shows no violations.
+
+Docker: the source tree is mounted read-only; only `storage/`, `bootstrap/cache/` and `public/build/` are writable.
+Create them on the host first (`mkdir -p storage bootstrap/cache public/build`) and run `php artisan storage:link` there once.
+
+nginx: Odoo sends the access token in the query string of `/api/oauth/odoo/validate`. Keep it out of the access log:
+
+```nginx
+map $request_uri $loggable_uri {
+    ~^(?<path>[^?]*)\?(.*)access_token=[^&]*(?<rest>.*)$  "$path?$2access_token=REDACTED$rest";
+    default                                               $request_uri;
+}
+log_format sso '$remote_addr - [$time_local] "$request_method $loggable_uri" $status $body_bytes_sent';
+access_log /var/log/nginx/sso.access.log sso;
+```

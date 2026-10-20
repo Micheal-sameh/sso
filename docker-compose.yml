@@ -12,7 +12,15 @@ services:
     ports:
       - "127.0.0.1:6500:9000"
     volumes:
-      - .:/var/www/html
+      # Source is read-only so a compromised container cannot rewrite the
+      # application code; only the paths Laravel legitimately writes to are
+      # mounted read-write on top. These host dirs must exist before `up`
+      # (mkdir -p storage bootstrap/cache public/build) or Docker creates
+      # them root-owned.
+      - .:/var/www/html:ro
+      - ./storage:/var/www/html/storage
+      - ./bootstrap/cache:/var/www/html/bootstrap/cache
+      - ./public/build:/var/www/html/public/build
       - /var/www/html/vendor
       - /var/www/html/node_modules
     extra_hosts:

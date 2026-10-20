@@ -31,9 +31,12 @@ export default function MyApps({ apps }: { apps: MyApp[] }) {
                                     </div>
                                 )}
                                 <span className="fw-semibold flex-grow-1">{app.name}</span>
-                                <a href={app.url} className="btn btn-primary btn-sm">
-                                    {t('welcome.openApp')}
-                                </a>
+                                {/* Only http(s): a stored javascript:/data: URL must never become a link. */}
+                                {app.url && /^https?:\/\//i.test(app.url) && (
+                                    <a href={app.url} className="btn btn-primary btn-sm">
+                                        {t('welcome.openApp')}
+                                    </a>
+                                )}
                             </div>
                         </div>
                     ))}

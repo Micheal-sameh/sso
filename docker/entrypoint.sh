@@ -6,8 +6,10 @@ cd /var/www/html
 # public/build is bind-mounted from the host (for host nginx to serve
 # directly), so the freshly compiled assets baked into the image must be
 # copied over it here rather than relying on the image's own copy.
-rm -rf public/build
-cp -r /opt/frontend-build public/build
+# (public/build is its own mount point, so empty it rather than removing it.)
+mkdir -p public/build
+find public/build -mindepth 1 -delete
+cp -r /opt/frontend-build/. public/build/
 
 DB_HOST="${DB_HOST:-127.0.0.1}"
 DB_PORT="${DB_PORT:-3306}"
@@ -51,8 +53,10 @@ php artisan migrate --force
 # constraint and are ignored rather than crashing the container.
 php artisan db:seed --force || true
 
+# The source tree is mounted read-only, so the link must already exist on the
+# host (run `php artisan storage:link` once there); don't crash if it can't be made.
 if [ ! -L public/storage ]; then
-    php artisan storage:link
+    php artisan storage:link || echo "WARNING: public/storage link missing; run storage:link on the host."
 fi
 
 php artisan optimize:clear
