@@ -116,6 +116,7 @@ class UserController extends BaseController
 
     public function update(User $user, UpdateUserRequest $request): RedirectResponse
     {
+        $this->userService->assertCanManage($user, allowSelf: true);
         $this->userService->updateDetails($user, $request->validated());
 
         return $this->redirectRoute('admin.users.show', __('messages.user_updated'), params: ['user' => $user->id]);
@@ -123,6 +124,7 @@ class UserController extends BaseController
 
     public function toggleActive(User $user): RedirectResponse
     {
+        $this->userService->assertCanManage($user);
         $this->userService->toggleActive($user);
 
         return $this->redirectBack(__('messages.user_status_updated'), 'success');
@@ -172,16 +174,21 @@ class UserController extends BaseController
 
     public function generateResetLink(User $user): JsonResponse
     {
+        $this->userService->assertCanManage($user);
+
         return response()->json(['link' => $this->passwordResetService->generateResetLink($user)]);
     }
 
     public function generateAvatarUploadLink(User $user): JsonResponse
     {
+        $this->userService->assertCanManage($user);
+
         return response()->json(['link' => $this->userService->generateAvatarUploadLink($user)]);
     }
 
     public function removeAvatar(User $user): RedirectResponse
     {
+        $this->userService->assertCanManage($user);
         $this->userService->removeAvatar($user);
 
         return $this->redirectBack(__('messages.avatar_removed'), 'success');
@@ -189,6 +196,7 @@ class UserController extends BaseController
 
     public function resetMfa(User $user): RedirectResponse
     {
+        $this->userService->assertCanManage($user);
         $this->mfaService->resetMfa($user);
 
         return $this->redirectBack(__('messages.mfa_reset_for_user', ['name' => $user->name]), 'success');

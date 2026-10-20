@@ -42,6 +42,7 @@ return [
     'user_not_found' => 'No matching user found.',
     'cannot_change_own_admin_access' => 'You cannot change your own admin access.',
     'cannot_change_own_role' => 'You cannot change your own role.',
+    'unauthorized_account_action' => 'Only a super admin can perform this action on an admin or super admin account.',
     'unauthorized_role_change' => 'Only a super admin can assign or change the Admin and Super Admin roles.',
     'user_created' => 'User created successfully.',
     'user_updated' => 'User updated successfully.',

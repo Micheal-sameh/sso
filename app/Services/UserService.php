@@ -156,7 +156,18 @@ class UserService
      */
     public function toggleActive(User $user): User
     {
-        return $this->userRepository->toggleActive($user);
+        $user = $this->userRepository->toggleActive($user);
+
+        // A deactivated account must lose access it already holds, not just
+        // be blocked at the next login.
+        if (! $user->is_active) {
+            $this->credentialRevocationService->revokeAll(
+                $user,
+                Auth::id() === $user->id ? session()->getId() : null,
+            );
+        }
+
+        return $user;
     }
 
     /**
@@ -205,6 +216,27 @@ class UserService
         }
 
         return $this->userRepository->toggleAdminAccess($user, AdminRole::Admin->value);
+    }
+
+    /**
+     * Guard account-level actions (reset link, MFA reset, deactivation, edits)
+     * against privilege escalation: only someone who can manage admin access
+     * may act on a non-plain-user account, otherwise an admin or secretary
+     * could reset a super admin's password/MFA and take the account over.
+     *
+     * @throws UnauthorizedRoleChangeException
+     */
+    public function assertCanManage(User $target, bool $allowSelf = false): void
+    {
+        if ($target->role === UserRole::User || $this->canManageAdminAccess()) {
+            return;
+        }
+
+        if ($allowSelf && Auth::id() === $target->id) {
+            return;
+        }
+
+        throw new UnauthorizedRoleChangeException(__('messages.unauthorized_account_action'));
     }
 
     /**
