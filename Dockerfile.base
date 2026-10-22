@@ -10,7 +10,7 @@
 # www-data is uid/gid 82 (as on Alpine) so bind-mounted storage/ keeps its host ownership.
 # Rebuild only when extensions change:
 #   docker build -f Dockerfile.base -t avarewase-auth-base:8.3 .
-FROM php:8.3-fpm
+FROM php:8.3.36-fpm
 
 COPY --from=ghcr.io/mlocati/php-extension-installer:latest /usr/bin/install-php-extensions /usr/local/bin/
 RUN apt-get update \
