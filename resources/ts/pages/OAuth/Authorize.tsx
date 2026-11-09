@@ -72,6 +72,14 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 </form>
             </div>
 
+            <form method="POST" action="/logout" className="text-center mt-3">
+                <input type="hidden" name="_token" value={csrf_token} />
+                <input type="hidden" name="intended" value={window.location.pathname + window.location.search} />
+                <button type="submit" className="btn btn-link btn-sm text-ava-secondary text-decoration-none p-0">
+                    {t('authorize.useAnotherAccount')}
+                </button>
+            </form>
+
             <p className="text-ava-muted small text-center mt-4 mb-0 pt-3 border-top">
                 {t('authorize.revokeNotice')}
             </p>

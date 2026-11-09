@@ -9,6 +9,7 @@
     "thisWillAllow": "سيتيح هذا لتطبيق {{clientName}}:",
     "deny": "رفض",
     "allowAccess": "السماح بالوصول",
+    "useAnotherAccount": "لست أنت؟ سجّل الدخول بحساب آخر",
     "revokeNotice": "يمكنك إلغاء الوصول في أي وقت من إعدادات الأمان في Avarewase."
   },
   "profileUpdateRequired": {

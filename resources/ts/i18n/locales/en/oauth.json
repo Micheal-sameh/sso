@@ -9,6 +9,7 @@
     "thisWillAllow": "This will allow {{clientName}} to:",
     "deny": "Deny",
     "allowAccess": "Allow Access",
+    "useAnotherAccount": "Not you? Sign in with another account",
     "revokeNotice": "You can revoke access at any time in your Avarewase Security Settings."
   },
   "profileUpdateRequired": {
