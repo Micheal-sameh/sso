@@ -6,7 +6,7 @@ ARG BASE_IMAGE=avarewase-auth-base:8.3
 ########################################
 # 1) Build frontend assets (Vite/React)
 ########################################
-FROM node:22-alpine AS frontend
+FROM node:22.23.4-alpine AS frontend
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci

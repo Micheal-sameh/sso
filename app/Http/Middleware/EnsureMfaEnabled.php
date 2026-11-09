@@ -20,6 +20,11 @@ class EnsureMfaEnabled
             return $next($request);
         }
 
+        // Per-account exemption (e.g. the app-review account).
+        if (in_array($user->membership_code, config('mfa.exempt_codes', []), true)) {
+            return $next($request);
+        }
+
         if ($request->expectsJson()) {
             return response()->json([
                 'message' => 'Two-factor authentication is required. Please enable it to continue.',
