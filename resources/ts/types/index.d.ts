@@ -176,6 +176,7 @@ export interface FlashMessage {
 export interface SharedProps {
     [key: string]: unknown
     auth: { user: User | null }
+    other_accounts: { id: number; name: string; email: string | null; membership_code: string }[]
     flash: FlashMessage
     csrf_token: string
     errors: Record<string, string>

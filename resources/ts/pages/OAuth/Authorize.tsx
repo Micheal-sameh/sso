@@ -2,6 +2,7 @@ import { usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AuthLayout from '@/components/layouts/AuthLayout'
 import AvaLogo from '@/components/shared/AvaLogo'
+import AvatarInitials from '@/components/shared/AvatarInitials'
 import type { SharedProps } from '@/types'
 
 interface AuthorizeProps {
@@ -13,7 +14,8 @@ interface AuthorizeProps {
 
 export default function Authorize({ client, scopes, authRequest, state }: AuthorizeProps) {
     const { t } = useTranslation('oauth')
-    const { auth, csrf_token } = usePage<SharedProps>().props
+    const { auth, csrf_token, other_accounts } = usePage<SharedProps>().props
+    const intended = window.location.pathname + window.location.search
 
     return (
         <AuthLayout wide>
@@ -31,7 +33,14 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
 
             <div className="text-center mb-4">
                 <h4 className="mb-1">{t('authorize.wantsToAccess', { clientName: client.name })}</h4>
-                {auth.user && <p className="text-ava-muted small mb-0">{auth.user.email}</p>}
+                {auth.user && (
+                    <>
+                        <p className="fw-semibold mb-0">
+                            {auth.user.name.trim().split(/\s+/)[0]} · {auth.user.membership_code.toUpperCase()}
+                        </p>
+                        {auth.user.email && <p className="text-ava-muted small mb-0">{auth.user.email}</p>}
+                    </>
+                )}
             </div>
 
             <div className="mb-4">
@@ -72,9 +81,38 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 </form>
             </div>
 
-            <form method="POST" action="/logout" className="text-center mt-3">
+            {other_accounts.length > 0 && (
+                <div className="mt-4">
+                    <p className="fw-semibold small mb-2">{t('authorize.switchAccount')}</p>
+                    <div className="d-flex flex-column gap-2">
+                        {other_accounts.map((account) => (
+                            <form key={account.id} method="POST" action="/accounts/switch">
+                                <input type="hidden" name="_token" value={csrf_token} />
+                                <input type="hidden" name="user_id" value={account.id} />
+                                <input type="hidden" name="intended" value={intended} />
+                                <button
+                                    type="submit"
+                                    className="btn btn-light border w-100 d-flex align-items-center gap-3 p-2 text-start"
+                                >
+                                    <AvatarInitials name={account.name} size={40} />
+                                    <span className="flex-grow-1 min-w-0">
+                                        <span className="d-block fw-semibold text-truncate">{account.name}</span>
+                                        <span className="d-block small text-ava-muted text-truncate">
+                                            {account.membership_code.toUpperCase()}
+                                            {account.email ? ` · ${account.email}` : ''}
+                                        </span>
+                                    </span>
+                                    <i className="bi bi-chevron-right text-ava-muted" />
+                                </button>
+                            </form>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <form method="POST" action="/accounts/add" className="text-center mt-3">
                 <input type="hidden" name="_token" value={csrf_token} />
-                <input type="hidden" name="intended" value={window.location.pathname + window.location.search} />
+                <input type="hidden" name="intended" value={intended} />
                 <button type="submit" className="btn btn-link btn-sm text-ava-secondary text-decoration-none p-0">
                     {t('authorize.useAnotherAccount')}
                 </button>

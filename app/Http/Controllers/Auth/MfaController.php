@@ -7,6 +7,7 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\MfaVerifyRequest;
 use App\Http\Traits\HandlesInertiaResponses;
 use App\Models\User;
+use App\Services\AccountSwitcher;
 use App\Services\AuthService;
 use App\Services\MfaService;
 use App\Services\TrustedDeviceService;
@@ -27,6 +28,7 @@ class MfaController extends BaseController
         protected MfaService $mfaService,
         protected AuthService $authService,
         protected TrustedDeviceService $trustedDeviceService,
+        protected AccountSwitcher $accountSwitcher,
     ) {}
 
     public function showMfa(): Response
@@ -65,6 +67,7 @@ class MfaController extends BaseController
         Cookie::queue($this->trustedDeviceService->cookie($user, $request));
 
         Auth::login($user, (bool) $session->get('mfa_remember', false));
+        $this->accountSwitcher->remember($user);
 
         $session->forget(['mfa_pending', 'mfa_user_id', 'mfa_remember', 'mfa_started_at', 'mfa_attempts']);
 

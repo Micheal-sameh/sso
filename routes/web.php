@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\StageController;
 use App\Http\Controllers\Admin\TokenController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\AccountSwitchController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -40,6 +41,9 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/locale/{locale}', [LocaleController::class, 'update'])->name('locale.update');
+
+Route::post('/accounts/add', [AccountSwitchController::class, 'add'])->middleware('throttle:30,1')->name('accounts.add');
+Route::post('/accounts/switch', [AccountSwitchController::class, 'switch'])->middleware('throttle:30,1')->name('accounts.switch');
 
 Route::get('/avatar-upload/{token}', [AvatarUploadController::class, 'show'])->name('avatar-upload.show');
 Route::post('/avatar-upload/{token}', [AvatarUploadController::class, 'update'])->middleware('throttle:sensitive')->name('avatar-upload.update');

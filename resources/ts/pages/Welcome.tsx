@@ -1,6 +1,7 @@
-import { Link, router, usePage } from '@inertiajs/react'
+import { Link, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AvaLogo from '@/components/shared/AvaLogo'
+import UserMenu from '@/components/shared/UserMenu'
 import type { SharedProps } from '@/types'
 
 const FEATURE_KEYS = ['sso', 'mfa', 'directory', 'accessControl', 'recovery', 'integrations'] as const
@@ -24,16 +25,13 @@ interface AccessibleApp {
 export default function Welcome({ apps = [] }: { apps?: AccessibleApp[] }) {
     const { t } = useTranslation('common')
     const user = usePage<SharedProps>().props.auth.user
-    const signOut = () => router.post('/logout')
 
     return (
         <div className="welcome-page">
             <header className="welcome-header d-flex align-items-center justify-content-between px-4 py-3">
                 <AvaLogo size={36} />
                 {user ? (
-                    <button type="button" className="btn btn-outline-primary btn-sm" onClick={signOut}>
-                        {t('welcome.signOut')}
-                    </button>
+                    <UserMenu />
                 ) : (
                     <Link href="/login" className="btn btn-primary btn-sm">
                         {t('welcome.signIn')}

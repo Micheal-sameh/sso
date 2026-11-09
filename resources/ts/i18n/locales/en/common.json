@@ -73,6 +73,13 @@
     "external": "External",
     "warning": "Needs Update"
   },
+  "userMenu": {
+    "open": "Account menu",
+    "accounts": "Accounts",
+    "current": "Current",
+    "addAccount": "Add another account",
+    "signOutAll": "Sign out of all accounts"
+  },
   "welcome": {
     "signIn": "Sign In",
     "eyebrow": "Identity & Access Management",

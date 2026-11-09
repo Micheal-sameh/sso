@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\DTOs\UserDTO;
+use App\Services\AccountSwitcher;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -24,6 +25,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $user ? UserDTO::fromModel($user)->toArray() : null,
             ],
+            // Other accounts already signed in on this browser (switchable).
+            'other_accounts' => $user
+                ? collect(app(AccountSwitcher::class)->others($user->id))
+                    ->map(fn ($u) => ['id' => $u->id, 'name' => $u->name, 'email' => $u->email, 'membership_code' => $u->membership_code])
+                    ->values()
+                : [],
             'locale' => app()->getLocale(),
             'direction' => app()->getLocale() === 'ar' ? 'rtl' : 'ltr',
             'flash' => [

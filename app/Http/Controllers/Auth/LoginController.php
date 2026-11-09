@@ -6,6 +6,7 @@ use App\DTOs\LoginDTO;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\LoginRequest;
 use App\Http\Traits\HandlesInertiaResponses;
+use App\Services\AccountSwitcher;
 use App\Services\AuthService;
 use App\Services\TrustedDeviceService;
 use Illuminate\Support\Facades\Cookie;
@@ -19,6 +20,7 @@ class LoginController extends BaseController
     public function __construct(
         protected AuthService $authService,
         protected TrustedDeviceService $trustedDeviceService,
+        protected AccountSwitcher $accountSwitcher,
     ) {}
 
     public function showLogin(): Response
@@ -41,6 +43,7 @@ class LoginController extends BaseController
         // Only once the login is complete (MFA-protected accounts get it after the
         // second factor), so knowing the password alone can't mint fresh counters.
         Cookie::queue($this->trustedDeviceService->cookie($user, $request));
+        $this->accountSwitcher->remember($user);
 
         return $this->redirectIntended('account.show', __('messages.welcome_back', ['name' => $user->name]));
     }

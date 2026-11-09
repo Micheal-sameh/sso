@@ -22,11 +22,11 @@ export default function FlashMessage() {
         return () => clearTimeout(timer)
     }, [flash])
 
-    if (!flash.message || !visible) {
+    if (!flash?.message || !visible) {
         return null
     }
 
-    const variant = VARIANT_MAP[flash.type ?? 'info'] ?? 'info'
+    const variant = VARIANT_MAP[flash?.type ?? 'info'] ?? 'info'
 
     return (
         <div className="toast-popup-wrapper">
