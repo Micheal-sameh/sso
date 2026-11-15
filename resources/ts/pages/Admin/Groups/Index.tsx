@@ -86,11 +86,16 @@ export default function Index({ groups }: IndexProps) {
                         </thead>
                         <tbody>
                             {groups.map((group) => (
-                                <tr key={group.id}>
+                                <tr
+                                    key={group.id}
+                                    role="button"
+                                    className="cursor-pointer"
+                                    onClick={() => router.visit(`/admin/groups/${group.id}`)}
+                                >
                                     <td className="fw-semibold">{group.name}</td>
                                     <td className="text-ava-muted">{group.description ?? '—'}</td>
                                     <td className="text-ava-muted">{group.users_count ?? 0}</td>
-                                    <td className="text-nowrap">
+                                    <td className="text-nowrap" onClick={(e) => e.stopPropagation()}>
                                         <div className="d-flex align-items-center justify-content-end gap-2">
                                             <button
                                                 type="button"
@@ -124,7 +129,12 @@ export default function Index({ groups }: IndexProps) {
             {/* Card view (below md) */}
             <div className="d-md-none">
                 {groups.map((group) => (
-                    <div key={group.id} className="record-card">
+                    <div
+                        key={group.id}
+                        className="record-card cursor-pointer"
+                        role="button"
+                        onClick={() => router.visit(`/admin/groups/${group.id}`)}
+                    >
                         <div className="fw-semibold mb-1">{group.name}</div>
                         <div className="text-ava-muted text-tiny mb-2">{group.description ?? '—'}</div>
 
@@ -133,7 +143,7 @@ export default function Index({ groups }: IndexProps) {
                             <span className="text-ava-muted">{group.users_count ?? 0}</span>
                         </div>
 
-                        <div className="record-card-actions">
+                        <div className="record-card-actions" onClick={(e) => e.stopPropagation()}>
                             <button
                                 type="button"
                                 className="btn btn-sm btn-primary"

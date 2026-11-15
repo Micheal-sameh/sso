@@ -49,7 +49,7 @@ export default function AdminLayout({ children, title, action }: AdminLayoutProp
                 <div className="p-3 p-md-4 page-content">
                     <FlashMessage />
                     {(title || action) && (
-                        <div className="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+                        <div className="page-header d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
                             {title && (
                                 <div>
                                     <span className="eyebrow admin-eyebrow">{t('nav.adminConsole')}</span>

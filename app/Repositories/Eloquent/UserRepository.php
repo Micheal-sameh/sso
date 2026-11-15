@@ -7,6 +7,7 @@ use App\Enums\AdminRole;
 use App\Enums\UserRole;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryContract;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -170,7 +171,6 @@ class UserRepository implements UserRepositoryContract
     public function allLite(): Collection
     {
         return User::query()
-            ->with('stage')
             ->orderBy('name')
             ->get(['id', 'name', 'email', 'membership_code', 'stage_id']);
     }
@@ -196,6 +196,34 @@ class UserRepository implements UserRepositoryContract
             ->whereDay('date_of_birth', $day)
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * Active users whose birthday (month/day, any year) falls within the inclusive date range,
+     * ordered by when the birthday occurs in that range. Ranges are capped at one year.
+     */
+    public function withBirthdayBetween(CarbonInterface $from, CarbonInterface $to): Collection
+    {
+        $order = [];
+        $cursor = $from->copy()->startOfDay();
+        $end = $to->copy()->startOfDay();
+
+        while ($cursor->lte($end) && count($order) < 366) {
+            $order[$cursor->format('m-d')] ??= count($order);
+            $cursor->addDay();
+        }
+
+        $keys = array_keys($order);
+
+        return User::query()
+            ->with(['roles.permissions', 'permissions', 'stage', 'groups', 'mfa', 'media', 'family.father', 'family.mother', 'family.children'])
+            ->active()
+            ->whereNotNull('date_of_birth')
+            ->whereRaw("DATE_FORMAT(date_of_birth, '%m-%d') in (".implode(',', array_fill(0, count($keys), '?')).')', $keys)
+            ->orderBy('name')
+            ->get()
+            ->sortBy(fn (User $user) => $order[$user->date_of_birth->format('m-d')] ?? PHP_INT_MAX)
+            ->values();
     }
 
     /**

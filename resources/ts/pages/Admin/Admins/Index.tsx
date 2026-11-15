@@ -100,9 +100,18 @@ export default function Index({ admins, filters }: IndexProps) {
                                 </thead>
                                 <tbody>
                                     {admins.data.map((user) => (
-                                        <tr key={user.id}>
+                                        <tr
+                                            key={user.id}
+                                            role="button"
+                                            className="cursor-pointer"
+                                            onClick={() => router.visit(`/admin/users/${user.id}`)}
+                                        >
                                             <td>
-                                                <Link href={`/admin/users/${user.id}`} className="text-reset text-decoration-none">
+                                                <Link
+                                                    href={`/admin/users/${user.id}`}
+                                                    className="text-reset text-decoration-none"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
                                                     <UserCell user={user} />
                                                 </Link>
                                             </td>
@@ -117,7 +126,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                                 <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
                                             </td>
                                             <td className="text-ava-muted text-tiny">{user.email_verified_at}</td>
-                                            <td className="text-end">
+                                            <td className="text-end" onClick={(e) => e.stopPropagation()}>
                                                 <ActionMenu
                                                     items={[
                                                         {
@@ -125,7 +134,11 @@ export default function Index({ admins, filters }: IndexProps) {
                                                             icon: 'bi-eye',
                                                             onClick: () => router.visit(`/admin/users/${user.id}`),
                                                         },
-                                                        { label: t('actions.toggleActive'), icon: 'bi-toggle2-on', onClick: () => toggle(user) },
+                                                        {
+                                                            label: t('actions.toggleActive'),
+                                                            icon: user.is_active ? 'bi-toggle2-on' : 'bi-toggle2-off',
+                                                            onClick: () => toggle(user),
+                                                        },
                                                         ...(auth.user?.can_manage_admin_access && user.role !== 'superadmin'
                                                             ? [
                                                                   {
@@ -150,7 +163,12 @@ export default function Index({ admins, filters }: IndexProps) {
                     {/* Card view (below md) */}
                     <div className="d-md-none">
                         {admins.data.map((user) => (
-                            <div key={user.id} className="record-card">
+                            <div
+                                key={user.id}
+                                className="record-card cursor-pointer"
+                                role="button"
+                                onClick={() => router.visit(`/admin/users/${user.id}`)}
+                            >
                                 <div className="d-flex align-items-center gap-3 mb-2">
                                     {user.avatar ? (
                                         <img src={user.avatar} alt={user.name} width={40} height={40} className="rounded-circle" />
@@ -180,7 +198,7 @@ export default function Index({ admins, filters }: IndexProps) {
                                     <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
                                 </div>
 
-                                <div className="record-card-actions">
+                                <div className="record-card-actions" onClick={(e) => e.stopPropagation()}>
                                     <button
                                         type="button"
                                         className="btn btn-sm btn-outline-primary"

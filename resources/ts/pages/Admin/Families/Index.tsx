@@ -72,11 +72,16 @@ export default function Index({ families, totalFamilies }: IndexProps) {
                         </thead>
                         <tbody>
                             {families.map((family) => (
-                                <tr key={family.id}>
+                                <tr
+                                    key={family.id}
+                                    role="button"
+                                    className="cursor-pointer"
+                                    onClick={() => router.visit(`/admin/families/${family.id}`)}
+                                >
                                     <td className="fw-semibold">{family.father?.name ?? t('families.notSet')}</td>
                                     <td className="text-ava-muted">{family.mother?.name ?? t('families.notSet')}</td>
                                     <td className="text-ava-muted">{family.children?.length ?? 0}</td>
-                                    <td className="text-nowrap">
+                                    <td className="text-nowrap" onClick={(e) => e.stopPropagation()}>
                                         <div className="d-flex align-items-center justify-content-end gap-2">
                                             <button
                                                 type="button"
@@ -109,7 +114,12 @@ export default function Index({ families, totalFamilies }: IndexProps) {
             {/* Card view (below md) */}
             <div className="d-md-none">
                 {families.map((family) => (
-                    <div key={family.id} className="record-card">
+                    <div
+                        key={family.id}
+                        className="record-card cursor-pointer"
+                        role="button"
+                        onClick={() => router.visit(`/admin/families/${family.id}`)}
+                    >
                         <div className="record-card-row">
                             <span className="record-card-label">{t('families.table.father')}</span>
                             <span className="text-ava-muted">{family.father?.name ?? t('families.notSet')}</span>
@@ -123,7 +133,7 @@ export default function Index({ families, totalFamilies }: IndexProps) {
                             <span className="text-ava-muted">{family.children?.length ?? 0}</span>
                         </div>
 
-                        <div className="record-card-actions">
+                        <div className="record-card-actions" onClick={(e) => e.stopPropagation()}>
                             <button
                                 type="button"
                                 className="btn btn-sm btn-primary"

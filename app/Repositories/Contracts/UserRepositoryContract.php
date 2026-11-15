@@ -5,6 +5,7 @@ namespace App\Repositories\Contracts;
 use App\DTOs\CreateUserDTO;
 use App\Enums\UserRole;
 use App\Models\User;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
@@ -47,4 +48,6 @@ interface UserRepositoryContract
      * Active users whose date of birth falls on the given month/day, regardless of year.
      */
     public function withBirthdayOnDate(int $month, int $day): Collection;
+
+    public function withBirthdayBetween(CarbonInterface $from, CarbonInterface $to): Collection;
 }

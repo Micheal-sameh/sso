@@ -163,12 +163,17 @@
     "title": "Birthdays",
     "date": "Date",
     "today": "Today",
+    "from": "From",
+    "to": "To",
+    "range": "Date range",
+    "rangeDescription": "Users whose birthday falls between {{from}} and {{to}} (any year).",
     "todayDescription": "Users celebrating their birthday today.",
     "onDateDescription": "Users whose birthday falls on {{date}} (any year).",
     "empty": "No birthdays on this day.",
     "wish": "Wish",
     "wishWhatsAppMessage": "Happy Birthday, {{name}}! 🎉 Wishing you a wonderful day.",
     "table": {
+      "birthday": "Birthday",
       "dob": "Date of Birth",
       "age": "Age"
     }

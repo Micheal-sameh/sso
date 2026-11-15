@@ -11,6 +11,7 @@ use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Models\User;
 use App\Repositories\Contracts\AvatarUploadTokenRepositoryContract;
 use App\Repositories\Contracts\UserRepositoryContract;
+use Carbon\CarbonInterface;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -141,6 +142,14 @@ class UserService
     public function birthdaysOnDate(int $month, int $day): Collection
     {
         return $this->userRepository->withBirthdayOnDate($month, $day);
+    }
+
+    /**
+     * Active users whose birthday falls within the inclusive date range, regardless of year.
+     */
+    public function birthdaysBetween(CarbonInterface $from, CarbonInterface $to): Collection
+    {
+        return $this->userRepository->withBirthdayBetween($from, $to);
     }
 
     /**

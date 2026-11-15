@@ -22,16 +22,40 @@ class BirthdayController extends BaseController
     public function index(Request $request): Response
     {
         $today = now()->toDateString();
-        $date = $request->query('date');
-        $date = is_string($date) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ? $date : $today;
-        $parsed = Carbon::parse($date);
+        $date = $this->validDate($request->query('date')) ?? $today;
+        $to = $this->validDate($request->query('to'));
+
+        // A range needs an end on or after the start; otherwise fall back to a single day.
+        if ($to !== null && $to <= $date) {
+            $to = null;
+        }
+
+        $from = Carbon::parse($date);
+        $users = $to === null
+            ? $this->userService->birthdaysOnDate($from->month, $from->day)
+            : $this->userService->birthdaysBetween($from, Carbon::parse($to));
 
         return $this->inertia('Admin/Birthdays/Index', [
-            'users' => $this->userService->birthdaysOnDate($parsed->month, $parsed->day)
+            'users' => $users
                 ->map(fn (User $user) => UserDTO::fromModel($user)->toArray())
                 ->values(),
             'date' => $date,
+            'to' => $to,
             'today' => $today,
         ]);
+    }
+
+    /** Return the value if it is a real YYYY-MM-DD date, otherwise null. */
+    private function validDate(mixed $value): ?string
+    {
+        if (! is_string($value) || ! preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+            return null;
+        }
+
+        try {
+            return Carbon::createFromFormat('!Y-m-d', $value)->toDateString() === $value ? $value : null;
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

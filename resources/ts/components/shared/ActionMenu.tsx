@@ -1,5 +1,3 @@
-import { useTranslation } from 'react-i18next'
-
 export interface ActionMenuItem {
     label: string
     icon?: string
@@ -13,39 +11,23 @@ interface ActionMenuProps {
     items: ActionMenuItem[]
 }
 
-/** The "⋯" row-action dropdown used by the admin tables. */
+/** Row actions for the admin tables, shown as inline icon buttons (label as tooltip). */
 export default function ActionMenu({ items }: ActionMenuProps) {
-    const { t } = useTranslation('common')
-
     return (
-        <div className="dropdown">
-            <button
-                type="button"
-                className="action-menu-btn dropdown-toggle"
-                data-bs-toggle="dropdown"
-                // `fixed` so the menu isn't clipped by the table's scroll container.
-                data-bs-config='{"popperConfig":{"strategy":"fixed"}}'
-                aria-expanded="false"
-                aria-label={t('brand.moreActions')}
-            >
-                <i className="bi bi-three-dots" />
-            </button>
-            <ul className="dropdown-menu dropdown-menu-end shadow">
-                {items.map((item) => (
-                    <li key={item.label}>
-                        <button
-                            type="button"
-                            className={`dropdown-item ${item.danger ? 'text-danger' : ''}`}
-                            disabled={item.disabled}
-                            title={item.title}
-                            onClick={item.onClick}
-                        >
-                            {item.icon && <i className={`bi ${item.icon} me-2`} />}
-                            {item.label}
-                        </button>
-                    </li>
-                ))}
-            </ul>
+        <div className="action-icons" role="group">
+            {items.map((item) => (
+                <button
+                    key={item.label}
+                    type="button"
+                    className={`action-icon-btn ${item.danger ? 'is-danger' : ''}`}
+                    disabled={item.disabled}
+                    title={item.title ?? item.label}
+                    aria-label={item.label}
+                    onClick={item.onClick}
+                >
+                    <i className={`bi ${item.icon ?? 'bi-circle'}`} />
+                </button>
+            ))}
         </div>
     )
 }

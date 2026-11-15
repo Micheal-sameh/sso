@@ -25,11 +25,9 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                     <i className="bi bi-list" />
                 </button>
             )}
-            <div className="d-flex gap-2">
+            <div className="ms-auto d-flex align-items-center gap-2">
                 <LanguageSwitcher />
                 <ThemeToggle />
-            </div>
-            <div className="ms-auto">
                 <UserMenu />
             </div>
         </div>

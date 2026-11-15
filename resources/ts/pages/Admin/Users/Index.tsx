@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { router, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
@@ -236,50 +237,31 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                         <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
                                     </td>
                                     <td className="text-end" onClick={(e) => e.stopPropagation()}>
-                                        <div className="dropdown">
-                                            <button
-                                                type="button"
-                                                className="action-menu-btn dropdown-toggle"
-                                                data-bs-toggle="dropdown"
-                                                data-bs-config='{"popperConfig":{"strategy":"fixed"}}'
-                                                aria-expanded="false"
-                                                aria-label={tc('brand.moreActions')}
-                                            >
-                                                <i className="bi bi-three-dots" />
-                                            </button>
-                                            <ul className="dropdown-menu dropdown-menu-end shadow">
-                                                <li>
-                                                    <button
-                                                        type="button"
-                                                        className="dropdown-item"
-                                                        onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
-                                                    >
-                                                        <i className="bi bi-pencil me-2" />
-                                                        {t('actions.editUser')}
-                                                    </button>
-                                                </li>
-                                                <li>
-                                                    <button type="button" className="dropdown-item" onClick={() => toggle(user)}>
-                                                        <i className="bi bi-toggle2-on me-2" />
-                                                        {t('actions.toggleActive')}
-                                                    </button>
-                                                </li>
-                                                {auth.user?.can_manage_admin_access && (
-                                                    <li>
-                                                        <button
-                                                            type="button"
-                                                            className="dropdown-item"
-                                                            disabled={user.id === auth.user?.id}
-                                                            title={user.id === auth.user?.id ? t('users.cantChangeOwnAdminAccess') : undefined}
-                                                            onClick={() => toggleAdminAccess(user)}
-                                                        >
-                                                            <i className="bi bi-shield-check me-2" />
-                                                            {user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin')}
-                                                        </button>
-                                                    </li>
-                                                )}
-                                            </ul>
-                                        </div>
+                                        <ActionMenu
+                                            items={[
+                                                {
+                                                    label: t('actions.editUser'),
+                                                    icon: 'bi-pencil',
+                                                    onClick: () => router.visit(`/admin/users/${user.id}/edit`),
+                                                },
+                                                {
+                                                    label: t('actions.toggleActive'),
+                                                    icon: user.is_active ? 'bi-toggle2-on' : 'bi-toggle2-off',
+                                                    onClick: () => toggle(user),
+                                                },
+                                                ...(auth.user?.can_manage_admin_access
+                                                    ? [
+                                                          {
+                                                              label: user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin'),
+                                                              icon: user.is_admin ? 'bi-shield-check' : 'bi-shield-plus',
+                                                              disabled: user.id === auth.user?.id,
+                                                              title: user.id === auth.user?.id ? t('users.cantChangeOwnAdminAccess') : undefined,
+                                                              onClick: () => toggleAdminAccess(user),
+                                                          },
+                                                      ]
+                                                    : []),
+                                            ]}
+                                        />
                                     </td>
                                 </tr>
                             ))}
