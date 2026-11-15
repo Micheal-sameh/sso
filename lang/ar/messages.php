@@ -59,6 +59,8 @@ return [
 
     // OAuth clients / apps
     'invalid_client_credentials' => 'بيانات اعتماد العميل غير صحيحة.',
+    'sync_client_not_allowed' => 'هذا العميل غير مسموح له بمزامنة المستخدمين.',
+    'sync_privileged_user' => 'لا يمكن تعديل هذا المستخدم عبر واجهة المزامنة.',
     'oauth_authorization_expired' => 'انتهت صلاحية طلب التفويض هذا أو تم استخدامه بالفعل. يرجى محاولة تسجيل الدخول مرة أخرى من التطبيق.',
     'client_registered' => 'تم تسجيل العميل بنجاح.',
     'client_registered_with_secret' => 'تم تسجيل العميل. انسخ المفتاح السري الآن — لن يتم عرضه مرة أخرى.',

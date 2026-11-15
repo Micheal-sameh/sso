@@ -13,6 +13,8 @@ interface IndexProps {
     stages: Stage[]
     users: LiteUser[]
     groups: Group[]
+    syncClientIds: string[]
+    canManageUserSync: boolean
     newClientSecret: string | null
     newLogoutSecret: string | null
 }
@@ -24,6 +26,7 @@ interface ClientForm {
     logout_uri: string
     app_logo: File | null
     is_internal: boolean
+    allow_user_sync: boolean
     is_public_client: boolean
     grant_type: 'authorization_code' | 'implicit'
     access_mode: 'all' | 'stage' | 'specific' | 'group' | 'all_except_users'
@@ -40,6 +43,7 @@ const emptyForm: ClientForm = {
     logout_uri: '',
     app_logo: null,
     is_internal: false,
+    allow_user_sync: false,
     is_public_client: false,
     grant_type: 'authorization_code',
     access_mode: 'all',
@@ -49,7 +53,7 @@ const emptyForm: ClientForm = {
     excluded_user_ids: [],
 }
 
-export default function Index({ clients, stages, users, groups, newClientSecret, newLogoutSecret }: IndexProps) {
+export default function Index({ clients, stages, users, groups, syncClientIds, canManageUserSync, newClientSecret, newLogoutSecret }: IndexProps) {
     const { t } = useTranslation(['admin', 'common'])
     const ACCESS_MODE_LABELS: Record<ClientMeta['access_mode'], string> = {
         all: t('targeting.all'),
@@ -108,6 +112,7 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
             logout_uri: client.logout_uri ?? '',
             app_logo: null,
             is_internal: client.is_internal,
+            allow_user_sync: syncClientIds.includes(client.oauth_client_id),
             is_public_client: false,
             grant_type: client.oauth_client.grant_types?.includes('implicit') ? 'implicit' : 'authorization_code',
             access_mode: client.access_mode,
@@ -556,6 +561,21 @@ export default function Index({ clients, stages, users, groups, newClientSecret,
                                         />
                                         <label className="form-check-label" htmlFor="is_internal">{t('clients.modal.internalApp')}</label>
                                     </div>
+                                    {canManageUserSync && (
+                                        <div className="mb-3">
+                                            <div className="form-check form-switch">
+                                                <input
+                                                    id="allow_user_sync"
+                                                    type="checkbox"
+                                                    className="form-check-input"
+                                                    checked={form.data.allow_user_sync}
+                                                    onChange={(e) => form.setData('allow_user_sync', e.target.checked)}
+                                                />
+                                                <label className="form-check-label" htmlFor="allow_user_sync">{t('clients.modal.allowUserSync')}</label>
+                                            </div>
+                                            <div className="form-text">{t('clients.modal.allowUserSyncHelp')}</div>
+                                        </div>
+                                    )}
 
                                     {!editingClient && (
                                         <div className="mb-3">

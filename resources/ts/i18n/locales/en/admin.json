@@ -93,6 +93,8 @@
       "logoutUriHelp": "Optional. If set, this app is notified whenever an admin revokes a user's access, so it can end its own local session immediately.",
       "logo": "Logo",
       "internalApp": "Internal application",
+      "allowUserSync": "Allow user sync API",
+      "allowUserSyncHelp": "Lets this app create and update plain users (never admins) through the server-to-server sync API. Super admins only.",
       "grantType": "Grant Type",
       "grantTypeAuthCode": "Authorization Code (PKCE)",
       "grantTypeImplicit": "Implicit (legacy, e.g. Odoo)",

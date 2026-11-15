@@ -59,6 +59,8 @@ return [
 
     // OAuth clients / apps
     'invalid_client_credentials' => 'Invalid client credentials.',
+    'sync_client_not_allowed' => 'This client is not allowed to sync users.',
+    'sync_privileged_user' => 'This user cannot be modified through the sync API.',
     'oauth_authorization_expired' => 'That authorization request has expired or was already used. Please try signing in again from the app.',
     'client_registered' => 'Client registered successfully.',
     'client_registered_with_secret' => 'Client registered. Copy the secret now — it will not be shown again.',

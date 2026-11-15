@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\DTOs\OAuthClientDTO;
+use App\Models\ExternalSyncClient;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\OAuthClientRequest;
 use App\Http\Traits\HandlesInertiaResponses;
@@ -31,6 +32,8 @@ class ClientController extends BaseController
             'stages' => $this->stageService->listAll(),
             'users' => $this->userRepository->allLite(),
             'groups' => $this->groupService->listAll(),
+            'syncClientIds' => ExternalSyncClient::query()->pluck('oauth_client_id'),
+            'canManageUserSync' => $this->canManageUserSync(),
             'newClientSecret' => session()->pull('newClientSecret'),
             'newLogoutSecret' => session()->pull('newLogoutSecret'),
         ]);
@@ -39,6 +42,7 @@ class ClientController extends BaseController
     public function store(OAuthClientRequest $request): RedirectResponse
     {
         $result = $this->oauthClientService->registerClient(OAuthClientDTO::fromRequest($request));
+        $this->applyUserSync($request, $result['client']->id);
 
         $message = $result['secret'] !== null
             ? __('messages.client_registered_with_secret')
@@ -52,9 +56,23 @@ class ClientController extends BaseController
     public function update(string $client, OAuthClientRequest $request): RedirectResponse
     {
         $result = $this->oauthClientService->updateClient($client, OAuthClientDTO::fromRequest($request));
+        $this->applyUserSync($request, $client);
 
         return $this->redirectRoute('admin.clients.index', __('messages.client_updated'))
             ->with('newLogoutSecret', $result['logoutSecret']);
+    }
+
+    /** Letting a client create/modify users is privileged: super admins only. */
+    private function canManageUserSync(): bool
+    {
+        return (bool) auth()->user()?->role?->isSuperAdmin();
+    }
+
+    private function applyUserSync(OAuthClientRequest $request, string $clientId): void
+    {
+        if ($request->has('allow_user_sync') && $this->canManageUserSync()) {
+            ExternalSyncClient::setAllowed($clientId, $request->boolean('allow_user_sync'));
+        }
     }
 
     public function destroy(string $client): RedirectResponse
