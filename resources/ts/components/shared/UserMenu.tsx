@@ -61,6 +61,15 @@ export default function UserMenu() {
                     </li>
                 )}
 
+                {user.is_admin && (
+                    <li>
+                        <Link href="/admin/users" className="dropdown-item">
+                            <i className="bi bi-gear me-2" />
+                            {t('nav.adminConsole')}
+                        </Link>
+                    </li>
+                )}
+
                 <li><hr className="dropdown-divider" /></li>
                 <li><h6 className="dropdown-header">{t('userMenu.accounts')}</h6></li>
                 <li>

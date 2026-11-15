@@ -4,10 +4,12 @@ namespace App\Services;
 
 use App\Enums\UserRole;
 use App\Exceptions\Auth\OAuthClientException;
+use App\Models\AuditLog;
 use App\Models\ExternalSyncClient;
 use App\Models\Group;
 use App\Models\Stage;
 use App\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -48,9 +50,14 @@ class ExternalUserSyncService
             throw OAuthClientException::forbidden(__('messages.sync_client_not_allowed'));
         }
 
-        return DB::transaction(function () use ($data): array {
+        return DB::transaction(function () use ($data, $client): array {
             $user = User::withTrashed()->where('membership_code', $data['membership_code'])->first();
             $created = $user === null;
+
+            // Never silently modify (or shadow) a deleted account.
+            if ($user?->trashed()) {
+                throw ValidationException::withMessages(['membership_code' => 'This membership code belongs to a deleted user.']);
+            }
 
             // Only plain users may be modified from outside; never admins, secretaries or super admins.
             if (! $created && ! $this->isPlainUser($user)) {
@@ -92,7 +99,15 @@ class ExternalUserSyncService
                 ]);
                 $user->save();
             } else {
+                $wasActive = $user->is_active;
+
                 $user->fill($attributes)->save();
+
+                // A deactivated account must lose access it already holds (tokens,
+                // sessions), exactly as when an admin deactivates it in the panel.
+                if ($wasActive && ! $user->is_active) {
+                    $this->revokeAccess($user);
+                }
             }
 
             if (array_key_exists('groups', $data)) {
@@ -105,12 +120,51 @@ class ExternalUserSyncService
 
             $user = $user->fresh(['stage', 'groups']);
 
+            // The model's own audit rows carry no actor (no logged-in user), so
+            // record which OAuth client made this change and which fields it sent.
+            AuditLog::create([
+                'user_id' => null,
+                'action' => $created ? 'external_sync_created' : 'external_sync_updated',
+                'model_type' => User::class,
+                'model_id' => $user->getKey(),
+                'old_values' => null,
+                'new_values' => [
+                    'client_id' => (string) $client->getKey(),
+                    'fields' => array_keys(Arr::except($data, ['membership_code'])),
+                    'groups' => $user->groups->pluck('name')->all(),
+                ],
+                'ip_address' => request()?->ip(),
+                'user_agent' => request()?->userAgent(),
+            ]);
+
             if (! $created) {
                 $this->oauthClientService->notifyClientsUserUpdated($user);
             }
 
             return ['user' => $user, 'created' => $created];
         });
+    }
+
+    /**
+     * Cut off everything a deactivated user could still authenticate with:
+     * OAuth access and refresh tokens, remember-me cookies and (when stored
+     * in the database) browser sessions.
+     */
+    private function revokeAccess(User $user): void
+    {
+        $tokenIds = $user->tokens()->pluck('id');
+
+        $user->tokens()->update(['revoked' => true]);
+        DB::table('oauth_refresh_tokens')->whereIn('access_token_id', $tokenIds)->update(['revoked' => true]);
+
+        $user->forceFill(['remember_token' => Str::random(60)])->save();
+
+        if (config('session.driver') === 'database') {
+            DB::connection(config('session.connection'))
+                ->table(config('session.table', 'sessions'))
+                ->where('user_id', $user->id)
+                ->delete();
+        }
     }
 
     private function isPlainUser(User $user): bool

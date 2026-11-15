@@ -207,6 +207,22 @@
     "confirmRevoke": "هل تريد إلغاء هذا الرمز؟"
   },
   "users": {
+    "bulk": {
+      "selectAll": "تحديد كل من في هذه الصفحة",
+      "selectUser": "تحديد {{name}}",
+      "selected_zero": "لا يوجد محدد",
+      "selected_one": "تم تحديد {{count}}",
+      "selected_two": "تم تحديد {{count}}",
+      "selected_few": "تم تحديد {{count}}",
+      "selected_many": "تم تحديد {{count}}",
+      "selected_other": "تم تحديد {{count}}",
+      "activate": "تفعيل",
+      "deactivate": "تعطيل",
+      "clear": "مسح",
+      "confirmActivate": "تفعيل {{count}} حسابات محددة؟",
+      "confirmDeactivate": "تعطيل {{count}} حسابات محددة؟ سيتم تسجيل خروجهم من التطبيقات المتصلة.",
+      "ownAccountSkipped": "لا يتم تغيير حسابك الشخصي بواسطة الإجراءات الجماعية."
+    },
     "createTitle": "إنشاء مستخدم",
     "editTitle": "تعديل المستخدم",
     "indexTitle": "المستخدمون",

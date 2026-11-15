@@ -9,6 +9,10 @@
     "apps": "التطبيقات",
     "more": "المزيد",
     "manageSso": "إدارة SSO",
+    "adminConsole": "لوحة الإدارة",
+    "home": "الرئيسية",
+    "account": "حسابي",
+    "admin": "الإدارة",
     "users": "المستخدمون",
     "ssoAdmins": "مديرو SSO",
     "stages": "المراحل",
@@ -24,6 +28,22 @@
     "openMenu": "فتح القائمة",
     "logOut": "تسجيل الخروج",
     "logOutConfirm": "هل أنت متأكد أنك تريد تسجيل الخروج؟"
+  },
+  "brand": {
+    "securedBy": "محمي بواسطة هوية Avarewase",
+    "welcomeBack": "مرحبًا بعودتك، {{name}}",
+    "connectedServices": "الخدمات المتصلة",
+    "appsAvailable_zero": "لا يوجد",
+    "appsAvailable_one": "متاح {{count}}",
+    "appsAvailable_two": "متاحان",
+    "appsAvailable_few": "متاح {{count}}",
+    "appsAvailable_many": "متاح {{count}}",
+    "appsAvailable_other": "متاح {{count}}",
+    "appSubtitle": "ادخل إلى خدمات مجتمعك",
+    "moreActions": "المزيد من الإجراءات"
+  },
+  "theme": {
+    "toggle": "تبديل الوضع الداكن"
   },
   "locale": {
     "english": "en",

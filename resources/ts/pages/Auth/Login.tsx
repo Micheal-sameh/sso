@@ -48,26 +48,36 @@ export default function Login({ client }: LoginProps) {
         <AuthLayout>
             <div className="text-center mb-4">
                 <AvaLogo size={56} />
-                <p className="text-ava-muted small mt-2 mb-0">{t('login.signInToAccount')}</p>
             </div>
 
             {client && (
                 <div className="app-requesting-banner mb-4">
+                    <i className="bi bi-app-indicator" />
                     <Trans t={t} i18nKey="login.appRequestingBanner" values={{ clientName: client.name }} components={{ strong: <strong /> }} />
                 </div>
             )}
 
+            <div className="auth-heading">
+                <h1>{t('login.signInToAccount')}</h1>
+                <p>{t('login.welcomeBack')}</p>
+            </div>
+
             <form onSubmit={submit}>
                 <div className="mb-3">
                     <label className="form-label" htmlFor="membership_code">{t('login.membershipCode')}</label>
-                    <input
-                        id="membership_code"
-                        type="text"
-                        className="form-control"
-                        value={form.data.membership_code}
-                        onChange={(e) => form.setData('membership_code', e.target.value)}
-                        autoFocus
-                    />
+                    <div className="input-icon-field">
+                        <i className="bi bi-person input-icon" />
+                        <input
+                            id="membership_code"
+                            type="text"
+                            className="form-control"
+                            placeholder={t('placeholders.membershipCode')}
+                            autoComplete="username"
+                            value={form.data.membership_code}
+                            onChange={(e) => form.setData('membership_code', e.target.value)}
+                            autoFocus
+                        />
+                    </div>
                     {form.errors.membership_code && (
                         <div className="text-danger small mt-1">{form.errors.membership_code}</div>
                     )}
@@ -75,17 +85,20 @@ export default function Login({ client }: LoginProps) {
 
                 <div className="mb-3">
                     <label className="form-label" htmlFor="password">{t('login.password')}</label>
-                    <div className="input-group">
+                    <div className="input-icon-field has-action">
+                        <i className="bi bi-lock input-icon" />
                         <input
                             id="password"
                             type={showPassword ? 'text' : 'password'}
                             className="form-control"
+                            placeholder={t('placeholders.password')}
+                            autoComplete="current-password"
                             value={form.data.password}
                             onChange={(e) => form.setData('password', e.target.value)}
                         />
                         <button
                             type="button"
-                            className="btn btn-outline-primary"
+                            className="input-action"
                             aria-label={t('login.togglePasswordVisibility')}
                             onClick={() => setShowPassword(!showPassword)}
                         >
@@ -95,15 +108,20 @@ export default function Login({ client }: LoginProps) {
                     {form.errors.password && <div className="text-danger small mt-1">{form.errors.password}</div>}
                 </div>
 
-                <div className="form-check mb-3">
-                    <input
-                        id="remember"
-                        type="checkbox"
-                        className="form-check-input"
-                        checked={form.data.remember}
-                        onChange={(e) => form.setData('remember', e.target.checked)}
-                    />
-                    <label className="form-check-label" htmlFor="remember">{t('login.rememberMe')}</label>
+                <div className="d-flex align-items-center justify-content-between gap-3 mb-3">
+                    <div className="form-check mb-0">
+                        <input
+                            id="remember"
+                            type="checkbox"
+                            className="form-check-input"
+                            checked={form.data.remember}
+                            onChange={(e) => form.setData('remember', e.target.checked)}
+                        />
+                        <label className="form-check-label fw-normal text-ava-muted" htmlFor="remember">{t('login.rememberMe')}</label>
+                    </div>
+                    <a href="/forgot-password" className="text-ava-secondary text-decoration-none small fw-semibold">
+                        {t('login.forgotPassword')}
+                    </a>
                 </div>
 
                 {turnstileSiteKey && (
@@ -126,15 +144,13 @@ export default function Login({ client }: LoginProps) {
                     disabled={form.processing || (!!turnstileSiteKey && !form.data['cf-turnstile-response'])}
                 >
                     {t('login.signIn')}
+                    <i className="bi bi-arrow-right ms-2 rtl-flip" />
                 </button>
-
-                <div className="text-center mt-3">
-                    <a href="/forgot-password" className="text-ava-secondary text-decoration-none small">{t('login.forgotPassword')}</a>
-                </div>
             </form>
 
             <p className="text-center text-ava-muted text-tiny mt-4 mb-0">
-                {t('login.poweredBy')}
+                {t('login.needHelp')}{' '}
+                <a href="mailto:avarewase.dc@gmail.com" className="fw-semibold text-body">avarewase.dc@gmail.com</a>
             </p>
         </AuthLayout>
     )

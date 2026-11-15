@@ -1,6 +1,7 @@
 import { usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import LanguageSwitcher from '@/components/shared/LanguageSwitcher'
+import ThemeToggle from '@/components/shared/ThemeToggle'
 import UserMenu from '@/components/shared/UserMenu'
 import type { SharedProps } from '@/types'
 
@@ -24,7 +25,10 @@ export default function TopBar({ onToggleSidebar }: TopBarProps) {
                     <i className="bi bi-list" />
                 </button>
             )}
-            <LanguageSwitcher />
+            <div className="d-flex gap-2">
+                <LanguageSwitcher />
+                <ThemeToggle />
+            </div>
             <div className="ms-auto">
                 <UserMenu />
             </div>

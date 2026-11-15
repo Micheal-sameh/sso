@@ -49,6 +49,7 @@ return [
     'user_created' => 'User created successfully.',
     'user_updated' => 'User updated successfully.',
     'user_status_updated' => 'User status updated.',
+    'users_bulk_status_updated' => '{0} No accounts were changed.|{1} :count account updated.|[2,*] :count accounts updated.',
     'user_data_update_requirement_updated' => 'User data-update requirement updated.',
     'admin_access_updated' => 'Admin access updated.',
     'access_granted' => 'Access granted.',

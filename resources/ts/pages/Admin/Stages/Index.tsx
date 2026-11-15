@@ -3,7 +3,9 @@ import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import EmptyState from '@/components/shared/EmptyState'
 import type { Stage } from '@/types'
 
 interface IndexProps {
@@ -90,34 +92,26 @@ export default function Index({ stages }: IndexProps) {
                                         <span className="code-chip">{stage.code}</span>
                                     </td>
                                     <td className="text-ava-muted">{stage.users_count ?? 0}</td>
-                                    <td className="text-nowrap">
-                                        <div className="d-flex gap-2">
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => openEditModal(stage)}
-                                            >
-                                                {t('common:actions.edit')}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                disabled={(stage.users_count ?? 0) > 0}
-                                                title={
-                                                    (stage.users_count ?? 0) > 0
-                                                        ? t('stages.reassignBeforeDelete')
-                                                        : undefined
-                                                }
-                                                onClick={() => remove(stage)}
-                                            >
-                                                {t('common:actions.delete')}
-                                            </button>
-                                        </div>
+                                    <td className="text-end">
+                                        <ActionMenu
+                                            items={[
+                                                { label: t('common:actions.edit'), icon: 'bi-pencil', onClick: () => openEditModal(stage) },
+                                                {
+                                                    label: t('common:actions.delete'),
+                                                    icon: 'bi-trash',
+                                                    danger: true,
+                                                    disabled: (stage.users_count ?? 0) > 0,
+                                                    title: (stage.users_count ?? 0) > 0 ? t('stages.reassignBeforeDelete') : undefined,
+                                                    onClick: () => remove(stage),
+                                                },
+                                            ]}
+                                        />
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                    {stages.length === 0 && <EmptyState icon="bi-signpost-split" message={t('stages.empty')} />}
                 </div>
             </div>
 

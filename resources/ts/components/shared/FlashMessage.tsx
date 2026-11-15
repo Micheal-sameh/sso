@@ -10,6 +10,13 @@ const VARIANT_MAP: Record<string, string> = {
     info: 'info',
 }
 
+const ICON_MAP: Record<string, string> = {
+    success: 'bi-check-lg',
+    danger: 'bi-exclamation-octagon',
+    warning: 'bi-exclamation-triangle',
+    info: 'bi-info-circle',
+}
+
 export default function FlashMessage() {
     const { t } = useTranslation('common')
     const { flash } = usePage<SharedProps>().props
@@ -31,7 +38,10 @@ export default function FlashMessage() {
     return (
         <div className="toast-popup-wrapper">
             <div className={`alert alert-${variant} alert-dismissible fade show toast-popup shadow`} role="alert">
-                {flash.message}
+                <span className={`toast-icon toast-icon-${variant}`}>
+                    <i className={`bi ${ICON_MAP[variant] ?? 'bi-info-circle'}`} />
+                </span>
+                <span>{flash.message}</span>
                 <button type="button" className="btn-close" aria-label={t('actions.close')} onClick={() => setVisible(false)} />
             </div>
         </div>

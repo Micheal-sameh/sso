@@ -9,6 +9,10 @@
     "apps": "Apps",
     "more": "More",
     "manageSso": "Manage SSO",
+    "adminConsole": "Admin console",
+    "home": "Home",
+    "account": "Account",
+    "admin": "Admin",
     "users": "Users",
     "ssoAdmins": "SSO Admins",
     "stages": "Stages",
@@ -24,6 +28,18 @@
     "openMenu": "Open menu",
     "logOut": "Log out",
     "logOutConfirm": "Are you sure you want to log out?"
+  },
+  "brand": {
+    "securedBy": "Secured by Avarewase Identity",
+    "welcomeBack": "Welcome back, {{name}}",
+    "connectedServices": "Connected services",
+    "appsAvailable_one": "{{count}} available",
+    "appsAvailable_other": "{{count}} available",
+    "appSubtitle": "Access your community services",
+    "moreActions": "More actions"
+  },
+  "theme": {
+    "toggle": "Toggle dark mode"
   },
   "locale": {
     "english": "en",

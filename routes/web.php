@@ -96,6 +96,7 @@ Route::middleware('auth')->group(function () {
             Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
             Route::get('/admins', [UserController::class, 'admins'])->name('admins.index');
             Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::post('/users/bulk-status', [UserController::class, 'bulkStatus'])->name('users.bulk-status');
             Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
             Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
             Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');

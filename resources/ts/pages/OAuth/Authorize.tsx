@@ -19,40 +19,45 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
 
     return (
         <AuthLayout wide>
-            <div className="d-flex align-items-center justify-content-center gap-3 mb-4">
+            <div className="app-connection mb-4">
                 {client.logo ? (
-                    <img src={client.logo} alt={client.name} width={48} height={48} className="rounded" />
+                    <img src={client.logo} alt={client.name} width={48} height={48} className="app-card-logo" />
                 ) : (
-                    <div className="icon-circle-sm text-ava-muted">
-                        <i className="bi bi-app" />
-                    </div>
+                    <div className="app-card-logo app-card-logo-fallback">{client.name.slice(0, 2).toUpperCase()}</div>
                 )}
-                <i className="bi bi-arrow-right text-ava-secondary" />
+                <i className="bi bi-arrow-right" />
                 <AvaLogo size={48} />
             </div>
 
             <div className="text-center mb-4">
-                <h4 className="mb-1">{t('authorize.wantsToAccess', { clientName: client.name })}</h4>
-                {auth.user && (
-                    <>
-                        <p className="fw-semibold mb-0">
-                            {auth.user.name.trim().split(/\s+/)[0]} · {auth.user.membership_code.toUpperCase()}
-                        </p>
-                        {auth.user.email && <p className="text-ava-muted small mb-0">{auth.user.email}</p>}
-                    </>
-                )}
+                <h4 className="mb-0">{t('authorize.wantsToAccess', { clientName: client.name })}</h4>
             </div>
 
-            <div className="mb-4">
-                <p className="fw-semibold small mb-3">{t('authorize.thisWillAllow', { clientName: client.name })}</p>
-                <div className="d-flex flex-column gap-2">
-                    {scopes.map((scope) => (
-                        <div key={scope.id} className="d-flex align-items-start gap-2 p-3 rounded border bg-light">
-                            <i className="bi bi-check-circle-fill text-ava-secondary mt-1" />
-                            <span className="small">{scope.description}</span>
-                        </div>
-                    ))}
+            {auth.user && (
+                <div className="user-summary mb-4">
+                    {auth.user.avatar ? (
+                        <img src={auth.user.avatar} alt="" width={44} height={44} className="rounded-circle" />
+                    ) : (
+                        <AvatarInitials name={auth.user.name} size={44} />
+                    )}
+                    <div className="min-w-0">
+                        <div className="fw-semibold text-truncate">{auth.user.name}</div>
+                        <div className="user-summary-code">{auth.user.membership_code}</div>
+                        {auth.user.email && <div className="text-ava-muted small text-truncate">{auth.user.email}</div>}
+                    </div>
                 </div>
+            )}
+
+            <div className="mb-4">
+                <p className="fw-semibold small mb-2">{t('authorize.thisWillAllow', { clientName: client.name })}</p>
+                {scopes.map((scope) => (
+                    <div key={scope.id} className="permission-row">
+                        <span className="permission-check">
+                            <i className="bi bi-check-lg" />
+                        </span>
+                        <span>{scope.description}</span>
+                    </div>
+                ))}
             </div>
 
             {/*
@@ -61,8 +66,8 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                 cross-origin redirect can only be followed safely by a full navigation
                 — following it via fetch/XHR would be blocked by CORS.
             */}
-            <div className="d-flex gap-2">
-                <form method="POST" action="/oauth/authorize" className="flex-grow-1">
+            <div className="button-pair">
+                <form method="POST" action="/oauth/authorize">
                     <input type="hidden" name="_token" value={csrf_token} />
                     <input type="hidden" name="_method" value="DELETE" />
                     <input type="hidden" name="auth_token" value={authRequest} />
@@ -71,7 +76,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                         {t('authorize.deny')}
                     </button>
                 </form>
-                <form method="POST" action="/oauth/authorize" className="flex-grow-1">
+                <form method="POST" action="/oauth/authorize">
                     <input type="hidden" name="_token" value={csrf_token} />
                     <input type="hidden" name="auth_token" value={authRequest} />
                     <input type="hidden" name="state" value={state} />
@@ -82,7 +87,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
             </div>
 
             {other_accounts.length > 0 && (
-                <div className="mt-4">
+                <div className="mt-4 pt-3 border-top">
                     <p className="fw-semibold small mb-2">{t('authorize.switchAccount')}</p>
                     <div className="d-flex flex-column gap-2">
                         {other_accounts.map((account) => (
@@ -92,7 +97,7 @@ export default function Authorize({ client, scopes, authRequest, state }: Author
                                 <input type="hidden" name="intended" value={intended} />
                                 <button
                                     type="submit"
-                                    className="btn btn-light border w-100 d-flex align-items-center gap-3 p-2 text-start"
+                                    className="account-switch-btn"
                                 >
                                     <AvatarInitials name={account.name} size={40} />
                                     <span className="flex-grow-1 min-w-0">

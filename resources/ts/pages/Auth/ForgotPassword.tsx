@@ -19,9 +19,16 @@ export default function ForgotPassword() {
 
     return (
         <AuthLayout>
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
                 <AvaLogo size={56} />
-                <p className="text-ava-muted small mt-2 mb-0">{t('forgotPassword.resetYourPassword')}</p>
+            </div>
+            <a href="/login" className="back-link">
+                <i className="bi bi-arrow-left" />
+                {t('forgotPassword.backToSignIn')}
+            </a>
+            <div className="auth-heading">
+                <h1>{t('forgotPassword.resetYourPassword')}</h1>
+                <p>{t('forgotPassword.subtitle')}</p>
             </div>
 
             <form onSubmit={submit}>
@@ -31,6 +38,7 @@ export default function ForgotPassword() {
                         id="email"
                         type="email"
                         className="form-control"
+                        placeholder={t('placeholders.email')}
                         value={form.data.email}
                         onChange={(e) => form.setData('email', e.target.value)}
                         autoFocus
@@ -41,15 +49,7 @@ export default function ForgotPassword() {
                 <button type="submit" className="btn btn-primary w-100" disabled={form.processing}>
                     {t('forgotPassword.sendResetLink')}
                 </button>
-
-                <div className="text-center mt-3">
-                    <a href="/login" className="text-ava-secondary text-decoration-none small">{t('forgotPassword.backToSignIn')}</a>
-                </div>
             </form>
-
-            <p className="text-center text-ava-muted text-tiny mt-4 mb-0">
-                {t('forgotPassword.poweredBy')}
-            </p>
         </AuthLayout>
     )
 }

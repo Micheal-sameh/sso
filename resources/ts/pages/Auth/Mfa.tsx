@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
@@ -15,6 +15,14 @@ export default function Mfa() {
     const [mode, setMode] = useState<'totp' | 'recovery'>('totp')
     const form = useForm<MfaForm>({ code: '' })
 
+    // Auto-submit as soon as the 6th authenticator digit is entered (typed or pasted).
+    useEffect(() => {
+        if (mode === 'totp' && /^\d{6}$/.test(form.data.code) && !form.processing) {
+            form.post('/mfa')
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [form.data.code, mode])
+
     const submit = (e: FormEvent) => {
         e.preventDefault()
         form.post('/mfa')
@@ -22,15 +30,21 @@ export default function Mfa() {
 
     return (
         <AuthLayout>
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
                 <AvaLogo size={56} />
-                <div className="icon-circle text-ava-secondary mx-auto mb-3 mt-3">
-                    <i className="bi bi-shield-lock-fill" />
+            </div>
+            <button type="button" className="back-link" onClick={() => router.visit('/login')}>
+                <i className="bi bi-arrow-left" />
+                {t('mfa.returnToSignIn')}
+            </button>
+            <div className="text-center">
+                <div className="security-icon">
+                    <i className="bi bi-fingerprint" />
                 </div>
-                <h4>{t('mfa.title')}</h4>
-                <p className="text-ava-muted small mb-0">
-                    {mode === 'totp' ? t('mfa.totpDescription') : t('mfa.recoveryDescription')}
-                </p>
+            </div>
+            <div className="auth-heading">
+                <h1>{t('mfa.title')}</h1>
+                <p>{mode === 'totp' ? t('mfa.totpDescription') : t('mfa.recoveryDescription')}</p>
             </div>
 
             <form onSubmit={submit}>

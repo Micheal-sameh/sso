@@ -17,6 +17,7 @@ interface IndexProps {
 
 export default function Index({ users, stages, filters }: IndexProps) {
     const { t } = useTranslation('admin')
+    const { t: tc } = useTranslation('common')
     const [search, setSearch] = useState(filters.search ?? '')
     const [role, setRole] = useState(filters.role ?? '')
     const [stageId, setStageId] = useState(filters.stage_id ?? '')
@@ -43,6 +44,34 @@ export default function Index({ users, stages, filters }: IndexProps) {
 
         if (await confirm(message, { confirmLabel: user.is_admin ? t('actions.revoke') : t('actions.grant') })) {
             router.patch(`/admin/users/${user.id}/toggle-admin-access`, {}, { preserveScroll: true })
+        }
+    }
+
+    // Selection covers the current page only; your own account can't be selected
+    // because the server never applies a bulk action to it.
+    const [selected, setSelected] = useState<number[]>([])
+    const selectableIds = users.data.filter((u) => u.id !== auth.user?.id).map((u) => u.id)
+    const allSelected = selectableIds.length > 0 && selectableIds.every((id) => selected.includes(id))
+
+    useEffect(() => {
+        setSelected((prev) => prev.filter((id) => users.data.some((u) => u.id === id)))
+    }, [users.data])
+
+    const toggleSelected = (id: number) => {
+        setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]))
+    }
+
+    const bulkSetActive = async (active: boolean) => {
+        const message = active
+            ? t('users.bulk.confirmActivate', { count: selected.length })
+            : t('users.bulk.confirmDeactivate', { count: selected.length })
+
+        if (await confirm(message, { confirmLabel: active ? t('users.bulk.activate') : t('users.bulk.deactivate') })) {
+            router.post(
+                '/admin/users/bulk-status',
+                { ids: selected, active },
+                { preserveScroll: true, onSuccess: () => setSelected([]) },
+            )
         }
     }
 
@@ -111,15 +140,42 @@ export default function Index({ users, stages, filters }: IndexProps) {
                 </select>
             </div>
 
+            {selected.length > 0 && (
+                <div className="bulk-bar mb-3">
+                    <span className="fw-semibold">{t('users.bulk.selected', { count: selected.length })}</span>
+                    <div className="d-flex flex-wrap gap-2 ms-auto">
+                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => bulkSetActive(true)}>
+                            <i className="bi bi-check-circle me-1" />
+                            {t('users.bulk.activate')}
+                        </button>
+                        <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => bulkSetActive(false)}>
+                            <i className="bi bi-slash-circle me-1" />
+                            {t('users.bulk.deactivate')}
+                        </button>
+                        <button type="button" className="btn btn-sm btn-link text-ava-muted" onClick={() => setSelected([])}>
+                            {t('users.bulk.clear')}
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Table view (md and up) */}
             <div className="ava-card d-none d-md-block">
                 <div className="table-responsive">
                     <table className="table mb-0">
                         <thead>
                             <tr>
-                                <th />
+                                <th className="table-check-col">
+                                    <input
+                                        type="checkbox"
+                                        className="form-check-input"
+                                        aria-label={t('users.bulk.selectAll')}
+                                        checked={allSelected}
+                                        disabled={selectableIds.length === 0}
+                                        onChange={() => setSelected(allSelected ? [] : selectableIds)}
+                                    />
+                                </th>
                                 <th>{t('table.name')}</th>
-                                <th>{t('table.email')}</th>
                                 <th>{t('table.membership')}</th>
                                 <th>{t('table.stage')}</th>
                                 <th>{t('table.role')}</th>
@@ -136,21 +192,36 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                     className="cursor-pointer"
                                     onClick={() => router.visit(`/admin/users/${user.id}`)}
                                 >
-                                    <td>
-                                        {user.avatar ? (
-                                            <img
-                                                src={user.avatar}
-                                                alt={user.name}
-                                                width={32}
-                                                height={32}
-                                                className="rounded-circle"
-                                            />
-                                        ) : (
-                                            <AvatarInitials name={user.name} />
-                                        )}
+                                    <td className="table-check-col" onClick={(e) => e.stopPropagation()}>
+                                        <input
+                                            type="checkbox"
+                                            className="form-check-input"
+                                            aria-label={t('users.bulk.selectUser', { name: user.name })}
+                                            checked={selected.includes(user.id)}
+                                            disabled={user.id === auth.user?.id}
+                                            title={user.id === auth.user?.id ? t('users.bulk.ownAccountSkipped') : undefined}
+                                            onChange={() => toggleSelected(user.id)}
+                                        />
                                     </td>
-                                    <td className="fw-semibold">{user.name}</td>
-                                    <td className="text-ava-muted">{user.email}</td>
+                                    <td>
+                                        <div className="user-cell">
+                                            {user.avatar ? (
+                                                <img
+                                                    src={user.avatar}
+                                                    alt=""
+                                                    width={36}
+                                                    height={36}
+                                                    className="rounded-circle"
+                                                />
+                                            ) : (
+                                                <AvatarInitials name={user.name} size={36} />
+                                            )}
+                                            <div className="min-w-0">
+                                                <div className="fw-semibold">{user.name}</div>
+                                                <div className="user-cell-email cell-truncate-220 text-truncate">{user.email}</div>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td>
                                         <span className="code-chip text-uppercase">{user.membership_code}</span>
                                     </td>
@@ -164,29 +235,51 @@ export default function Index({ users, stages, filters }: IndexProps) {
                                     <td>
                                         <StatusBadge status={user.is_admin ? 'enabled' : 'disabled'} />
                                     </td>
-                                    <td className="text-nowrap" onClick={(e) => e.stopPropagation()}>
-                                        <button
-                                            type="button"
-                                            className="btn btn-sm btn-outline-primary me-2"
-                                            title={t('actions.editUser')}
-                                            onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
-                                        >
-                                            <i className="bi bi-pencil" />
-                                        </button>
-                                        <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
-                                            {t('actions.toggleActive')}
-                                        </button>
-                                        {auth.user?.can_manage_admin_access && (
+                                    <td className="text-end" onClick={(e) => e.stopPropagation()}>
+                                        <div className="dropdown">
                                             <button
                                                 type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                disabled={user.id === auth.user?.id}
-                                                title={user.id === auth.user?.id ? t('users.cantChangeOwnAdminAccess') : undefined}
-                                                onClick={() => toggleAdminAccess(user)}
+                                                className="action-menu-btn dropdown-toggle"
+                                                data-bs-toggle="dropdown"
+                                                data-bs-config='{"popperConfig":{"strategy":"fixed"}}'
+                                                aria-expanded="false"
+                                                aria-label={tc('brand.moreActions')}
                                             >
-                                                {user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin')}
+                                                <i className="bi bi-three-dots" />
                                             </button>
-                                        )}
+                                            <ul className="dropdown-menu dropdown-menu-end shadow">
+                                                <li>
+                                                    <button
+                                                        type="button"
+                                                        className="dropdown-item"
+                                                        onClick={() => router.visit(`/admin/users/${user.id}/edit`)}
+                                                    >
+                                                        <i className="bi bi-pencil me-2" />
+                                                        {t('actions.editUser')}
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button type="button" className="dropdown-item" onClick={() => toggle(user)}>
+                                                        <i className="bi bi-toggle2-on me-2" />
+                                                        {t('actions.toggleActive')}
+                                                    </button>
+                                                </li>
+                                                {auth.user?.can_manage_admin_access && (
+                                                    <li>
+                                                        <button
+                                                            type="button"
+                                                            className="dropdown-item"
+                                                            disabled={user.id === auth.user?.id}
+                                                            title={user.id === auth.user?.id ? t('users.cantChangeOwnAdminAccess') : undefined}
+                                                            onClick={() => toggleAdminAccess(user)}
+                                                        >
+                                                            <i className="bi bi-shield-check me-2" />
+                                                            {user.is_admin ? t('actions.revokeAdmin') : t('actions.grantAdmin')}
+                                                        </button>
+                                                    </li>
+                                                )}
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -205,6 +298,15 @@ export default function Index({ users, stages, filters }: IndexProps) {
                         onClick={() => router.visit(`/admin/users/${user.id}`)}
                     >
                         <div className="d-flex align-items-center gap-3 mb-2">
+                            <input
+                                type="checkbox"
+                                className="form-check-input mt-0"
+                                aria-label={t('users.bulk.selectUser', { name: user.name })}
+                                checked={selected.includes(user.id)}
+                                disabled={user.id === auth.user?.id}
+                                onClick={(e) => e.stopPropagation()}
+                                onChange={() => toggleSelected(user.id)}
+                            />
                             {user.avatar ? (
                                 <img src={user.avatar} alt={user.name} width={40} height={40} className="rounded-circle" />
                             ) : (

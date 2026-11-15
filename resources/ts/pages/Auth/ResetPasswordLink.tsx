@@ -29,10 +29,10 @@ export default function ResetPasswordLink({ status, token }: ResetPasswordLinkPr
                 <div className="text-center mb-4">
                     <AvaLogo size={56} />
                 </div>
-                <p className="text-center text-ava-muted mb-0">
-                    <i className="bi bi-exclamation-circle text-danger me-1" />
-                    {t('common:avatarUpload.linkExpired')}
-                </p>
+                <div className="security-icon security-icon-danger">
+                    <i className="bi bi-exclamation-circle" />
+                </div>
+                <p className="text-center text-ava-muted mb-0">{t('common:avatarUpload.linkExpired')}</p>
             </AuthLayout>
         )
     }
@@ -43,19 +43,22 @@ export default function ResetPasswordLink({ status, token }: ResetPasswordLinkPr
                 <div className="text-center mb-4">
                     <AvaLogo size={56} />
                 </div>
-                <p className="text-center text-ava-muted mb-0">
-                    <i className="bi bi-check-circle text-success me-1" />
-                    {t('resetPassword.success')}
-                </p>
+                <div className="security-icon security-icon-success">
+                    <i className="bi bi-check-lg" />
+                </div>
+                <p className="text-center text-ava-muted mb-0">{t('resetPassword.success')}</p>
             </AuthLayout>
         )
     }
 
     return (
         <AuthLayout>
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
                 <AvaLogo size={56} />
-                <p className="text-ava-muted small mt-2 mb-0">{t('resetPassword.chooseNewPassword')}</p>
+            </div>
+            <div className="auth-heading">
+                <h1>{t('resetPassword.chooseNewPassword')}</h1>
+                <p>{t('resetPassword.chooseSubtitle')}</p>
             </div>
 
             <form onSubmit={submit}>
@@ -65,6 +68,7 @@ export default function ResetPasswordLink({ status, token }: ResetPasswordLinkPr
                         id="password"
                         type="password"
                         className="form-control"
+                        placeholder={t('placeholders.newPassword')}
                         value={form.data.password}
                         onChange={(e) => form.setData('password', e.target.value)}
                         autoFocus
@@ -78,6 +82,7 @@ export default function ResetPasswordLink({ status, token }: ResetPasswordLinkPr
                         id="password_confirmation"
                         type="password"
                         className="form-control"
+                        placeholder={t('placeholders.confirmPassword')}
                         value={form.data.password_confirmation}
                         onChange={(e) => form.setData('password_confirmation', e.target.value)}
                     />

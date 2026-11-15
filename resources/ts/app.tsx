@@ -8,6 +8,9 @@ import type { SharedProps } from '@/types'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import '@/styles/app.css'
+import { initTheme } from '@/lib/theme'
+
+initTheme()
 
 const MIN_SPLASH_MS = 120
 const splashStartedAt = performance.now()

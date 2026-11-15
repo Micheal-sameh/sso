@@ -4,6 +4,7 @@ import AdminLayout from '@/components/layouts/AdminLayout'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
+import UserCell from '@/components/shared/UserCell'
 import type { PaginatedData, Token } from '@/types'
 
 interface IndexProps {
@@ -40,10 +41,7 @@ export default function Index({ tokens }: IndexProps) {
                         <tbody>
                             {tokens.data.map((token) => (
                                 <tr key={token.id}>
-                                    <td>
-                                        <div>{token.user?.name}</div>
-                                        <div className="text-ava-muted small">{token.user?.email}</div>
-                                    </td>
+                                    <td>{token.user ? <UserCell user={token.user} /> : '—'}</td>
                                     <td>{token.client.name}</td>
                                     <td>
                                         {token.scopes.map((scope) => (

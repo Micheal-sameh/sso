@@ -54,7 +54,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
                         <div className="modal-content">
                             <div className="modal-body pt-4">
                                 <div className="d-flex gap-3">
-                                    <div className={`icon-tile ${state.variant === 'primary' ? 'text-ava-secondary' : 'text-danger'}`}>
+                                    <div className={state.variant === 'primary' ? 'confirm-icon' : 'danger-icon'}>
                                         <i className={`bi ${state.variant === 'primary' ? 'bi-question-circle' : 'bi-exclamation-triangle'}`} />
                                     </div>
                                     <div>

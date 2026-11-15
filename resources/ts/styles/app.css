@@ -1,24 +1,47 @@
 :root {
-    --ava-primary: #1B2A4A;
-    --ava-primary-dark: #101A30;
-    --ava-primary-light: #2E4570;
-    --ava-secondary: #3B82F6;
-    --ava-tertiary: #DBEAFE;
-    --ava-dark: #0B1220;
+    /* Figma theme: charcoal + sage green + muted gold on warm ivory. */
+    --ava-primary: #343a40;
+    --ava-primary-dark: #23272b;
+    --ava-primary-light: #42635e;
+    --ava-secondary: #4f746e;
+    --ava-secondary-dark: #42635e;
+    --ava-tertiary: #e4ece9;
+    --ava-gold: #aa9369;
+    --ava-dark: #1b201f;
     --ava-white: #FFFFFF;
-    --ava-bg: #F8F9FA;
-    --ava-text: #0F172A;
-    --ava-muted: #64748B;
-    --ava-border: #E2E8F0;
-    --ava-success: #16A34A;
-    --ava-danger: #DC2626;
+    --ava-bg: #f4f3ef;
+    --ava-surface: #fdfcf8;
+    --ava-surface-2: #efefea;
+    --ava-text: #38403f;
+    --ava-muted: #6d7673;
+    --ava-border: #dedfd9;
+    --ava-success: #4c7865;
+    --ava-success-bg: #e9f1ec;
+    --ava-warning: #846b3f;
+    --ava-warning-bg: #f5f0e3;
+    --ava-danger: #a45c60;
+    --ava-danger-bg: #f6ecec;
+    --ava-shadow: 0 12px 36px rgba(36, 52, 81, 0.07);
+    --ava-shadow-sm: 0 4px 14px rgba(36, 52, 81, 0.055);
+    --ava-ring: rgba(79, 116, 110, 0.28);
+    --ava-ring-soft: rgba(79, 116, 110, 0.16);
+    --ava-hero-from: #ebeeea;
+    --ava-hero-to: #f2efe6;
 
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'Inter', 'IBM Plex Sans Arabic', system-ui, -apple-system, sans-serif;
 
     --bs-border-radius: 0.625rem;
     --bs-border-radius-lg: 0.875rem;
     --bs-border-radius-sm: 0.5rem;
     --bs-body-font-family: var(--font-sans);
+    --bs-body-bg: var(--ava-bg);
+    --bs-body-color: var(--ava-text);
+    --bs-border-color: var(--ava-border);
+    --bs-primary: var(--ava-primary);
+    --bs-primary-rgb: 52, 58, 64;
+    --bs-link-color: var(--ava-secondary);
+    --bs-secondary-color: var(--ava-muted);
+    --bs-tertiary-bg: var(--ava-surface-2);
 
     --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 
@@ -27,6 +50,72 @@
     --safe-left: env(safe-area-inset-left, 0px);
     --safe-right: env(safe-area-inset-right, 0px);
     --bottom-nav-height: 62px;
+}
+
+/* Dark theme (toggled via data-theme on <html>, see ThemeToggle.tsx). */
+html[data-theme="dark"] {
+    --ava-primary: #edf0f3;
+    --ava-primary-dark: #ffffff;
+    --ava-primary-light: #8eb5ad;
+    --ava-secondary: #78a39a;
+    --ava-secondary-dark: #8eb5ad;
+    --ava-tertiary: #2a3a37;
+    --ava-gold: #c4ab78;
+    --ava-dark: #121615;
+    --ava-bg: #1b201f;
+    --ava-surface: #242b29;
+    --ava-surface-2: #2c3431;
+    --ava-text: #e5e9e6;
+    --ava-muted: #aab3af;
+    --ava-border: #3d4743;
+    --ava-success: #83bea5;
+    --ava-success-bg: #253b34;
+    --ava-warning: #d0b476;
+    --ava-warning-bg: #3b3528;
+    --ava-danger: #d78c91;
+    --ava-danger-bg: #422f33;
+    --ava-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+    --ava-shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.16);
+    --ava-ring: rgba(120, 163, 154, 0.35);
+    --ava-ring-soft: rgba(120, 163, 154, 0.2);
+    --ava-hero-from: #232d2b;
+    --ava-hero-to: #2b2f2c;
+    color-scheme: dark;
+}
+
+/* Bootstrap loads after this file; the extra `html` keeps these mappings winning. */
+html:root,
+html[data-theme="dark"] {
+    --bs-body-bg: var(--ava-bg);
+    --bs-body-color: var(--ava-text);
+    --bs-border-color: var(--ava-border);
+    --bs-secondary-color: var(--ava-muted);
+    --bs-tertiary-bg: var(--ava-surface-2);
+    --bs-secondary-bg: var(--ava-surface-2);
+    --bs-emphasis-color: var(--ava-text);
+    --bs-link-color: var(--ava-secondary);
+    --bs-link-hover-color: var(--ava-primary);
+    --bs-body-font-family: var(--font-sans);
+}
+html[data-theme="dark"] {
+    --bs-card-bg: var(--ava-surface);
+}
+.dropdown-menu,
+.modal-content,
+.card,
+.list-group-item,
+.offcanvas {
+    --bs-dropdown-bg: var(--ava-surface);
+    --bs-dropdown-color: var(--ava-text);
+    --bs-dropdown-link-color: var(--ava-text);
+    --bs-dropdown-link-hover-bg: var(--ava-surface-2);
+    --bs-dropdown-border-color: var(--ava-border);
+    --bs-modal-bg: var(--ava-surface);
+    --bs-modal-color: var(--ava-text);
+    --bs-card-bg: var(--ava-surface);
+    --bs-list-group-bg: var(--ava-surface);
+    --bs-list-group-color: var(--ava-text);
+    --bs-list-group-border-color: var(--ava-border);
 }
 
 html {
@@ -43,7 +132,10 @@ html {
 }
 
 body {
-    overflow-x: hidden;
+    /* `clip`, not `hidden`: hidden on both html and body turns body into its
+       own scroll container, which silently breaks position: sticky headers
+       (.welcome-header, .topbar) so they scroll away with the page. */
+    overflow-x: clip;
     max-width: 100vw;
 }
 
@@ -97,7 +189,7 @@ body {
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: var(--ava-white);
+    background: var(--ava-surface);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
@@ -189,7 +281,7 @@ a:hover {
 h1, h2, h3 {
     font-family: var(--font-sans);
     font-weight: 700;
-    color: var(--ava-text);
+    color: var(--ava-primary);
     letter-spacing: -0.02em;
 }
 h1 { font-size: 2.25rem; line-height: 1.2; font-weight: 800; }
@@ -248,34 +340,67 @@ small, .small {
     transform: scale(0.97);
 }
 .btn:focus-visible {
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.28);
+    box-shadow: 0 0 0 0.2rem var(--ava-ring);
 }
 .btn-sm {
     padding: 0.35rem 0.75rem;
     font-size: 0.8125rem;
 }
-.btn-primary {
-    background: var(--ava-primary);
-    border-color: var(--ava-primary);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.12);
+html .btn.btn-primary {
+    /* Bootstrap loads after this file and styles buttons via these vars, so set
+       them here or the default bright #0d6efd blue wins. */
+    --bs-btn-bg: var(--ava-secondary);
+    --bs-btn-border-color: var(--ava-secondary);
+    --bs-btn-color: #fff;
+    --bs-btn-hover-bg: var(--ava-secondary-dark);
+    --bs-btn-hover-border-color: var(--ava-secondary-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-bg: var(--ava-secondary-dark);
+    --bs-btn-active-border-color: var(--ava-secondary-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-disabled-bg: var(--ava-secondary);
+    --bs-btn-disabled-border-color: var(--ava-secondary);
+    background: var(--ava-secondary);
+    border-color: var(--ava-secondary);
+    color: #fff;
+    box-shadow: 0 5px 12px var(--ava-ring-soft);
 }
-.btn-primary:hover,
-.btn-primary:focus {
-    background: var(--ava-primary-dark);
-    border-color: var(--ava-primary-dark);
-    box-shadow: 0 4px 14px rgba(27, 42, 74, 0.28);
+html .btn.btn-primary:hover,
+html .btn.btn-primary:focus,
+html .btn.btn-primary:active {
+    background: var(--ava-secondary-dark);
+    border-color: var(--ava-secondary-dark);
+    color: #fff;
+    box-shadow: 0 6px 16px var(--ava-ring);
     transform: translateY(-1px);
 }
-.btn-outline-primary {
+html[data-theme="dark"] .btn.btn-primary,
+html[data-theme="dark"] .btn.btn-primary:hover,
+html[data-theme="dark"] .btn.btn-primary:focus,
+html[data-theme="dark"] .btn.btn-primary:active {
+    color: #10161e;
+}
+html .btn.btn-outline-primary {
+    --bs-btn-color: var(--ava-primary);
+    --bs-btn-border-color: var(--ava-border);
+    --bs-btn-bg: var(--ava-surface);
+    --bs-btn-hover-bg: var(--ava-primary);
+    --bs-btn-hover-border-color: var(--ava-primary);
+    --bs-btn-hover-color: var(--ava-surface);
+    --bs-btn-active-bg: var(--ava-primary);
+    --bs-btn-active-border-color: var(--ava-primary);
+    --bs-btn-active-color: var(--ava-surface);
+    --bs-btn-disabled-color: var(--ava-muted);
+    --bs-btn-disabled-border-color: var(--ava-border);
     border-color: var(--ava-border);
     color: var(--ava-primary);
-    background: #fff;
+    background: var(--ava-surface);
 }
-.btn-outline-primary:hover {
+html .btn.btn-outline-primary:hover {
     background: var(--ava-primary);
     border-color: var(--ava-primary);
-    color: #fff;
-    box-shadow: 0 4px 14px rgba(27, 42, 74, 0.2);
+    color: var(--ava-surface);
+    box-shadow: 0 4px 14px var(--ava-ring-soft);
     transform: translateY(-1px);
 }
 .btn-link {
@@ -287,6 +412,8 @@ small, .small {
 /* ---------- Forms ---------- */
 
 .form-control, .form-select {
+    background-color: var(--ava-surface);
+    color: var(--ava-text);
     border-color: var(--ava-border);
     border-radius: var(--bs-border-radius);
     padding: 0.55rem 0.85rem;
@@ -295,10 +422,10 @@ small, .small {
 }
 .form-control:focus, .form-select:focus {
     border-color: var(--ava-secondary);
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
+    box-shadow: 0 0 0 0.2rem var(--ava-ring-soft);
 }
 .form-control::placeholder {
-    color: #94A3B8;
+    color: color-mix(in srgb, var(--ava-muted) 75%, transparent);
 }
 .form-check-input:checked {
     background-color: var(--ava-primary);
@@ -306,15 +433,15 @@ small, .small {
 }
 .form-check-input:focus {
     border-color: var(--ava-secondary);
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
+    box-shadow: 0 0 0 0.2rem var(--ava-ring-soft);
 }
 
 /* ---------- Cards ---------- */
 
 .ava-card {
-    background: #fff;
+    background: var(--ava-surface);
     border-radius: var(--bs-border-radius-lg);
-    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 20px rgba(15, 23, 42, 0.06);
+    box-shadow: var(--ava-shadow);
     border: 1px solid var(--ava-border);
     overflow: hidden;
     transition: box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out);
@@ -323,11 +450,11 @@ small, .small {
     height: 4px;
     width: 100%;
 }
-.card-accent-secondary { background: var(--ava-secondary); }
-.card-accent-primary { background: var(--ava-primary); }
+.card-accent-secondary,
+.card-accent-primary { background: linear-gradient(90deg, var(--ava-gold), var(--ava-secondary)); }
 
 .stat-tile {
-    background: #fff;
+    background: var(--ava-surface);
     border-radius: var(--bs-border-radius-lg);
     border: 1px solid var(--ava-border);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -358,8 +485,8 @@ small, .small {
 .auth-wrapper {
     min-height: 100vh;
     background:
-        radial-gradient(circle at 15% 15%, rgba(27, 42, 74, 0.06), transparent 40%),
-        radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.1), transparent 40%),
+        radial-gradient(circle at 15% 15%, color-mix(in srgb, var(--ava-gold) 12%, transparent), transparent 40%),
+        radial-gradient(circle at 85% 85%, color-mix(in srgb, var(--ava-secondary) 12%, transparent), transparent 40%),
         var(--ava-bg);
     display: flex;
     align-items: center;
@@ -382,7 +509,7 @@ small, .small {
     background: var(--ava-bg);
 }
 .welcome-header {
-    background: #fff;
+    background: var(--ava-surface);
     border-bottom: 1px solid var(--ava-border);
     position: sticky;
     top: 0;
@@ -390,8 +517,8 @@ small, .small {
 }
 .welcome-hero {
     background:
-        radial-gradient(circle at 15% 15%, rgba(27, 42, 74, 0.06), transparent 40%),
-        radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.1), transparent 40%);
+        radial-gradient(circle at 15% 15%, color-mix(in srgb, var(--ava-gold) 12%, transparent), transparent 40%),
+        radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--ava-secondary) 12%, transparent), transparent 40%);
 }
 
 /* ---------- Flash toast popup ---------- */
@@ -432,7 +559,7 @@ small, .small {
        last link. 100dvh tracks the actual visible viewport. */
     height: 100vh;
     height: 100dvh;
-    background: #fff;
+    background: var(--ava-surface);
     border-right: 1px solid var(--ava-border);
     position: fixed;
     top: 0;
@@ -600,7 +727,7 @@ small, .small {
     top: 0;
     z-index: 10;
     padding-top: calc(0.75rem + max(var(--safe-top), 24px));
-    background: rgba(255, 255, 255, 0.85);
+    background: color-mix(in srgb, var(--ava-surface) 88%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
 }
@@ -614,7 +741,7 @@ small, .small {
     bottom: 0;
     z-index: 1030;
     display: flex;
-    background: rgba(255, 255, 255, 0.92);
+    background: color-mix(in srgb, var(--ava-surface) 94%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid var(--ava-border);
@@ -687,14 +814,14 @@ small, .small {
     border-radius: 50%;
 }
 .status-pill-active, .status-pill-enabled {
-    background: rgba(22, 163, 74, 0.1);
+    background: var(--ava-success-bg);
     color: var(--ava-success);
 }
 .status-pill-active .status-pill-dot, .status-pill-enabled .status-pill-dot {
     background: var(--ava-success);
 }
 .status-pill-revoked, .status-pill-disabled {
-    background: rgba(220, 38, 38, 0.1);
+    background: var(--ava-danger-bg);
     color: var(--ava-danger);
 }
 .status-pill-revoked .status-pill-dot, .status-pill-disabled .status-pill-dot {
@@ -702,24 +829,24 @@ small, .small {
 }
 .status-pill-internal {
     background: var(--ava-tertiary);
-    color: #1D4ED8;
+    color: var(--ava-secondary-dark);
 }
 .status-pill-internal .status-pill-dot {
     background: var(--ava-secondary);
 }
 .status-pill-external {
-    background: rgba(27, 42, 74, 0.08);
+    background: color-mix(in srgb, var(--ava-primary) 9%, transparent);
     color: var(--ava-primary);
 }
 .status-pill-external .status-pill-dot {
     background: var(--ava-primary);
 }
 .status-pill-warning {
-    background: rgba(217, 119, 6, 0.1);
-    color: #B45309;
+    background: var(--ava-warning-bg);
+    color: var(--ava-warning);
 }
 .status-pill-warning .status-pill-dot {
-    background: #B45309;
+    background: var(--ava-warning);
 }
 
 .otp-box {
@@ -733,7 +860,7 @@ small, .small {
 }
 .otp-box:focus {
     border-color: var(--ava-secondary);
-    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.16);
+    box-shadow: 0 0 0 0.2rem var(--ava-ring-soft);
 }
 .otp-divider {
     color: var(--ava-muted);
@@ -822,7 +949,7 @@ small, .small {
     color: #fff;
 }
 .step-badge-pending {
-    background: #fff;
+    background: var(--ava-surface);
     border: 2px solid var(--ava-primary);
     color: var(--ava-primary);
 }
@@ -834,7 +961,7 @@ small, .small {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--ava-tertiary), rgba(219, 234, 254, 0.3));
+    background: var(--ava-tertiary);
     font-size: 28px;
 }
 
@@ -850,7 +977,7 @@ small, .small {
 }
 
 .avatar-initials {
-    background: linear-gradient(135deg, var(--ava-primary), var(--ava-primary-dark));
+    background: #343a40;
     color: #fff;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -869,7 +996,7 @@ small, .small {
 /* ---------- Mobile record cards ---------- */
 
 .record-card {
-    background: #fff;
+    background: var(--ava-surface);
     border-radius: var(--bs-border-radius-lg);
     border: 1px solid var(--ava-border);
     box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -936,7 +1063,7 @@ small, .small {
     transition: background-color 0.15s ease;
 }
 .table tbody tr:hover {
-    background-color: rgba(59, 130, 246, 0.04);
+    background-color: var(--ava-surface-2);
 }
 
 code {
@@ -961,15 +1088,15 @@ code {
     font-weight: 600;
     padding: 4px 12px;
     border-radius: 999px;
-    background: rgba(15, 23, 42, 0.06);
+    background: var(--ava-surface-2);
     color: var(--ava-text);
 }
 .role-chip-super {
     background: var(--ava-tertiary);
-    color: #1D4ED8;
+    color: var(--ava-secondary-dark);
 }
 .role-chip-admin {
-    background: rgba(27, 42, 74, 0.08);
+    background: color-mix(in srgb, var(--ava-primary) 9%, transparent);
     color: var(--ava-primary);
 }
 .role-chip-secretary {
@@ -989,7 +1116,7 @@ code {
 }
 
 .notification-unread {
-    background: rgba(219, 234, 254, 0.4);
+    background: var(--ava-tertiary);
 }
 
 .notification-dropdown-menu {
@@ -1025,3 +1152,416 @@ code {
     font-size: 0.875rem;
     padding: 6px 14px;
 }
+
+/* ---------- Figma theme accents ---------- */
+
+.text-ava-gold { color: var(--ava-gold); }
+.eyebrow {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--ava-gold);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+html[data-theme="dark"] .avatar-initials { background: #42635e; }
+html[data-theme="dark"] .step-badge-active { color: var(--ava-bg); }
+.stat-tile-value { color: var(--ava-primary); }
+.table {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--ava-text);
+    --bs-table-border-color: var(--ava-border);
+}
+.table thead th { background: var(--ava-surface-2); }
+
+.theme-toggle {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    display: inline-grid;
+    place-items: center;
+}
+
+/* ---------- Figma layout components ---------- */
+
+/* Auth shell: brand glow + trust note */
+.auth-wrapper { position: relative; flex-direction: column; overflow: hidden; }
+.auth-card, .auth-card-wide { position: relative; z-index: 1; }
+.trust-note {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    color: var(--ava-muted);
+    font-size: 0.75rem;
+}
+
+/* Inputs with a leading icon */
+.input-icon-field { position: relative; }
+.input-icon-field > .input-icon {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 14px;
+    display: flex;
+    align-items: center;
+    color: var(--ava-muted);
+    pointer-events: none;
+}
+.input-icon-field > .form-control { padding-inline-start: 2.5rem; min-height: 48px; }
+.input-icon-field.has-action > .form-control { padding-inline-end: 3rem; }
+.input-icon-field > .input-action {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-end: 0;
+    width: 46px;
+    border: 0;
+    background: transparent;
+    color: var(--ava-muted);
+}
+
+/* Request banner gets an icon */
+.app-requesting-banner { display: flex; align-items: center; gap: 10px; }
+.app-requesting-banner > i { flex: 0 0 auto; color: var(--ava-secondary); }
+
+/* Consent screen */
+.user-summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: var(--ava-surface-2);
+    border: 1px solid var(--ava-border);
+}
+.user-summary-code {
+    color: var(--ava-muted);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.permission-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ava-muted);
+    font-size: 0.875rem;
+    padding: 6px 0;
+}
+.permission-check {
+    flex: 0 0 auto;
+    width: 23px;
+    height: 23px;
+    display: grid;
+    place-items: center;
+    color: var(--ava-success);
+    background: var(--ava-success-bg);
+    border-radius: 50%;
+    font-size: 0.8rem;
+}
+.button-pair {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 10px;
+}
+.button-pair form { margin: 0; }
+.button-pair .btn { width: 100%; }
+@media (max-width: 575.98px) {
+    .button-pair { grid-template-columns: 1fr; }
+    .button-pair > :last-child { order: -1; }
+}
+.account-switch-btn {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--ava-border);
+    border-radius: 11px;
+    color: var(--ava-text);
+    background: var(--ava-surface);
+    text-align: start;
+}
+.account-switch-btn:hover { background: var(--ava-surface-2); }
+.app-connection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 17px;
+    color: var(--ava-muted);
+}
+
+/* Launcher hero + app cards */
+.hero-banner {
+    min-height: 285px;
+    padding: 48px 60px;
+    border-radius: 20px;
+    color: #fff;
+    background: linear-gradient(125deg, #3f5955, #55756d);
+    box-shadow: var(--ava-shadow);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    overflow: hidden;
+}
+.hero-banner > div:first-child { max-width: 660px; }
+.hero-banner h1, .hero-banner h2 { color: #fff; font-size: clamp(2.25rem, 5vw, 3.5rem); line-height: 1.08; letter-spacing: -0.05em; }
+.hero-banner p { color: #d8e3de; font-size: 1.125rem; max-width: 570px; }
+.hero-banner p strong { color: #fff; }
+.hero-banner .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 11px;
+    border-radius: 999px;
+    color: #d9e9e2;
+    background: rgba(255, 255, 255, 0.1);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+html .hero-banner .btn.btn-outline-primary {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+}
+html .hero-banner .btn.btn-outline-primary:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.hero-banner .hero-art {
+    flex: 0 0 auto;
+    width: 190px;
+    height: 190px;
+    display: grid;
+    place-items: center;
+    position: relative;
+}
+.hero-banner .hero-art > i {
+    width: 110px;
+    height: 110px;
+    display: grid;
+    place-items: center;
+    border-radius: 34px;
+    color: var(--ava-gold);
+    font-size: 2.6rem;
+    background: rgba(255, 255, 255, 0.09);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transform: rotate(-5deg);
+}
+.hero-banner .hero-orbit {
+    position: absolute;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: var(--ava-secondary);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.22);
+}
+.hero-banner .hero-orbit-one { top: 8px; inset-inline-end: 7px; }
+.hero-banner .hero-orbit-two { bottom: 3px; inset-inline-start: 5px; background: var(--ava-gold); }
+@media (max-width: 767.98px) {
+    .hero-banner { padding: 30px 24px; flex-direction: column; align-items: flex-start; }
+    .hero-banner .hero-art { align-self: center; height: 130px; }
+}
+.app-card {
+    padding: 22px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid var(--ava-border);
+    border-radius: 15px;
+    background: var(--ava-surface);
+    box-shadow: var(--ava-shadow-sm);
+    height: 100%;
+}
+.app-card-logo {
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    object-fit: cover;
+}
+.app-card-logo-fallback {
+    display: grid;
+    place-items: center;
+    color: #fff;
+    background: var(--ava-secondary-dark);
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+.app-card-title { font-size: 1.0625rem; margin: 0; }
+.app-card-subtitle { color: var(--ava-muted); font-size: 0.8125rem; }
+.app-card-open { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; }
+.section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.section-heading h2, .section-heading h3 { margin: 0; font-size: 1.5rem; }
+.feature-card {
+    padding: 23px;
+    height: 100%;
+    border: 1px solid var(--ava-border);
+    border-radius: 14px;
+    background: var(--ava-surface);
+}
+
+/* Profile hero + panels */
+.panel {
+    padding: 26px;
+    border: 1px solid var(--ava-border);
+    border-radius: 15px;
+    background: var(--ava-surface);
+    box-shadow: var(--ava-shadow-sm);
+}
+.chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+
+/* Admin */
+.admin-eyebrow { margin-bottom: 2px; }
+.user-cell { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.user-cell-email { color: var(--ava-muted); font-size: 0.75rem; }
+.action-menu-btn {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+    color: var(--ava-muted);
+    background: transparent;
+}
+.action-menu-btn:hover, .action-menu-btn:focus { background: var(--ava-surface-2); color: var(--ava-text); }
+.action-menu-btn::after { display: none; }
+.welcome-header { background: var(--ava-surface); }
+
+/* Figma login */
+.auth-heading { text-align: center; margin: 4px 0 24px; }
+.auth-heading h1 {
+    font-size: clamp(1.55rem, 3vw, 1.875rem);
+    line-height: 1.25;
+    letter-spacing: -0.035em;
+    margin: 0;
+}
+.auth-heading p { color: var(--ava-muted); margin: 8px 0 0; }
+[dir="rtl"] .rtl-flip { transform: scaleX(-1); display: inline-block; }
+.auth-card .btn-primary, .auth-card-wide .btn-primary { min-height: 48px; }
+
+/* Figma auth sub-pages */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    padding: 3px 0;
+    border: 0;
+    background: none;
+    color: var(--ava-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+.back-link:hover { color: var(--ava-text); }
+[dir="rtl"] .back-link i { transform: scaleX(-1); }
+.security-icon {
+    margin: 0 auto 16px;
+    width: 58px;
+    height: 58px;
+    border-radius: 17px;
+    display: grid;
+    place-items: center;
+    font-size: 1.5rem;
+    color: var(--ava-secondary);
+    background: color-mix(in srgb, var(--ava-secondary) 11%, var(--ava-surface));
+}
+.security-icon-success { color: var(--ava-success); background: var(--ava-success-bg); }
+.security-icon-danger { color: var(--ava-danger); background: var(--ava-danger-bg); }
+.otp-box { border-radius: 10px; background: var(--ava-surface); color: var(--ava-text); }
+
+/* Toast */
+.toast-popup.alert {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 13px 44px 13px 13px;
+    border: 1px solid var(--ava-border);
+    border-radius: 12px;
+    background: var(--ava-surface);
+    color: var(--ava-text);
+    box-shadow: var(--ava-shadow);
+}
+[dir="rtl"] .toast-popup.alert { padding: 13px 13px 13px 44px; }
+.toast-icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+}
+.toast-icon-success { color: var(--ava-success); background: var(--ava-success-bg); }
+.toast-icon-danger { color: var(--ava-danger); background: var(--ava-danger-bg); }
+.toast-icon-warning { color: var(--ava-warning); background: var(--ava-warning-bg); }
+.toast-icon-info { color: var(--ava-secondary); background: var(--ava-tertiary); }
+
+/* Confirm dialog icon */
+.danger-icon, .confirm-icon {
+    flex: 0 0 auto;
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font-size: 1.2rem;
+}
+.danger-icon { color: var(--ava-danger); background: var(--ava-danger-bg); }
+.confirm-icon { color: var(--ava-secondary); background: var(--ava-tertiary); }
+
+/* Profile side panels */
+.panel-title { font-size: 1.0625rem; margin: 0; }
+.status-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+
+/* Bulk selection */
+.bulk-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px 16px;
+    border: 1px solid var(--ava-border);
+    border-radius: var(--bs-border-radius);
+    background: var(--ava-tertiary);
+    font-size: 0.875rem;
+}
+.table-check-col { width: 44px; padding-inline-end: 0 !important; }
+.form-check-input { background-color: var(--ava-surface); border-color: var(--ava-border); }
+.form-check-input:checked { background-color: var(--ava-secondary); border-color: var(--ava-secondary); }
+.app-card-logo-sm { width: 32px; height: 32px; border-radius: 9px; font-size: 0.7rem; flex: 0 0 auto; }
+
+/* Empty state (Figma) */
+.empty-panel {
+    min-height: 220px;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px dashed var(--ava-border);
+    border-radius: 15px;
+    background: var(--ava-surface);
+}
+.empty-illustration {
+    width: 84px;
+    height: 70px;
+    margin-bottom: 16px;
+    display: grid;
+    place-items: center;
+    font-size: 1.9rem;
+    color: var(--ava-secondary);
+    background: color-mix(in srgb, var(--ava-secondary) 9%, var(--ava-surface));
+    border-radius: 24px;
+}
+
+/* Figma: dark text on the light sage primary button in dark mode. */
+html[data-theme="dark"] .btn.btn-primary { color: #17211f; }

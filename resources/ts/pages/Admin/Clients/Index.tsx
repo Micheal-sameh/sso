@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
 import Pagination from '@/components/shared/Pagination'
 import StatusBadge from '@/components/shared/StatusBadge'
@@ -310,19 +311,13 @@ export default function Index({ clients, stages, users, groups, syncClientIds, c
                                         <StatusBadge status={client.oauth_client.revoked ? 'revoked' : 'active'} />
                                     </td>
                                     <td className="text-truncate cell-truncate-220">{client.oauth_client.redirect_uris[0]}</td>
-                                    <td>
-                                        <div className="d-flex gap-2">
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => openEditModal(client)}
-                                            >
-                                                {t('common:actions.edit')}
-                                            </button>
-                                            <button type="button" className="btn btn-sm btn-outline-primary" onClick={() => revoke(client)}>
-                                                {t('actions.revoke')}
-                                            </button>
-                                        </div>
+                                    <td className="text-end">
+                                        <ActionMenu
+                                            items={[
+                                                { label: t('common:actions.edit'), icon: 'bi-pencil', onClick: () => openEditModal(client) },
+                                                { label: t('actions.revoke'), icon: 'bi-slash-circle', danger: true, onClick: () => revoke(client) },
+                                            ]}
+                                        />
                                     </td>
                                 </tr>
                             ))}

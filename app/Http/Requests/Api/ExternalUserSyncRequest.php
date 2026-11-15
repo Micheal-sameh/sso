@@ -24,8 +24,8 @@ class ExternalUserSyncRequest extends FormRequest
             'is_active' => ['sometimes', 'boolean'],
             'stage' => ['sometimes', 'nullable', 'string', 'max:255'],
             'stage_name' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'groups' => ['sometimes', 'array'],
-            'groups.*' => ['string', 'max:255'],
+            'groups' => ['sometimes', 'array', 'max:20'],
+            'groups.*' => ['string', 'max:255', 'distinct'],
         ];
     }
 }

@@ -207,6 +207,18 @@
     "confirmRevoke": "Revoke this token?"
   },
   "users": {
+    "bulk": {
+      "selectAll": "Select all on this page",
+      "selectUser": "Select {{name}}",
+      "selected_one": "{{count}} selected",
+      "selected_other": "{{count}} selected",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "clear": "Clear",
+      "confirmActivate": "Activate {{count}} selected accounts?",
+      "confirmDeactivate": "Deactivate {{count}} selected accounts? They will be signed out of connected apps.",
+      "ownAccountSkipped": "Your own account is never changed by a bulk action."
+    },
     "createTitle": "Create User",
     "editTitle": "Edit User",
     "indexTitle": "Users",

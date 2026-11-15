@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, router, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import AvatarInitials from '@/components/shared/AvatarInitials'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import EmptyState from '@/components/shared/EmptyState'
+import UserCell from '@/components/shared/UserCell'
 import Pagination from '@/components/shared/Pagination'
 import RoleChip from '@/components/shared/RoleChip'
 import StatusBadge from '@/components/shared/StatusBadge'
@@ -77,12 +80,7 @@ export default function Index({ admins, filters }: IndexProps) {
             </div>
 
             {admins.data.length === 0 ? (
-                <div className="ava-card">
-                    <div className="text-center py-5">
-                        <i className="bi bi-shield-check text-ava-muted icon-fs-48" />
-                        <p className="text-ava-muted mt-3 mb-0">{t('admins.empty')}</p>
-                    </div>
-                </div>
+                <EmptyState icon="bi-shield-check" message={t('admins.empty')} />
             ) : (
                 <>
                     {/* Table view (md and up) */}
@@ -91,9 +89,7 @@ export default function Index({ admins, filters }: IndexProps) {
                             <table className="table mb-0">
                                 <thead>
                                     <tr>
-                                        <th />
                                         <th>{t('table.name')}</th>
-                                        <th>{t('table.email')}</th>
                                         <th>{t('table.membership')}</th>
                                         <th>{t('table.stage')}</th>
                                         <th>{t('table.role')}</th>
@@ -106,24 +102,10 @@ export default function Index({ admins, filters }: IndexProps) {
                                     {admins.data.map((user) => (
                                         <tr key={user.id}>
                                             <td>
-                                                {user.avatar ? (
-                                                    <img
-                                                        src={user.avatar}
-                                                        alt={user.name}
-                                                        width={32}
-                                                        height={32}
-                                                        className="rounded-circle"
-                                                    />
-                                                ) : (
-                                                    <AvatarInitials name={user.name} />
-                                                )}
-                                            </td>
-                                            <td className="fw-semibold">
                                                 <Link href={`/admin/users/${user.id}`} className="text-reset text-decoration-none">
-                                                    {user.name}
+                                                    <UserCell user={user} />
                                                 </Link>
                                             </td>
-                                            <td className="text-ava-muted">{user.email}</td>
                                             <td>
                                                 <span className="code-chip text-uppercase">{user.membership_code}</span>
                                             </td>
@@ -135,27 +117,28 @@ export default function Index({ admins, filters }: IndexProps) {
                                                 <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
                                             </td>
                                             <td className="text-ava-muted text-tiny">{user.email_verified_at}</td>
-                                            <td className="text-nowrap">
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-sm btn-outline-primary me-2"
-                                                    onClick={() => router.visit(`/admin/users/${user.id}`)}
-                                                >
-                                                    {t('actions.view')}
-                                                </button>
-                                                <button type="button" className="btn btn-sm btn-outline-primary me-2" onClick={() => toggle(user)}>
-                                                    {t('actions.toggleActive')}
-                                                </button>
-                                                {auth.user?.can_manage_admin_access && user.role !== 'superadmin' && (
-                                                    <button
-                                                        type="button"
-                                                        className="btn btn-sm btn-outline-primary"
-                                                        disabled={user.id === auth.user?.id}
-                                                        onClick={() => revokeAdminAccess(user)}
-                                                    >
-                                                        {t('actions.revokeAdmin')}
-                                                    </button>
-                                                )}
+                                            <td className="text-end">
+                                                <ActionMenu
+                                                    items={[
+                                                        {
+                                                            label: t('actions.view'),
+                                                            icon: 'bi-eye',
+                                                            onClick: () => router.visit(`/admin/users/${user.id}`),
+                                                        },
+                                                        { label: t('actions.toggleActive'), icon: 'bi-toggle2-on', onClick: () => toggle(user) },
+                                                        ...(auth.user?.can_manage_admin_access && user.role !== 'superadmin'
+                                                            ? [
+                                                                  {
+                                                                      label: t('actions.revokeAdmin'),
+                                                                      icon: 'bi-shield-x',
+                                                                      danger: true,
+                                                                      disabled: user.id === auth.user?.id,
+                                                                      onClick: () => revokeAdminAccess(user),
+                                                                  },
+                                                              ]
+                                                            : []),
+                                                    ]}
+                                                />
                                             </td>
                                         </tr>
                                     ))}

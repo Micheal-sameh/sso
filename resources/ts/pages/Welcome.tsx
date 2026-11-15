@@ -1,5 +1,6 @@
 import { Link, usePage } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
+import AppCard from '@/components/shared/AppCard'
 import AvaLogo from '@/components/shared/AvaLogo'
 import UserMenu from '@/components/shared/UserMenu'
 import type { SharedProps } from '@/types'
@@ -39,28 +40,42 @@ export default function Welcome({ apps = [] }: { apps?: AccessibleApp[] }) {
                 )}
             </header>
 
-            <section className="welcome-hero text-center py-5 px-3">
-                <span className="role-chip mb-3 d-inline-block">{t('welcome.eyebrow')}</span>
-                <h1 className="mb-3">{t('welcome.heroTitle')}</h1>
-                <p className="text-ava-muted mx-auto mb-4 max-w-560">
-                    {t('welcome.heroDescription')}
-                </p>
-                {user && (
-                    <p className="mx-auto mb-4 max-w-560">
-                        <strong>{t('welcome.signedInAs', { name: user.name })}</strong>
-                        <br />
-                        <span className="text-ava-muted">{t('welcome.signedInHint')}</span>
-                    </p>
-                )}
-                <div className="d-flex gap-2 justify-content-center flex-wrap">
-                    {!user && (
-                        <Link href="/login" className="btn btn-primary">
-                            {t('welcome.signInToYourAccount')}
-                        </Link>
-                    )}
-                    <a href="#features" className="btn btn-outline-primary">
-                        {t('welcome.learnMore')}
-                    </a>
+            <section className="container pt-4 pt-md-5 pb-4">
+                <div className="hero-banner">
+                    <div>
+                        <span className="hero-pill">
+                            <i className="bi bi-stars" />
+                            {t('welcome.eyebrow')}
+                        </span>
+                        <h1 className="mb-3">{t('welcome.heroTitle')}</h1>
+                        <p className="mb-4">{t('welcome.heroDescription')}</p>
+                        {user && (
+                            <p className="mb-4">
+                                <strong className="text-white">{t('welcome.signedInAs', { name: user.name })}</strong>
+                                <br />
+                                {t('welcome.signedInHint')}
+                            </p>
+                        )}
+                        <div className="d-flex gap-2 flex-wrap">
+                            {!user && (
+                                <Link href="/login" className="btn btn-primary">
+                                    {t('welcome.signInToYourAccount')}
+                                </Link>
+                            )}
+                            <a href="#features" className="btn btn-outline-primary">
+                                {t('welcome.learnMore')}
+                            </a>
+                        </div>
+                    </div>
+                    <div className="hero-art d-none d-md-grid">
+                        <i className="bi bi-shield-check" />
+                        <span className="hero-orbit hero-orbit-one">
+                            <i className="bi bi-person" />
+                        </span>
+                        <span className="hero-orbit hero-orbit-two">
+                            <i className="bi bi-key" />
+                        </span>
+                    </div>
                 </div>
             </section>
 
@@ -73,19 +88,7 @@ export default function Welcome({ apps = [] }: { apps?: AccessibleApp[] }) {
                         <div className="row g-3">
                             {apps.map((app) => (
                                 <div key={app.id} className="col-sm-6 col-lg-4">
-                                    <div className="ava-card p-3 h-100 d-flex align-items-center gap-3">
-                                        {app.logo ? (
-                                            <img src={app.logo} alt="" width={40} height={40} className="rounded" />
-                                        ) : (
-                                            <div className="icon-tile text-ava-secondary">
-                                                <i className="bi bi-grid" />
-                                            </div>
-                                        )}
-                                        <span className="fw-semibold flex-grow-1">{app.name}</span>
-                                        <a href={app.url} className="btn btn-primary btn-sm">
-                                            {t('welcome.openApp')}
-                                        </a>
-                                    </div>
+                                    <AppCard app={app} />
                                 </div>
                             ))}
                         </div>
@@ -97,7 +100,7 @@ export default function Welcome({ apps = [] }: { apps?: AccessibleApp[] }) {
                 <div className="row g-4">
                     {FEATURE_KEYS.map((key) => (
                         <div key={key} className="col-md-6 col-lg-4">
-                            <div className="ava-card p-4 h-100">
+                            <div className="feature-card">
                                 <div className="icon-tile text-ava-secondary mb-3">
                                     <i className={`bi ${FEATURE_ICONS[key]}`} />
                                 </div>

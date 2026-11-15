@@ -1,7 +1,8 @@
 import { router } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
-import AvatarInitials from '@/components/shared/AvatarInitials'
+import EmptyState from '@/components/shared/EmptyState'
+import UserCell from '@/components/shared/UserCell'
 import { calculateAge, formatDateDMY } from '@/lib/date'
 import type { User } from '@/types'
 
@@ -64,7 +65,6 @@ export default function Index({ users, date, today }: IndexProps) {
                     <table className="table mb-0">
                         <thead>
                             <tr>
-                                <th />
                                 <th>{t('table.name')}</th>
                                 <th>{t('table.stage')}</th>
                                 <th>{t('birthdays.table.dob')}</th>
@@ -81,14 +81,8 @@ export default function Index({ users, date, today }: IndexProps) {
                                     onClick={() => router.visit(`/admin/users/${user.id}`)}
                                 >
                                     <td>
-                                        {user.avatar ? (
-                                            <img src={user.avatar} alt={user.name} width={32} height={32} className="rounded-circle" />
-                                        ) : (
-                                            <AvatarInitials name={user.name} />
-                                        )}
-                                    </td>
-                                    <td className="fw-semibold">
-                                        {user.name} {isToday && '🎉'}
+                                        <UserCell user={user} />
+                                        {isToday && <span className="ms-1">🎉</span>}
                                     </td>
                                     <td>{user.stage.name}</td>
                                     <td className="text-ava-muted">{formatDateDMY(user.date_of_birth)}</td>
@@ -107,15 +101,9 @@ export default function Index({ users, date, today }: IndexProps) {
                                     </td>
                                 </tr>
                             ))}
-                            {users.length === 0 && (
-                                <tr>
-                                    <td colSpan={6} className="text-center text-ava-muted py-4">
-                                        {t('birthdays.empty')}
-                                    </td>
-                                </tr>
-                            )}
                         </tbody>
                     </table>
+                    {users.length === 0 && <EmptyState icon="bi-cake2" message={t('birthdays.empty')} />}
                 </div>
             </div>
         </AdminLayout>

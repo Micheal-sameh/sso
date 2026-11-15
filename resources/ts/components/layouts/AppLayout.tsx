@@ -26,11 +26,15 @@ export default function AppLayout({ children, title }: AppLayoutProps) {
         { href: '/account/apps', label: t('nav.connectedApps'), icon: 'bi-grid' },
     ]
 
-    const bottomNavLinks: SidebarLink[] = [
-        { href: '/more', label: t('nav.more'), icon: 'bi-grid' },
-    ]
-
     const adminLink: SidebarLink = { href: '/admin/users', label: t('nav.manageSso'), icon: 'bi-speedometer2' }
+
+    // Figma's mobile tabs: Home / Account (/ Admin for admins), plus our More tab.
+    const bottomNavLinks: SidebarLink[] = [
+        { href: '/account/my-apps', label: t('nav.home'), icon: 'bi-grid-1x2' },
+        { href: '/account', label: t('nav.account'), icon: 'bi-person' },
+        ...(auth.user?.is_admin ? [{ href: '/admin/users', label: t('nav.admin'), icon: 'bi-gear' }] : []),
+        { href: '/more', label: t('nav.more'), icon: 'bi-three-dots' },
+    ]
 
     const footerLinks = auth.user?.is_admin ? [adminLink] : undefined
 

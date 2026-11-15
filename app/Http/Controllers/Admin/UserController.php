@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\DTOs\CreateUserDTO;
 use App\DTOs\UserDTO;
 use App\Enums\UserRole;
+use App\Exceptions\Auth\UnauthorizedRoleChangeException;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -130,6 +131,44 @@ class UserController extends BaseController
         $this->userService->toggleActive($user);
 
         return $this->redirectBack(__('messages.user_status_updated'), 'success');
+    }
+
+    /**
+     * Activate or deactivate several users at once (the table's bulk action).
+     *
+     * Each user goes through the same rules as the single toggle: the acting
+     * admin's own account is never touched, and accounts they aren't allowed to
+     * manage (admin roles, without the manage-admin-access permission) are
+     * skipped rather than failing the whole batch.
+     */
+    public function bulkStatus(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:100'],
+            'ids.*' => ['integer', 'distinct'],
+            'active' => ['required', 'boolean'],
+        ]);
+
+        $desired = (bool) $validated['active'];
+        $changed = 0;
+        $actorId = $request->user()?->id;
+
+        User::query()->whereIn('id', $validated['ids'])->get()->each(function (User $user) use ($desired, $actorId, &$changed): void {
+            if ($user->id === $actorId || $user->is_active === $desired) {
+                return;
+            }
+
+            try {
+                $this->userService->assertCanManage($user);
+            } catch (UnauthorizedRoleChangeException) {
+                return;
+            }
+
+            $this->userService->toggleActive($user);
+            $changed++;
+        });
+
+        return $this->redirectBack(trans_choice('messages.users_bulk_status_updated', $changed, ['count' => $changed]), 'success');
     }
 
     public function toggleRequiresDataUpdate(User $user): RedirectResponse

@@ -1,6 +1,6 @@
 import type { FormEvent } from 'react'
 import { useState } from 'react'
-import { useForm } from '@inertiajs/react'
+import { Link, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AppLayout from '@/components/layouts/AppLayout'
 import AvatarInitials from '@/components/shared/AvatarInitials'
@@ -11,6 +11,7 @@ import type { User } from '@/types'
 
 interface ShowProps {
     user: User
+    connectedApps: string[]
 }
 
 interface PasswordForm {
@@ -27,8 +28,9 @@ interface DetailRow {
     mono?: boolean
 }
 
-export default function Show({ user }: ShowProps) {
+export default function Show({ user, connectedApps }: ShowProps) {
     const { t } = useTranslation('account')
+    const { t: tc } = useTranslation('common')
     const [showPasswordModal, setShowPasswordModal] = useState(false)
     const passwordForm = useForm<PasswordForm>({
         current_password: '',
@@ -131,7 +133,8 @@ export default function Show({ user }: ShowProps) {
                         <AvatarInitials name={user.name} size={72} />
                     )}
                     <div className="min-w-0">
-                        <h4 className="mb-1">{user.name}</h4>
+                        <span className="eyebrow">{user.membership_code.toUpperCase()}</span>
+                        <h4 className="mb-2">{user.name}</h4>
                         <div className="d-flex flex-wrap gap-2">
                             <RoleChip role={user.role} />
                             <StatusBadge status={user.is_active ? 'active' : 'revoked'} />
@@ -145,22 +148,67 @@ export default function Show({ user }: ShowProps) {
                 </div>
             </div>
 
-            <div className="d-flex justify-content-between align-items-center mb-3">
-                <h5 className="mb-0">{t('profile.accountDetails')}</h5>
+            <div className="section-heading">
+                <div>
+                    <span className="eyebrow">{t('profile.membershipCode')}</span>
+                    <h5 className="mb-0">{t('profile.accountDetails')}</h5>
+                </div>
                 <button type="button" className="btn btn-outline-primary btn-sm" onClick={() => setShowPasswordModal(true)}>
                     <i className="bi bi-shield-lock me-1" />
                     {t('profile.changePassword')}
                 </button>
             </div>
-            <div className="ava-card">
-                <div className="row g-0">
-                    <div className="col-lg-6 border-end">
-                        <ul className="list-group list-group-flush">{detailRowsLeft.map(detailRowRenderer)}</ul>
-                    </div>
-                    <div className="col-lg-6">
-                        <ul className="list-group list-group-flush">{detailRowsRight.map(detailRowRenderer)}</ul>
+            <div className="row g-3">
+                <div className="col-lg-8">
+                    <div className="ava-card h-100">
+                        <div className="row g-0">
+                            <div className="col-md-6 border-end">
+                                <ul className="list-group list-group-flush">{detailRowsLeft.map(detailRowRenderer)}</ul>
+                            </div>
+                            <div className="col-md-6">
+                                <ul className="list-group list-group-flush">{detailRowsRight.map(detailRowRenderer)}</ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+                <aside className="col-lg-4 d-flex flex-column gap-3">
+                    <section className="panel">
+                        <div className={`${user.mfa_enabled ? 'confirm-icon' : 'danger-icon'} mb-3`}>
+                            <i className="bi bi-shield-check" />
+                        </div>
+                        <h2 className="panel-title mb-2">{tc('nav.security')}</h2>
+                        <p className="text-ava-muted small mb-3">
+                            {t('profile.twoFactorAuthentication')}: {user.mfa_enabled ? t('profile.enabled') : t('profile.disabled')}
+                        </p>
+                        <Link href="/account/mfa" className="btn btn-outline-primary w-100">
+                            {tc('nav.security')}
+                        </Link>
+                    </section>
+                    <section className="panel">
+                        <div className="status-row">
+                            <h2 className="panel-title">{tc('nav.connectedApps')}</h2>
+                            <i className="bi bi-grid text-ava-muted" />
+                        </div>
+                        {connectedApps.length > 0 ? (
+                            <ul className="list-unstyled mt-3 mb-0">
+                                {connectedApps.map((name) => (
+                                    <li key={name} className="d-flex align-items-center gap-2 py-2 border-top">
+                                        <span className="app-card-logo app-card-logo-fallback app-card-logo-sm">
+                                            {name.slice(0, 2).toUpperCase()}
+                                        </span>
+                                        <span className="fw-semibold text-truncate">{name}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        ) : (
+                            <p className="text-ava-muted small mt-3 mb-0">{tc('welcome.noApps')}</p>
+                        )}
+                        <Link href="/account/apps" className="btn btn-outline-primary w-100 mt-3">
+                            {tc('nav.connectedApps')}
+                        </Link>
+                    </section>
+                </aside>
             </div>
 
             <div className="app-requesting-banner mt-3 d-flex align-items-start gap-2">

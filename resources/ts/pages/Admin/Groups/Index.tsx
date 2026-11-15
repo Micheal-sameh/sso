@@ -3,7 +3,9 @@ import type { FormEvent } from 'react'
 import { router, useForm } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import EmptyState from '@/components/shared/EmptyState'
 import type { Group } from '@/types'
 
 interface IndexProps {
@@ -89,7 +91,7 @@ export default function Index({ groups }: IndexProps) {
                                     <td className="text-ava-muted">{group.description ?? '—'}</td>
                                     <td className="text-ava-muted">{group.users_count ?? 0}</td>
                                     <td className="text-nowrap">
-                                        <div className="d-flex gap-2">
+                                        <div className="d-flex align-items-center justify-content-end gap-2">
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-primary"
@@ -98,33 +100,24 @@ export default function Index({ groups }: IndexProps) {
                                                 <i className="bi bi-people me-1" />
                                                 {t('groups.manageUsers')}
                                             </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => openEditModal(group)}
-                                            >
-                                                {t('common:actions.edit')}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => remove(group)}
-                                            >
-                                                {t('common:actions.delete')}
-                                            </button>
+                                            <ActionMenu
+                                                items={[
+                                                    { label: t('common:actions.edit'), icon: 'bi-pencil', onClick: () => openEditModal(group) },
+                                                    {
+                                                        label: t('common:actions.delete'),
+                                                        icon: 'bi-trash',
+                                                        danger: true,
+                                                        onClick: () => remove(group),
+                                                    },
+                                                ]}
+                                            />
                                         </div>
                                     </td>
                                 </tr>
                             ))}
-                            {groups.length === 0 && (
-                                <tr>
-                                    <td colSpan={4} className="text-center text-ava-muted py-4">
-                                        {t('groups.empty')}
-                                    </td>
-                                </tr>
-                            )}
                         </tbody>
                     </table>
+                    {groups.length === 0 && <EmptyState icon="bi-collection" message={t('groups.empty')} />}
                 </div>
             </div>
 

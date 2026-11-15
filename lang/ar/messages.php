@@ -49,6 +49,7 @@ return [
     'user_created' => 'تم إنشاء المستخدم بنجاح.',
     'user_updated' => 'تم تحديث المستخدم بنجاح.',
     'user_status_updated' => 'تم تحديث حالة المستخدم.',
+    'users_bulk_status_updated' => '{0} لم يتم تغيير أي حساب.|{1} تم تحديث حساب واحد.|[2,*] تم تحديث :count حسابات.',
     'user_data_update_requirement_updated' => 'تم تحديث متطلب تحديث بيانات المستخدم.',
     'admin_access_updated' => 'تم تحديث صلاحيات الإدارة.',
     'access_granted' => 'تم منح الوصول.',

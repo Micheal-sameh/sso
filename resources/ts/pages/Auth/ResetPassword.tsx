@@ -48,9 +48,12 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
 
     return (
         <AuthLayout>
-            <div className="text-center mb-4">
+            <div className="text-center mb-3">
                 <AvaLogo size={56} />
-                <p className="text-ava-muted small mt-2 mb-0">{t('resetPassword.chooseNewPassword')}</p>
+            </div>
+            <div className="auth-heading">
+                <h1>{t('resetPassword.chooseNewPassword')}</h1>
+                <p>{t('resetPassword.chooseSubtitle')}</p>
             </div>
 
             <form onSubmit={submit}>
@@ -60,6 +63,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                         id="email"
                         type="email"
                         className="form-control"
+                        placeholder={t('placeholders.email')}
                         value={form.data.email}
                         onChange={(e) => form.setData('email', e.target.value)}
                     />
@@ -72,6 +76,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                         id="password"
                         type="password"
                         className="form-control"
+                        placeholder={t('placeholders.newPassword')}
                         value={form.data.password}
                         onChange={(e) => form.setData('password', e.target.value)}
                         autoFocus
@@ -85,6 +90,7 @@ export default function ResetPassword({ token, email }: ResetPasswordProps) {
                         id="password_confirmation"
                         type="password"
                         className="form-control"
+                        placeholder={t('placeholders.confirmPassword')}
                         value={form.data.password_confirmation}
                         onChange={(e) => form.setData('password_confirmation', e.target.value)}
                     />

@@ -1,7 +1,9 @@
 import { router } from '@inertiajs/react'
 import { useTranslation } from 'react-i18next'
 import AdminLayout from '@/components/layouts/AdminLayout'
+import ActionMenu from '@/components/shared/ActionMenu'
 import { useConfirm } from '@/components/shared/ConfirmDialog'
+import EmptyState from '@/components/shared/EmptyState'
 import type { Family } from '@/types'
 
 interface IndexProps {
@@ -75,7 +77,7 @@ export default function Index({ families, totalFamilies }: IndexProps) {
                                     <td className="text-ava-muted">{family.mother?.name ?? t('families.notSet')}</td>
                                     <td className="text-ava-muted">{family.children?.length ?? 0}</td>
                                     <td className="text-nowrap">
-                                        <div className="d-flex gap-2">
+                                        <div className="d-flex align-items-center justify-content-end gap-2">
                                             <button
                                                 type="button"
                                                 className="btn btn-sm btn-primary"
@@ -84,26 +86,23 @@ export default function Index({ families, totalFamilies }: IndexProps) {
                                                 <i className="bi bi-people me-1" />
                                                 {t('families.manageMembers')}
                                             </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-sm btn-outline-primary"
-                                                onClick={() => remove(family)}
-                                            >
-                                                {t('common:actions.delete')}
-                                            </button>
+                                            <ActionMenu
+                                                items={[
+                                                    {
+                                                        label: t('common:actions.delete'),
+                                                        icon: 'bi-trash',
+                                                        danger: true,
+                                                        onClick: () => remove(family),
+                                                    },
+                                                ]}
+                                            />
                                         </div>
                                     </td>
                                 </tr>
                             ))}
-                            {families.length === 0 && (
-                                <tr>
-                                    <td colSpan={4} className="text-center text-ava-muted py-4">
-                                        {t('families.empty')}
-                                    </td>
-                                </tr>
-                            )}
                         </tbody>
                     </table>
+                    {families.length === 0 && <EmptyState icon="bi-house-heart" message={t('families.empty')} />}
                 </div>
             </div>
 

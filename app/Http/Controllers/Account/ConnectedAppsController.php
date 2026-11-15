@@ -29,13 +29,17 @@ class ConnectedAppsController extends BaseController
 
     public function revoke(string $tokenId): RedirectResponse
     {
-        $token = Token::find($tokenId);
+        $userId = (int) Auth::id();
 
-        $this->tokenRepository->revoke($tokenId);
+        // Scope to the signed-in user: a token id from another account must
+        // look exactly like a missing one (404), never get revoked.
+        $token = Token::where('id', $tokenId)->where('user_id', $userId)->first();
 
-        if ($token !== null) {
-            $this->oauthClientService->notifyClientLogout($token->client_id, $token->user_id);
+        if ($token === null || ! $this->tokenRepository->revokeForUser($tokenId, $userId)) {
+            abort(404);
         }
+
+        $this->oauthClientService->notifyClientLogout($token->client_id, $token->user_id);
 
         return $this->redirectBack(__('messages.app_access_revoked'), 'success');
     }
